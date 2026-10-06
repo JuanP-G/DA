@@ -1,0 +1,89 @@
+# ============================================================
+#  .gitignore - Repositorio de ejercicios de DA (C++)
+#  Ignora binarios, ficheros de compilación, cachés de los IDE
+#  y basura del sistema operativo. Los .cpp, .h, .in/.out de
+#  prueba, PDFs, vídeos y README sí se suben.
+# ============================================================
+
+# ---------- Compilación C/C++ ----------
+*.o
+*.obj
+*.exe
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*.pdb
+*.ilk
+*.idb
+*.gch
+*.pch
+*.dSYM/
+# (no se ignoran los *.out: suelen ser las salidas de prueba del juez)
+a.out
+build/
+bin/
+obj/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+
+# ---------- Visual Studio ----------
+.vs/
+Debug/
+Release/
+x64/
+x86/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.suo
+*.user
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+*.ipch
+*.tlog
+*.lastbuildstate
+*.recipe
+
+# ---------- VS Code / CLion / Code::Blocks / Dev-C++ ----------
+.vscode/
+.idea/
+*.cbp
+*.layout
+*.depend
+*.dev
+
+# ---------- macOS ----------
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ---------- Windows ----------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---------- Linux / editores ----------
+*~
+*.swp
+*.swo
+.directory
+
+# ---------- Python (scripts para generar vídeos) ----------
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ---------- Temporales ----------
+*.tmp
+*.log
+*.bak
+tmp/
