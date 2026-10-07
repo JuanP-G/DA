@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Árbol AVL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<style>
+/* Sistema visual común de las visualizaciones de DA (cuaderno de laboratorio de algoritmos).
+   Cada página añade su CSS propio DESPUÉS de este bloque. */
+:root {
+  --bg: #f3f4f8;
+  --panel: #ffffff;
+  --panel-2: #eceef4;
+  --ink: #1a2133;
+  --muted: #5d667b;
+  --line: #d9deea;
+  --accent: #b86e00;        /* nodo activo / raíz / resultado */
+  --accent-soft: #fbeccd;
+  --blue: #1f6fb8;          /* comparando / visitando */
+  --blue-soft: #d9eafa;
+  --red: #c4372d;           /* intercambio / rotación / ciclo */
+  --red-soft: #fbdcd8;
+  --green: #1e7f57;         /* terminado / correcto */
+  --green-soft: #d6f1e4;
+  --purple: #6c4bc1;
+  --purple-soft: #e6dffa;
+  --node: #ffffff;
+  --code-bg: #121a2b;
+  --code-ink: #dce4f5;
+  --code-dim: #6f7b95;
+  --code-hl: #3a3010;
+  --code-hl-bar: #f5a623;
+  --kw: #ff79c6; --ty: #8be9fd; --nu: #bd93f9; --co: #7e8aa8; --st: #f1fa8c;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
+    --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
+    --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
+    --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
+    --code-bg: #0a0f1c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
+  --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
+  --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
+  --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
+  --code-bg: #0a0f1c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 22px 16px 56px; display: flex; flex-direction: column; gap: 16px; }
+.wrap > * { min-width: 0; }
+header.top { display: flex; flex-direction: column; gap: 6px; }
+.tag { align-self: flex-start; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-soft); padding: 3px 9px; border-radius: 4px; }
+h1 { font-size: clamp(1.45rem, 3.2vw, 2rem); line-height: 1.2; margin: 0; font-weight: 700; letter-spacing: -.015em; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 70ch; text-wrap: pretty; }
+.lede code, .msg code, .note code, td code, li code { font-family: var(--mono); font-size: .9em; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+.panel > h2 { margin: 0 0 10px; font-size: .78rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bar .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 4px; }
+.bar label { font-size: .85rem; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.btn { font: inherit; font-size: .9rem; font-weight: 500; color: var(--ink); background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--blue); }
+.btn:focus-visible, .field:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="dark"] .btn.primary { color: #1b1400; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #1b1400; } }
+.btn.on { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+.btn:disabled { opacity: .45; cursor: default; }
+.field { font: inherit; font-family: var(--mono); font-size: .9rem; width: 5.2em; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+select.field { width: auto; font-family: var(--sans); }
+.stage { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.canvas-scroll { overflow-x: auto; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); }
+svg.viz { display: block; width: 100%; height: auto; }
+svg.viz text { font-family: var(--mono); fill: var(--ink); }
+svg.viz .muted { fill: var(--muted); }
+/* reproductor */
+.player { display: flex; flex-direction: column; gap: 8px; }
+.player .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.player .count { font-family: var(--mono); font-size: .82rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-left: auto; }
+.player input[type=range] { accent-color: var(--accent); }
+.msg { min-height: 3.2em; padding: 10px 12px; border-radius: 8px; background: var(--panel-2); border-left: 4px solid var(--accent); font-size: .95rem; }
+.msg b { font-weight: 600; }
+/* código */
+.codebox { background: var(--code-bg); color: var(--code-ink); border-radius: 10px; padding: 10px 0; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.55; }
+.codebox .fname { padding: 0 14px 6px; color: var(--code-dim); font-size: 11.5px; }
+.codebox .ln { display: flex; white-space: pre; padding-right: 14px; border-left: 4px solid transparent; }
+.codebox .ln i { font-style: normal; width: 2.6em; text-align: right; padding-right: 10px; color: var(--code-dim); flex: none; user-select: none; }
+.codebox .ln.on { background: var(--code-hl); border-left-color: var(--code-hl-bar); }
+.codebox .k { color: var(--kw); } .codebox .t { color: var(--ty); } .codebox .n { color: var(--nu); } .codebox .c { color: var(--co); } .codebox .s { color: var(--st); }
+/* leyenda y notas */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .82rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend b { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line); }
+.note { font-size: .88rem; color: var(--muted); margin: 0; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: .88rem; margin: 0; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; font-family: var(--mono); overflow-wrap: anywhere; }
+table.t { border-collapse: collapse; font-size: .88rem; width: 100%; }
+table.t th, table.t td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { color: var(--muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+footer.foot { color: var(--muted); font-size: .82rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+a.back { align-self: flex-start; font-size: .88rem; color: var(--blue); text-decoration: none; font-weight: 500; }
+a.back:hover { text-decoration: underline; }
+a.back:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 3px; }
+.ctl { display: flex; flex-direction: column; gap: 10px; }
+.bar .field.num { width: 5.2em; }
+#ex { max-width: min(24em, calc(100vw - 118px)); }
+.bar .grp { max-width: 100%; display: inline-flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+#opMsg { font-size: .85rem; color: var(--muted); min-height: 1.3em; margin: 0; }
+#opMsg.err { color: var(--red); font-weight: 500; }
+.stat { font-family: var(--mono); font-size: .8rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; }
+.stat b { color: var(--ink); font-weight: 600; }
+.left { display: flex; flex-direction: column; gap: 10px; }
+svg.viz .edge { stroke: var(--muted); stroke-opacity: .5; stroke-width: 1.6; fill: none; }
+svg.viz .edge.hot { stroke: var(--blue); stroke-opacity: 1; stroke-width: 2.6; }
+svg.viz .c { fill: var(--node); stroke: var(--muted); stroke-width: 1.6; transition: fill .25s, stroke .25s; }
+svg.viz .halo { fill: none; stroke: none; }
+svg.viz .key { font-size: 15px; font-weight: 600; }
+svg.viz .chip rect { stroke-width: 1; }
+svg.viz .chip text { font-size: 11px; font-weight: 600; }
+svg.viz .ht { font-size: 10.5px; }
+svg.viz .ht .tt { fill: var(--muted); }
+svg.viz.focust .ht .tt { fill: var(--accent); font-weight: 700; }
+svg.viz .fe0 rect { fill: var(--green-soft); stroke: var(--green); } svg.viz .fe0 text { fill: var(--green); }
+svg.viz .fe1 rect { fill: var(--blue-soft); stroke: var(--blue); } svg.viz .fe1 text { fill: var(--blue); }
+svg.viz .fe2 rect { fill: var(--red-soft); stroke: var(--red); } svg.viz .fe2 text { fill: var(--red); }
+svg.viz .m-path .c { stroke: var(--blue); stroke-width: 2.2; fill: var(--blue-soft); }
+svg.viz .m-visit .c { stroke: var(--blue); stroke-width: 3.2; }
+svg.viz .m-cmp .c { stroke: var(--accent); stroke-width: 3.6; fill: var(--accent-soft); }
+svg.viz .m-ok .c { stroke: var(--green); stroke-width: 3; }
+svg.viz .m-unbal .c { stroke: var(--red); stroke-width: 3.6; fill: var(--red-soft); }
+svg.viz .m-rot .c { stroke: var(--purple); stroke-width: 3.6; fill: var(--purple-soft); }
+svg.viz .m-new .c { stroke: var(--green); stroke-width: 3.2; fill: var(--green-soft); }
+svg.viz .m-new .halo { stroke: var(--green); stroke-width: 1.6; }
+svg.viz .m-del .c { stroke: var(--red); stroke-width: 3.2; stroke-dasharray: 5 3; fill: var(--red-soft); }
+svg.viz .m-found .c { stroke: var(--accent); stroke-width: 3.6; fill: var(--accent-soft); }
+svg.viz .m-found .halo { stroke: var(--accent); stroke-width: 1.8; }
+svg.viz .nin { transform-box: fill-box; transform-origin: center; }
+svg.viz .enter .nin { animation: pop .45s ease-out both; }
+@keyframes pop { from { opacity: 0; transform: scale(.35); } to { opacity: 1; transform: scale(1); } }
+svg.viz .empty { font-size: 14px; }
+.inord { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+.inord .it { background: var(--panel-2); border-radius: 4px; padding: 1px 6px; color: var(--ink); }
+.inord .it small { color: var(--muted); font-size: .72em; margin-right: 3px; }
+.inord .it.hi { background: var(--accent-soft); outline: 1.5px solid var(--accent); }
+.lg { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--muted); background: var(--node); }
+.lg.path { border-color: var(--blue); background: var(--blue-soft); border-width: 2px; }
+.lg.cmp { border-color: var(--accent); background: var(--accent-soft); }
+.lg.unbal { border-color: var(--red); background: var(--red-soft); }
+.lg.rot { border-color: var(--purple); background: var(--purple-soft); }
+.lg.new { border-color: var(--green); background: var(--green-soft); }
+.lg.del { border-color: var(--red); background: var(--red-soft); border-style: dashed; }
+.pill { display: inline-block; font-family: var(--mono); font-size: .78rem; font-weight: 600; padding: 0 7px; border-radius: 8px; border: 1px solid; }
+.pill.f0 { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+.pill.f1 { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+.pill.f2 { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+.legend small { color: var(--muted); }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.tabs .btn { padding: 5px 10px; font-size: .84rem; }
+.follow { display: inline-flex; gap: 6px; align-items: center; font-size: .82rem; color: var(--muted); margin-bottom: 8px; }
+.codewrap .codebox { position: relative; max-height: 520px; overflow: auto; }
+svg.viz { margin: 0 auto; }
+.codebox .ln.added i { color: var(--code-hl-bar); font-weight: 700; }
+.ideas { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.idea { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+.idea h3 { margin: 0 0 6px; font-size: .98rem; }
+.idea p { margin: 0 0 8px; font-size: .9rem; }
+.idea p:last-child { margin-bottom: 0; }
+.idea.wide { grid-column: 1 / -1; }
+.cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 10px; margin-top: 8px; }
+.case { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font-size: .82rem; }
+.case svg { display: block; width: 100%; height: auto; }
+.case svg text { font-family: var(--mono); fill: var(--ink); }
+.case .cap { margin: 4px 0 0; color: var(--muted); font-size: .82rem; }
+.case .cap b { color: var(--ink); font-family: var(--mono); font-weight: 600; }
+.tblwrap { overflow-x: auto; }
+ul.ex { margin: 0; padding-left: 1.1em; font-size: .9rem; }
+ul.ex li { margin-bottom: 6px; }
+footer.foot { display: flex; flex-direction: column; gap: 6px; }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todas las estructuras</a>
+  <header class="top">
+    <span class="tag">Tema 1</span>
+    <h1>Árbol AVL</h1>
+    <p class="lede">Un árbol de búsqueda que se mantiene equilibrado girando nodos. Aquí ves, paso a paso y sobre el C++ real de <code>Set&lt;T&gt;</code> (<code>TreeSet_AVL_plantilla.h</code>), cómo <code>inserta</code>, <code>borra</code>, <code>borraMin</code> y <code>kesimo</code> bajan por el árbol, suben actualizando <code>altura</code> y <code>tami</code>, detectan |fe| = 2 y eligen la rotación.</p>
+  </header>
+
+  <section class="panel ctl" aria-label="Operaciones">
+    <h2>Operaciones</h2>
+    <div class="bar">
+      <span class="grp">
+        <label for="key">clave <input class="field num" id="key" type="number" min="-99" max="999" value="25" inputmode="numeric"></label>
+        <button class="btn primary" id="bIns">Insertar</button>
+        <button class="btn" id="bDel">Borrar</button>
+        <button class="btn" id="bMin" title="borraMin sobre la raíz: extrae el menor">Borrar mínimo</button>
+      </span>
+      <span class="sep"></span>
+      <span class="grp">
+        <label for="kk">k <input class="field num" id="kk" type="number" min="1" max="99" value="3" inputmode="numeric"></label>
+        <button class="btn" id="bKth" title="kesimo(k): k = 1 es el menor">k-ésimo</button>
+      </span>
+      <span class="sep"></span>
+      <span class="grp">
+        <button class="btn" id="bRnd">Aleatorio (+8)</button>
+        <button class="btn" id="bClr">Vaciar</button>
+        <label for="ex">ejemplo
+          <select class="field" id="ex" aria-label="Ejemplos precargados"></select>
+        </label>
+      </span>
+    </div>
+    <p id="opMsg" role="status" aria-live="polite">Elige una operación o un ejemplo. Con el reproductor: ← → avanzan, espacio reproduce y pausa.</p>
+  </section>
+
+  <div class="stage">
+    <section class="panel left" aria-label="Árbol y explicación paso a paso">
+      <h2>Árbol</h2>
+      <div class="canvas-scroll" id="cs"><svg class="viz" id="svg" role="img" aria-label="Árbol AVL"></svg></div>
+      <div class="stat" id="stat"></div>
+      <div class="inord" id="inord" aria-label="Elementos en orden creciente"></div>
+      <div id="playerHost"></div>
+      <div class="legend">
+        <span><b class="lg path"></b>camino recorrido</span>
+        <span><b class="lg cmp"></b>comparando / actual</span>
+        <span><b class="lg unbal"></b>desequilibrado (|fe| = 2)</span>
+        <span><b class="lg rot"></b>rotando</span>
+        <span><b class="lg new"></b>nuevo</span>
+        <span><b class="lg del"></b>se borra</span>
+      </div>
+      <div class="legend">
+        <span><span class="pill f0">fe 0</span> equilibrado</span>
+        <span><span class="pill f1">fe ±1</span> aceptable</span>
+        <span><span class="pill f2">fe ±2</span> hay que rotar</span>
+        <span><small><code>fe = altura(iz) − altura(dr)</code> · <code>h</code> = altura · <code>t</code> = tami</small></span>
+      </div>
+    </section>
+
+    <aside class="panel codewrap" aria-label="Código C++">
+      <h2>Código C++ del header</h2>
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <label class="follow"><input type="checkbox" id="follow" checked> cambiar de extracto automáticamente según el paso</label>
+      <div id="codes"></div>
+      <p class="note" style="margin-top:8px">Líneas copiadas de <code>Estructuras de datos/TreeSet_AVL_plantilla.h</code> (numeración del fichero). En <code>borraMin</code> hay una línea marcada con <code>+</code> que <b>no está</b> en el header: sin ella <code>tami</code> queda mal tras borrar con dos hijos (ver «Para entenderlo»).</p>
+    </aside>
+  </div>
+
+  <section class="panel" id="entender">
+    <h2>Para entenderlo</h2>
+    <div class="ideas">
+      <div class="idea">
+        <h3>1 · Por qué la altura es O(log n)</h3>
+        <p>Un AVL de altura <code>h</code> necesita como mínimo <code>N(h) = N(h−1) + N(h−2) + 1</code> nodos (el subárbol más pobre difiere en 1 de su hermano). Eso crece como Fibonacci, es decir, exponencialmente: invirtiendo, <code>h ≤ 1,44·log₂(n+2)</code>.</p>
+        <div class="tblwrap"><table class="t" id="fibTbl"></table></div>
+        <p class="note" style="margin-top:6px">Con 33 nodos un AVL puede llegar a altura 7; un árbol perfecto, a 6. Nunca más de ~44 % peor que lo óptimo.</p>
+      </div>
+      <div class="idea">
+        <h3>2 · Qué guarda cada nodo</h3>
+        <p><code>elem</code>, <code>iz</code>, <code>dr</code>, <code>altura</code> y <code>tami</code>. El factor de equilibrio no se guarda: se calcula al vuelo con <code>altura(iz) − altura(dr)</code> y debe estar en {−1, 0, 1}.</p>
+        <p><b><code>tami</code> = tamaño del subárbol izquierdo + 1</b> (aunque el comentario del header diga «tamaño del subárbol»): es la posición del nodo dentro de su propio subárbol, y <code>comprueba()</code> exige <code>tami == ni + 1</code>. Por eso <code>kesimo</code> hace: si <code>k == tami</code> es este nodo; si <code>k &lt; tami</code> va a la izquierda con el mismo <code>k</code>; si no, va a la derecha con <code>k − tami</code>.</p>
+      </div>
+      <div class="idea">
+        <h3>3 · Cómo se mantiene <code>tami</code></h3>
+        <ul class="ex">
+          <li>Insertar por la izquierda: <code>tami += 1</code> al subir. Por la derecha, nada.</li>
+          <li>Borrar por la izquierda: <code>tami -= 1</code>.</li>
+          <li><code>rotaDer(r2)</code>: <code>r2->tami -= r1->tami</code>. <code>rotaIzq(r1)</code>: <code>r2->tami += r1->tami</code>. La nueva raíz conserva el suyo.</li>
+          <li>Hay una errata en el header: <code>borraMin</code> no hace <code>a->tami -= 1</code> al subir por la izquierda. Probado: borrar la raíz de <code>{40,20,60,10,30,50,5}</code> hace que <code>comprueba()</code> diga «el tami de 60 vale 2 y debería ser 1». Esta página aplica la corrección (línea <code>+</code>). En 01-2 no se nota porque solo hay <code>insert</code> + <code>kesimo</code>.</li>
+        </ul>
+      </div>
+      <div class="idea wide">
+        <h3>4 · Los cuatro casos de rotación</h3>
+        <p>Tras insertar o borrar, al subir se mira el primer nodo <code>a</code> con |fe| = 2. Se mira el hijo más alto <code>g</code> y su hijo más alto <code>x</code>: si el exceso está «por fuera» basta una rotación simple; si está «por dentro» (zig-zag), primero se gira <code>g</code> y luego <code>a</code>. En <code>reequilibraDer</code> (a cargado a la izquierda) y <code>reequilibraIzq</code> (cargado a la derecha) el código decide con una sola comparación de alturas.</p>
+        <div class="cases" id="cases"></div>
+      </div>
+      <div class="idea">
+        <h3>5 · Coste</h3>
+        <div class="tblwrap"><table class="t">
+          <tr><th>Operación</th><th>Coste</th><th>Rotaciones</th></tr>
+          <tr><td><code>inserta</code></td><td>O(log n)</td><td>≤ 1 (simple o doble)</td></tr>
+          <tr><td><code>borra</code> / <code>borraMin</code></td><td>O(log n)</td><td>hasta O(log n)</td></tr>
+          <tr><td><code>kesimo</code></td><td>O(log n)</td><td>—</td></tr>
+          <tr><td>una rotación</td><td>O(1)</td><td>3 punteros + alturas + tami</td></tr>
+        </table></div>
+        <p class="note" style="margin-top:6px"><code>kesimo</code> no recorre el árbol: baja un solo camino gracias a <code>tami</code>. Sin él habría que hacer un inorden, O(n).</p>
+      </div>
+      <div class="idea">
+        <h3>6 · Dónde se usa en el repo</h3>
+        <ul class="ex">
+          <li><b>EJ 01-1</b> · ¿Es un árbol AVL? (versión genérica y versión final): no usa la clase <code>Set</code>, pero comprueba exactamente las condiciones de esta página: orden de búsqueda y |altura(iz) − altura(dr)| ≤ 1, calculando la altura en postorden.</li>
+          <li><b>EJ 01-2</b> · k-ésimo elemento en un AVL: usa <code>Set&lt;int&gt;</code> con <code>insert</code> y <code>kesimo</code> (<code>out_of_range</code> → «??»). Es el uso directo de <code>tami</code>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <a class="back" href="index.html">← Todas las estructuras</a>
+    <span>Código fuente: <code>Estructuras de datos/TreeSet_AVL_plantilla.h</code> (A. Verdejo, editado por I. Fábregas).</span>
+  </footer>
+</div>
+
+<script>
+/* Utilidades comunes: reproductor paso a paso y panel de código. */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function esc(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+/* Panel de código C++ con coloreado sencillo y líneas resaltables (numeradas desde 1). */
+function mountCode(host, fname, lines) {
+  const kws = /^(for|if|else|while|return|const|class|struct|public|private|protected|void|bool|int|auto|true|false|template|typename|using|throw|new|delete|break|continue|static|nullptr)$/;
+  const tys = /^(Link|Set|Grafo|Digrafo|IndexPQ|Par|vector|queue|stack|string|T|std|Adys|Comparator|TreeNode|size_t)$/;
+  const tok = /(\/\/.*$)|("[^"]*")|(\b\d+\b)|(\b[A-Za-z_]\w*\b)|(\s+)|(.)/g;
+  host.classList.add('codebox');
+  host.innerHTML = '<div class="fname">' + esc(fname) + '</div>';
+  const rows = lines.map((src, i) => {
+    let html = '', m; tok.lastIndex = 0;
+    while ((m = tok.exec(src))) {
+      const t = m[0];
+      if (m[1]) html += '<span class="c">' + esc(t) + '</span>';
+      else if (m[2]) html += '<span class="s">' + esc(t) + '</span>';
+      else if (m[3]) html += '<span class="n">' + t + '</span>';
+      else if (m[4] && kws.test(t)) html += '<span class="k">' + t + '</span>';
+      else if (m[4] && tys.test(t)) html += '<span class="t">' + t + '</span>';
+      else html += esc(t);
+    }
+    const d = document.createElement('div');
+    d.className = 'ln'; d.innerHTML = '<i>' + (i + 1) + '</i><span>' + html + '</span>';
+    host.appendChild(d);
+    return d;
+  });
+  return function mark(active) {
+    const set = new Set(active || []);
+    rows.forEach((r, i) => r.classList.toggle('on', set.has(i + 1)));
+    const first = rows.find((r, i) => set.has(i + 1));
+    if (first) {
+      const top = first.offsetTop, h = host.clientHeight;
+      if (top < host.scrollTop + 20 || top > host.scrollTop + h - 40) host.scrollTop = Math.max(0, top - h / 3);
+    }
+  };
+}
+
+/* Reproductor: frames = [{ msg: 'html', lines: [nº de línea de código], ... }]
+   render(frame, prevFrame) lo implementa cada página. */
+class Player {
+  constructor({ render, mark }) {
+    this.render = render; this.mark = mark; this.frames = []; this.i = 0; this.timer = null;
+    this.$prev = $('#pPrev'); this.$next = $('#pNext'); this.$play = $('#pPlay'); this.$first = $('#pFirst'); this.$last = $('#pLast');
+    this.$speed = $('#pSpeed'); this.$count = $('#pCount'); this.$msg = $('#msg'); this.$seek = $('#pSeek');
+    this.$prev.onclick = () => { this.pause(); this.go(this.i - 1); };
+    this.$next.onclick = () => { this.pause(); this.go(this.i + 1); };
+    this.$first.onclick = () => { this.pause(); this.go(0); };
+    this.$last.onclick = () => { this.pause(); this.go(this.frames.length - 1); };
+    this.$play.onclick = () => this.toggle();
+    this.$seek.oninput = () => { this.pause(); this.go(+this.$seek.value); };
+    document.addEventListener('keydown', e => {
+      if (/INPUT|SELECT|TEXTAREA/.test((e.target.tagName || ''))) return;
+      if (e.key === 'ArrowRight') { this.pause(); this.go(this.i + 1); }
+      else if (e.key === 'ArrowLeft') { this.pause(); this.go(this.i - 1); }
+      else if (e.key === ' ') { e.preventDefault(); this.toggle(); }
+    });
+  }
+  delay() { return [1900, 1300, 900, 550, 280][(+this.$speed.value || 3) - 1]; }
+  /* Carga una secuencia nueva. start = frame inicial; play = arrancar solo. */
+  load(frames, { play = true, start = 0 } = {}) {
+    this.pause(); this.frames = frames; this.$seek.max = Math.max(0, frames.length - 1);
+    this.prevFrame = null; this.go(start, true);
+    if (play && frames.length > 1) this.play();
+  }
+  go(i, instant) {
+    if (!this.frames.length) return;
+    i = Math.max(0, Math.min(this.frames.length - 1, i));
+    const f = this.frames[i], prev = this.frames[this.i] || null;
+    this.i = i;
+    this.render(f, prev, !!instant);
+    this.$msg.innerHTML = f.msg || '';
+    if (this.mark) this.mark(f.lines || []);
+    this.$count.textContent = 'paso ' + (i + 1) + ' de ' + this.frames.length;
+    this.$seek.value = i;
+    this.$first.disabled = this.$prev.disabled = i === 0;
+    this.$last.disabled = this.$next.disabled = i === this.frames.length - 1;
+    if (i === this.frames.length - 1) this.pause();
+  }
+  play() {
+    if (this.i >= this.frames.length - 1) this.go(0, true);
+    this.$play.textContent = '⏸ Pausa'; this.$play.classList.add('on');
+    const tick = () => {
+      if (this.i >= this.frames.length - 1) { this.pause(); return; }
+      this.go(this.i + 1);
+      if (this.timer !== null) this.timer = setTimeout(tick, this.delay());
+    };
+    this.timer = setTimeout(tick, this.delay());
+  }
+  pause() { if (this.timer) clearTimeout(this.timer); this.timer = null; this.$play.textContent = '▶ Reproducir'; this.$play.classList.remove('on'); }
+  toggle() { this.timer ? this.pause() : this.play(); }
+}
+const PLAYER_HTML = `
+<div class="player">
+  <div class="msg" id="msg" role="status" aria-live="polite"></div>
+  <div class="row">
+    <button class="btn" id="pFirst" title="Primer paso" aria-label="Primer paso">⏮</button>
+    <button class="btn" id="pPrev" title="Paso anterior (←)" aria-label="Paso anterior">◀</button>
+    <button class="btn primary" id="pPlay">▶ Reproducir</button>
+    <button class="btn" id="pNext" title="Paso siguiente (→)" aria-label="Paso siguiente">▶|</button>
+    <button class="btn" id="pLast" title="Último paso" aria-label="Último paso">⏭</button>
+    <label>velocidad <input type="range" id="pSpeed" min="1" max="5" value="3"></label>
+    <span class="count" id="pCount"></span>
+  </div>
+  <input type="range" id="pSeek" min="0" max="0" value="0" aria-label="Posición en la secuencia" style="width:100%">
+</div>`;
+
+
+/*SRC_BEGIN*/
+const SRC = [{"id": "nodo","tab": "TreeNode","from": 29,"to": 41,"lines": [[29,"struct TreeNode;"],[30,"using Link = TreeNode*;"],[31,""],[32,"struct TreeNode {"],[33,"    T elem;       //elemento"],[34,"    Link iz, dr;  //hijos izquierdo y derecho"],[35,"    int altura;   //altura"],[36,"    int tami;     //tamaño del subárbol con raíz en este nodo"],[37,""],[38,"    TreeNode(T const& e, Link i = nullptr, Link d = nullptr,"],[39,"        int alt = 1, int tam = 1) : elem(e), iz(i), dr(d), altura(alt), tami(tam) {"],[40,"    }"],[41,"};"]]},{"id": "ins","tab": "inserta","from": 165,"to": 186,"lines": [[165,"bool inserta(T const& e, Link& a) {"],[166,"    bool crece;"],[167,"    if (a == nullptr) { // se inserta el nuevo elemento e"],[168,"        a = new TreeNode(e);"],[169,"        ++nelems;"],[170,"        crece = true;"],[171,"    }"],[172,"    else if (menor(e, a->elem)) {"],[173,"        crece = inserta(e, a->iz);"],[174,"        if (crece) {"],[175,"            a->tami += 1; // incrementamos tami porque vamos a insertar un elemento en el subárbol izquierdo"],[176,"            reequilibraDer(a);"],[177,"        }"],[178,"    }"],[179,"    else if (menor(a->elem, e)) {"],[180,"        crece = inserta(e, a->dr);"],[181,"        if (crece) reequilibraIzq(a);"],[182,"    }"],[183,"    else // el elemento e ya estaba en el árbol"],[184,"        crece = false;"],[185,"    return crece;"],[186,"}"]]},{"id": "rot","tab": "reequilibra y rotaciones","from": 188,"to": 239,"lines": [[188,"int altura(Link a) {"],[189,"    if (a == nullptr) return 0;"],[190,"    else return a->altura;"],[191,"}"],[192,""],[193,"void rotaDer(Link& r2) {"],[194,"    Link r1 = r2->iz;"],[195,"    r2->iz = r1->dr;"],[196,"    r1->dr = r2;"],[197,"    r2->tami -= r1->tami; // actualizamos tami del nuevo nodo raíz"],[198,"    r2->altura = std::max(altura(r2->iz), altura(r2->dr)) + 1;"],[199,"    r1->altura = std::max(altura(r1->iz), altura(r1->dr)) + 1;"],[200,"    r2 = r1;"],[201,"}"],[202,""],[203,"void rotaIzq(Link& r1) {"],[204,"    Link r2 = r1->dr;"],[205,"    r1->dr = r2->iz;"],[206,"    r2->iz = r1;"],[207,"    r2->tami += r1->tami; // actualizamos tami del nuevo nodo raíz"],[208,"    r1->altura = std::max(altura(r1->iz), altura(r1->dr)) + 1;"],[209,"    r2->altura = std::max(altura(r2->iz), altura(r2->dr)) + 1;"],[210,"    r1 = r2;"],[211,"}"],[212,""],[213,"void rotaIzqDer(Link& r3) {"],[214,"    rotaIzq(r3->iz);"],[215,"    rotaDer(r3);"],[216,"}"],[217,""],[218,"void rotaDerIzq(Link& r1) {"],[219,"    rotaDer(r1->dr);"],[220,"    rotaIzq(r1);"],[221,"}"],[222,""],[223,"void reequilibraIzq(Link& a) {"],[224,"    if (altura(a->dr) - altura(a->iz) > 1) {"],[225,"        if (altura(a->dr->iz) > altura(a->dr->dr))"],[226,"            rotaDerIzq(a);"],[227,"        else rotaIzq(a);"],[228,"    }"],[229,"    else a->altura = std::max(altura(a->iz), altura(a->dr)) + 1;"],[230,"}"],[231,""],[232,"void reequilibraDer(Link& a) {"],[233,"    if (altura(a->iz) - altura(a->dr) > 1) {"],[234,"        if (altura(a->iz->dr) > altura(a->iz->iz))"],[235,"            rotaIzqDer(a);"],[236,"        else rotaDer(a);"],[237,"    }"],[238,"    else a->altura = std::max(altura(a->iz), altura(a->dr)) + 1;"],[239,"}"]]},{"id": "del","tab": "borra y borraMin","from": 241,"to": 286,"lines": [[241,"// devuelve y borra el mínimo del árbol con raíz en a"],[242,"T borraMin(Link& a) {"],[243,"    if (a->iz == nullptr) {"],[244,"        T min = a->elem;"],[245,"        a = a->dr;"],[246,"        --nelems;"],[247,"        return min;"],[248,"    }"],[249,"    else {"],[250,"        T min = borraMin(a->iz);"],[250.5,"        a->tami -= 1; // [AÑADIDA: no está en el .h] el subárbol izquierdo perdió un nodo"],[251,"        reequilibraIzq(a);"],[252,"        return min;"],[253,"    }"],[254,"}"],[255,""],[256,"bool borra(T const& e, Link& a) {"],[257,"    bool decrece = false;"],[258,"    if (a != nullptr) {"],[259,"        if (menor(e, a->elem)) {"],[260,"            decrece = borra(e, a->iz);"],[261,"            if (decrece) {"],[262,"                a->tami -= 1; // decrementamos tami porque vamos a borrar un elemento del subárbol izquierdo"],[263,"                reequilibraIzq(a);"],[264,"            }"],[265,"        }"],[266,"        else if (menor(a->elem, e)) {"],[267,"            decrece = borra(e, a->dr);"],[268,"            if (decrece) reequilibraDer(a);"],[269,"        }"],[270,"        else { // e == a->elem"],[271,"            if (a->iz == nullptr || a->dr == nullptr) {"],[272,"                Link aux = a;"],[273,"                a = (a->iz == nullptr) ? a->dr : a->iz;"],[274,"                --nelems;"],[275,"                delete aux;"],[276,"            }"],[277,"            else { // tiene dos hijos"],[278,"                T min = borraMin(a->dr);"],[279,"                a->elem = min;"],[280,"                reequilibraDer(a);"],[281,"            }"],[282,"            decrece = true;"],[283,"        }"],[284,"    }"],[285,"    return decrece;"],[286,"}"]]},{"id": "kth","tab": "kesimo","from": 124,"to": 129,"lines": [[124,"T const& kesimo(int k, Link a) const {"],[125,"    if (a == nullptr) throw std::out_of_range(\"posicion invalida\");"],[126,"    if (k == a->tami) return a->elem;"],[127,"    else if (k < a->tami) return kesimo(k, a->iz);"],[128,"    else return kesimo(k - a->tami, a->dr);"],[129,"}"]]}];
+/*SRC_END*/
+
+/*AVL_CORE_BEGIN*/
+/* ===== Lógica pura del AVL (sin DOM): mismas funciones que el C++, con Link& modelado como (h, p) => h[p] ===== */
+const altura = a => (a ? a.h : 0);
+const sg = d => (d > 0 ? '+' + d : d < 0 ? '−' + (-d) : '0');
+
+function makeAVL() {
+  const T = { root: null, n: 0, nextId: 1, hook: null };
+  const ev = (type, d) => { if (T.hook) T.hook(type, d || {}); };
+  const mk = k => ({ id: T.nextId++, k, l: null, r: null, h: 1, t: 1 });
+  const hmax = a => Math.max(altura(a.l), altura(a.r)) + 1;
+
+  function rotaDer(h, p, via, step, total) {
+    const r2 = h[p], r1 = r2.l, t0 = r2.t, mid = r1.r;
+    ev('rot', { phase: 'before', name: 'rotaDer', root: r2, piv: r1, mid, via, step, total });
+    r2.l = r1.r; r1.r = r2;
+    r2.t -= r1.t;
+    r2.h = hmax(r2); r1.h = hmax(r1);
+    h[p] = r1;
+    ev('rot', { phase: 'after', name: 'rotaDer', root: r2, piv: r1, mid, via, step, total, who: r2, tFrom: t0, tTo: r2.t });
+  }
+  function rotaIzq(h, p, via, step, total) {
+    const r1 = h[p], r2 = r1.r, t0 = r2.t, mid = r2.l;
+    ev('rot', { phase: 'before', name: 'rotaIzq', root: r1, piv: r2, mid, via, step, total });
+    r1.r = r2.l; r2.l = r1;
+    r2.t += r1.t;
+    r1.h = hmax(r1); r2.h = hmax(r2);
+    h[p] = r2;
+    ev('rot', { phase: 'after', name: 'rotaIzq', root: r1, piv: r2, mid, via, step, total, who: r2, tFrom: t0, tTo: r2.t });
+  }
+  function rotaIzqDer(h, p) { const r3 = h[p]; rotaIzq(r3, 'l', 'rotaIzqDer', 1, 2); rotaDer(h, p, 'rotaIzqDer', 2, 2); }
+  function rotaDerIzq(h, p) { const r1 = h[p]; rotaDer(r1, 'r', 'rotaDerIzq', 1, 2); rotaIzq(h, p, 'rotaDerIzq', 2, 2); }
+
+  function reequilibraIzq(h, p, from) {
+    const a = h[p];
+    if (altura(a.r) - altura(a.l) > 1) {
+      ev('unbal', { a, side: 'Izq', from });
+      const g = a.r, dbl = altura(g.l) > altura(g.r);
+      ev('case', { a, g, side: 'Izq', dbl, x: altura(g.l), y: altura(g.r) });
+      if (dbl) rotaDerIzq(h, p); else rotaIzq(h, p, null, 1, 1);
+    } else { const old = a.h; a.h = hmax(a); ev('ok', { a, side: 'Izq', from, old }); }
+  }
+  function reequilibraDer(h, p, from) {
+    const a = h[p];
+    if (altura(a.l) - altura(a.r) > 1) {
+      ev('unbal', { a, side: 'Der', from });
+      const g = a.l, dbl = altura(g.r) > altura(g.l);
+      ev('case', { a, g, side: 'Der', dbl, x: altura(g.r), y: altura(g.l) });
+      if (dbl) rotaIzqDer(h, p); else rotaDer(h, p, null, 1, 1);
+    } else { const old = a.h; a.h = hmax(a); ev('ok', { a, side: 'Der', from, old }); }
+  }
+
+  function inserta(e, h, p) {
+    let crece; const a = h[p];
+    if (a === null) { const nn = mk(e); h[p] = nn; T.n++; crece = true; ev('new', { node: nn, e }); }
+    else if (e < a.k) {
+      ev('cmp', { a, e, dir: 'l' });
+      crece = inserta(e, a, 'l');
+      if (crece) { a.t += 1; reequilibraDer(h, p, 'ins-l'); }
+    } else if (a.k < e) {
+      ev('cmp', { a, e, dir: 'r' });
+      crece = inserta(e, a, 'r');
+      if (crece) reequilibraIzq(h, p, 'ins-r');
+    } else { ev('dup', { a, e }); crece = false; }
+    return crece;
+  }
+
+  function borraMin(h, p) {
+    const a = h[p];
+    if (a.l === null) {
+      const min = a.k;
+      ev('rm', { phase: 'before', a, child: a.r, ctx: 'min' });
+      h[p] = a.r; T.n--;
+      ev('rm', { phase: 'after', a, child: a.r, ctx: 'min', min });
+      return min;
+    }
+    ev('mincmp', { a });
+    const min = borraMin(a, 'l');
+    a.t -= 1;                       // LÍNEA AÑADIDA respecto al .h (ver nota): el subárbol izquierdo perdió un nodo
+    reequilibraIzq(h, p, 'min-l');
+    return min;
+  }
+
+  function borra(e, h, p) {
+    let decrece = false; const a = h[p];
+    if (a === null) { ev('nf', { e }); return false; }
+    if (e < a.k) {
+      ev('cmp', { a, e, dir: 'l' });
+      decrece = borra(e, a, 'l');
+      if (decrece) { a.t -= 1; reequilibraIzq(h, p, 'del-l'); }
+    } else if (a.k < e) {
+      ev('cmp', { a, e, dir: 'r' });
+      decrece = borra(e, a, 'r');
+      if (decrece) reequilibraDer(h, p, 'del-r');
+    } else {
+      const kids = (a.l ? 1 : 0) + (a.r ? 1 : 0);
+      ev('found', { a, kids });
+      if (kids < 2) {
+        const child = a.l === null ? a.r : a.l;
+        ev('rm', { phase: 'before', a, child, ctx: 'borra', kids });
+        h[p] = child; T.n--;
+        ev('rm', { phase: 'after', a, child, ctx: 'borra', kids });
+      } else {
+        const min = borraMin(a, 'r');
+        const old = a.k; a.k = min;
+        ev('copy', { a, old, min });
+        reequilibraDer(h, p, 'del2');
+      }
+      decrece = true;
+    }
+    return decrece;
+  }
+
+  function kesimo(k, a) {           // devuelve undefined donde el C++ lanza out_of_range
+    if (a === null) { ev('knull', { k }); return undefined; }
+    if (k === a.t) { ev('kfound', { a, k }); return a.k; }
+    if (k < a.t) { ev('kgo', { a, k, dir: 'l' }); return kesimo(k, a.l); }
+    ev('kgo', { a, k, dir: 'r', k2: k - a.t }); return kesimo(k - a.t, a.r);
+  }
+
+  T.insert = e => inserta(e, T, 'root');
+  T.erase = e => borra(e, T, 'root');
+  T.eraseMin = () => (T.root ? borraMin(T, 'root') : undefined);
+  T.kth = k => kesimo(k, T.root);
+  T.keys = () => { const o = []; (function go(a) { if (a) { go(a.l); o.push(a.k); go(a.r); } })(T.root); return o; };
+  /* equivalente a comprueba(): devuelve la lista de errores (vacía si todo es correcto) */
+  T.check = () => {
+    const errs = [], ks = T.keys();
+    for (let i = 1; i < ks.length; i++) if (!(ks[i - 1] < ks[i])) errs.push('orden: ' + ks[i - 1] + ' >= ' + ks[i]);
+    function go(a) {
+      if (!a) return { h: 0, n: 0 };
+      const L = go(a.l), R = go(a.r);
+      if (a.h !== Math.max(L.h, R.h) + 1) errs.push('altura de ' + a.k + ': ' + a.h + ' != ' + (Math.max(L.h, R.h) + 1));
+      if (Math.abs(L.h - R.h) > 1) errs.push('desequilibrio en ' + a.k);
+      if (a.t !== L.n + 1) errs.push('tami de ' + a.k + ': ' + a.t + ' != ' + (L.n + 1));
+      return { h: Math.max(L.h, R.h) + 1, n: L.n + R.n + 1 };
+    }
+    const r = go(T.root);
+    if (r.n !== T.n) errs.push('nelems ' + T.n + ' != ' + r.n);
+    return errs;
+  };
+  return T;
+}
+
+/* Copia inmutable del árbol con marcas por nodo: { id, k, h, t, fe, m, l, r } */
+function snapshot(root, marks, path) {
+  const pset = new Set(path.map(a => a.id));
+  function go(a) {
+    if (!a) return null;
+    return { id: a.id, k: a.k, h: a.h, t: a.t, fe: altura(a.l) - altura(a.r),
+      m: marks.get(a.id) || (pset.has(a.id) ? 'path' : ''), l: go(a.l), r: go(a.r) };
+  }
+  return go(root);
+}
+
+/* ===== Narrador: convierte los eventos del AVL en frames { msg, lines, code, tree } ===== */
+const UP = { 'ins-l': [174, 175, 176], 'ins-r': [181], 'del-l': [261, 262, 263], 'del-r': [268], 'min-l': [250, 250.5, 251], 'del2': [280] };
+function upTxt(from, a) {
+  switch (from) {
+    case 'ins-l': return `, tras crecer su subárbol <b>izquierdo</b>: <code>tami += 1</code> (ahora ${a.t})`;
+    case 'ins-r': return ', tras crecer su subárbol <b>derecho</b> (tami no cambia: solo cuenta la parte izquierda)';
+    case 'del-l': return `, tras decrecer su subárbol izquierdo: <code>tami -= 1</code> (ahora ${a.t})`;
+    case 'del-r': return ', tras decrecer su subárbol derecho';
+    case 'min-l': return `, dentro de <code>borraMin</code> (su izquierda perdió un nodo): <code>tami -= 1</code> (ahora ${a.t})`;
+    default: return ', tras sacar a su sucesor del subárbol derecho';
+  }
+}
+
+function makeRecorder(tree, opts) {
+  const frames = []; let path = [], inTwo = false, quiet = !!(opts && opts.quiet), curOp = '', rots = [], lastNew = null;
+  const K = a => '<b>' + a.k + '</b>';
+  const mkMap = marks => { const m = new Map(); for (const [n, v] of marks) if (n) m.set(n.id, v); return m; };
+  function F(code, lines, msg, marks, extra) {
+    if (quiet) return;
+    frames.push(Object.assign({ code, lines, msg, tree: snapshot(tree.root, mkMap(marks || []), path) }, extra || {}));
+  }
+  const trim = a => { const i = path.indexOf(a); if (i >= 0) path.length = i; };
+  let kExtra = null;
+
+  tree.hook = (type, d) => {
+    switch (type) {
+      case 'cmp': {
+        const a = d.a, e = d.e, ins = curOp === 'ins', left = d.dir === 'l';
+        const lines = ins ? (left ? [172, 173] : [179, 180]) : (left ? [259, 260] : [266, 267]);
+        const next = left ? a.l : a.r;
+        F(ins ? 'ins' : 'del', lines,
+          `Comparo <b>${e}</b> con ${K(a)}: ${e} ${left ? '&lt;' : '&gt;'} ${a.k} → sigo por el hijo <b>${left ? 'izquierdo' : 'derecho'}</b>${next ? '' : (ins ? ' (vacío: ahí se insertará)' : ' (vacío: la clave no está)')}.`,
+          [[a, 'cmp']]);
+        path.push(a); break;
+      }
+      case 'dup':
+        F('ins', [183, 184, 185], `${K(d.a)} == ${d.e}: ya está en el conjunto. <code>crece = false</code>: no se crea nada, no cambia ni <code>tami</code> ni <code>altura</code> y los ancestros no tienen nada que reequilibrar.`, [[d.a, 'found']]);
+        break;
+      case 'new':
+        lastNew = d.node;
+        F('ins', [167, 168, 169, 170], `Hueco vacío (<code>nullptr</code>): creo el nodo <b>${d.e}</b> con altura 1 y tami 1, hago <code>++nelems</code> (${tree.n}) y devuelvo <code>crece = true</code> para avisar al padre.`, [[d.node, 'new']]);
+        break;
+      case 'ok': {
+        const a = d.a, hi = altura(a.l), hd = altura(a.r), dd = hi - hd;
+        trim(a);
+        F(d.from.startsWith('ins') ? 'ins' : 'del', UP[d.from].concat(d.side === 'Der' ? [233, 238] : [224, 229]),
+          `Vuelvo a ${K(a)}${upTxt(d.from, a)}. Alturas de los hijos: iz = ${hi}, dr = ${hd} → fe = ${sg(dd)} (|fe| ≤ 1, sigue equilibrado). Solo recalculo la altura: ${d.old} → ${a.h}${d.old === a.h ? ' (no cambia)' : ''}.`,
+          [[a, 'ok']]);
+        break;
+      }
+      case 'unbal': {
+        const a = d.a, hi = altura(a.l), hd = altura(a.r), dd = hi - hd;
+        trim(a);
+        F('rot', UP[d.from].concat(d.side === 'Der' ? [233] : [224]),
+          `Vuelvo a ${K(a)}${upTxt(d.from, a)}. Alturas de los hijos: iz = ${hi}, dr = ${hd} → fe = ${sg(dd)}: <b>|fe| = 2, ¡desequilibrio!</b> Hay que rotar (la altura guardada en el nodo, ${a.h}, aún no se ha actualizado).`,
+          [[a, 'unbal']]);
+        break;
+      }
+      case 'case': {
+        const { a, g, side, dbl, x, y } = d, der = side === 'Der';
+        const inner = der ? g.r : g.l, outer = der ? g.l : g.r;
+        const cmpTxt = der ? `altura(g-&gt;dr) = ${x} ${x > y ? '&gt;' : '≤'} altura(g-&gt;iz) = ${y}` : `altura(g-&gt;iz) = ${x} ${x > y ? '&gt;' : '≤'} altura(g-&gt;dr) = ${y}`;
+        const rot = dbl ? (der ? 'rotaIzqDer' : 'rotaDerIzq') : (der ? 'rotaDer' : 'rotaIzq');
+        const why = dbl ? 'El exceso está <b>por dentro</b> (zig-zag): una rotación simple dejaría el árbol igual de torcido.'
+          : `El exceso está <b>por fuera</b> (misma dirección)${x === y ? ' (alturas iguales: solo pasa al borrar; la simple también sirve)' : ''}: basta una rotación simple.`;
+        F('rot', der ? [234, dbl ? 235 : 236] : [225, dbl ? 226 : 227],
+          `Miro el hijo ${der ? 'izquierdo' : 'derecho'} ${K(g)} (<code>g</code>): ${cmpTxt}. ${why} Elijo <b>${rot}(${a.k})</b>${dbl ? ': primero giro ' + K(g) + ', luego ' + K(a) + '.' : '.'}`,
+          [[a, 'unbal'], [g, 'cmp'], [inner, 'visit'], [outer, 'visit']]);
+        break;
+      }
+      case 'rot': {
+        const { name, root, piv, mid, via, step, total, phase } = d, der = name === 'rotaDer';
+        if (phase === 'before' && step === 1) rots.push(via || name);
+        const last = step === total;
+        const viaTxt = via ? ` (paso ${step} de 2 de <code>${via}</code>)` : '';
+        const viaLine = via === 'rotaIzqDer' ? (step === 1 ? 214 : 215) : via === 'rotaDerIzq' ? (step === 1 ? 219 : 220) : null;
+        if (phase === 'before') {
+          const lines = (der ? [194, 195, 196] : [204, 205, 206]).concat(viaLine ? [viaLine] : []);
+          const midTxt = mid ? `el hijo ${der ? 'derecho' : 'izquierdo'} antiguo de ${K(piv)} (${K(mid)}) se cuelga como hijo ${der ? 'izquierdo' : 'derecho'} de ${K(root)}`
+            : `${K(piv)} no tenía hijo ${der ? 'derecho' : 'izquierdo'}, así que ${K(root)} se queda sin hijo ${der ? 'izquierdo' : 'derecho'}`;
+          F('rot', lines,
+            `<b>${name}(${root.k})</b>${viaTxt}. ${der ? 'r1' : 'r2'} = ${K(piv)} (hijo ${der ? 'izquierdo' : 'derecho'}) va a ser la nueva raíz del subárbol; ${K(root)} baja a su ${der ? 'derecha' : 'izquierda'} y ${midTxt}. Solo se mueven 3 punteros.`,
+            [[root, 'rot'], [piv, 'rot']]);
+        } else {
+          const lines = (der ? [197, 198, 199, 200] : [207, 208, 209, 210]).concat(viaLine ? [viaLine] : []);
+          const who = d.who;
+          let msg = `Reajusto datos: <code>${der ? 'r2->tami -= r1->tami' : 'r2->tami += r1->tami'}</code> (${K(who)}: tami ${d.tFrom} → ${d.tTo}); recalculo alturas (${K(root)} = ${root.h}, ${K(piv)} = ${piv.h}) y la raíz del subárbol pasa a ser <b>${piv.k}</b>.`;
+          if (last) {
+            msg += ` <b>Subárbol equilibrado</b>: raíz ${K(piv)}, fe = ${sg(altura(piv.l) - altura(piv.r))}, altura ${piv.h}. ` +
+              (curOp === 'ins' ? 'En una inserción la altura del subárbol vuelve a ser la de antes de insertar: nunca hace falta más de una rotación; arriba solo se recalcula.'
+                : 'En un borrado la altura del subárbol puede haber bajado, así que más arriba puede aparecer otro desequilibrio.');
+          } else msg += ' Falta el segundo giro: el árbol aún está desequilibrado, pero ahora «por fuera».';
+          F('rot', lines, msg, last ? [[root, 'ok'], [piv, 'ok']] : [[root, 'rot'], [piv, 'rot']]);
+        }
+        break;
+      }
+      case 'nf':
+        F('del', [258, 285], `Llego a <code>nullptr</code>: <b>${d.e}</b> no está en el conjunto. <code>decrece = false</code>: no se modifica nada.`);
+        break;
+      case 'found':
+        if (d.kids === 2) {
+          inTwo = true;
+          F('del', [270, 271, 277, 278], `Encontrado ${K(d.a)}, con <b>dos hijos</b>: no se puede puentear. Lo sustituyo por su <b>sucesor</b>, el mínimo de su subárbol derecho, que extrae <code>borraMin(a-&gt;dr)</code>.`, [[d.a, 'found']]);
+          path.push(d.a);
+        }
+        break;
+      case 'mincmp':
+        F('del', [243, 249, 250], `<code>borraMin</code> en ${K(d.a)}: tiene hijo izquierdo (${K(d.a.l)}), así que el mínimo está más a la izquierda. Bajo.`, [[d.a, 'cmp']]);
+        path.push(d.a); break;
+      case 'rm': {
+        const a = d.a, c = d.child;
+        if (d.ctx === 'borra') {
+          if (d.phase === 'before') {
+            F('del', [270, 271, 272, 273, 274, 275], `Encontrado ${K(a)}: ${d.kids === 0 ? 'es una hoja' : 'tiene un solo hijo (' + K(c) + ')'}. Se sustituye por ${c ? 'ese hijo' : '<code>nullptr</code>'} (<code>a = ${a.l === null ? 'a-&gt;dr' : 'a-&gt;iz'}</code>), <code>--nelems</code> y <code>delete</code>.`, [[a, 'del']]);
+          } else {
+            F('del', [282, 285], `Nodo ${K(a)} liberado (nelems = ${tree.n}). <code>decrece = true</code>: al subir, cada ancestro actualiza <code>tami</code> y <code>altura</code> y comprueba su equilibrio.`, c ? [[c, 'ok']] : []);
+          }
+        } else if (d.phase === 'before') {
+          F('del', [243, 244, 245, 246, 247], `${K(a)} no tiene hijo izquierdo: es el <b>mínimo</b>. Guardo su valor (<code>min = ${a.k}</code>), lo sustituyo por su hijo derecho (${c ? K(c) : '<code>nullptr</code>'}) y hago <code>--nelems</code>.`, [[a, 'del']]);
+        } else {
+          F('del', [247], inTwo ? `Mínimo extraído (<code>min = ${a.k}</code>). Deshago la recursión de <code>borraMin</code> rebalanceando con <code>reequilibraIzq</code>; luego el valor irá al nodo con dos hijos.`
+            : `Mínimo extraído y devuelto (<code>${a.k}</code>). Subo deshaciendo la recursión de <code>borraMin</code>, rebalanceando con <code>reequilibraIzq</code>.`, c ? [[c, 'ok']] : []);
+        }
+        break;
+      }
+      case 'copy':
+        trim(d.a);
+        F('del', [279], `El sucesor <b>${d.min}</b> se copia en el nodo con dos hijos: <code>a-&gt;elem = min</code> (su clave pasa de ${d.old} a ${d.min}). El nodo no se mueve; ahora hay que comprobar su equilibrio, pues su derecha perdió un nodo.`, [[d.a, 'found']]);
+        break;
+      case 'kgo': {
+        const a = d.a;
+        F('kth', d.dir === 'l' ? [126, 127] : [126, 127, 128],
+          d.dir === 'l' ? `<code>k = ${d.k}</code> en ${K(a)} (tami = ${a.t}): ${d.k} &lt; ${a.t}, así que el elemento está en el subárbol <b>izquierdo</b> y se busca con el mismo k.`
+            : `<code>k = ${d.k}</code> en ${K(a)} (tami = ${a.t}): ${d.k} &gt; ${a.t}. Descarto ${K(a)} y su subárbol izquierdo (${a.t} elementos): busco en el <b>derecho</b> la posición <code>k − tami = ${d.k2}</code>.`,
+          [[a, 'cmp']], kExtra);
+        path.push(a); break;
+      }
+      case 'kfound':
+        F('kth', [126], `<code>k = ${d.k}</code> y tami(${K(d.a)}) = ${d.a.t}: son iguales, así que este nodo es el ${d.k}-ésimo en orden creciente. Devuelve <b>${d.a.k}</b>.`, [[d.a, 'found']], kExtra);
+        break;
+      case 'knull':
+        F('kth', [125], `Llego a <code>nullptr</code> con <code>k = ${d.k}</code>: la posición no existe. El C++ lanza <code>out_of_range("posicion invalida")</code> (en EJ 01-2 se imprime «??»).`, [], kExtra);
+        break;
+      default: break;
+    }
+  };
+
+  return {
+    frames, F,
+    op(name) { curOp = name; path = []; inTwo = false; },
+    reset() { path = []; },
+    setQuiet(q) { quiet = q; },
+    rots: () => rots, lastNew: () => lastNew,
+    setK(k) { kExtra = { focusT: true, hi: k }; },
+  };
+}
+
+/* op: 'ins' | 'del' | 'min' | 'kth' | 'rnd'. Devuelve { frames, result }. */
+function runOp(tree, op, arg, opts) {
+  opts = opts || {};
+  const R = makeRecorder(tree, opts), note = opts.note ? '<i>' + opts.note + '</i><br>' : '';
+  let result;
+  try {
+    if (op === 'ins') {
+      R.op('ins');
+      R.F('ins', [165, 166, 167], note + `<b>Insertar ${arg}</b>. <code>inserta(e, raiz)</code> baja comparando con cada nodo hasta dar con un hueco (<code>nullptr</code>); al volver sube actualizando <code>tami</code>/<code>altura</code> y reequilibrando.`);
+      result = tree.insert(arg); R.reset();
+      R.F('ins', [185], result ? `Inserción terminada: ${tree.n} elemento${tree.n === 1 ? '' : 's'}. El árbol vuelve a cumplir orden, alturas, |fe| ≤ 1 y <code>tami</code> (lo que comprobaría <code>comprueba()</code>).` : `Nada cambia: ${arg} ya estaba. El conjunto no admite repetidos.`);
+    } else if (op === 'del') {
+      R.op('del');
+      R.F('del', [256, 257, 258], note + `<b>Borrar ${arg}</b>. <code>borra(e, raiz)</code> baja igual que la inserción; al encontrar el nodo hay tres casos (hoja, un hijo, dos hijos) y luego se sube reequilibrando.`);
+      result = tree.erase(arg); R.reset();
+      R.F('del', [285], result ? `Borrado terminado: ${tree.n} elemento${tree.n === 1 ? '' : 's'}. El árbol vuelve a cumplir orden, alturas, |fe| ≤ 1 y <code>tami</code>.` : `Nada cambia: ${arg} no estaba en el conjunto.`);
+    } else if (op === 'min') {
+      R.op('del');
+      R.F('del', [242, 243], note + `<b>Borrar mínimo</b>. <code>borraMin</code> es un método protegido del header (lo usa <code>borra</code>); aquí lo llamamos directamente sobre la raíz. Baja siempre por la izquierda hasta un nodo sin hijo izquierdo.`);
+      result = tree.eraseMin(); R.reset();
+      R.F('del', [252], `Mínimo borrado (<b>${result}</b>): quedan ${tree.n} elemento${tree.n === 1 ? '' : 's'} y el árbol vuelve a ser un AVL válido.`);
+    } else if (op === 'kth') {
+      R.op('kth'); R.setK(arg);
+      R.F('kth', [124, 125], note + `<b>k-ésimo, k = ${arg}</b> (1 = el menor). <code>kesimo(k, a)</code> usa <code>tami</code> (= nº de elementos de la izquierda + 1) para decidir a qué lado ir sin recorrer todo el árbol.`, [], { focusT: true, hi: arg });
+      result = tree.kth(arg);
+      R.F('kth', [124], result === undefined ? `Resultado: posición inválida (<code>out_of_range</code>). Hay ${tree.n} elemento${tree.n === 1 ? '' : 's'}.` : `Resultado: el elemento nº ${arg} en orden creciente es <b>${result}</b>. Se ha bajado un único camino: O(log n).`, [], { focusT: true, hi: arg });
+    } else if (op === 'rnd') {
+      R.op('ins');
+      R.F('ins', [165], `<b>Aleatorio</b>: se insertan ${arg.length} claves (${arg.join(', ')}). Para no alargarlo, aquí solo se ve el resultado de cada inserción; usa <b>Insertar</b> para ver una con todo detalle.`);
+      for (const k of arg) {
+        R.reset(); R.setQuiet(true); tree.insert(k); R.setQuiet(false); R.reset();
+        const rr = R.rots();
+        R.F('ins', [165], `Insertado <b>${k}</b>${rr.length ? ' con rebalanceo: <code>' + rr.join(', ') + '</code>' : ' sin rotaciones'}. Tamaño: ${tree.n}.`, [[R.lastNew(), 'new']]);
+        rr.length = 0;
+      }
+      result = arg.length;
+    }
+  } finally { tree.hook = null; }
+  return { frames: R.frames, result };
+}
+/*AVL_CORE_END*/
+
+/* ===== Interfaz ===== */
+const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DX = 46, DY = 84, RAD = 17, PADX = 34, PADT = 32, PADB = 62, MINW = 340, MINH = PADT + 2 * DY + PADB, MAXN = 40;
+const EXAMPLES = [
+  { id: 'simple', label: 'Inserción simple (sin rotar)', init: [50, 30, 70, 20, 40], op: ['ins', 60], note: 'Ejemplo: 60 cae a la izquierda de 70 y todo sigue equilibrado.', code: 'ins' },
+  { id: 'rder', label: 'Rotación derecha (rotaDer)', init: [40, 20, 60, 10, 30], op: ['ins', 5], note: 'Ejemplo: insertar 5 carga de más el lado izquierdo-izquierdo de 40 → rotaDer.' },
+  { id: 'rizq', label: 'Rotación izquierda (rotaIzq)', init: [20, 10, 40, 30, 50], op: ['ins', 60], note: 'Ejemplo: insertar 60 carga de más el lado derecho-derecho de 20 → rotaIzq.' },
+  { id: 'lr', label: 'Rotación izquierda-derecha (rotaIzqDer)', init: [40, 20, 60, 10, 30], op: ['ins', 25], note: 'Ejemplo: 25 acaba en el zig-zag izquierda-derecha de 40 → rotaIzqDer.' },
+  { id: 'rl', label: 'Rotación derecha-izquierda (rotaDerIzq)', init: [20, 10, 40, 30, 50], op: ['ins', 35], note: 'Ejemplo: 35 acaba en el zig-zag derecha-izquierda de 20 → rotaDerIzq.' },
+  { id: 'del', label: 'Borrado con rebalanceo (raíz, dos hijos)', init: [40, 20, 60, 10, 30, 50, 5], op: ['del', 40], note: 'Ejemplo: se borra la raíz, que tiene dos hijos. Entra su sucesor (50) y la derecha queda corta → rotaDer.' },
+  { id: 'del1', label: 'Borrado de una hoja con rotación', init: [40, 20, 60, 10, 30, 50, 5], op: ['del', 50], note: 'Ejemplo: quitar la hoja 50 deja 60 sin hijos y 40 cargado a la izquierda.' },
+  { id: 'kth', label: 'k-ésimo con tami', init: [40, 20, 60, 10, 30, 50, 70], op: ['kth', 5], note: 'Ejemplo: el 5.º menor, bajando un solo camino gracias a tami.' },
+];
+const $key = $('#key'), $kk = $('#kk'), $opMsg = $('#opMsg'), $svg = $('#svg'), $cs = $('#cs');
+let tree = makeAVL();
+
+function say(txt, err) { $opMsg.textContent = txt; $opMsg.classList.toggle('err', !!err); }
+function buildFrom(keys) { const t = makeAVL(); keys.forEach(k => t.insert(k)); return t; }
+
+/* --- Panel de código --- */
+const hosts = {}, markers = {}, idx = {};
+let activeTab = 'ins', curCode = 'ins', curLines = [];
+(function mountPanels() {
+  const tabs = $('#tabs'), codes = $('#codes');
+  SRC.forEach(s => {
+    const b = document.createElement('button');
+    b.className = 'btn'; b.type = 'button'; b.textContent = s.tab; b.setAttribute('role', 'tab'); b.dataset.id = s.id;
+    b.onclick = () => { $('#follow').checked = false; showTab(s.id); };
+    tabs.appendChild(b);
+    const host = document.createElement('div'); host.hidden = true; codes.appendChild(host);
+    markers[s.id] = mountCode(host, 'TreeSet_AVL_plantilla.h · líneas ' + s.from + '–' + s.to, s.lines.map(l => l[1]));
+    idx[s.id] = new Map(s.lines.map((l, i) => [l[0], i + 1]));
+    $$('.ln', host).forEach((row, i) => {
+      const n = s.lines[i][0], lab = $('i', row);
+      if (!Number.isInteger(n)) { row.classList.add('added'); lab.textContent = '+'; } else lab.textContent = n;
+    });
+    hosts[s.id] = host;
+  });
+})();
+function showTab(id) {
+  activeTab = id;
+  for (const k in hosts) hosts[k].hidden = k !== id;
+  $$('#tabs .btn').forEach(b => { const on = b.dataset.id === id; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  applyMarks();
+}
+function applyMarks() {
+  for (const id in markers) {
+    const rel = id === activeTab ? curLines.map(n => idx[id].get(n)).filter(Boolean) : [];
+    markers[id](rel);
+  }
+}
+function markLines(lines) {
+  curLines = lines || [];
+  if ($('#follow').checked && curCode && curCode !== activeTab) showTab(curCode); else applyMarks();
+}
+
+/* --- Dibujo del árbol con transición suave --- */
+const gEdges = el('g', {}, $svg), gNodes = el('g', {}, $svg);
+const emptyTxt = el('text', { class: 'empty muted', 'text-anchor': 'middle' }, $svg);
+emptyTxt.textContent = 'Conjunto vacío (raiz = nullptr)';
+const V = { nodes: new Map(), edges: new Map(), vb: { w: MINW, h: MINH }, fvb: null, tvb: null, t0: 0, dur: 0, raf: 0, focus: null };
+
+function layout(snap) {
+  const nodes = []; let i = 0, maxd = 0;
+  (function go(a, d, pid) {
+    if (!a) return;
+    go(a.l, d + 1, a.id);
+    nodes.push({ id: a.id, k: a.k, h: a.h, t: a.t, fe: a.fe, m: a.m, pid, i: i++, d });
+    maxd = Math.max(maxd, d);
+    go(a.r, d + 1, a.id);
+  })(snap, 0, null);
+  const treeW = Math.max(0, nodes.length - 1) * DX + 2 * PADX, W = Math.max(treeW, MINW), off = (W - treeW) / 2 + PADX;
+  nodes.forEach(n => { n.x = off + n.i * DX; n.y = PADT + n.d * DY; });
+  return { nodes, W, H: Math.max(MINH, PADT + maxd * DY + PADB), depth: nodes.length ? maxd + 1 : 0 };
+}
+function createNode() {
+  const g = el('g', { class: 'nd' }, gNodes), nin = el('g', { class: 'nin' }, g);
+  el('circle', { class: 'halo', r: RAD + 5 }, nin);
+  const c = el('circle', { class: 'c', r: RAD }, nin);
+  const tk = el('text', { class: 'key', 'text-anchor': 'middle', y: 5.5 }, nin);
+  const chip = el('g', { class: 'chip', transform: `translate(0,${RAD + 14})` }, nin);
+  el('rect', { x: -23, y: -8, width: 46, height: 16, rx: 8 }, chip);
+  const tf = el('text', { 'text-anchor': 'middle', y: 4 }, chip);
+  const th = el('text', { class: 'ht muted', 'text-anchor': 'middle', y: RAD + 37 }, nin);
+  const t1 = el('tspan', {}, th), t2 = el('tspan', { class: 'tt' }, th);
+  return { g, c, tk, chip, tf, t1, t2, x: 0, y: 0 };
+}
+const HOT = new Set(['path', 'cmp', 'visit', 'found', 'new', 'ok']);
+function drawTree(snap, instant) {
+  const L = layout(snap), seen = new Set(), mkey = {};
+  for (const n of L.nodes) {
+    seen.add(n.id); mkey[n.id] = n.m;
+    let v = V.nodes.get(n.id);
+    if (!v) { v = createNode(); v.x = n.x; v.y = n.y; v.g.classList.add('enter'); V.nodes.set(n.id, v); }
+    v.fx = v.x; v.fy = v.y; v.tx = n.x; v.ty = n.y;
+    v.g.setAttribute('class', 'nd' + (v.g.classList.contains('enter') ? ' enter' : '') + (n.m ? ' m-' + n.m : ''));
+    v.tk.textContent = n.k;
+    const f = Math.abs(n.fe);
+    v.chip.setAttribute('class', 'chip fe' + Math.min(f, 2));
+    v.tf.textContent = 'fe ' + sg(n.fe);
+    v.t1.textContent = 'h' + n.h + ' · '; v.t2.textContent = 't' + n.t;
+    v.g.setAttribute('transform', `translate(${v.x},${v.y})`);
+    if (n.m && ['cmp', 'unbal', 'new', 'rot', 'found', 'del'].includes(n.m) && !V.focus) V.focus = n.id;
+  }
+  for (const [id, v] of [...V.nodes]) if (!seen.has(id)) { v.g.remove(); V.nodes.delete(id); }
+  const eseen = new Set();
+  for (const n of L.nodes) {
+    if (n.pid === null) continue;
+    const key = n.pid + '>' + n.id; eseen.add(key);
+    let e = V.edges.get(key);
+    if (!e) { e = { line: el('line', { class: 'edge' }, gEdges), p: n.pid, c: n.id }; V.edges.set(key, e); }
+    e.line.setAttribute('class', 'edge' + (HOT.has(mkey[n.pid]) && HOT.has(mkey[n.id]) ? ' hot' : ''));
+  }
+  for (const [key, e] of [...V.edges]) if (!eseen.has(key)) { e.line.remove(); V.edges.delete(key); }
+  emptyTxt.style.display = L.nodes.length ? 'none' : '';
+  emptyTxt.setAttribute('x', L.W / 2); emptyTxt.setAttribute('y', MINH / 2 - 10);
+  V.fvb = { w: V.vb.w, h: V.vb.h }; V.tvb = { w: L.W, h: L.H };
+  V.dur = (instant || REDUCED) ? 0 : Math.min(420, (player.delay ? player.delay() : 600) * 0.7);
+  V.t0 = performance.now();
+  $svg.classList.toggle('focust', !!V.focusT);
+  cancelAnimationFrame(V.raf);
+  if (V.dur === 0) tick(V.t0 + 1); else V.raf = requestAnimationFrame(tick);
+  $svg.setAttribute('aria-label', 'Árbol AVL con ' + L.nodes.length + ' nodos' + (L.depth ? ' y altura ' + L.depth : ''));
+  return L;
+}
+function tick(now) {
+  const p = V.dur ? Math.max(0, Math.min(1, (now - V.t0) / V.dur)) : 1, e = 1 - Math.pow(1 - p, 3);
+  for (const v of V.nodes.values()) {
+    v.x = v.fx + (v.tx - v.fx) * e; v.y = v.fy + (v.ty - v.fy) * e;
+    v.g.setAttribute('transform', `translate(${v.x.toFixed(1)},${v.y.toFixed(1)})`);
+  }
+  for (const e2 of V.edges.values()) {
+    const a = V.nodes.get(e2.p), b = V.nodes.get(e2.c);
+    if (a && b) { e2.line.setAttribute('x1', a.x.toFixed(1)); e2.line.setAttribute('y1', a.y.toFixed(1)); e2.line.setAttribute('x2', b.x.toFixed(1)); e2.line.setAttribute('y2', b.y.toFixed(1)); }
+  }
+  V.vb = { w: V.fvb.w + (V.tvb.w - V.fvb.w) * e, h: V.fvb.h + (V.tvb.h - V.fvb.h) * e };
+  $svg.setAttribute('viewBox', `0 0 ${V.vb.w.toFixed(1)} ${V.vb.h.toFixed(1)}`);
+  $svg.style.minWidth = Math.round(V.vb.w * 0.72) + 'px'; $svg.style.maxWidth = Math.round(V.vb.w * 1.3) + 'px';
+  if (p < 1) V.raf = requestAnimationFrame(tick); else settle();
+}
+function settle() {
+  const id = V.focus, v = id && V.nodes.get(id);
+  if (!v) return;
+  const s = $svg.clientWidth / V.vb.w, px = v.tx * s, w = $cs.clientWidth;
+  if (px < $cs.scrollLeft + 40 || px > $cs.scrollLeft + w - 40) $cs.scrollTo({ left: Math.max(0, px - w / 2), behavior: REDUCED ? 'auto' : 'smooth' });
+}
+function drawInfo(f, L) {
+  const keys = []; (function go(a) { if (a) { go(a.l); keys.push(a.k); go(a.r); } })(f.tree);
+  $('#stat').innerHTML = `<span>n = <b>${keys.length}</b></span><span>altura = <b>${L.depth}</b></span>`;
+  $('#inord').innerHTML = '<span>inorden:</span>' + (keys.length ? keys.map((k, i) => `<span class="it${f.hi === i + 1 ? ' hi' : ''}"><small>${i + 1}</small>${k}</span>`).join('') : ' <span>(vacío)</span>');
+}
+
+/* --- Reproductor --- */
+$('#playerHost').innerHTML = PLAYER_HTML;
+const player = new Player({
+  render(f, prev, instant) {
+    curCode = f.code; V.focus = null; V.focusT = !!f.focusT;
+    const L = drawTree(f.tree, instant);
+    drawInfo(f, L);
+  },
+  mark: markLines,
+});
+
+function load(frames, play) { player.load(frames, { play }); }
+function getKey() {
+  const v = $key.value.trim();
+  if (!/^-?\d+$/.test(v)) { say('Escribe un número entero en «clave».', true); $key.focus(); return null; }
+  const k = parseInt(v, 10);
+  if (k < -99 || k > 999) { say('Usa claves entre −99 y 999 para que quepan en el nodo.', true); $key.focus(); return null; }
+  return k;
+}
+function act(op, arg, opts, play = true) {
+  const r = runOp(tree, op, arg, opts);
+  load(r.frames, play);
+  return r;
+}
+$('#bIns').onclick = () => {
+  const k = getKey(); if (k === null) return;
+  if (tree.n >= MAXN && !tree.keys().includes(k)) return say('Máximo ' + MAXN + ' nodos para que el dibujo siga siendo legible. Borra o vacía.', true);
+  say(''); act('ins', k);
+};
+$('#bDel').onclick = () => { const k = getKey(); if (k === null) return; say(''); act('del', k); };
+$('#bMin').onclick = () => { if (!tree.root) return say('El conjunto está vacío: no hay mínimo que borrar.', true); say(''); act('min'); };
+$('#bKth').onclick = () => {
+  const v = $kk.value.trim();
+  if (!/^-?\d+$/.test(v)) return say('Escribe un número entero en «k».', true);
+  say(''); act('kth', parseInt(v, 10));
+};
+$('#bRnd').onclick = () => {
+  const room = MAXN - tree.n;
+  if (room <= 0) return say('Ya hay ' + MAXN + ' nodos: vacía o borra antes de añadir más.', true);
+  const have = new Set(tree.keys()), ks = [], want = Math.min(8, room);
+  while (ks.length < want) { const k = 1 + Math.floor(Math.random() * 99); if (!have.has(k)) { have.add(k); ks.push(k); } }
+  say(''); act('rnd', ks);
+};
+$('#bClr').onclick = () => {
+  tree = makeAVL(); say('');
+  load([{ code: 'ins', lines: [], msg: 'Conjunto vacío: <code>raiz = nullptr</code>, <code>nelems = 0</code>. Inserta una clave para empezar.', tree: null }], false);
+};
+$key.addEventListener('keydown', e => { if (e.key === 'Enter') $('#bIns').click(); });
+$kk.addEventListener('keydown', e => { if (e.key === 'Enter') $('#bKth').click(); });
+
+const $ex = $('#ex');
+$ex.innerHTML = '<option value="">Elegir…</option>' + EXAMPLES.map(x => `<option value="${x.id}">${x.label}</option>`).join('');
+function loadExample(x, play) {
+  tree = buildFrom(x.init);
+  say(x.note);
+  const [op, arg] = x.op;
+  const r = runOp(tree, op, arg, { note: x.note });
+  load(r.frames, play);
+}
+$ex.onchange = () => { const x = EXAMPLES.find(e => e.id === $ex.value); if (x) loadExample(x, true); };
+
+/* --- Paneles estáticos: tabla de Fibonacci y esquemas de rotación --- */
+(function staticPanels() {
+  const N = [0, 1]; let rows = '<tr><th>altura h</th><th>mín. nodos AVL</th><th>máx. nodos (perfecto)</th></tr>';
+  for (let h = 1; h <= 8; h++) { if (h >= 2) N[h] = N[h - 1] + N[h - 2] + 1; rows += `<tr><td>${h}</td><td>${N[h]}</td><td>${Math.pow(2, h) - 1}</td></tr>`; }
+  $('#fibTbl').innerHTML = rows;
+
+  const S = {
+    ll: { t: 'izq-izq', fn: 'rotaDer(a)', nd: { a: [74, 16], g: [48, 46], x: [22, 76] }, ed: [['a', 'g'], ['g', 'x']], nd2: { g: [48, 16], x: [22, 46], a: [74, 46] }, ed2: [['g', 'x'], ['g', 'a']] },
+    rr: { t: 'der-der', fn: 'rotaIzq(a)', nd: { a: [22, 16], g: [48, 46], x: [74, 76] }, ed: [['a', 'g'], ['g', 'x']], nd2: { g: [48, 16], a: [22, 46], x: [74, 46] }, ed2: [['g', 'a'], ['g', 'x']] },
+    lr: { t: 'izq-der (zig-zag)', fn: 'rotaIzqDer(a)', nd: { a: [74, 16], g: [30, 46], x: [52, 76] }, ed: [['a', 'g'], ['g', 'x']], nd2: { x: [48, 16], g: [22, 46], a: [74, 46] }, ed2: [['x', 'g'], ['x', 'a']] },
+    rl: { t: 'der-izq (zig-zag)', fn: 'rotaDerIzq(a)', nd: { a: [22, 16], g: [66, 46], x: [44, 76] }, ed: [['a', 'g'], ['g', 'x']], nd2: { x: [48, 16], a: [22, 46], g: [74, 46] }, ed2: [['x', 'a'], ['x', 'g']] },
+  };
+  const host = $('#cases');
+  for (const key of ['ll', 'rr', 'lr', 'rl']) {
+    const c = S[key], div = document.createElement('div'); div.className = 'case';
+    const svg = el('svg', { viewBox: '0 0 260 96', role: 'img', 'aria-label': 'Esquema de ' + c.fn }, null);
+    const draw = (nd, ed, ox, hi) => {
+      ed.forEach(([p, q]) => el('line', { x1: ox + nd[p][0], y1: nd[p][1], x2: ox + nd[q][0], y2: nd[q][1], stroke: 'var(--muted)', 'stroke-width': 1.6 }, svg));
+      for (const k in nd) {
+        const bad = hi && k === 'a', top = !hi && Object.values(nd)[0] === nd[k];
+        el('circle', { cx: ox + nd[k][0], cy: nd[k][1], r: 11, fill: bad ? 'var(--red-soft)' : top ? 'var(--green-soft)' : 'var(--node)', stroke: bad ? 'var(--red)' : top ? 'var(--green)' : 'var(--muted)', 'stroke-width': 2 }, svg);
+        const t = el('text', { x: ox + nd[k][0], y: nd[k][1] + 4, 'text-anchor': 'middle', 'font-size': 12 }, svg); t.textContent = k;
+      }
+    };
+    draw(c.nd, c.ed, 0, true);
+    el('path', { d: 'M112 46 h28 m-7 -6 l7 6 l-7 6', fill: 'none', stroke: 'var(--muted)', 'stroke-width': 1.8 }, svg);
+    draw(c.nd2, c.ed2, 150, false);
+    div.appendChild(svg);
+    const cap = document.createElement('p'); cap.className = 'cap';
+    cap.innerHTML = `<b>${c.fn}</b> · desequilibrio ${c.t}`;
+    div.appendChild(cap); host.appendChild(div);
+  }
+})();
+
+/* --- Estado inicial: ejemplo de rotación derecha, sin reproducir --- */
+showTab('ins');
+loadExample(EXAMPLES[1], false);
+say('Prueba «Insertar», «Borrar», «k-ésimo» o elige un ejemplo. Aquí se muestra el de rotaDer: pulsa ▶ Reproducir.');
+</script>
+
+</body>
+</html>

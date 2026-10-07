@@ -1,0 +1,27 @@
+<title>Estructuras de DA</title>
+<style>
+/*SHARED_CSS*/
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+a.card { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+a.card:hover, a.card:focus-visible { border-color: var(--accent); outline: none; }
+a.card .n { font-family: var(--mono); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+a.card h2 { margin: 0; font-size: 1.15rem; }
+a.card p { margin: 0; color: var(--muted); font-size: .9rem; }
+a.card .ex { font-family: var(--mono); font-size: .8rem; color: var(--muted); margin-top: auto; padding-top: 6px; }
+</style>
+<div class="wrap">
+  <header class="top">
+    <span class="tag">Diseño de Algoritmos</span>
+    <h1>Las estructuras de cada tema, para tocarlas</h1>
+    <p class="lede">Una página por estructura. Todas ejecutan la misma lógica que el C++ de <code>Estructuras de datos/</code> y te enseñan, paso a paso y con el código real resaltado, qué pasa en cada operación. Puedes construir tus propios ejemplos, avanzar y retroceder con las flechas del teclado y cambiar la velocidad.</p>
+  </header>
+  <div class="grid">
+    <a class="card" href="tema1-avl.html"><span class="n">Tema 1</span><h2>Árbol AVL</h2><p>Inserta, borra y pide el k-ésimo. Mira el factor de equilibrio y las cuatro rotaciones.</p><span class="ex">TreeSet_AVL_plantilla.h · 01-1, 01-2</span></a>
+    <a class="card" href="tema2-cola-prioridad.html"><span class="n">Tema 2</span><h2>Cola de prioridad</h2><p>El montículo como árbol y como array: flotar, hundir y construir en O(n).</p><span class="ex">priority_queue · 02-1 … 02-L</span></a>
+    <a class="card" href="tema3-indexpq.html"><span class="n">Tema 3</span><h2>IndexPQ</h2><p>Montículo con tabla de posiciones: actualiza la prioridad de un elemento en O(log n).</p><span class="ex">IndexPQ.h · 03-1 … 03-L</span></a>
+    <a class="card" href="tema4-grafo.html"><span class="n">Tema 4</span><h2>Grafo</h2><p>Listas de adyacencia, DFS, BFS, componentes conexas y bipartito sobre tu propio grafo.</p><span class="ex">Grafo.h · 04-1 … 04-L</span></a>
+    <a class="card" href="tema5-digrafo.html"><span class="n">Tema 5</span><h2>Digrafo</h2><p>Grafos dirigidos: BFS, orden topológico con detección de ciclos e inverso().</p><span class="ex">Digrafo.h · 05-1 … 05-3</span></a>
+  </div>
+  <footer class="foot">Ábrelas con un doble clic (funcionan sin internet; solo las tipografías vienen de Google Fonts).</footer>
+</div>
+<script>/*SHARED_JS*/</script>

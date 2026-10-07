@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estructuras de DA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<style>
+/* Sistema visual común de las visualizaciones de DA (cuaderno de laboratorio de algoritmos).
+   Cada página añade su CSS propio DESPUÉS de este bloque. */
+:root {
+  --bg: #f3f4f8;
+  --panel: #ffffff;
+  --panel-2: #eceef4;
+  --ink: #1a2133;
+  --muted: #5d667b;
+  --line: #d9deea;
+  --accent: #b86e00;        /* nodo activo / raíz / resultado */
+  --accent-soft: #fbeccd;
+  --blue: #1f6fb8;          /* comparando / visitando */
+  --blue-soft: #d9eafa;
+  --red: #c4372d;           /* intercambio / rotación / ciclo */
+  --red-soft: #fbdcd8;
+  --green: #1e7f57;         /* terminado / correcto */
+  --green-soft: #d6f1e4;
+  --purple: #6c4bc1;
+  --purple-soft: #e6dffa;
+  --node: #ffffff;
+  --code-bg: #121a2b;
+  --code-ink: #dce4f5;
+  --code-dim: #6f7b95;
+  --code-hl: #3a3010;
+  --code-hl-bar: #f5a623;
+  --kw: #ff79c6; --ty: #8be9fd; --nu: #bd93f9; --co: #7e8aa8; --st: #f1fa8c;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
+    --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
+    --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
+    --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
+    --code-bg: #0a0f1c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
+  --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
+  --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
+  --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
+  --code-bg: #0a0f1c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 22px 16px 56px; display: flex; flex-direction: column; gap: 16px; }
+.wrap > * { min-width: 0; }
+header.top { display: flex; flex-direction: column; gap: 6px; }
+.tag { align-self: flex-start; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-soft); padding: 3px 9px; border-radius: 4px; }
+h1 { font-size: clamp(1.45rem, 3.2vw, 2rem); line-height: 1.2; margin: 0; font-weight: 700; letter-spacing: -.015em; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 70ch; text-wrap: pretty; }
+.lede code, .msg code, .note code, td code, li code { font-family: var(--mono); font-size: .9em; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+.panel > h2 { margin: 0 0 10px; font-size: .78rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bar .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 4px; }
+.bar label { font-size: .85rem; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.btn { font: inherit; font-size: .9rem; font-weight: 500; color: var(--ink); background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--blue); }
+.btn:focus-visible, .field:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="dark"] .btn.primary { color: #1b1400; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #1b1400; } }
+.btn.on { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+.btn:disabled { opacity: .45; cursor: default; }
+.field { font: inherit; font-family: var(--mono); font-size: .9rem; width: 5.2em; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+select.field { width: auto; font-family: var(--sans); }
+.stage { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.canvas-scroll { overflow-x: auto; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); }
+svg.viz { display: block; width: 100%; height: auto; }
+svg.viz text { font-family: var(--mono); fill: var(--ink); }
+svg.viz .muted { fill: var(--muted); }
+/* reproductor */
+.player { display: flex; flex-direction: column; gap: 8px; }
+.player .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.player .count { font-family: var(--mono); font-size: .82rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-left: auto; }
+.player input[type=range] { accent-color: var(--accent); }
+.msg { min-height: 3.2em; padding: 10px 12px; border-radius: 8px; background: var(--panel-2); border-left: 4px solid var(--accent); font-size: .95rem; }
+.msg b { font-weight: 600; }
+/* código */
+.codebox { background: var(--code-bg); color: var(--code-ink); border-radius: 10px; padding: 10px 0; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.55; }
+.codebox .fname { padding: 0 14px 6px; color: var(--code-dim); font-size: 11.5px; }
+.codebox .ln { display: flex; white-space: pre; padding-right: 14px; border-left: 4px solid transparent; }
+.codebox .ln i { font-style: normal; width: 2.6em; text-align: right; padding-right: 10px; color: var(--code-dim); flex: none; user-select: none; }
+.codebox .ln.on { background: var(--code-hl); border-left-color: var(--code-hl-bar); }
+.codebox .k { color: var(--kw); } .codebox .t { color: var(--ty); } .codebox .n { color: var(--nu); } .codebox .c { color: var(--co); } .codebox .s { color: var(--st); }
+/* leyenda y notas */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .82rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend b { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line); }
+.note { font-size: .88rem; color: var(--muted); margin: 0; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: .88rem; margin: 0; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; font-family: var(--mono); overflow-wrap: anywhere; }
+table.t { border-collapse: collapse; font-size: .88rem; width: 100%; }
+table.t th, table.t td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { color: var(--muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+footer.foot { color: var(--muted); font-size: .82rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+a.card { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+a.card:hover, a.card:focus-visible { border-color: var(--accent); outline: none; }
+a.card .n { font-family: var(--mono); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+a.card h2 { margin: 0; font-size: 1.15rem; }
+a.card p { margin: 0; color: var(--muted); font-size: .9rem; }
+a.card .ex { font-family: var(--mono); font-size: .8rem; color: var(--muted); margin-top: auto; padding-top: 6px; }
+</style>
+<div class="wrap">
+  <header class="top">
+    <span class="tag">Diseño de Algoritmos</span>
+    <h1>Las estructuras de cada tema, para tocarlas</h1>
+    <p class="lede">Una página por estructura. Todas ejecutan la misma lógica que el C++ de <code>Estructuras de datos/</code> y te enseñan, paso a paso y con el código real resaltado, qué pasa en cada operación. Puedes construir tus propios ejemplos, avanzar y retroceder con las flechas del teclado y cambiar la velocidad.</p>
+  </header>
+  <div class="grid">
+    <a class="card" href="tema1-avl.html"><span class="n">Tema 1</span><h2>Árbol AVL</h2><p>Inserta, borra y pide el k-ésimo. Mira el factor de equilibrio y las cuatro rotaciones.</p><span class="ex">TreeSet_AVL_plantilla.h · 01-1, 01-2</span></a>
+    <a class="card" href="tema2-cola-prioridad.html"><span class="n">Tema 2</span><h2>Cola de prioridad</h2><p>El montículo como árbol y como array: flotar, hundir y construir en O(n).</p><span class="ex">priority_queue · 02-1 … 02-L</span></a>
+    <a class="card" href="tema3-indexpq.html"><span class="n">Tema 3</span><h2>IndexPQ</h2><p>Montículo con tabla de posiciones: actualiza la prioridad de un elemento en O(log n).</p><span class="ex">IndexPQ.h · 03-1 … 03-L</span></a>
+    <a class="card" href="tema4-grafo.html"><span class="n">Tema 4</span><h2>Grafo</h2><p>Listas de adyacencia, DFS, BFS, componentes conexas y bipartito sobre tu propio grafo.</p><span class="ex">Grafo.h · 04-1 … 04-L</span></a>
+    <a class="card" href="tema5-digrafo.html"><span class="n">Tema 5</span><h2>Digrafo</h2><p>Grafos dirigidos: BFS, orden topológico con detección de ciclos e inverso().</p><span class="ex">Digrafo.h · 05-1 … 05-3</span></a>
+  </div>
+  <footer class="foot">Ábrelas con un doble clic (funcionan sin internet; solo las tipografías vienen de Google Fonts).</footer>
+</div>
+<script>/* Utilidades comunes: reproductor paso a paso y panel de código. */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function esc(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+/* Panel de código C++ con coloreado sencillo y líneas resaltables (numeradas desde 1). */
+function mountCode(host, fname, lines) {
+  const kws = /^(for|if|else|while|return|const|class|struct|public|private|protected|void|bool|int|auto|true|false|template|typename|using|throw|new|delete|break|continue|static|nullptr)$/;
+  const tys = /^(Link|Set|Grafo|Digrafo|IndexPQ|Par|vector|queue|stack|string|T|std|Adys|Comparator|TreeNode|size_t)$/;
+  const tok = /(\/\/.*$)|("[^"]*")|(\b\d+\b)|(\b[A-Za-z_]\w*\b)|(\s+)|(.)/g;
+  host.classList.add('codebox');
+  host.innerHTML = '<div class="fname">' + esc(fname) + '</div>';
+  const rows = lines.map((src, i) => {
+    let html = '', m; tok.lastIndex = 0;
+    while ((m = tok.exec(src))) {
+      const t = m[0];
+      if (m[1]) html += '<span class="c">' + esc(t) + '</span>';
+      else if (m[2]) html += '<span class="s">' + esc(t) + '</span>';
+      else if (m[3]) html += '<span class="n">' + t + '</span>';
+      else if (m[4] && kws.test(t)) html += '<span class="k">' + t + '</span>';
+      else if (m[4] && tys.test(t)) html += '<span class="t">' + t + '</span>';
+      else html += esc(t);
+    }
+    const d = document.createElement('div');
+    d.className = 'ln'; d.innerHTML = '<i>' + (i + 1) + '</i><span>' + html + '</span>';
+    host.appendChild(d);
+    return d;
+  });
+  return function mark(active) {
+    const set = new Set(active || []);
+    rows.forEach((r, i) => r.classList.toggle('on', set.has(i + 1)));
+    const first = rows.find((r, i) => set.has(i + 1));
+    if (first) {
+      const top = first.offsetTop, h = host.clientHeight;
+      if (top < host.scrollTop + 20 || top > host.scrollTop + h - 40) host.scrollTop = Math.max(0, top - h / 3);
+    }
+  };
+}
+
+/* Reproductor: frames = [{ msg: 'html', lines: [nº de línea de código], ... }]
+   render(frame, prevFrame) lo implementa cada página. */
+class Player {
+  constructor({ render, mark }) {
+    this.render = render; this.mark = mark; this.frames = []; this.i = 0; this.timer = null;
+    this.$prev = $('#pPrev'); this.$next = $('#pNext'); this.$play = $('#pPlay'); this.$first = $('#pFirst'); this.$last = $('#pLast');
+    this.$speed = $('#pSpeed'); this.$count = $('#pCount'); this.$msg = $('#msg'); this.$seek = $('#pSeek');
+    this.$prev.onclick = () => { this.pause(); this.go(this.i - 1); };
+    this.$next.onclick = () => { this.pause(); this.go(this.i + 1); };
+    this.$first.onclick = () => { this.pause(); this.go(0); };
+    this.$last.onclick = () => { this.pause(); this.go(this.frames.length - 1); };
+    this.$play.onclick = () => this.toggle();
+    this.$seek.oninput = () => { this.pause(); this.go(+this.$seek.value); };
+    document.addEventListener('keydown', e => {
+      if (/INPUT|SELECT|TEXTAREA/.test((e.target.tagName || ''))) return;
+      if (e.key === 'ArrowRight') { this.pause(); this.go(this.i + 1); }
+      else if (e.key === 'ArrowLeft') { this.pause(); this.go(this.i - 1); }
+      else if (e.key === ' ') { e.preventDefault(); this.toggle(); }
+    });
+  }
+  delay() { return [1900, 1300, 900, 550, 280][(+this.$speed.value || 3) - 1]; }
+  /* Carga una secuencia nueva. start = frame inicial; play = arrancar solo. */
+  load(frames, { play = true, start = 0 } = {}) {
+    this.pause(); this.frames = frames; this.$seek.max = Math.max(0, frames.length - 1);
+    this.prevFrame = null; this.go(start, true);
+    if (play && frames.length > 1) this.play();
+  }
+  go(i, instant) {
+    if (!this.frames.length) return;
+    i = Math.max(0, Math.min(this.frames.length - 1, i));
+    const f = this.frames[i], prev = this.frames[this.i] || null;
+    this.i = i;
+    this.render(f, prev, !!instant);
+    this.$msg.innerHTML = f.msg || '';
+    if (this.mark) this.mark(f.lines || []);
+    this.$count.textContent = 'paso ' + (i + 1) + ' de ' + this.frames.length;
+    this.$seek.value = i;
+    this.$first.disabled = this.$prev.disabled = i === 0;
+    this.$last.disabled = this.$next.disabled = i === this.frames.length - 1;
+    if (i === this.frames.length - 1) this.pause();
+  }
+  play() {
+    if (this.i >= this.frames.length - 1) this.go(0, true);
+    this.$play.textContent = '⏸ Pausa'; this.$play.classList.add('on');
+    const tick = () => {
+      if (this.i >= this.frames.length - 1) { this.pause(); return; }
+      this.go(this.i + 1);
+      if (this.timer !== null) this.timer = setTimeout(tick, this.delay());
+    };
+    this.timer = setTimeout(tick, this.delay());
+  }
+  pause() { if (this.timer) clearTimeout(this.timer); this.timer = null; this.$play.textContent = '▶ Reproducir'; this.$play.classList.remove('on'); }
+  toggle() { this.timer ? this.pause() : this.play(); }
+}
+const PLAYER_HTML = `
+<div class="player">
+  <div class="msg" id="msg" role="status" aria-live="polite"></div>
+  <div class="row">
+    <button class="btn" id="pFirst" title="Primer paso" aria-label="Primer paso">⏮</button>
+    <button class="btn" id="pPrev" title="Paso anterior (←)" aria-label="Paso anterior">◀</button>
+    <button class="btn primary" id="pPlay">▶ Reproducir</button>
+    <button class="btn" id="pNext" title="Paso siguiente (→)" aria-label="Paso siguiente">▶|</button>
+    <button class="btn" id="pLast" title="Último paso" aria-label="Último paso">⏭</button>
+    <label>velocidad <input type="range" id="pSpeed" min="1" max="5" value="3"></label>
+    <span class="count" id="pCount"></span>
+  </div>
+  <input type="range" id="pSeek" min="0" max="0" value="0" aria-label="Posición en la secuencia" style="width:100%">
+</div>`;
+</script>
+
+</body>
+</html>
