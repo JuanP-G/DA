@@ -1,0 +1,546 @@
+<title>Grafo no dirigido</title>
+<style>
+/*SHARED_CSS*/
+.gtools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.gtools .grp { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.bar label { max-width: 100%; min-width: 0; }
+.bar select.field { max-width: 100%; min-width: 0; }
+.gtools select.field { max-width: 100%; min-width: 0; }
+.gtools .grp { max-width: 100%; }
+.gtools .sep { width: 1px; align-self: stretch; background: var(--line); }
+#gsvg { touch-action: none; cursor: crosshair; }
+#gsvg .edge { stroke: var(--muted); stroke-width: 2; fill: none; transition: stroke .25s, stroke-width .25s; }
+#gsvg .edge.tree { stroke: var(--blue); stroke-width: 3.5; }
+#gsvg .edge.cur { stroke: var(--accent); stroke-width: 4; }
+#gsvg .edge.back { stroke: var(--red); stroke-width: 3.5; stroke-dasharray: 6 4; }
+#gsvg .edge.new { stroke: var(--green); stroke-width: 4; }
+#gsvg .node circle { fill: var(--node); stroke: var(--muted); stroke-width: 2.5; transition: fill .25s, stroke .25s; cursor: grab; }
+#gsvg .node.s-vis circle { fill: var(--blue-soft); stroke: var(--blue); }
+#gsvg .node.s-cur circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 4; }
+#gsvg .node.s-done circle { fill: var(--green-soft); stroke: var(--green); }
+#gsvg .node.s-red circle { fill: var(--red-soft); stroke: var(--red); stroke-width: 4; }
+#gsvg .node.s-q circle { fill: var(--purple-soft); stroke: var(--purple); }
+#gsvg .node.sel circle { stroke-dasharray: 5 3; stroke: var(--accent); stroke-width: 4; }
+#gsvg .node text { font-size: 15px; font-weight: 600; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+#gsvg .tag text, #gsvg text.tg { font-size: 12.5px; text-anchor: middle; font-weight: 600; pointer-events: none; }
+#gsvg text.tg { fill: var(--accent); }
+.adj { display: grid; grid-template-columns: auto 1fr; gap: 5px 8px; font-family: var(--mono); font-size: .88rem; align-items: center; }
+.adj .vn { color: var(--muted); text-align: right; }
+.adj .lst { display: flex; flex-wrap: wrap; gap: 4px; min-height: 26px; align-items: center; padding: 2px 6px; border: 1px dashed var(--line); border-radius: 6px; }
+.adj .lst.hot { border-color: var(--accent); background: var(--accent-soft); }
+.chip { display: inline-block; min-width: 1.8em; text-align: center; padding: 1px 7px; border-radius: 5px; background: var(--panel-2); border: 1px solid var(--line); }
+.chip.new { background: var(--green-soft); border-color: var(--green); color: var(--green); font-weight: 600; }
+.chip.cur { background: var(--accent-soft); border-color: var(--accent); }
+.chip.dead { opacity: .5; }
+.vec { display: flex; flex-wrap: wrap; gap: 4px; font-family: var(--mono); font-size: .86rem; }
+.vec .c { display: flex; flex-direction: column; align-items: stretch; text-align: center; min-width: 2.6em; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.vec .c i { font-style: normal; background: var(--panel-2); color: var(--muted); font-size: .72rem; padding: 0 4px; }
+.vec .c b { font-weight: 500; padding: 2px 4px; }
+.vec .c.hot b { background: var(--accent-soft); color: var(--accent); }
+.vec .c.ok b { background: var(--green-soft); }
+.listbox { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-family: var(--mono); font-size: .88rem; min-height: 28px; }
+.listbox .lab { color: var(--muted); font-size: .78rem; margin-right: 4px; text-transform: uppercase; letter-spacing: .06em; }
+.infos { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.cases .panel { box-shadow: none; }
+.cases h3 { margin: 0 0 6px; font-size: .98rem; }
+.cases p { margin: 0 0 6px; font-size: .9rem; color: var(--muted); }
+.cases p:last-child { margin: 0; }
+.toolbtn { min-width: 2.4em; }
+.hint { font-size: .82rem; color: var(--muted); margin: 0; }
+.back { font-size: .9rem; }
+a { color: var(--blue); }
+.colstack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+</style>
+<div class="wrap">
+  <header class="top">
+    <span class="tag">Tema 4</span>
+    <h1>Grafo: listas de adyacencia y recorridos</h1>
+    <p class="lede">Un <code>Grafo</code> guarda para cada vértice la lista de sus adyacentes. Construye uno (o carga un ejemplo), mira cómo <code>ponArista</code> rellena las listas y ejecuta DFS o BFS paso a paso sobre el código real de los ejercicios.</p>
+    <a class="back" href="index.html">← Todas las estructuras</a>
+  </header>
+
+  <section class="panel">
+    <h2>1 · Construye el grafo</h2>
+    <div class="gtools">
+      <div class="grp" role="group" aria-label="Herramienta">
+        <button class="btn toolbtn on" id="tMove" title="Arrastra vértices">✥ Mover</button>
+        <button class="btn toolbtn" id="tVert" title="Clic en el lienzo crea un vértice">＋ Vértice</button>
+        <button class="btn toolbtn" id="tEdge" title="Clic en dos vértices para unirlos">⤳ Arista</button>
+      </div>
+      <span class="sep"></span>
+      <div class="grp">
+        <label>ponArista(<input class="field" id="eV" type="number" min="0" value="0" style="width:3.6em">, <input class="field" id="eW" type="number" min="0" value="1" style="width:3.6em">)</label>
+        <button class="btn" id="bPon">Añadir</button>
+      </div>
+      <span class="sep"></span>
+      <div class="grp">
+        <select class="field" id="preset" aria-label="Ejemplos"></select>
+        <button class="btn" id="bRand">Aleatorio</button>
+        <button class="btn" id="bClear">Vaciar</button>
+      </div>
+    </div>
+    <p class="hint" id="toolHint"></p>
+  </section>
+
+  <div class="stage">
+    <div class="colstack">
+      <section class="panel">
+        <h2>Grafo (arrastra los vértices)</h2>
+        <div class="canvas-scroll"><svg id="gsvg" class="viz" viewBox="0 0 640 420" role="img" aria-label="Grafo interactivo"></svg></div>
+        <div class="legend" id="legend" style="margin-top:10px"></div>
+      </section>
+      <section class="panel">
+        <h2>2 · Ejecuta un algoritmo</h2>
+        <div class="bar" style="margin-bottom:10px">
+          <label>algoritmo <select class="field" id="algo"></select></label>
+          <label id="lblSrc">desde <input class="field" id="src" type="number" min="0" value="0" style="width:3.6em"></label>
+          <label id="lblDst">hasta <input class="field" id="dst" type="number" min="0" value="3" style="width:3.6em"></label>
+          <button class="btn primary" id="bRun">Ejecutar</button>
+        </div>
+        <div id="playerHost"></div>
+      </section>
+    </div>
+    <div class="colstack">
+      <section class="panel">
+        <h2>Lo que guarda la clase</h2>
+        <dl class="kv" style="margin-bottom:10px"><dt>_V</dt><dd id="kV">0</dd><dt>_A</dt><dd id="kA">0</dd></dl>
+        <div class="adj" id="adj" aria-label="Listas de adyacencia"></div>
+        <p class="note" style="margin-top:8px" id="adjNote"></p>
+      </section>
+      <section class="panel" id="datos">
+        <h2>Vectores y colas del algoritmo</h2>
+        <div id="state" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+      <section class="panel">
+        <h2>Código C++</h2>
+        <div id="codeHost" style="max-height:420px;overflow:auto"></div>
+        <div class="bar" style="margin-top:8px" id="codeTabs"></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel">
+    <h2>Para entenderlo</h2>
+    <div class="cases">
+      <div class="panel"><h3>Una lista por vértice</h3><p>En vez de una matriz V×V, <code>_ady[v]</code> guarda solo los vecinos de <code>v</code>. La memoria es O(V + A) y recorrer los vecinos cuesta exactamente su grado: justo lo que hace <code>for (int w : g.ady(v))</code>.</p></div>
+      <div class="panel"><h3>Cada arista aparece dos veces</h3><p><code>ponArista(v, w)</code> hace <code>push_back</code> en <b>las dos</b> listas. <code>A()</code> cuenta la arista una sola vez, pero la suma de las longitudes de las listas es <code>2·A</code>. Por eso un DFS ve cada arista dos veces: una desde cada extremo.</p></div>
+      <div class="panel"><h3>Un vértice sin visitar abre una componente</h3><p>El bucle externo <code>for v</code> lanza un DFS por cada vértice sin visitar; cada llamada cubre <b>una</b> componente conexa. Contar llamadas = número de componentes; lo que devuelve = su tamaño (04-1, 04-2, 04-3, 04-5).</p></div>
+      <div class="panel"><h3>DFS o BFS</h3><p>Para «¿se llega?» o «¿cuántos?» da igual. Para <b>distancias mínimas</b> hace falta BFS: la cola visita por capas, así que la primera vez que se llega a un vértice es por un camino más corto (04-4, 04-6, 04-L). Un DFS puede llegar por uno larguísimo.</p></div>
+      <div class="panel"><h3>Dos colores obligan</h3><p>Bipartito = se puede colorear con 2 colores sin que una arista una vértices iguales. El DFS propaga el color contrario al vecino; si un vecino ya visitado tiene <b>mi</b> color, hay un ciclo impar y no lo es (04-7).</p></div>
+      <div class="panel"><h3>Costes</h3><p><code>ponArista</code> O(1) · <code>ady(v)</code> O(1) · cualquier recorrido completo O(V + A). Cuidado: el DFS recursivo puede bajar hasta V niveles (en el juez no suele dar problemas, en Visual Studio con 1 MB de pila sí).</p></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Ejercicios del repositorio que lo usan</h2>
+    <table class="t">
+      <thead><tr><th>Nº</th><th>Problema</th><th>Idea</th></tr></thead>
+      <tbody>
+        <tr><td><code>04-1</code></td><td>Árboles libres</td><td>DFS: conexo y A = V − 1</td></tr>
+        <tr><td><code>04-2</code></td><td>Los amigos de mis amigos…</td><td>DFS: componente conexa más grande</td></tr>
+        <tr><td><code>04-3</code></td><td>Detección de manchas negras</td><td>Píxel → vértice; DFS: nº de componentes y la mayor</td></tr>
+        <tr><td><code>04-4</code></td><td>Los números de Bacon</td><td>BFS en grafo actor–película</td></tr>
+        <tr><td><code>04-5</code></td><td>¡Las noticias vuelan!</td><td>Aristas en estrella + tamaño de componentes</td></tr>
+        <tr><td><code>04-6</code></td><td>Un nodo muy muy lejano</td><td>BFS con distancias, cortado en el TTL</td></tr>
+        <tr><td><code>04-7</code></td><td>Grafo bipartito</td><td>DFS coloreando con 2 colores</td></tr>
+        <tr><td><code>04-L</code></td><td>Peaje a la sombra</td><td>3 BFS y mínimo de dA + dL + dT</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <footer class="foot"><a href="index.html">← Todas las estructuras</a> · Código basado en <code>Grafo.h</code> (A. Verdejo) · el comportamiento de la página sigue exactamente ese código.</footer>
+</div>
+
+<script>
+/*SHARED_JS*/
+const DIR = false;
+const CLASE = DIR ? 'Digrafo' : 'Grafo';
+
+/* ---------- modelo: igual que la clase C++ ---------- */
+const G = { n: 0, A: 0, ady: [], pos: [] };
+function gReset() { G.n = 0; G.A = 0; G.ady = []; G.pos = []; }
+function gAddV(x, y) { G.ady.push([]); G.pos.push([x, y]); G.n++; return G.n - 1; }
+function gPon(v, w) {
+  if (v < 0 || v >= G.n || w < 0 || w >= G.n) throw new Error('Vertice inexistente');
+  G.A++; G.ady[v].push(w); if (!DIR) G.ady[w].push(v);
+}
+function gHay(u, v) { return G.ady[u].includes(v); }
+function gInv() { const r = { n: G.n, ady: Array.from({ length: G.n }, () => []) }; for (let v = 0; v < G.n; v++) for (const w of G.ady[v]) r.ady[w].push(v); return r; }
+
+/* aristas “lógicas” (cada una una vez) para dibujar */
+function edgeList() {
+  const L = [];
+  for (let v = 0; v < G.n; v++) for (const w of G.ady[v]) { if (DIR || v <= w) L.push([v, w]); }
+  // en no dirigido, v-w aparece en ady[v] y ady[w]; con v==w (bucle) aparece 2 veces: quitar duplicado
+  if (!DIR) { const seen = new Map(); return L.filter(([v, w]) => { if (v !== w) return true; const k = v; const c = (seen.get(k) || 0) + 1; seen.set(k, c); return c % 2 === 1; }); }
+  return L;
+}
+
+/* ---------- ejemplos ---------- */
+const PRESETS = [{"nombre": "Dos componentes", "n": 8, "algo": "comp", "src": 0, "dst": 3, "pos": [[100, 110], [240, 70], [240, 190], [390, 130], [110, 320], [260, 340], [470, 300], [570, 190]], "e": [[0, 1], [0, 2], [1, 2], [2, 3], [4, 5], [6, 7]]}, {"nombre": "Ciclo impar (no bipartito)", "n": 6, "algo": "bip", "src": 0, "dst": 3, "pos": [[90, 210], [220, 90], [350, 210], [490, 90], [560, 260], [430, 340]], "e": [[0, 1], [1, 2], [2, 0], [2, 3], [3, 4], [4, 5], [5, 2]]}, {"nombre": "Cuadrícula 3×3 (píxeles como vértices)", "n": 9, "algo": "bfs", "src": 0, "dst": 8, "pos": [[170, 70], [320, 70], [470, 70], [170, 210], [320, 210], [470, 210], [170, 350], [320, 350], [470, 350]], "e": [[0, 1], [0, 3], [1, 2], [1, 4], [2, 5], [3, 4], [3, 6], [4, 5], [4, 7], [5, 8], [6, 7], [7, 8]]}, {"nombre": "Árbol libre (conexo y A = V − 1)", "n": 7, "algo": "comp", "src": 0, "dst": 6, "pos": [[320, 60], [170, 170], [470, 170], [90, 300], [250, 300], [390, 300], [550, 300]], "e": [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5], [2, 6]]}];
+function layoutCircle(n, cx = 320, cy = 210, r = 150) { const out = []; for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + 2 * Math.PI * i / n; out.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return out; }
+function loadPreset(p) {
+  gReset();
+  const pts = p.pos || layoutCircle(p.n);
+  for (let i = 0; i < p.n; i++) gAddV(pts[i][0], pts[i][1]);
+  for (const [a, b] of p.e) gPon(a, b);
+  if (p.src != null) { $('#src').value = p.src; $('#dst').value = p.dst != null ? p.dst : 0; }
+  if (p.algo) $('#algo').value = p.algo;
+  afterEdit();
+}
+function randomGraph() {
+  const n = 7 + Math.floor(Math.random() * 3), m = n + 2 + Math.floor(Math.random() * 3);
+  gReset(); const pts = layoutCircle(n); for (let i = 0; i < n; i++) gAddV(pts[i][0], pts[i][1]);
+  let guard = 0; const wantDag = ALGOS_NEED_DAG_RANDOM && Math.random() < 0.6;
+  while (G.A < m && guard++ < 200) {
+    const a = Math.floor(Math.random() * n), b = Math.floor(Math.random() * n);
+    if (a === b || gHay(a, b) || (!DIR && gHay(b, a))) continue;
+    if (DIR && wantDag && a > b) continue;
+    gPon(a, b);
+  }
+  afterEdit();
+}
+let ALGOS_NEED_DAG_RANDOM = false;
+
+/* ---------- dibujo ---------- */
+const svg = $('#gsvg'); const R = 22;
+let visual = { node: {}, edge: {}, tag: {}, curEdge: null, sel: -1 };
+function drawGraph() {
+  svg.innerHTML = '';
+  if (DIR) {
+    const defs = el('defs', {}, svg);
+    for (const [id, cls] of [['ah', 'var(--muted)'], ['ahT', 'var(--blue)'], ['ahC', 'var(--accent)'], ['ahB', 'var(--red)'], ['ahN', 'var(--green)']]) {
+      const m = el('marker', { id, viewBox: '0 0 10 10', refX: '9', refY: '5', markerWidth: '7', markerHeight: '7', orient: 'auto-start-reverse' }, defs);
+      el('path', { d: 'M0 0 L10 5 L0 10 z', fill: cls }, m);
+    }
+  }
+  const eg = el('g', {}, svg), ng = el('g', {}, svg), tg = el('g', {}, svg);
+  const lst = edgeList();
+  const pairCount = {}; for (const [v, w] of lst) { const k = Math.min(v, w) + '_' + Math.max(v, w); pairCount[k] = (pairCount[k] || 0) + 1; }
+  const pairSeen = {};
+  visual.edgeEls = [];
+  lst.forEach(([v, w], idx) => {
+    const [x1, y1] = G.pos[v], [x2, y2] = G.pos[w];
+    let d;
+    if (v === w) { d = `M${x1 - 10} ${y1 - R + 2} C${x1 - 50} ${y1 - 70} ${x1 + 50} ${y1 - 70} ${x1 + 10} ${y1 - R + 2}`; }
+    else {
+      const k = Math.min(v, w) + '_' + Math.max(v, w); pairSeen[k] = (pairSeen[k] || 0) + 1;
+      const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L;
+      // en dirigido, v->w y w->v se curvan a lados opuestos; en general, aristas paralelas se separan
+      let off = 0;
+      if (DIR && gHay(w, v) && v !== w) off = 16;
+      if (pairCount[k] > 1 && !(DIR && gHay(w, v))) off = (pairSeen[k] - 1) * 18;
+      else if (pairCount[k] > 2) off += (pairSeen[k] - 1) * 10;
+      const nx = -uy, ny = ux;
+      const sx = x1 + ux * R + nx * off * 0.6, sy = y1 + uy * R + ny * off * 0.6;
+      const ex = x2 - ux * (R + (DIR ? 3 : 0)) + nx * off * 0.6, ey = y2 - uy * (R + (DIR ? 3 : 0)) + ny * off * 0.6;
+      const cx = (x1 + x2) / 2 + nx * off * 1.6, cy = (y1 + y2) / 2 + ny * off * 1.6;
+      d = off ? `M${sx} ${sy} Q${cx} ${cy} ${ex} ${ey}` : `M${sx} ${sy} L${ex} ${ey}`;
+    }
+    const p = el('path', { d, class: 'edge', 'marker-end': DIR ? 'url(#ah)' : '' }, eg);
+    if (!DIR) p.removeAttribute('marker-end');
+    visual.edgeEls.push({ v, w, el: p });
+  });
+  visual.nodeEls = [];
+  for (let i = 0; i < G.n; i++) {
+    const g = el('g', { class: 'node', 'data-v': i, transform: `translate(${G.pos[i][0]} ${G.pos[i][1]})` }, ng);
+    el('circle', { r: R }, g); const t = el('text', {}, g); t.textContent = i;
+    visual.nodeEls.push(g);
+    const tag = el('text', { class: 'tg', x: G.pos[i][0], y: G.pos[i][1] - R - 7 }, tg); visual.tag[i] = tag;
+  }
+  applyVisual();
+}
+let curFrame = null;
+function applyVisual() {
+  if (!visual.nodeEls) return;
+  const f = curFrame || {};
+  visual.nodeEls.forEach((g, i) => {
+    g.setAttribute('class', 'node' + (f.node && f.node[i] ? ' ' + f.node[i] : '') + (visual.sel === i ? ' sel' : ''));
+    if (visual.tag[i]) visual.tag[i].textContent = (f.tag && f.tag[i] != null) ? f.tag[i] : '';
+  });
+  visual.edgeEls.forEach(({ v, w, el: p }) => {
+    let c = '';
+    if (f.edge) { const k1 = v + '>' + w; const k2 = w + '>' + v; c = f.edge[k1] || (!DIR ? f.edge[k2] : '') || ''; }
+    p.setAttribute('class', 'edge' + (c ? ' ' + c : ''));
+    if (DIR) p.setAttribute('marker-end', 'url(#' + ({ tree: 'ahT', cur: 'ahC', back: 'ahB', new: 'ahN' }[c] || 'ah') + ')');
+  });
+}
+/* tabla de adyacencia */
+function drawAdj(f) {
+  const host = $('#adj'); host.innerHTML = '';
+  $('#kV').textContent = G.n; $('#kA').textContent = G.A;
+  const adys = (f && f.adys) || G.ady;
+  for (let v = 0; v < G.n; v++) {
+    const a = document.createElement('div'); a.className = 'vn'; a.textContent = ((f && f.adysName) || '_ady') + '[' + v + ']'; host.appendChild(a);
+    const l = document.createElement('div'); l.className = 'lst' + (f && f.hotList === v ? ' hot' : ''); host.appendChild(l);
+    adys[v].forEach((w, j) => {
+      const c = document.createElement('span'); c.className = 'chip';
+      if (f && f.newChip && f.newChip.v === v && f.newChip.j === j) c.classList.add('new');
+      if (f && f.curChip && f.curChip.v === v && f.curChip.j === j) c.classList.add('cur');
+      c.textContent = w; l.appendChild(c);
+    });
+    if (!adys[v].length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '∅'; l.appendChild(e); }
+  }
+  $('#adjNote').innerHTML = DIR
+    ? 'Cada arista <code>v→w</code> se guarda <b>una vez</b>: <code>w</code> entra solo en la lista de <code>v</code>. Por eso <code>_A</code> sube 1 y la suma de las longitudes de las listas es <code>_A</code>.'
+    : 'Cada arista <code>v-w</code> se guarda <b>dos veces</b> (<code>w</code> en la lista de <code>v</code> y <code>v</code> en la de <code>w</code>), pero <code>_A</code> sube 1. La suma de las longitudes de las listas es <code>2·_A</code>.';
+}
+
+/* ---------- interacción ---------- */
+let tool = 'move', pendingEdge = -1;
+function setTool(t) {
+  tool = t; pendingEdge = -1; visual.sel = -1;
+  $('#tMove').classList.toggle('on', t === 'move'); $('#tVert').classList.toggle('on', t === 'vert'); $('#tEdge').classList.toggle('on', t === 'edge');
+  $('#toolHint').textContent = { move: 'Arrastra los vértices para colocarlos como quieras.', vert: 'Haz clic en el lienzo para crear un vértice (hasta 14).', edge: DIR ? 'Haz clic en el vértice origen y luego en el destino: ponArista(v, w) añade v→w.' : 'Haz clic en dos vértices: ponArista(v, w) añade v-w.' }[t];
+  svg.style.cursor = t === 'vert' ? 'copy' : t === 'edge' ? 'pointer' : 'default';
+  applyVisual();
+}
+$('#tMove').onclick = () => setTool('move'); $('#tVert').onclick = () => setTool('vert'); $('#tEdge').onclick = () => setTool('edge');
+function svgPoint(e) { const r = svg.getBoundingClientRect(); const vb = svg.viewBox.baseVal; return [(e.clientX - r.left) * vb.width / r.width, (e.clientY - r.top) * vb.height / r.height]; }
+let drag = null;
+svg.addEventListener('pointerdown', e => {
+  const g = e.target.closest('.node'); const [px, py] = svgPoint(e);
+  if (tool === 'move' && g) { drag = { v: +g.dataset.v, dx: px - G.pos[+g.dataset.v][0], dy: py - G.pos[+g.dataset.v][1] }; svg.setPointerCapture(e.pointerId); }
+  else if (tool === 'vert' && !g) { if (G.n >= 14) { flashHint('Máximo 14 vértices para que se vea bien.'); return; } gAddV(Math.max(R, Math.min(640 - R, px)), Math.max(R + 14, Math.min(420 - R, py))); afterEdit(); }
+  else if (tool === 'edge' && g) {
+    const v = +g.dataset.v;
+    if (pendingEdge < 0) { pendingEdge = v; visual.sel = v; applyVisual(); }
+    else { addEdgeAnimated(pendingEdge, v); pendingEdge = -1; visual.sel = -1; }
+  }
+});
+svg.addEventListener('pointermove', e => {
+  if (!drag) return; const [px, py] = svgPoint(e);
+  G.pos[drag.v] = [Math.max(R, Math.min(640 - R, px - drag.dx)), Math.max(R + 14, Math.min(420 - R, py - drag.dy))];
+  const keep = curFrame; drawGraph(); curFrame = keep; applyVisual();
+});
+svg.addEventListener('pointerup', () => { drag = null; });
+function flashHint(t) { const h = $('#toolHint'); const old = h.textContent; h.textContent = t; setTimeout(() => { h.textContent = old; }, 2200); }
+
+function afterEdit() {
+  const n = Math.max(0, G.n - 1);
+  for (const id of ['#eV', '#eW', '#src', '#dst']) { $(id).max = n; if (+$(id).value > n) $(id).value = n; }
+  curFrame = null; drawGraph(); drawAdj(); $('#state').innerHTML = '<p class="note">Elige un algoritmo y pulsa <b>Ejecutar</b>.</p>';
+  if (player) { player.pause(); player.frames = []; $('#msg').innerHTML = 'Grafo modificado. Pulsa <b>Ejecutar</b> para recorrerlo.'; $('#pCount').textContent = ''; }
+}
+/* ponArista animado: se ve el push_back en la lista */
+function addEdgeAnimated(v, w) {
+  try { if (v < 0 || v >= G.n || w < 0 || w >= G.n || isNaN(v) || isNaN(w)) throw new Error('x'); }
+  catch (e) { flashHint('Vertice inexistente (el C++ lanzaría domain_error).'); return; }
+  const antes = G.ady.map(a => a.slice());
+  gPon(v, w);
+  const frames = [];
+  const base = { node: { [v]: 's-cur', [w]: 's-vis' }, edge: {} };
+  frames.push({ msg: `<code>g.ponArista(${v}, ${w})</code>: comprueba que ${v} y ${w} existen (si no, <code>domain_error</code>) y aumenta <code>_A</code> a <b>${G.A}</b>.`, lines: [L('clase','if (v < 0'),L('clase','throw'),L('clase','++_A')], ...base, adys: antes, hotList: -1 });
+  const dest = G.ady.map(a => a.slice());
+  const f2 = { msg: `<code>_ady[${v}].push_back(${w})</code>: ${w} entra al final de la lista de ${v}.`, lines: [L('clase','_ady[v].push_back(w)')], ...base, adys: G.ady.map((a, i) => i === v ? a : a.slice()), hotList: v, newChip: { v, j: G.ady[v].length - 1 } };
+  if (!DIR && !(v === w)) {
+    frames.push(f2);
+    frames.push({ msg: `Como el grafo es <b>no dirigido</b>, también <code>_ady[${w}].push_back(${v})</code>: la arista se guarda en las dos listas.`, lines: [L('clase','_ady[w].push_back(v)')], ...base, adys: dest, hotList: w, newChip: { v: w, j: G.ady[w].length - 1 } });
+  } else {
+    if (!DIR && v === w) f2.msg += ' (un bucle <code>v-v</code> mete <code>v</code> dos veces en su propia lista).';
+    if (DIR) f2.msg += ' <b>Solo</b> en esa lista: en un digrafo la arista tiene sentido.';
+    frames.push(f2);
+  }
+  frames.push({ msg: `Listo: <code>_V = ${G.n}</code>, <code>_A = ${G.A}</code>. ${DIR ? 'Los sucesores de ' + v + ' son ahora ' + (G.ady[v].join(', ')) + '.' : 'Los adyacentes de ' + v + ' son ahora ' + G.ady[v].join(', ') + '.'}`, lines: [], node: {}, edge: { [v + '>' + w]: 'new' }, adys: dest, hotList: -1 });
+  drawGraph(); showCode('clase'); player.load(frames, { play: true });
+}
+$('#bPon').onclick = () => { addEdgeAnimated(+$('#eV').value, +$('#eW').value); };
+$('#bRand').onclick = randomGraph;
+$('#bClear').onclick = () => { gReset(); afterEdit(); };
+
+/* ---------- algoritmos (cada uno genera frames) ---------- */
+const ALGOS = {};
+function L(k, sub, occ = 0) {
+  let c = -1; const ls = CODES[k].lines;
+  for (let i = 0; i < ls.length; i++) if (ls[i].includes(sub)) { c++; if (c === occ) return i + 1; }
+  throw new Error('ancla no encontrada en ' + k + ': ' + sub);
+}
+const ek = (v, w) => DIR ? v + '>' + w : Math.min(v, w) + '>' + Math.max(v, w);
+function ctx() {
+  const f = [], st = { node: {}, edge: {}, tag: {} };
+  return { f, st, snap(msg, lines, vecs, extra) { f.push({ msg, lines, node: { ...st.node }, edge: { ...st.edge }, tag: { ...st.tag }, vecs: vecs || [], ...(extra || {}) }); } };
+}
+const vecOf = (name, arr, hot, okFn) => ({ kind: 'vec', name, vals: arr.map(x => x === null ? '·' : x), hot: hot == null ? -1 : hot, ok: okFn ? arr.map((x, i) => okFn(x) ? i : -1).filter(i => i >= 0) : [] });
+const listOf = (name, arr, hot) => ({ kind: 'list', name, vals: arr.slice(), hot: hot == null ? -1 : hot });
+const cl = a => a.map(x => x.slice());
+
+/* ---- BFS (CaminosBFS): dist, cola, camino mínimo al final ---- */
+ALGOS.bfs = (s, t) => {
+  const n = G.n, dist = Array(n).fill(-1), par = Array(n).fill(-1), q = [], C = ctx(), S = C.st;
+  const V = hot => [vecOf('dist', dist, hot, x => x >= 0), listOf('cola q (frente a la izquierda)', q, 0)];
+  C.snap(`<code>CaminosBFS(g, ${s})</code>: <code>dist</code> empieza con todo a <b>-1</b> («sin visitar»).`, [L('bfs', 'dist(g.V(), -1)')], V(-1));
+  dist[s] = 0; q.push(s); S.node[s] = 's-q'; S.tag[s] = 0;
+  C.snap(`El origen ${s} tiene <b>dist = 0</b> y entra en la cola.`, [L('bfs', 'dist[origen] = 0;'), L('bfs', 'q.push(origen);')], V(s));
+  while (q.length) {
+    const v = q.shift(); S.node[v] = 's-cur';
+    C.snap(`Saco el frente de la cola: <b>${v}</b> (dist = ${dist[v]}). Miro ${DIR ? 'sus sucesores' : 'sus vecinos'}: [${G.ady[v].join(', ') || 'ninguno'}].`, [L('bfs', 'while (!q.empty())'), L('bfs', 'int v = q.front(); q.pop();')], V(v));
+    for (const w of G.ady[v]) {
+      const k = ek(v, w), prev = S.edge[k];
+      S.edge[k] = 'cur';
+      if (dist[w] === -1) {
+        dist[w] = dist[v] + 1; par[w] = v; q.push(w); S.node[w] = 's-q'; S.tag[w] = dist[w];
+        C.snap(`${w} no estaba visitado → <code>dist[${w}] = dist[${v}] + 1 = ${dist[w]}</code> y entra en la cola.`, [L('bfs', 'for (int w : g.ady(v))'), L('bfs', 'if (dist[w] == -1)'), L('bfs', 'dist[w] = dist[v] + 1;'), L('bfs', 'q.push(w);')], V(w));
+        S.edge[k] = 'tree';
+      } else {
+        C.snap(`${w} ya tiene distancia (${dist[w]}): lo ignoro. ${dist[w] <= dist[v] ? 'Llegar otra vez no mejora nada: BFS ya lo alcanzó por un camino igual o más corto.' : ''}`, [L('bfs', 'for (int w : g.ady(v))'), L('bfs', 'if (dist[w] == -1)')], V(w));
+        S.edge[k] = prev || '';
+      }
+    }
+    S.node[v] = 's-done';
+  }
+  // resultado
+  const fin = [];
+  if (dist[t] >= 0) {
+    let x = t; const path = [t];
+    while (par[x] >= 0) { x = par[x]; path.push(x); }
+    path.reverse();
+    for (let i = 0; i + 1 < path.length; i++) S.edge[ek(path[i], path[i + 1])] = 'new';
+    path.forEach(x => { S.node[x] = 's-cur'; });
+    C.snap(`<b>Fin del BFS.</b> Distancia de ${s} a ${t}: <b>${dist[t]}</b> aristas. Camino mínimo: ${path.join(' ' + (DIR ? '→' : '–') + ' ')}. Los vértices con <code>dist = -1</code> (${dist.map((d, i) => d < 0 ? i : -1).filter(i => i >= 0).join(', ') || 'ninguno'}) ${DIR ? 'no son alcanzables desde ' + s : 'están en otra componente'}.`, [L('bfs', 'int distancia(int v) const')], V(t));
+  } else {
+    C.snap(`<b>Fin del BFS.</b> ${t} <b>no se alcanza</b> desde ${s} (<code>dist[${t}] = -1</code>).`, [L('bfs', 'int distancia(int v) const')], V(t));
+  }
+  return C.f;
+};
+
+/* ---- Componentes conexas con DFS (MaximaCompConexa) ---- */
+ALGOS.comp = () => {
+  const n = G.n, visit = Array(n).fill(false), comp = Array(n).fill(null), C = ctx(), S = C.st;
+  let maxim = 0, nc = 0; const tams = [];
+  const V = hot => [vecOf('visit', visit.map(x => x ? 'T' : 'F'), hot, x => x === 'T'), vecOf('componente', comp, -1, x => x !== null)];
+  C.snap(`<code>MaximaCompConexa(g)</code>: <code>visit</code> todo a <code>false</code>, <code>maxim = 0</code>. Recorro los vértices en orden y, cada vez que encuentro uno sin visitar, <b>empieza una componente nueva</b>.`, [L('comp', 'visit(g.V(), false)')], V(-1));
+  function dfs(v, c) {
+    visit[v] = true; comp[v] = 'C' + c; S.node[v] = 's-cur'; S.tag[v] = 'C' + c;
+    C.snap(`<code>dfs(${v})</code>: marco ${v} como visitado y empiezo a contar (<code>tam = 1</code>).`, [L('comp', 'visit[v] = true;'), L('comp', 'int tam = 1;')], V(v));
+    let tam = 1;
+    for (const w of G.ady[v]) {
+      const k = ek(v, w), prev = S.edge[k]; S.edge[k] = 'cur';
+      if (!visit[w]) {
+        C.snap(`Vecino ${w} de ${v}: <b>sin visitar</b> → llamo a <code>dfs(${w})</code> y sumo lo que devuelva.`, [L('comp', 'for (int w : g.ady(v))'), L('comp', 'if (!visit[w]) tam += dfs(g, w);')], V(w));
+        S.edge[k] = 'tree'; S.node[v] = 's-vis';
+        tam += dfs(w, c);
+        S.node[v] = 's-cur';
+      } else {
+        C.snap(`Vecino ${w} de ${v}: <b>ya visitado</b> (${w === v ? 'es un bucle' : 'seguramente por donde vine, o un ciclo'}): lo salto.`, [L('comp', 'for (int w : g.ady(v))'), L('comp', 'if (!visit[w]) tam += dfs(g, w);')], V(w));
+        S.edge[k] = prev || '';
+      }
+    }
+    S.node[v] = 's-done';
+    C.snap(`<code>dfs(${v})</code> termina y devuelve <b>tam = ${tam}</b>.`, [L('comp', 'return tam;')], V(v));
+    return tam;
+  }
+  for (let v = 0; v < n; v++) {
+    if (!visit[v]) {
+      C.snap(`<b>visit[${v}] = false</b> → ${v} empieza la componente nº ${nc + 1}.`, [L('comp', 'if (!visit[v])')], V(v));
+      const tam = dfs(v, nc + 1); tams.push(tam); nc++;
+      maxim = Math.max(maxim, tam);
+      C.snap(`La componente ${nc} tiene <b>${tam}</b> vértices. <code>maxim = max(maxim, ${tam}) = ${maxim}</code>.`, [L('comp', 'maxim = max(maxim, tam);')], V(v));
+    }
+  }
+  C.snap(`<b>Fin.</b> ${nc} componente${nc === 1 ? '' : 's'} conexa${nc === 1 ? '' : 's'} de tamaños [${tams.join(', ')}]; la mayor tiene <b>${maxim}</b>. ${nc === 1 ? 'El grafo es <b>conexo</b>.' : ''} ${nc === 1 && G.A === n - 1 ? 'Además A = V − 1 = ' + (n - 1) + ': es un <b>árbol libre</b> (04-1).' : ''}`, [L('comp', 'int maximo() const')], V(-1));
+  return C.f;
+};
+
+/* ---- Bipartito: DFS coloreando (Bipartito) ---- */
+ALGOS.bip = () => {
+  const n = G.n, visit = Array(n).fill(false), color = Array(n).fill(null), C = ctx(), S = C.st;
+  let bipar = true;
+  const V = hot => [vecOf('visit', visit.map(x => x ? 'T' : 'F'), hot, x => x === 'T'), vecOf('color', color.map(c => c === null ? null : (c ? 'true' : 'false')), -1, x => x !== null)];
+  const paint = (v) => { S.node[v] = color[v] ? 's-q' : 's-vis'; S.tag[v] = color[v] ? 'true' : 'false'; };
+  C.snap(`<code>Bipartito(g)</code>: nadie visitado y <code>bipar = true</code>. Colores: <b style="color:var(--blue)">false</b> (azul) y <b style="color:var(--purple)">true</b> (morado).`, [L('bip', 'visit(g.V(), false), color(g.V(), false), bipar(true)')], V(-1));
+  function dfs(v) {
+    visit[v] = true; S.node[v] = 's-cur';
+    C.snap(`<code>dfs(${v})</code>: ${v} ya tiene color (${color[v]}), lo marco como visitado.`, [L('bip', 'visit[v] = true;')], V(v));
+    for (const w of G.ady[v]) {
+      if (!bipar) return;
+      const k = ek(v, w), prev = S.edge[k]; S.edge[k] = 'cur';
+      if (!visit[w]) {
+        color[w] = !color[v]; paint(w);
+        C.snap(`Vecino ${w} sin visitar: le doy el color contrario al de ${v}: <code>color[${w}] = !color[${v}] = ${color[w]}</code>, y bajo a él.`, [L('bip', 'if (!visit[w])'), L('bip', 'color[w] = !color[v];'), L('bip', 'dfs(g, w);')], V(w));
+        S.edge[k] = 'tree';
+        dfs(w);
+        if (bipar) S.node[v] = 's-cur';
+      } else if (color[w] === color[v]) {
+        bipar = false; S.node[v] = 's-red'; S.node[w] = 's-red'; S.edge[k] = 'back';
+        C.snap(`Vecino ${w}: ya visitado y con <b>el mismo color</b> que ${v} (${color[v]}). Una arista entre iguales ⇒ ciclo de longitud impar ⇒ <b>NO es bipartito</b>. <code>bipar = false</code> y todo el DFS corta.`, [L('bip', 'else if (color[w] == color[v]) bipar = false;')], V(w));
+        return;
+      } else {
+        C.snap(`Vecino ${w}: ya visitado, con color distinto a ${v}. La arista es compatible.`, [L('bip', 'else if (color[w] == color[v]) bipar = false;')], V(w));
+        S.edge[k] = prev || '';
+      }
+    }
+    if (bipar) { paint(v); }
+  }
+  for (let v = 0; v < n && bipar; v++) {
+    if (!visit[v]) {
+      color[v] = false; paint(v);
+      C.snap(`${v} sin visitar: nueva componente. Su primer vértice puede ir de cualquier color: <code>color[${v}] = false</code>.`, [L('bip', 'if (!visit[v])'), L('bip', 'color[v] = false;')], V(v));
+      dfs(v);
+    }
+  }
+  if (bipar) C.snap(`<b>Fin: SÍ es bipartito.</b> Los vértices azules y los morados forman las dos mitades; toda arista une un azul con un morado.`, [L('bip', 'bool esBipartito() const')], V(-1));
+  else C.snap(`<b>Fin: NO es bipartito.</b> Los dos vértices rojos están unidos y tienen el mismo color.`, [L('bip', 'bool esBipartito() const')], V(-1));
+  return C.f;
+};
+
+
+/* ---------- código mostrado ---------- */
+const CODES = {"clase": {"f": "Grafo.h (resumen)", "tab": "Grafo.h", "lines": ["class Grafo {", "private:", "   int _V;  // número de vértices", "   int _A;  // número de aristas", "   std::vector<Adys> _ady;  // vector de listas de adyacentes", "public:", "   ", "   Grafo(int V) : _V(V), _A(0), _ady(_V) {}", "   ", "   // ... constructor desde un flujo de entrada omitido", "   ", "   int V() const { return _V; }", "   ", "   int A() const { return _A; }", "   ", "   void ponArista(int v, int w) {", "      if (v < 0 || v >= _V || w < 0 || w >= _V)", "         throw std::domain_error(\"Vertice inexistente\");", "      ++_A;", "      _ady[v].push_back(w);", "      _ady[w].push_back(v);", "   }", "   ", "   Adys const& ady(int v) const {", "      if (v < 0 || v >= _V)", "         throw std::domain_error(\"Vertice inexistente\");", "      return _ady[v];", "   }", "   ", "   // ... print() omitido", "};"]}, "comp": {"f": "EJ_04-2.cpp", "tab": "Componentes (DFS)", "lines": ["class MaximaCompConexa {", "public:", "    MaximaCompConexa(Grafo const& g) : visit(g.V(), false), maxim(0) {", "        for (int v = 0; v < g.V(); ++v) {", "            if (!visit[v]) {   // v empieza una componente nueva", "                int tam = dfs(g, v);", "                maxim = max(maxim, tam);", "            }", "        }", "    }", "", "    int maximo() const { return maxim; }", "", "private:", "    vector<bool> visit;   // visit[v] = ya contado en alguna componente", "    int maxim;            // tamano de la mayor componente encontrada", "", "    // devuelve el numero de vertices de la componente de v que aun no se habian visitado", "    int dfs(Grafo const& g, int v) {", "        visit[v] = true;", "        int tam = 1;   // el propio v", "        for (int w : g.ady(v))", "            if (!visit[w]) tam += dfs(g, w);", "        return tam;", "    }", "};"]}, "bfs": {"f": "EJ_04-L.cpp", "tab": "BFS", "lines": ["class CaminosBFS {", "public:", "    CaminosBFS(Grafo const& g, int origen) : dist(g.V(), -1) {", "        bfs(g, origen);", "    }", "", "    int distancia(int v) const { return dist[v]; }", "", "private:", "    vector<int> dist;   // dist[v] = aristas desde el origen (-1 = sin visitar)", "", "    void bfs(Grafo const& g, int origen) {", "        queue<int> q;", "        dist[origen] = 0;", "        q.push(origen);", "        while (!q.empty()) {", "            int v = q.front(); q.pop();", "            for (int w : g.ady(v)) {", "                if (dist[w] == -1) {", "                    dist[w] = dist[v] + 1;", "                    q.push(w);", "                }", "            }", "        }", "    }", "};"]}, "bip": {"f": "EJ_04-7.cpp", "tab": "Bipartito (DFS)", "lines": ["class Bipartito {", "public:", "    Bipartito(Grafo const& g) : visit(g.V(), false), color(g.V(), false), bipar(true) {", "        for (int v = 0; v < g.V() && bipar; ++v) {", "            if (!visit[v]) {   // nueva componente: su primer vertice puede ir de cualquier color", "                color[v] = false;", "                dfs(g, v);", "            }", "        }", "    }", "", "    bool esBipartito() const { return bipar; }", "", "private:", "    vector<bool> visit;   // visit[v] = v ya tiene color asignado", "    vector<bool> color;   // los dos colores: false / true", "    bool bipar;", "", "    void dfs(Grafo const& g, int v) {", "        visit[v] = true;", "        for (int w : g.ady(v)) {", "            if (!bipar) return;   // ya sabemos la respuesta, no seguimos", "            if (!visit[w]) {", "                color[w] = !color[v];   // el vecino lleva el color contrario", "                dfs(g, w);", "            }", "            else if (color[w] == color[v]) bipar = false;   // arista entre iguales", "        }", "    }", "};"]}};
+let markFn = null, curCode = null;
+function showCode(name) {
+  if (curCode === name) return; curCode = name;
+  const c = CODES[name]; markFn = mountCode($('#codeHost'), c.f, c.lines);
+  $$('#codeTabs .btn').forEach(b => b.classList.toggle('on', b.dataset.k === name));
+}
+for (const k in CODES) { const b = document.createElement('button'); b.className = 'btn'; b.dataset.k = k; b.textContent = CODES[k].tab; b.onclick = () => { showCode(k); if (markFn) markFn([]); }; $('#codeTabs').appendChild(b); }
+
+/* ---------- arranque ---------- */
+$('#playerHost').innerHTML = PLAYER_HTML;
+const player = new Player({
+  render: f => { curFrame = f; applyVisual(); drawAdj(f); drawState(f); },
+  mark: lines => { if (markFn) markFn(lines); }
+});
+function drawState(f) {
+  const host = $('#state'); host.innerHTML = '';
+  if (!f || !f.vecs) { if (!f || !f.vecs) host.innerHTML = '<p class="note">Aquí aparecen los vectores del algoritmo (<code>visitado</code>, <code>dist</code>, <code>estado</code>…), la cola o la pila.</p>'; return; }
+  for (const blk of f.vecs) {
+    const d = document.createElement('div');
+    if (blk.kind === 'vec') {
+      d.innerHTML = '<div class="note" style="margin-bottom:3px"><code>' + esc(blk.name) + '</code></div>';
+      const v = document.createElement('div'); v.className = 'vec';
+      blk.vals.forEach((x, i) => { const c = document.createElement('div'); c.className = 'c' + (blk.hot === i ? ' hot' : (blk.ok && blk.ok.includes(i) ? ' ok' : '')); c.innerHTML = '<i>' + i + '</i><b>' + esc(x) + '</b>'; v.appendChild(c); });
+      d.appendChild(v);
+    } else {
+      d.innerHTML = '<div class="listbox"><span class="lab">' + esc(blk.name) + '</span></div>';
+      const lb = d.firstChild;
+      if (!blk.vals.length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '(vacía)'; lb.appendChild(e); }
+      blk.vals.forEach((x, i) => { const c = document.createElement('span'); c.className = 'chip' + (blk.hot === i ? ' cur' : ''); c.textContent = x; lb.appendChild(c); });
+    }
+    host.appendChild(d);
+  }
+}
+const ALGO_LIST = [{"id": "comp", "nombre": "DFS: componentes conexas y tamaños", "src": false, "dst": false, "code": "comp"}, {"id": "bfs", "nombre": "BFS: distancias desde un origen", "src": true, "dst": true, "code": "bfs"}, {"id": "bip", "nombre": "DFS: ¿es bipartito? (2 colores)", "src": false, "dst": false, "code": "bip"}];
+for (const a of ALGO_LIST) { const o = document.createElement('option'); o.value = a.id; o.textContent = a.nombre; $('#algo').appendChild(o); }
+PRESETS.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.nombre; $('#preset').appendChild(o); });
+$('#preset').onchange = () => loadPreset(PRESETS[+$('#preset').value]);
+function updAlgoUI() {
+  const a = ALGO_LIST.find(x => x.id === $('#algo').value);
+  $('#lblSrc').hidden = !a.src; $('#lblDst').hidden = !a.dst;
+  ALGOS_NEED_DAG_RANDOM = !!a.dag;
+  showCode(a.code); if (markFn) markFn([]);
+}
+$('#algo').onchange = updAlgoUI;
+$('#bRun').onclick = () => {
+  const a = ALGO_LIST.find(x => x.id === $('#algo').value);
+  if (!G.n) { $('#msg').innerHTML = 'El grafo está vacío: crea o carga uno.'; return; }
+  const s = Math.max(0, Math.min(G.n - 1, +$('#src').value || 0)), t = Math.max(0, Math.min(G.n - 1, +$('#dst').value || 0));
+  const frames = ALGOS[a.id](s, t);
+  drawGraph(); showCode(a.code); player.load(frames, { play: true });
+};
+$('#legend').innerHTML = "<span><b style=\"border-color:var(--accent);background:var(--accent-soft)\"></b>vértice actual</span><span><b style=\"border-color:var(--blue);background:var(--blue-soft)\"></b>visitado / en la pila</span><span><b style=\"border-color:var(--purple);background:var(--purple-soft)\"></b>en la cola / 2.º color</span><span><b style=\"border-color:var(--green);background:var(--green-soft)\"></b>terminado</span><span><b style=\"border-color:var(--red);background:var(--red-soft)\"></b>conflicto / ciclo</span>";
+setTool('move');
+updAlgoUI();
+loadPreset(PRESETS[0]);
+player.load([{ msg: 'Carga un ejemplo, construye tu propio grafo y elige un algoritmo. Con <b>Añadir</b> verás cómo <code>ponArista</code> rellena las listas de adyacencia.', lines: [] }], { play: false });
+window.__DA = { G, ALGOS, gPon, gAddV, gReset, loadPreset, PRESETS };
+</script>

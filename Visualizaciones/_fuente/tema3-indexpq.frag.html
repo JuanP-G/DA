@@ -1,0 +1,777 @@
+<title>IndexPQ</title>
+<style>
+/*SHARED_CSS*/
+.back { align-self: flex-start; font-size: .88rem; color: var(--blue); text-decoration: none; }
+.back:hover { text-decoration: underline; }
+.back:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
+.ctrl { display: flex; flex-direction: column; gap: 10px; }
+.ctrl .bar label.chk { cursor: pointer; }
+.ctrl .bar label.chk input { accent-color: var(--accent); }
+.ctrl .grp { font-size: .78rem; color: var(--muted); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-right: 2px; }
+.field.num { width: 5.4em; }
+@media (max-width: 520px) { .ctrl .bar .sep { display: none; } }
+select.field.wide { max-width: 100%; }
+.desc { margin: 0; font-size: .88rem; color: var(--muted); }
+.desc b { color: var(--ink); font-weight: 600; }
+.left { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.right { position: sticky; top: 12px; min-width: 0; }
+@media (max-width: 860px) { .right { position: static; } }
+#code { position: relative; max-height: 640px; overflow: auto; }
+.inst { margin: 0 0 8px; font-size: .82rem; color: var(--muted); }
+.inst code { font-family: var(--mono); font-size: .95em; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.outbox { min-height: 24px; margin-bottom: 6px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .85rem; color: var(--muted); }
+.pill { font-family: var(--mono); font-size: .82rem; padding: 3px 10px; border-radius: 999px; background: var(--green-soft); color: var(--ink); border: 1px solid var(--green); }
+.stat { font-family: var(--mono); font-size: .8rem; color: var(--muted); margin: 6px 0 0; }
+/* árbol */
+svg.viz.tree { max-width: 640px; margin: 0 auto; }
+.hn { transition: transform var(--dur, .4s) ease; }
+.hn.nt { transition: none; }
+.hn rect { fill: var(--node); stroke: var(--line); stroke-width: 2; transition: fill .2s, stroke .2s; }
+.hn.root rect { stroke: var(--accent); }
+.hn.ok rect { stroke: var(--green); }
+.hn.sel rect { stroke: var(--accent); fill: var(--accent-soft); }
+.hn.done rect { stroke: var(--green); fill: var(--green-soft); }
+.hn.cmp rect { stroke: var(--blue); fill: var(--blue-soft); }
+.hn.mov rect { stroke: var(--red); fill: var(--red-soft); }
+.hn.hand rect { stroke: var(--purple); fill: var(--purple-soft); stroke-dasharray: 5 3; }
+.hn text.nm { font-size: 9.5px; text-anchor: middle; }
+.hn text.vl { font-size: 13px; font-weight: 600; text-anchor: middle; }
+svg.viz .hn text.pm { font-size: 9px; text-anchor: end; fill: var(--purple); display: none; font-weight: 600; }
+.hn.hand text.pm { display: block; }
+svg.viz text.ix { font-size: 9px; fill: var(--muted); }
+.ghost { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 3 3; opacity: .7; }
+.edge { stroke: var(--line); stroke-width: 2; }
+.edge.cmp { stroke: var(--blue); } .edge.mov { stroke: var(--red); }
+/* array */
+.arrwrap { margin-top: 10px; }
+.arrlbl { font-size: .78rem; color: var(--muted); margin: 0 0 4px; }
+.arrlbl code { font-family: var(--mono); background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+#arr { display: flex; flex-wrap: wrap; gap: 4px; }
+.cell { width: 46px; text-align: center; font-family: var(--mono); }
+.cell .ixc { font-size: 10px; color: var(--muted); }
+.cell .bx { border: 2px solid var(--line); border-radius: 6px; background: var(--node); height: 38px; padding: 2px 0;
+  display: flex; flex-direction: column; justify-content: center; line-height: 1.15; transition: background .2s, border-color .2s; }
+.cell .bx .n1 { font-size: 9px; color: var(--muted); white-space: nowrap; overflow: hidden; }
+.cell .bx .v1 { font-size: 13px; font-weight: 600; }
+.cell.empty .bx { opacity: .35; border-style: dashed; }
+.cell.unused .bx { opacity: .45; border-style: dashed; }
+.cell.unused { width: 36px; }
+.cell.root .bx { border-color: var(--accent); }
+.cell.ok .bx { border-color: var(--green); }
+.cell.sel .bx { border-color: var(--accent); background: var(--accent-soft); }
+.cell.done .bx { border-color: var(--green); background: var(--green-soft); }
+.cell.cmp .bx { border-color: var(--blue); background: var(--blue-soft); }
+.cell.mov .bx { border-color: var(--red); background: var(--red-soft); }
+.cell.hand .bx { border-color: var(--purple); background: var(--purple-soft); border-style: dashed; }
+/* tabla posiciones */
+table.t.pos td, table.t.pos th { padding: 4px 8px; }
+table.t.pos td { font-family: var(--mono); font-size: .84rem; transition: background .25s; }
+table.t.pos td.nmc { font-family: var(--sans); }
+table.t.pos tr.hand td { background: var(--purple-soft); }
+table.t.pos tr.chg td.pc { background: var(--red-soft); font-weight: 700; }
+table.t.pos tr.sel td { background: var(--accent-soft); }
+table.t.pos td.pc .arrow { color: var(--muted); font-size: .78rem; }
+table.t.pos tr.abs td { color: var(--muted); }
+.cost { display: block; margin-top: 4px; font-size: .82rem; color: var(--muted); }
+.msg.err { border-left-color: var(--red); }
+.msg code { white-space: normal; overflow-wrap: anywhere; }
+/* texto explicativo */
+.ideas { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 8px; font-size: .93rem; }
+.ideas li::marker { color: var(--accent); font-weight: 700; }
+.ideas code { font-family: var(--mono); font-size: .9em; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+.cols2 { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 860px) { .cols2 { grid-template-columns: minmax(0, 1fr); } }
+.tbl-wrap { overflow-x: auto; }
+table.t td a { color: var(--blue); }
+table.t td:first-child { white-space: nowrap; }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todas las estructuras</a>
+  <header class="top">
+    <span class="tag">Tema 3</span>
+    <h1>IndexPQ</h1>
+    <p class="lede">Una cola con prioridad cuyos elementos son enteros <code>0..N-1</code> y cuya prioridad <b>se puede cambiar</b> con <code>update</code> en O(log n). Es el mismo montículo binario del tema 2, más un vector <code>posiciones</code> que dice en qué sitio del array está cada elemento. Observa cómo se actualiza esa tabla en cada movimiento.</p>
+  </header>
+
+  <section class="panel ctrl" aria-label="Controles">
+    <h2>Operaciones</h2>
+    <div class="bar">
+      <span class="grp">Ejemplo</span>
+      <select class="field wide" id="selPreset" aria-label="Ejemplo precargado"></select>
+      <span class="sep"></span>
+      <label>orden
+        <select class="field" id="selModo" aria-label="Orden de la cola">
+          <option value="max">máximos (greater)</option>
+          <option value="min">mínimos (less)</option>
+        </select>
+      </label>
+      <label class="chk"><input type="checkbox" id="chkTie"> empate: menor nº de elemento primero</label>
+    </div>
+    <p class="desc" id="presetDesc"></p>
+    <div class="bar">
+      <span class="grp">Elemento</span>
+      <select class="field" id="selElem" aria-label="Elemento"></select>
+      <label>prioridad <input class="field num" id="inPrio" type="number" value="50" step="1" min="-999" max="999" aria-label="Prioridad"></label>
+      <button class="btn primary" id="bUpdate" title="update(e, p): si no está lo inserta; si está, cambia su prioridad">update</button>
+      <button class="btn" id="bPush" title="push(e, p): lanza excepción si e ya está en la cola">push</button>
+      <span class="sep"></span>
+      <button class="btn" id="bPop">pop</button>
+      <button class="btn" id="bTop">top</button>
+      <button class="btn" id="bPrio" title="priority(e) del elemento seleccionado">priority</button>
+    </div>
+    <div class="bar">
+      <button class="btn on" id="bScript"></button>
+      <button class="btn" id="bRandOp">Operación aleatoria</button>
+      <button class="btn" id="bFill">Rellenar aleatorio</button>
+      <button class="btn" id="bClear">Vaciar</button>
+      <button class="btn" id="bReset">Reiniciar ejemplo</button>
+    </div>
+  </section>
+
+  <div class="stage">
+    <div class="left">
+      <section class="panel" aria-label="Ejecución paso a paso">
+        <h2>Ejecución paso a paso</h2>
+        <div id="playerHost"></div>
+      </section>
+
+      <section class="panel" aria-label="Montículo">
+        <h2>Montículo · árbol y array (índices desde 1)</h2>
+        <div class="legend" style="margin-bottom:8px">
+          <span><b style="background:var(--node);border-color:var(--accent)"></b>raíz = <code>top()</code></span>
+          <span><b style="background:var(--blue-soft);border-color:var(--blue)"></b>comparando</span>
+          <span><b style="background:var(--red-soft);border-color:var(--red)"></b>baja/sube (movimiento)</span>
+          <span><b style="background:var(--purple-soft);border-color:var(--purple);border-style:dashed"></b><code>parmov</code> en la mano</span>
+          <span><b style="background:var(--green-soft);border-color:var(--green)"></b>colocado</span>
+        </div>
+        <div class="outbox" id="outBox"></div>
+        <div class="canvas-scroll"><svg class="viz tree" id="svg" role="img" aria-label="Árbol del montículo"></svg></div>
+        <div class="arrwrap">
+          <p class="arrlbl"><code>array</code> (el índice 0 no se usa; padre de <code>i</code> = <code>i/2</code>, hijos = <code>2i</code> y <code>2i+1</code>)</p>
+          <div id="arr"></div>
+        </div>
+        <p class="stat" id="stat"></p>
+      </section>
+
+      <section class="panel" aria-label="Tabla posiciones">
+        <h2><code style="text-transform:none">posiciones</code> · elemento → índice en <code style="text-transform:none">array</code></h2>
+        <div class="tbl-wrap">
+          <table class="t pos" id="tpos">
+            <thead><tr><th>e</th><th>nombre</th><th>posiciones[e]</th><th>prioridad</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="note" style="margin-top:8px">Fila roja: la posición acaba de cambiar. Fila morada: es <code>parmov</code>; su entrada <b>no</b> se actualiza hasta que acaba <code>flotar</code>/<code>hundir</code>. <code>0</code> = el elemento no está en la cola.</p>
+      </section>
+    </div>
+
+    <section class="panel right" aria-label="Código">
+      <h2>Código C++ · IndexPQ.h</h2>
+      <p class="inst" id="inst"></p>
+      <div id="code"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <h2>Para entenderlo</h2>
+    <ol class="ideas">
+      <li><b>Un árbol completo dentro de un array.</b> Los niveles se rellenan de izquierda a derecha, así que no hacen falta punteros. Con índices desde 1: padre de <code>i</code> = <code>i/2</code>, hijos = <code>2i</code> y <code>2i+1</code>. La posición 0 se desperdicia a propósito (por eso <code>array(1)</code> y <code>size() = array.size() - 1</code>) para que estas fórmulas sean tan simples.</li>
+      <li><b>Costes.</b> La altura es ⌊log₂ n⌋, y <code>push</code>, <code>pop</code> y <code>update</code> recorren como mucho un camino de la raíz a una hoja: <b>O(log n)</b>. <code>top</code> y <code>priority</code> son <b>O(1)</b>. Un <code>update</code> solo <i>flota</i> o solo <i>hunde</i> (o no se mueve), nunca las dos cosas.</li>
+      <li><b>Por qué hace falta <code>posiciones</code>.</b> Para cambiar la prioridad de un elemento primero hay que <i>encontrarlo</i> en el array; recorrerlo costaría O(n). <code>posiciones[e]</code> da su índice en O(1). A cambio, <b>cada vez que un par se mueve</b> hay que actualizar su entrada: fíjate en que cada línea <code>array[hueco] = ...</code> va seguida de <code>posiciones[...] = hueco</code>.</li>
+      <li><b>No hay <i>swaps</i>: se usa un hueco.</b> <code>flotar</code>/<code>hundir</code> sacan <code>parmov</code> del array, suben o bajan a los demás hacia el hueco (una asignación por nivel) y escriben <code>parmov</code> al final. El resultado es el mismo que haciendo intercambios sucesivos, pero con menos escrituras.</li>
+      <li><b>El comparador manda.</b> <code>antes(a,b)</code> es «a sale antes que b» y debe ser <i>estricta</i>. Con <code>less&lt;T&gt;</code> (por defecto) la cola es de <b>mínimos</b>; con <code>greater&lt;T&gt;</code>, de máximos (¡al revés que <code>std::priority_queue</code>!). Los desempates se meten dentro de la prioridad (un <code>struct</code> como <code>Canales{audiencia, canal}</code> en EJ_03-L). Y los elementos son <code>int</code> en <code>0..N-1</code>: si tienes nombres, tradúcelos con un <code>unordered_map</code> (EJ_03-2, EJ_03-5).</li>
+    </ol>
+  </section>
+
+  <section class="panel">
+    <h2>Ejercicios del repo que usan IndexPQ</h2>
+    <div class="tbl-wrap">
+    <table class="t">
+      <thead><tr><th>Nº</th><th>Problema</th><th>Cómo se usa</th></tr></thead>
+      <tbody>
+        <tr><td>03-1</td><td>Volando drones</td><td>Dos <code>IndexPQ&lt;int, greater&lt;int&gt;&gt;</code> (pilas de 9V y de 1,5V): <code>top</code> + <code>pop</code> y volver a meter lo que sobra.</td></tr>
+        <tr><td>03-2</td><td>12 points go to…</td><td>Países como índices; <code>priority</code> + <code>update</code> con prioridad <code>(puntos, nombre)</code>; <code>top</code> para el líder.</td></tr>
+        <tr><td>03-3</td><td>Multitarea</td><td>Prioridad <code>(inicio, fin)</code>; <code>update</code> para tareas periódicas y <code>pop</code> para las únicas.</td></tr>
+        <tr><td>03-5</td><td>Tridente de temas candentes</td><td>Prioridad <code>(citas, último C)</code>; <code>update</code> en cada C/D y los 3 primeros con <code>top</code>/<code>pop</code>/<code>push</code>.</td></tr>
+        <tr><td>03-L</td><td>La batalla por las audiencias</td><td><code>IndexPQ&lt;Canales, greater&lt;Canales&gt;&gt;</code>; <code>update</code> con la nueva audiencia y <code>top</code> para el líder.</td></tr>
+        <tr><td>03-4</td><td>Pájaros en vuelo</td><td>No usa IndexPQ: mediana con dos montículos (<a href="tema2-cola-prioridad.html">tema 2</a>).</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer class="foot">Apuntes de DA · <code>Estructuras de datos/IndexPQ.h</code> (A. Verdejo, I. Fábregas). Los nombres de elementos de la visualización son solo etiquetas: la estructura real guarda enteros.</footer>
+</div>
+
+<script>
+/*SHARED_JS*/
+
+/*LOGIC_START*/
+/* ===== Lógica pura (sin DOM): réplica paso a paso de IndexPQ.h que va generando FRAMES ===== */
+function H(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+/* Código C++ real (copia literal de IndexPQ.h, sin la sangría de la clase) y mapa clave -> nº de línea */
+const CODE3 = [], L3 = {};
+function c3(text, key) { CODE3.push(text); if (key) L3[key] = CODE3.length; }
+c3('// IndexPQ.h  (A. Verdejo · I. Fábregas) — fragmentos');
+c3('std::vector<Par> array;       // El primer elemento está en la posición 1');
+c3('std::vector<int> posiciones;  // un 0 indica que el elemento no está');
+c3('Comparator antes;             // antes(a,b) es cierto si a es más prioritario que b');
+c3('');
+c3('void push(int e, T const& p) {', 'push_sig');
+c3('   if (posiciones.at(e) != 0)', 'push_if');
+c3('      throw std::invalid_argument("No se pueden insertar elementos repetidos.");', 'push_throw');
+c3('   else {');
+c3('      array.push_back({e, p});', 'push_pb');
+c3('      posiciones[e] = size();', 'push_pos');
+c3('      flotar(size());', 'push_fl');
+c3('   }');
+c3('}');
+c3('');
+c3('// Actualizar la prioridad del elemento e');
+c3('void update(int e, T const& p) {', 'up_sig');
+c3('   int i = posiciones.at(e);', 'up_i');
+c3('   if (i == 0) // el elemento e se inserta por primera vez', 'up_if');
+c3('      push(e, p);', 'up_push');
+c3('   else {');
+c3('      array[i].prioridad = p;', 'up_set');
+c3('      if (i != 1 && antes(array[i].prioridad, array[i/2].prioridad))', 'up_if2');
+c3('         flotar(i);', 'up_fl');
+c3('      else // puede hacer falta hundir a e', 'up_else');
+c3('         hundir(i);', 'up_hu');
+c3('   }');
+c3('}');
+c3('');
+c3('Par const& top() const {', 'top_sig');
+c3('   if (size() == 0)', 'top_if');
+c3('      throw std::domain_error("No se puede consultar el primero de una cola vacia");', 'top_throw');
+c3('   else return array[1];', 'top_ret');
+c3('}');
+c3('');
+c3('T const& priority(int e) const {', 'pr_sig');
+c3('   if (posiciones.at(e) == 0)', 'pr_if');
+c3('      throw std::invalid_argument("No se puede consultar la prioridad de un elemento que no existe");', 'pr_throw');
+c3('   else', 'pr_else');
+c3('      return array[posiciones[e]].prioridad;', 'pr_ret');
+c3('}');
+c3('');
+c3('void pop() {', 'pop_sig');
+c3('   if (size() == 0) throw std::domain_error("No se puede eliminar el primero de una cola vacia.");', 'pop_empty');
+c3('   else {');
+c3('      posiciones[array[1].elem] = 0; // para indicar que no está', 'pop_pos0');
+c3('      if (size() > 1) {', 'pop_if');
+c3('         array[1] = std::move(array.back());', 'pop_mv');
+c3('         posiciones[array[1].elem] = 1;', 'pop_p1');
+c3('         array.pop_back();', 'pop_pb');
+c3('         hundir(1);', 'pop_hu');
+c3('      } else', 'pop_else');
+c3('         array.pop_back();', 'pop_pb2');
+c3('   }');
+c3('}');
+c3('');
+c3('void flotar(int i) {', 'fl_sig');
+c3('   Par parmov = std::move(array[i]);', 'fl_par');
+c3('   int hueco = i;', 'fl_hueco');
+c3('   while (hueco != 1 && antes(parmov.prioridad, array[hueco/2].prioridad)) {', 'fl_while');
+c3('      array[hueco] = std::move(array[hueco/2]); posiciones[array[hueco].elem] = hueco;', 'fl_move');
+c3('      hueco /= 2;', 'fl_half');
+c3('   }');
+c3('   array[hueco] = std::move(parmov); posiciones[array[hueco].elem] = hueco;', 'fl_end');
+c3('}');
+c3('');
+c3('void hundir(int i) {', 'hu_sig');
+c3('   Par parmov = std::move(array[i]);', 'hu_par');
+c3('   int hueco = i;', 'hu_hueco');
+c3('   int hijo = 2*hueco; // hijo izquierdo, si existe', 'hu_hijo');
+c3('   while (hijo <= size())  {', 'hu_while');
+c3('      // cambiar al hijo derecho de i si existe y va antes que el izquierdo');
+c3('      if (hijo < size() && antes(array[hijo + 1].prioridad, array[hijo].prioridad))', 'hu_if1');
+c3('         ++hijo;', 'hu_inc');
+c3('      // flotar el hijo si va antes que el elemento hundiéndose');
+c3('      if (antes(array[hijo].prioridad, parmov.prioridad)) {', 'hu_if2');
+c3('         array[hueco] = std::move(array[hijo]); posiciones[array[hueco].elem] = hueco;', 'hu_move');
+c3('         hueco = hijo; hijo = 2*hueco;', 'hu_next');
+c3('      }');
+c3('      else break;', 'hu_else');
+c3('   }');
+c3('   array[hueco] = std::move(parmov); posiciones[array[hueco].elem] = hueco;', 'hu_end');
+c3('}');
+
+/* cfg = { N, nombres: {e: 'nombre'}, modo: 'min'|'max', desempate: bool }.
+   Prioridad = { v, t }: v es el valor y t el nº de elemento (sirve para desempatar, como Canales{audiencia, canal}). */
+function crearIPQ(cfg) {
+  const L = L3;
+  const S = { A: [null], pos: new Array(cfg.N).fill(0), frames: [], rec: true, cmp: 0, mov: 0, hand: null, hueco: 0, out: null };
+  const antesP = (a, b) => a.v !== b.v ? (cfg.modo === 'min' ? a.v < b.v : a.v > b.v) : (!!cfg.desempate && a.t < b.t);
+  const antes = (a, b) => { S.cmp++; return antesP(a, b); };
+  const size = () => S.A.length - 1;
+  const nm = e => '<b>' + H(cfg.nombres[e]) + '</b>';
+  const code = s => '<code>' + s + '</code>';
+  const mk = (e, v) => ({ v: v, t: e });
+  const reglaTxt = () => cfg.modo === 'min' ? 'sale antes el menor' : 'sale antes el mayor';
+
+  /* “Foto” del estado actual para el reproductor. arr es 1-based; el hueco se dibuja ocupado por parmov. */
+  function snap(extra) {
+    const arr = S.A.map(x => x ? { e: x.e, v: x.p.v } : null);
+    if (S.hand) arr[S.hueco] = { e: S.hand.e, v: S.hand.p.v };
+    return Object.assign({
+      arr: arr, pos: S.pos.slice(), hole: S.hand ? S.hueco : 0, handE: S.hand ? S.hand.e : -1,
+      cmp: null, res: null, mov: null, done: 0, sel: null, selE: -1, out: S.out, err: false,
+      st: { c: S.cmp, m: S.mov }, msg: '', lines: [], final: false
+    }, extra || {});
+  }
+  function F(msg, lines, extra) { if (S.rec) S.frames.push(Object.assign(snap(extra), { msg: msg, lines: lines || [] })); }
+
+  /* texto que explica por qué antes(a,b) dio ese resultado */
+  function razon(a, b, ok) {
+    if (a.v === b.v) {
+      return cfg.desempate
+        ? 'empate en ' + a.v + ': desempata el nº de elemento (' + a.t + (a.t < b.t ? ' &lt; ' : ' &gt; ') + b.t + ')'
+        : 'empate en ' + a.v + ': <code>antes</code> es estricta, un empate no cuenta como «va antes»';
+    }
+    return a.v + (ok ? ' va antes que ' : ' no va antes que ') + b.v + ' (' + reglaTxt() + ')';
+  }
+
+  function flotar(i) {
+    const parmov = S.A[i]; S.A[i] = null; S.hand = parmov; S.hueco = i; let hueco = i;
+    F(code('flotar(' + i + ')') + ': sacamos <b>parmov</b> = ' + nm(parmov.e) + ' (' + parmov.p.v + ') de la posición ' + i + ' y queda un <i>hueco</i>. <code>hueco = ' + i + '</code>.', [L.fl_par, L.fl_hueco]);
+    for (;;) {
+      if (hueco === 1) {
+        F('<code>hueco == 1</code>: parmov ha llegado a la raíz y no tiene padre. Fin del bucle.', [L.fl_while], { cmp: [1] });
+        break;
+      }
+      const pp = hueco >> 1, padre = S.A[pp], ok = antes(parmov.p, padre.p);
+      F('Comparo parmov con el padre ' + nm(padre.e) + ' (' + padre.p.v + ') de <code>array[' + pp + ']</code>: ¿<code>antes(' + parmov.p.v + ', ' + padre.p.v + ')</code>? <b>' + (ok ? 'Sí' : 'No') + '</b>: ' + razon(parmov.p, padre.p, ok) + (ok ? '. El padre debe bajar.' : '. parmov se queda aquí.'),
+        [L.fl_while], { cmp: [hueco, pp], res: ok });
+      if (!ok) break;
+      S.A[hueco] = padre; S.A[pp] = null; S.pos[padre.e] = hueco; S.mov++; S.hueco = pp;
+      F('El padre ' + nm(padre.e) + ' <span style="color:var(--red)">baja</span> al hueco: <code>array[' + hueco + '] = array[' + pp + ']</code> y <code>posiciones[' + padre.e + '] = ' + hueco + '</code> (su entrada cambia de ' + pp + ' a ' + hueco + '). Ahora <code>hueco = ' + pp + '</code>.',
+        [L.fl_move, L.fl_half], { mov: { from: pp, to: hueco } });
+      hueco = pp;
+    }
+    S.A[hueco] = parmov; S.pos[parmov.e] = hueco; S.hand = null; S.hueco = 0;
+    F('<code>array[' + hueco + '] = parmov</code> y <code>posiciones[' + parmov.e + '] = ' + hueco + '</code>: ' + nm(parmov.e) + ' queda colocado en la posición ' + hueco + '.', [L.fl_end], { done: hueco });
+  }
+
+  function hundir(i) {
+    const parmov = S.A[i]; S.A[i] = null; S.hand = parmov; S.hueco = i; let hueco = i, hijo = 2 * hueco;
+    F(code('hundir(' + i + ')') + ': sacamos <b>parmov</b> = ' + nm(parmov.e) + ' (' + parmov.p.v + ') de la posición ' + i + '. <code>hueco = ' + i + '</code>, <code>hijo = 2·hueco = ' + hijo + '</code> (hijo izquierdo, si existe).', [L.hu_par, L.hu_hueco, L.hu_hijo]);
+    let fin = true;
+    while (hijo <= size()) {
+      if (hijo < size()) {
+        const izq = S.A[hijo], der = S.A[hijo + 1], okd = antes(der.p, izq.p);
+        F('Hermanos: ' + nm(izq.e) + ' (' + izq.p.v + ') en <code>' + hijo + '</code> y ' + nm(der.e) + ' (' + der.p.v + ') en <code>' + (hijo + 1) + '</code>. ¿<code>antes(derecho, izquierdo)</code>? <b>' + (okd ? 'Sí' : 'No') + '</b>: ' + razon(der.p, izq.p, okd) + '. ' + (okd ? 'Elijo el derecho: <code>++hijo</code> → ' + (hijo + 1) + '.' : 'Me quedo con el izquierdo (' + hijo + ').'),
+          okd ? [L.hu_while, L.hu_if1, L.hu_inc] : [L.hu_while, L.hu_if1], { cmp: [hijo, hijo + 1], res: okd });
+        if (okd) ++hijo;
+      }
+      const hj = S.A[hijo], ok = antes(hj.p, parmov.p);
+      F((hijo === size() && hijo === 2 * hueco ? 'Solo hay un hijo (' + hijo + ' == size()). ' : '') + 'El hijo candidato es ' + nm(hj.e) + ' (' + hj.p.v + ') en <code>array[' + hijo + ']</code>. ¿<code>antes(hijo, parmov)</code>? <b>' + (ok ? 'Sí' : 'No') + '</b>: ' + razon(hj.p, parmov.p, ok) + (ok ? '. El hijo debe subir.' : '. parmov se queda aquí: <code>break</code>.'),
+        ok ? [L.hu_if2] : [L.hu_if2, L.hu_else], { cmp: [hijo, hueco], res: ok });
+      if (!ok) { fin = false; break; }
+      S.A[hueco] = hj; S.A[hijo] = null; S.pos[hj.e] = hueco; S.mov++; S.hueco = hijo;
+      F('El hijo ' + nm(hj.e) + ' <span style="color:var(--red)">sube</span> al hueco: <code>array[' + hueco + '] = array[' + hijo + ']</code> y <code>posiciones[' + hj.e + '] = ' + hueco + '</code> (de ' + hijo + ' a ' + hueco + '). <code>hueco = ' + hijo + '</code>, <code>hijo = ' + (2 * hijo) + '</code>.',
+        [L.hu_move, L.hu_next], { mov: { from: hijo, to: hueco } });
+      hueco = hijo; hijo = 2 * hueco;
+    }
+    if (fin) F('<code>hijo = ' + hijo + ' &gt; size() = ' + size() + '</code>: el hueco ya no tiene hijos. Fin del bucle.', [L.hu_while], { cmp: [hueco] });
+    S.A[hueco] = parmov; S.pos[parmov.e] = hueco; S.hand = null; S.hueco = 0;
+    F('<code>array[' + hueco + '] = parmov</code> y <code>posiciones[' + parmov.e + '] = ' + hueco + '</code>: ' + nm(parmov.e) + ' queda colocado en la posición ' + hueco + (hueco === i ? ' (no se ha movido).' : '.'), [L.hu_end], { done: hueco });
+  }
+
+  function dentro(e) { return e >= 0 && e < cfg.N; }
+
+  function _push(e, v) {
+    F(code('push(' + e + ', ' + v + ')') + ' con ' + nm(e) + ': <code>posiciones[' + e + ']</code> vale ' + S.pos[e] + (S.pos[e] === 0 ? ', así que el elemento no está y puede insertarse.' : '.'), [L.push_sig, L.push_if]);
+    if (S.pos[e] !== 0) {
+      F('<b>Error</b>: ' + nm(e) + ' ya está en la cola (<code>posiciones[' + e + '] = ' + S.pos[e] + '</code>). Se lanza <code>invalid_argument("No se pueden insertar elementos repetidos.")</code>. Para cambiar su prioridad se usa <code>update</code>.', [L.push_if, L.push_throw], { err: true });
+      return;
+    }
+    S.A.push({ e: e, p: mk(e, v) }); S.pos[e] = size();
+    F('Se añade al final: <code>array[' + size() + '] = {' + e + ', ' + v + '}</code> y <code>posiciones[' + e + '] = ' + size() + '</code>. Ahora puede incumplir el invariante con su padre: <code>flotar(' + size() + ')</code>.', [L.push_pb, L.push_pos, L.push_fl], { sel: [size()] });
+    flotar(size());
+  }
+
+  function _update(e, v) {
+    const i = S.pos[e];
+    F(code('update(' + e + ', ' + v + ')') + ' con ' + nm(e) + ': <code>i = posiciones[' + e + '] = ' + i + '</code>' + (i === 0 ? '.' : ': lo encuentra en O(1), sin recorrer el array.'), [L.up_sig, L.up_i], i ? { sel: [i], selE: e } : {});
+    if (i === 0) {
+      F('<code>i == 0</code>: el elemento no estaba en la cola, así que <code>update</code> lo inserta con <code>push</code>.', [L.up_if, L.up_push]);
+      return _push(e, v);
+    }
+    const old = S.A[i].p.v; S.A[i] = { e: e, p: mk(e, v) };
+    F('<code>array[' + i + '].prioridad = ' + v + '</code> (antes ' + old + '). La prioridad ha ' + (v === old ? 'quedado igual' : ((cfg.modo === 'min' ? v < old : v > old) ? 'mejorado' : 'empeorado')) + ': hay que ver si ahora ' + nm(e) + ' debe subir o bajar.', [L.up_set], { sel: [i], selE: e });
+    if (i === 1) {
+      F('<code>i == 1</code>: es la raíz, no tiene padre y no puede flotar. Se ejecuta <code>hundir(1)</code>, por si ahora debe bajar.', [L.up_if2, L.up_else, L.up_hu], { sel: [1], selE: e });
+      return hundir(1);
+    }
+    const pp = i >> 1, ok = antes(S.A[i].p, S.A[pp].p);
+    F('¿<code>antes(array[' + i + '].prioridad, array[' + pp + '].prioridad)</code>? Nueva prioridad ' + v + ' frente al padre ' + nm(S.A[pp].e) + ' (' + S.A[pp].p.v + '): <b>' + (ok ? 'Sí' : 'No') + '</b>, ' + razon(S.A[i].p, S.A[pp].p, ok) + '. ' + (ok ? 'Se ejecuta <code>flotar(' + i + ')</code>.' : 'Entonces no flota: se ejecuta <code>hundir(' + i + ')</code> (si no baja, no se mueve).'),
+      ok ? [L.up_if2, L.up_fl] : [L.up_if2, L.up_else, L.up_hu], { cmp: [i, pp], res: ok });
+    if (ok) flotar(i); else hundir(i);
+  }
+
+  function _pop() {
+    if (size() === 0) {
+      F('<b>Error</b>: cola vacía. Se lanza <code>domain_error("No se puede eliminar el primero de una cola vacia.")</code>.', [L.pop_sig, L.pop_empty], { err: true });
+      return;
+    }
+    const raiz = S.A[1];
+    S.pos[raiz.e] = 0; S.out = { e: raiz.e, v: raiz.p.v };
+    F(code('pop()') + ': sale la raíz ' + nm(raiz.e) + ' (' + raiz.p.v + '), la más prioritaria. Se marca como ausente: <code>posiciones[' + raiz.e + '] = 0</code>.', [L.pop_sig, L.pop_pos0], { sel: [1], selE: raiz.e });
+    if (size() > 1) {
+      const ult = S.A[S.A.length - 1], k = size();
+      S.A[1] = ult; S.pos[ult.e] = 1; S.A.pop(); S.mov++;
+      F('No se puede dejar la raíz vacía: el último, ' + nm(ult.e) + ' (' + ult.p.v + '), pasa a <code>array[1]</code> y <code>posiciones[' + ult.e + '] = 1</code>. Se quita la última posición (<code>pop_back</code>; el montículo ahora tiene ' + size() + ' elementos). Como viene de abajo, seguramente no va antes que sus hijos: <code>hundir(1)</code>.',
+        [L.pop_if, L.pop_mv, L.pop_p1, L.pop_pb, L.pop_hu], { mov: { from: k, to: 1 } });
+      hundir(1);
+    } else {
+      S.A.pop();
+      F('Solo había un elemento: basta con <code>array.pop_back()</code>. La cola queda vacía.', [L.pop_if, L.pop_else, L.pop_pb2]);
+    }
+  }
+
+  function run(fn) {
+    S.frames = []; S.cmp = 0; S.mov = 0; S.out = null; S.rec = true;
+    fn();
+    const fr = S.frames;
+    if (fr.length) {
+      const last = fr[fr.length - 1]; last.final = true;
+      if (!last.err && S.mov + S.cmp > 0) last.msg += '<span class="cost">Coste de esta operación: ' + S.cmp + ' comparaciones y ' + S.mov + ' movimientos (O(log n)).</span>';
+    }
+    return fr;
+  }
+  function errFrame(msg, lines) { return [Object.assign(snap({ err: true }), { msg: msg, lines: lines || [], final: true })]; }
+
+  const api = {
+    S: S, cfg: cfg, size: size,
+    has: e => dentro(e) && S.pos[e] !== 0,
+    priorityOf: e => S.A[S.pos[e]].p.v,
+    topElem: () => size() ? S.A[1].e : -1,
+    push(e, v) { return run(() => _push(e, v)); },
+    update(e, v) { return run(() => _update(e, v)); },
+    pop() { return run(_pop); },
+    top() {
+      return run(() => {
+        if (size() === 0) { F('<b>Error</b>: cola vacía. Se lanza <code>domain_error("No se puede consultar el primero de una cola vacia")</code>.', [L.top_sig, L.top_if, L.top_throw], { err: true }); return; }
+        const t = S.A[1];
+        F(code('top()') + ' devuelve <code>array[1]</code> = {' + t.e + ', ' + t.p.v + '}: ' + nm(t.e) + ' con prioridad <b>' + t.p.v + '</b>. Coste O(1): el más prioritario siempre está en la raíz.', [L.top_sig, L.top_if, L.top_ret], { sel: [1], selE: t.e });
+      });
+    },
+    priority(e) {
+      return run(() => {
+        if (S.pos[e] === 0) { F('<b>Error</b>: ' + nm(e) + ' no está en la cola. Se lanza <code>invalid_argument("No se puede consultar la prioridad de un elemento que no existe")</code>.', [L.pr_sig, L.pr_if, L.pr_throw], { err: true }); return; }
+        const i = S.pos[e];
+        F(code('priority(' + e + ')') + ': <code>posiciones[' + e + '] = ' + i + '</code> → <code>array[' + i + '].prioridad</code> = <b>' + S.A[i].p.v + '</b>. Coste O(1) gracias a <code>posiciones</code>.', [L.pr_sig, L.pr_if, L.pr_else, L.pr_ret], { sel: [i], selE: e });
+      });
+    },
+    note(msg) { return [Object.assign(snap({}), { msg: msg, final: true })]; },
+    errMsg(msg) { return errFrame(msg, []); },
+    /* sin frames (para construir estados iniciales) */
+    silent(fn) { const r = S.rec; S.rec = false; S.frames = []; try { fn(); } finally { S.rec = r; S.frames = []; } },
+    sPush(e, v) { api.silent(() => _push(e, v)); },
+    sUpdate(e, v) { api.silent(() => _update(e, v)); },
+    clear() { S.A = [null]; S.pos.fill(0); S.hand = null; S.hueco = 0; S.out = null; S.frames = []; },
+    pairs() { return S.A.slice(1).map(x => [x.e, x.p.v]); },
+    state() { return snap({}); }
+  };
+  return api;
+}
+/*LOGIC_END*/
+
+/* ================= Interfaz ================= */
+const PRESETS = [
+  { id: 'aud', titulo: 'EJ_03-L · La batalla por las audiencias', modo: 'max', desempate: true, base: 1,
+    nombres: ['Canal 1', 'Canal 2', 'Canal 3', 'Canal 4', 'Canal 5', 'Canal 6'],
+    inicial: [30, 50, 20, 40, 10, 45], prio: 70,
+    inst: 'IndexPQ<Canales, greater<Canales>> pq(canales + 1);   // canales 1..C → índice 0 sin usar',
+    desc: '<b>Audiencia por canal</b>: manda el canal con <b>más espectadores</b> (cola de máximos) y, en caso de empate, el de menor número (opción «empate»). Cada <code>update</code> es un cambio de audiencia; <code>top()</code> es el líder, que acumula los minutos hasta el siguiente cambio. Aquí la prioridad es solo la audiencia (en el .cpp es <code>{audiencia, canal}</code>).',
+    script: [
+      { txt: 'minuto 10: el Canal 5 sube a 70', op: ['up', 5, 70] },
+      { txt: 'minuto 25: el Canal 2 cae a 5', op: ['up', 2, 5] },
+      { txt: 'minuto 40: el Canal 3 empata con el 6 (45)', op: ['up', 3, 45] },
+      { txt: 'minuto 55: el Canal 1 sube a 90', op: ['up', 1, 90] }
+    ] },
+  { id: 'tri', titulo: 'EJ_03-5 · Tridente de temas candentes', modo: 'max', desempate: false, base: 0,
+    nombres: ['#dana', '#liga', '#goya', '#cine', '#vuelta', '#bolsa'],
+    inicial: [4, 7, 2, 5, 1, 3], prio: 5,
+    inst: 'IndexPQ<Prio, Mejor> pq(n);   // Prio{citas, ultimoC}; tema → índice con unordered_map<string,int>',
+    desc: '<b>Citas vigentes por tema</b>: más citas va antes (cola de máximos). Un <code>C tema m</code> suma citas y un <code>D tema m</code> las resta: se lee <code>priority(idx)</code>, se modifica la copia y se llama a <code>update</code>. Un <code>TC</code> saca los 3 primeros con <code>top</code>+<code>pop</code> y los vuelve a meter con <code>push</code>. (En el .cpp el empate se resuelve por el último C; aquí se simplifica a prioridades sin empates.)',
+    script: [
+      { txt: 'C #goya 6 → citas 2+6 = 8', op: ['up', 2, 8] },
+      { txt: 'D #liga 5 → citas 7−5 = 2', op: ['up', 1, 2] },
+      { txt: 'C #bolsa 4 → citas 3+4 = 7', op: ['up', 5, 7] },
+      { txt: 'TC: los 3 temas más candentes', op: ['tc'] }
+    ] },
+  { id: 'pts', titulo: 'EJ_03-2 · 12 points go to…', modo: 'max', desempate: true, base: 0,
+    nombres: ['país DE', 'país ES', 'país FR', 'país IT', 'país PT', 'país UK'],
+    inicial: [12, 8, 10, 7, 5, 1], prio: 20,
+    inst: 'IndexPQ<Par, Mejor> pq(n);   // Par = pair<int,string> (puntos, nombre); nombre → índice con unordered_map',
+    desc: '<b>Puntos por país</b>: más puntos va antes y, si empatan, el nombre menor (opción «empate»: aquí los países están en orden alfabético, así que menor nombre = menor nº de elemento). Cada voto es <code>priority</code> + <code>update(idx, {actuales + puntos, nombre})</code>; la línea «?» consulta <code>top()</code>.',
+    script: [
+      { txt: 'ES recibe 12 puntos → 8+12 = 20', op: ['up', 1, 20] },
+      { txt: 'FR recibe 8 puntos → 10+8 = 18', op: ['up', 2, 18] },
+      { txt: '?  (¿quién lidera?)', op: ['top'] },
+      { txt: 'DE pasa de 12 a 18 (empata con FR)', op: ['up', 0, 18] }
+    ] },
+  { id: 'libre', titulo: 'Libre · mínimos con claves de texto', modo: 'min', desempate: false, base: 0,
+    nombres: ['canal A', 'canal B', 'canal C', 'canal D', 'canal E', 'canal F', 'canal G', 'canal H'],
+    inicial: [34, 12, 51, 8, 27, 63, 19, 40], prio: 5,
+    inst: 'IndexPQ<int> pq(8);   // Comparator por defecto: std::less → cola de MÍNIMOS',
+    desc: '<b>Cola de mínimos</b> (comparador por defecto <code>less</code>): sale antes la prioridad más pequeña. Prueba <code>update</code> a un valor muy pequeño (flota) o muy grande (hunde), <code>push</code> de uno repetido (excepción) y <code>pop</code>.',
+    script: [
+      { txt: 'canal F baja a 3 (flota hasta la raíz)', op: ['up', 5, 3] },
+      { txt: 'canal D sube a 70 (hunde)', op: ['up', 3, 70] },
+      { txt: 'pop: sale el más prioritario', op: ['pop'] },
+      { txt: 'update de uno ausente = push (canal D)', op: ['up', 3, 9] }
+    ] }
+];
+
+/* geometría del árbol (4 niveles = hasta 15 sitios; la cola tiene como mucho 12) */
+const G = { sw: 60, lh: 64, nw: 54, nh: 36, d: 4, top: 30 };
+G.W = (1 << (G.d - 1)) * G.sw;
+G.H = G.top + (G.d - 1) * G.lh + G.nh / 2 + 10;
+function xy(i) { const l = 31 - Math.clz32(i), k = i - (1 << l); return { x: (k + 0.5) * G.W / (1 << l), y: G.top + l * G.lh }; }
+
+const els = {};
+['selPreset', 'selModo', 'chkTie', 'presetDesc', 'selElem', 'inPrio', 'bUpdate', 'bPush', 'bPop', 'bTop', 'bPrio', 'bScript', 'bRandOp', 'bFill', 'bClear', 'bReset',
+  'playerHost', 'outBox', 'svg', 'arr', 'stat', 'tpos', 'inst', 'code'].forEach(id => els[id] = document.getElementById(id));
+els.playerHost.innerHTML = PLAYER_HTML;
+
+const markCode = mountCode(els.code, 'IndexPQ.h', CODE3);
+let P = null, Q = null, ids = [], scriptIdx = 0, lastPos = null;
+const nodes = new Map();
+let edgeEls = [], ghostEls = [], cellEls = [], rowEls = new Map();
+
+/* ---- construcción del SVG (los niveles dependen del nº de elementos del ejemplo) ---- */
+function buildSvg(nElem) {
+  G.d = Math.max(2, Math.ceil(Math.log2(nElem + 1)));
+  G.W = (1 << (G.d - 1)) * G.sw;
+  G.H = G.top + (G.d - 1) * G.lh + G.nh / 2 + 10;
+  const s = els.svg;
+  s.innerHTML = '';
+  s.setAttribute('viewBox', '0 0 ' + G.W + ' ' + G.H);
+  s.style.maxWidth = Math.min(640, G.W * 1.7) + 'px';
+  edgeEls = []; ghostEls = [];
+  const gGhost = el('g', {}, s), gEdge = el('g', {}, s);
+  el('g', { id: 'gNodes' }, s);
+  for (let i = 1; i <= nElem; i++) {
+    const p = xy(i);
+    ghostEls[i] = el('rect', { class: 'ghost', x: p.x - G.nw / 2, y: p.y - G.nh / 2, width: G.nw, height: G.nh, rx: 8 }, gGhost);
+    const t = el('text', { class: 'ix', x: p.x - G.nw / 2, y: p.y - G.nh / 2 - 3 }, gGhost); t.textContent = i;
+  }
+  for (let i = 2; i < (1 << G.d); i++) {
+    const a = xy(i >> 1), b = xy(i);
+    edgeEls[i] = el('line', { class: 'edge', x1: a.x, y1: a.y + G.nh / 2, x2: b.x, y2: b.y - G.nh / 2 }, gEdge);
+  }
+}
+
+function nombreDe(e) { return preset.nombres[e - preset.base]; }
+let preset = PRESETS[0];
+
+function crearNodo(e) {
+  const g = el('g', { class: 'hn nt' }, document.getElementById('gNodes'));
+  el('rect', { x: -G.nw / 2, y: -G.nh / 2, width: G.nw, height: G.nh, rx: 8 }, g);
+  const n = el('text', { class: 'nm', x: 0, y: -4 }, g); n.textContent = nombreDe(e);
+  const v = el('text', { class: 'vl', x: 0, y: 11 }, g);
+  const pm = el('text', { class: 'pm', x: G.nw / 2, y: -G.nh / 2 - 3 }, g); pm.textContent = 'parmov';
+  return { g: g, v: v };
+}
+
+function render(f, prev, instant) {
+  const dur = Math.max(160, Math.min(480, P.delay() * 0.5));
+  els.svg.style.setProperty('--dur', (instant ? 0 : dur) + 'ms');
+  const cmp = new Set(f.cmp || []), sel = new Set(f.sel || []);
+  const mov = f.mov ? new Set([f.mov.to]) : new Set();
+  /* nodos */
+  const present = new Set();
+  for (let i = 1; i < f.arr.length; i++) {
+    const it = f.arr[i]; if (!it) continue;
+    present.add(it.e);
+    let nd = nodes.get(it.e);
+    if (!nd) { nd = crearNodo(it.e); nodes.set(it.e, nd); }
+    const p = xy(i);
+    nd.g.style.transform = 'translate(' + p.x + 'px,' + p.y + 'px)';
+    nd.v.textContent = it.v;
+    const cl = ['hn'];
+    if (i === 1) cl.push('root');
+    if (f.hole === i) cl.push('hand');
+    else if (mov.has(i)) cl.push('mov');
+    else if (cmp.has(i)) cl.push('cmp');
+    else if (sel.has(i)) cl.push('sel');
+    else if (f.done === i) cl.push('done');
+    if (nd.g.classList.contains('nt')) cl.push('nt');
+    nd.g.setAttribute('class', cl.join(' '));
+    if (nd.g.classList.contains('nt')) requestAnimationFrame(() => requestAnimationFrame(() => nd.g.classList.remove('nt')));
+  }
+  for (const [e, nd] of nodes) if (!present.has(e)) { nd.g.remove(); nodes.delete(e); }
+  const n = f.arr.length - 1;
+  for (let i = 2; i < edgeEls.length; i++) {
+    const ed = edgeEls[i];
+    ed.style.display = i <= n ? '' : 'none';
+    let k = '';
+    if (i <= n) {
+      const par = i >> 1;
+      if (cmp.has(i) && cmp.has(par)) k = ' cmp';
+      if (f.mov && ((f.mov.to === i && f.mov.from === par) || (f.mov.to === par && f.mov.from === i))) k = ' mov';
+    }
+    ed.setAttribute('class', 'edge' + k);
+  }
+  /* array */
+  for (let i = 1; i < cellEls.length; i++) {
+    const c = cellEls[i], it = f.arr[i];
+    const cl = ['cell'];
+    if (!it) cl.push('empty');
+    else {
+      if (i === 1) cl.push('root');
+      if (f.hole === i) cl.push('hand'); else if (mov.has(i)) cl.push('mov'); else if (cmp.has(i)) cl.push('cmp');
+      else if (sel.has(i)) cl.push('sel'); else if (f.done === i) cl.push('done');
+    }
+    c.el.setAttribute('class', cl.join(' '));
+    c.n.textContent = it ? nombreDe(it.e) : '';
+    c.v.textContent = it ? it.v : '·';
+    c.el.title = it ? 'array[' + i + '] = {' + it.e + ', ' + it.v + '} (' + nombreDe(it.e) + ')' : 'array[' + i + '] libre';
+  }
+  /* tabla posiciones */
+  ids.forEach(e => {
+    const r = rowEls.get(e), pos = f.pos[e], was = lastPos ? lastPos[e] : pos;
+    const cl = [];
+    if (pos === 0) cl.push('abs');
+    if (e === f.handE) cl.push('hand');
+    else if (lastPos && pos !== was) cl.push('chg');
+    if (e === f.selE) cl.push('sel');
+    r.tr.setAttribute('class', cl.join(' '));
+    r.pos.innerHTML = pos === 0 ? '0 <span class="arrow">(ausente)</span>' : pos + (e === f.handE ? ' <span class="arrow">(antigua; parmov en mano)</span>' : '');
+    const it = pos ? f.arr[pos] : null;
+    r.pr.textContent = pos === 0 ? '—' : (it && it.e === e ? it.v : (e === f.handE ? f.arr[f.hole].v : '?'));
+  });
+  lastPos = f.pos.slice();
+  /* salida, estadísticas, selector */
+  els.outBox.innerHTML = f.out ? 'Sale de la cola: <span class="pill">' + esc(nombreDe(f.out.e)) + ' · prioridad ' + f.out.v + '</span>' : '';
+  els.stat.textContent = 'size() = ' + n + ' · comparaciones: ' + f.st.c + ' · movimientos: ' + f.st.m;
+  document.getElementById('msg').classList.toggle('err', !!f.err);
+  actualizarSelector(f);
+}
+
+function actualizarSelector(f) {
+  [...els.selElem.options].forEach(o => {
+    const e = +o.value; o.textContent = nombreDe(e) + '  (' + e + ')' + (f.pos[e] ? '  • en cola' : '');
+  });
+}
+
+P = new Player({ render: (f, p, i) => render(f, p, i), mark: markCode });
+
+/* ---- carga de ejemplos / estado ---- */
+function cargarPreset(pr, conservar) {
+  preset = pr;
+  ids = pr.nombres.map((_, k) => k + pr.base);
+  const cfg = { N: pr.base + pr.nombres.length, nombres: {}, modo: pr.modo, desempate: pr.desempate };
+  ids.forEach(e => cfg.nombres[e] = nombreDe(e));
+  Q = crearIPQ(cfg);
+  els.selModo.value = pr.modo; els.chkTie.checked = pr.desempate;
+  els.presetDesc.innerHTML = pr.desc;
+  els.inst.innerHTML = '<code>' + esc(pr.inst) + '</code>';
+  els.selElem.innerHTML = ids.map(e => '<option value="' + e + '"></option>').join('');
+  els.inPrio.value = pr.prio;
+  /* tabla */
+  const tb = els.tpos.querySelector('tbody'); tb.innerHTML = ''; rowEls = new Map();
+  ids.forEach(e => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + e + '</td><td class="nmc">' + esc(nombreDe(e)) + '</td><td class="pc"></td><td class="pr"></td>';
+    tb.appendChild(tr);
+    rowEls.set(e, { tr: tr, pos: tr.querySelector('.pc'), pr: tr.querySelector('.pr') });
+  });
+  /* array */
+  els.arr.innerHTML = ''; cellEls = [null];
+  const c0 = document.createElement('div'); c0.className = 'cell unused'; c0.innerHTML = '<div class="ixc">0</div><div class="bx"><span class="n1">sin usar</span></div>';
+  els.arr.appendChild(c0);
+  for (let i = 1; i <= ids.length; i++) {
+    const d = document.createElement('div'); d.className = 'cell empty';
+    d.innerHTML = '<div class="ixc">' + i + '</div><div class="bx"><span class="n1"></span><span class="v1"></span></div>';
+    els.arr.appendChild(d);
+    cellEls[i] = { el: d, n: d.querySelector('.n1'), v: d.querySelector('.v1') };
+  }
+  nodes.clear(); buildSvg(ids.length); lastPos = null;
+  scriptIdx = 0; actualizarBotonScript();
+  /* estado inicial: se construye como lo haría el programa (push de cada elemento en orden) */
+  pr.nombres.forEach((_, k) => Q.sPush(k + pr.base, pr.inicial[k]));
+  mostrarEstado('Ejemplo <b>' + esc(pr.titulo) + '</b> cargado: ' + pr.nombres.length + ' elementos insertados con <code>push</code>. Prueba una operación o pulsa el botón del ejemplo.');
+}
+
+function mostrarEstado(msg) {
+  P.load(Q.note(msg), { play: false });
+}
+function ejecutar(frames) { P.load(frames, { play: frames.length > 1 }); }
+
+function actualizarBotonScript() {
+  const s = preset.script;
+  els.bScript.textContent = scriptIdx < s.length ? 'Siguiente paso del ejemplo (' + (scriptIdx + 1) + '/' + s.length + '): ' + s[scriptIdx].txt : 'Ejemplo terminado · volver a empezar';
+}
+
+function opScript(op) {
+  const e0 = op[1];
+  if (op[0] === 'up') return Q.update(e0, op[2]);
+  if (op[0] === 'pop') return Q.pop();
+  if (op[0] === 'top') return Q.top();
+  if (op[0] === 'tc') {
+    const fr = [].concat(Q.note('<b>TC</b>: se extraen los 3 temas más candentes (con <code>top</code> y <code>pop</code>) para escribirlos y luego se <b>vuelven a insertar</b> con <code>push</code>.'));
+    const podio = [];
+    while (podio.length < 3 && Q.size() > 0 && Q.S.A[1].p.v > 0) {
+      const t = Q.S.A[1]; podio.push([t.e, t.p.v]);
+      fr.push(...Q.pop());
+    }
+    podio.forEach(p => fr.push(...Q.push(p[0], p[1])));
+    fr[fr.length - 1].msg += '<br>Podio de este TC: ' + podio.map((p, k) => (k + 1) + '. ' + esc(nombreDe(p[0]))).join(' · ') + '.';
+    return fr;
+  }
+  return Q.note('');
+}
+
+function leerPrio() {
+  const v = els.inPrio.value.trim();
+  if (v === '' || !/^-?\d+$/.test(v)) return null;
+  return parseInt(v, 10);
+}
+
+els.selPreset.innerHTML = PRESETS.map((p, k) => '<option value="' + k + '">' + esc(p.titulo) + '</option>').join('');
+els.selPreset.onchange = () => cargarPreset(PRESETS[+els.selPreset.value]);
+els.bReset.onclick = () => cargarPreset(preset);
+els.bUpdate.onclick = () => { const v = leerPrio(); ejecutar(v === null ? Q.errMsg('Escribe una prioridad entera.') : Q.update(+els.selElem.value, v)); };
+els.bPush.onclick = () => { const v = leerPrio(); ejecutar(v === null ? Q.errMsg('Escribe una prioridad entera.') : Q.push(+els.selElem.value, v)); };
+els.bPop.onclick = () => ejecutar(Q.pop());
+els.bTop.onclick = () => ejecutar(Q.top());
+els.bPrio.onclick = () => ejecutar(Q.priority(+els.selElem.value));
+els.bClear.onclick = () => { Q.clear(); scriptIdx = 0; actualizarBotonScript(); mostrarEstado('Cola vacía: <code>array</code> solo tiene la posición 0 y todas las entradas de <code>posiciones</code> valen 0.'); };
+els.bScript.onclick = () => {
+  if (scriptIdx >= preset.script.length) { cargarPreset(preset); return; }
+  const st = preset.script[scriptIdx++];
+  const fr = opScript(st.op);
+  if (fr.length && fr[0].msg !== undefined && st.op[0] !== 'tc') fr[0].msg = '<i>' + esc(st.txt) + '.</i> ' + fr[0].msg;
+  actualizarBotonScript(); ejecutar(fr);
+};
+els.bFill.onclick = () => {
+  Q.clear(); scriptIdx = 0;
+  const k = Math.min(ids.length, 6 + Math.floor(Math.random() * 5));
+  const pool = ids.slice().sort(() => Math.random() - 0.5).slice(0, k);
+  pool.forEach(e => Q.sPush(e, 1 + Math.floor(Math.random() * 99)));
+  actualizarBotonScript();
+  mostrarEstado('Se han insertado ' + k + ' elementos con prioridades aleatorias (con <code>push</code>, sin animar).');
+};
+els.bRandOp.onclick = () => {
+  const dentro = ids.filter(e => Q.has(e)), fuera = ids.filter(e => !Q.has(e));
+  const r = Math.random(), pv = 1 + Math.floor(Math.random() * 99);
+  if (dentro.length === 0 || (fuera.length && r < 0.3)) { const e = fuera[Math.floor(Math.random() * fuera.length)]; els.selElem.value = e; els.inPrio.value = pv; ejecutar(Q.push(e, pv)); }
+  else if (r < 0.85 || dentro.length < 2) { const e = dentro[Math.floor(Math.random() * dentro.length)]; els.selElem.value = e; els.inPrio.value = pv; ejecutar(Q.update(e, pv)); }
+  else ejecutar(Q.pop());
+};
+function cambiarOrden() {
+  const pares = Q.pairs();
+  Q.cfg.modo = els.selModo.value; Q.cfg.desempate = els.chkTie.checked;
+  Q.clear(); pares.forEach(p => Q.sPush(p[0], p[1]));
+  mostrarEstado('Orden cambiado a <b>' + (Q.cfg.modo === 'min' ? 'mínimos (less)' : 'máximos (greater)') + '</b>' + (Q.cfg.desempate ? ' con desempate por nº de elemento' : '') + '. Se han reinsertado los elementos con <code>push</code> para reconstruir el montículo.');
+}
+els.selModo.onchange = cambiarOrden; els.chkTie.onchange = cambiarOrden;
+
+cargarPreset(PRESETS[0]);
+window.__ipq = { get Q() { return Q; }, get player() { return P; }, crearIPQ: crearIPQ };
+</script>
