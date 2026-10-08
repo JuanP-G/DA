@@ -1,0 +1,31 @@
+# Resultado real de grafoEMT/ejemplo.cpp (Informática 3863 -> Matemáticas 1693)
+V = 50022 vértices (número máximo de parada), 10956 aristas de líneas + 4514 de paradas gemelas = 15470
+
+## BFS (camino más corto): 5 aristas, 6 paradas
+ 3863 Paraninfo - Informática
+ 1696 Paraninfo - Derecho
+ 1694 Paraninfo - Filosofía
+ 1692 Avenida Complutense - Jardín Botánico
+ 1691 Avenida Complutense - Jardín Botánico
+ 1693 Paraninfo - Matemáticas
+
+## DFS (el primer camino que encuentra): 2032 paradas
+(primeras 12 y últimas 5)
+ 3863 Paraninfo - Informática
+ 1696 Paraninfo - Derecho
+ 1694 Paraninfo - Filosofía
+ 1692 Avenida Complutense - Jardín Botánico
+ 1690 Avenida Complutense - Ciencias Información
+ 1688 Metro Ciudad Universitaria
+ 1685 Cardenal Cisneros
+ 1331 Avenida De La Memoria
+ 5575 Moncloa
+ 2418 Cardenal Cisneros
+ 2416 Juan Herrera
+ 2414 Consejo Superior De Deportes
+...
+ 1686 Agrónomos
+ 1687 Metro Ciudad Universitaria
+ 1689 Avenida Complutense - Ciencias Información
+ 1691 Avenida Complutense - Jardín Botánico
+ 1693 Paraninfo - Matemáticas

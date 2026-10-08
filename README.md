@@ -74,6 +74,7 @@ Todos usan [`Grafo.h`](Estructuras%20de%20datos/Grafo.h). Están numerados como 
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
+| 05-0 | Teoría del tema (explicación general) | — | [💻 Algoritmos](Estructuras%20de%20datos/Digrafo_algoritmos.h) · [🧪 Demo](Estructuras%20de%20datos/Digrafo_demo.cpp) | [🎬 Vídeo](Videos/05-0_grafos_dirigidos_teoria.mp4) | Digrafo, DFS, BFS, calculadora (grafo implícito), autobuses de la EMT, orden topológico, ciclos y componentes fuertemente conexas (extra) |
 | 05-1 | Juego de Transformación Modular | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Juego%20de%20Transformaci%C3%B3n%20Modular.pdf) | [💻 Solución](EJ_05-1/EJ_05-1.cpp) · [📘 Explicación](EJ_05-1/README.md) | [🎬 Vídeo](Videos/05-1_transformacion_modular.mp4) | BFS en un `Digrafo` construido con x → (a·x+b) mod M |
 | 05-2 | La máquina calculadora | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-La%20m%C3%A1quina%20calculadora.pdf) | [💻 Solución](EJ_05-2/EJ_05-2.cpp) · [📘 Explicación](EJ_05-2/README.md) | [🎬 Vídeo](Videos/05-2_maquina_calculadora.mp4) | BFS en un `Digrafo` con los 10.000 números del marcador (+1, ×2, ÷3) |
 | 05-3 | Ordenando tareas | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Ordenando%20tareas.pdf) | [💻 Solución](EJ_05-3/EJ_05-3.cpp) · [📘 Explicación](EJ_05-3/README.md) | [🎬 Vídeo](Videos/05-3_ordenando_tareas.mp4) | Orden topológico: postorden inverso del DFS (+ ciclos) |
@@ -100,6 +101,9 @@ Las cabeceras que da la asignatura están juntas en [`Estructuras de datos/`](Es
 |---|---|---|
 | [`Grafo.h`](Estructuras%20de%20datos/Grafo.h) | Grafo no dirigido con listas de adyacencia (`V()`, `A()`, `ady(v)`, `ponArista`) | Tema 4 |
 | [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h) | Grafo dirigido con la misma interfaz (+ `hayArista`, `inverso()`) | Tema 5 (05-1, 05-2, 05-3) |
+| [`Digrafo_algoritmos.h`](Estructuras%20de%20datos/Digrafo_algoritmos.h) | Los algoritmos del tema 5 juntos: `DFSDirigido`, `BFSDirigido`, `OrdenTopologico`, `CicloDirigido` y, como extra, `CFC` (componentes fuertemente conexas) | Tema 5 (vídeo 05-0) |
+| [`Digrafo_demo.cpp`](Estructuras%20de%20datos/Digrafo_demo.cpp) | Ejecuta esos algoritmos sobre los grafos de las transparencias (`g++ -std=c++17 Digrafo_demo.cpp`) | Tema 5 (vídeo 05-0) |
+| [`Digrafo_implicito_calculadora.cpp`](Estructuras%20de%20datos/Digrafo_implicito_calculadora.cpp) | La máquina calculadora como **grafo implícito** (BFS sin construir el grafo), código de las transparencias 13 | Tema 5 (vídeo 05-0) |
 | [`IndexPQ.h`](Estructuras%20de%20datos/IndexPQ.h) | Cola de prioridad con índices (`push`, `update`, `top`, `pop`, `priority`) | Tema 3 |
 | [`TreeSet_AVL_plantilla.h`](Estructuras%20de%20datos/TreeSet_AVL_plantilla.h) | Conjunto sobre árbol AVL (`Set<T>`), con `kesimo` | 01-2 |
 | [`bintree.h`](Estructuras%20de%20datos/bintree.h) | Árbol binario `BinTree<T>` | 01-1 genérico, 01-2 |

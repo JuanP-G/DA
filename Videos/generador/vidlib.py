@@ -394,7 +394,9 @@ def _srt_time(t):
 
 # la narración deletrea siglas y letras para que la voz las lea bien; en los subtítulos se escriben normal
 _SUBS = [(r"\bT T L\b", "TTL"), (r"\bB F S\b", "BFS"), (r"\bD F S\b", "DFS"), (r"unordered map", "unordered_map"),
-         (r"\buve\b", "V"), (r"\bka\b", "k"), (r"\bene\b", "N"), (r"\bpe\b", "p"), (r"\bV más a\b", "V más A")]
+         (r"\buve\b", "V"), (r"\bka\b", "k"), (r"\bene\b", "N"), (r"\bpe\b", "p"), (r"\bV más a\b", "V más A"),
+         (r"\bT A D\b", "TAD"), (r"\bD A G\b", "DAG"), (r"\bE M T\b", "EMT"), (r"poner gemelas", "ponGemelas"),
+         (r"push front", "push_front"), (r"Page Rank", "PageRank")]
 
 
 def _texto_sub(s):
@@ -424,16 +426,20 @@ def _wrap2(s, maxlen=58):
     return s[:cut] + "\n" + s[cut + 1:]
 
 
-def build(segments, out_mp4, pause=0.35):
+def build(segments, out_mp4, pause=0.35, chapters=None):
     """
     segments: lista de (Slide o Image, narración o None, duración mínima)
+    chapters: opcional, {índice de segmento: título}; se guardan como capítulos del mp4
     """
     out_mp4 = Path(out_mp4)
     tmp = Path(tempfile.mkdtemp(prefix="vid_"))
     concat_v, concat_a, subs = [], [], []
     t = 0.0
     sr = None
+    cap_t = []
     for i, (sl, narr, dmin) in enumerate(segments):
+        if chapters and i in chapters:
+            cap_t.append((t, chapters[i]))
         img = sl.img if isinstance(sl, Slide) else sl
         png = tmp / f"s{i:03}.png"
         img.save(png)
@@ -489,12 +495,23 @@ def build(segments, out_mp4, pause=0.35):
         for k, (a, b, s) in enumerate(subs, 1):
             f.write(f"{k}\n{_srt_time(a)} --> {_srt_time(b)}\n{s}\n\n")
 
+    meta = tmp / "meta.txt"
+    with open(meta, "w", encoding="utf-8") as f:
+        f.write(";FFMETADATA1\n")
+        for k, (a, titulo) in enumerate(cap_t):
+            b = cap_t[k + 1][0] if k + 1 < len(cap_t) else t
+            f.write(f"[CHAPTER]\nTIMEBASE=1/1000\nSTART={int(a * 1000)}\nEND={int(b * 1000)}\ntitle={titulo}\n")
+    if cap_t:
+        print("capítulos:")
+        for a, titulo in cap_t:
+            print(f"  {int(a // 60):02}:{int(a % 60):02}  {titulo}")
+
     out_mp4.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run([
         "ffmpeg", "-v", "error", "-y",
         "-f", "concat", "-safe", "0", "-i", str(lst),
-        "-i", str(full), "-i", str(srt),
-        "-map", "0:v", "-map", "1:a", "-map", "2:s",
+        "-i", str(full), "-i", str(srt), "-i", str(meta),
+        "-map", "0:v", "-map", "1:a", "-map", "2:s", "-map_chapters", "3",
         "-vf", f"fps={FPS},format=yuv420p",
         "-c:v", "libx264", "-preset", "slow", "-crf", "20", "-tune", "stillimage",
         "-c:a", "aac", "-b:a", "96k", "-ar", "44100",
