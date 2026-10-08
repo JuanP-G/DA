@@ -1,5 +1,7 @@
 # DA · Ejercicios del juez
 
+> 🌐 **Web con todo reunido** (ejercicios, PDFs, soluciones, vídeos y herramientas interactivas): **<https://juanp-g.github.io/DA/>**
+
 ## Índice
 
 - [Tema 1 · Árboles AVL](#tema-1--árboles-avl)
@@ -133,6 +135,8 @@ Las soluciones del tema 4 están probadas con los ejemplos de los enunciados, co
 > ⚠️ Los DFS recursivos del tema 4 pueden bajar tantos niveles como vértices haya. En el juez no da problemas, pero en Visual Studio (pila de 1 MB) un caso enorme podría desbordar la pila. Por eso el 04-5 usa un BFS iterativo. En el 04-3 el enunciado limita las manchas a 50.000 píxeles justo para que el DFS recursivo sea seguro.
 
 ## Web del repositorio
+
+**🌐 Dirección: <https://juanp-g.github.io/DA/>**
 
 Todo lo anterior (enunciados, soluciones, explicaciones, vídeos y herramientas interactivas) se reúne en una web estática que se genera sola desde este repositorio con [`sitio/construir.py`](sitio/construir.py) y el workflow [`.github/workflows/web.yml`](.github/workflows/web.yml), cada vez que cambia `main`. Para verla en local:
 
