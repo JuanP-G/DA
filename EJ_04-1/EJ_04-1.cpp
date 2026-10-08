@@ -28,8 +28,7 @@ using namespace std;
     Coste: O(V + A) por caso (el DFS visita cada vertice y arista una vez).
 
     Nota: el dfs recursivo puede llegar a profundidad V (hasta 10.000).
-    En el juez no da problemas, pero en Visual Studio (pila de 1MB)
-    un caso enorme podria desbordar la pila --> ver EJ_04-5, que usa BFS.
+    Un caso enorme podria desbordar la pila.
 */
 
 class ArbolLibre {
@@ -37,6 +36,7 @@ public:
     ArbolLibre(Grafo const& g) : visit(g.V(), false), alcanzados(0) {
         dfs(g, 0);   // V >= 1, asi que el vertice 0 siempre existe
         bool conexo = (alcanzados == g.V());
+        // un grafo es un arbol libre si es conexo y tiene V-1 aristas
         arbol = conexo && g.A() == g.V() - 1;
     }
 
@@ -51,7 +51,9 @@ private:
     void dfs(Grafo const& g, int v) {
         visit[v] = true;
         ++alcanzados;
+        //recorre todos los adyacentes a v
         for (int w : g.ady(v))
+            //si w no ha sido visitado, lo visita
             if (!visit[w]) dfs(g, w);
     }
 };

@@ -78,7 +78,8 @@ void resuelveCaso() {
     OrdenTopologico ot(g);
     if (!ot.posible()) {
         cout << "Imposible\n";
-    } else {
+    }
+    else {
         bool primero = true;
         for (int v : ot.orden()) {
             if (!primero) cout << ' ';
