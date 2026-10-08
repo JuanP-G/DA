@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grafo dirigido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<style>
+/* Sistema visual común de las visualizaciones de DA (cuaderno de laboratorio de algoritmos).
+   Cada página añade su CSS propio DESPUÉS de este bloque. */
+:root {
+  --bg: #f3f4f8;
+  --panel: #ffffff;
+  --panel-2: #eceef4;
+  --ink: #1a2133;
+  --muted: #5d667b;
+  --line: #d9deea;
+  --accent: #b86e00;        /* nodo activo / raíz / resultado */
+  --accent-soft: #fbeccd;
+  --blue: #1f6fb8;          /* comparando / visitando */
+  --blue-soft: #d9eafa;
+  --red: #c4372d;           /* intercambio / rotación / ciclo */
+  --red-soft: #fbdcd8;
+  --green: #1e7f57;         /* terminado / correcto */
+  --green-soft: #d6f1e4;
+  --purple: #6c4bc1;
+  --purple-soft: #e6dffa;
+  --node: #ffffff;
+  --code-bg: #121a2b;
+  --code-ink: #dce4f5;
+  --code-dim: #6f7b95;
+  --code-hl: #3a3010;
+  --code-hl-bar: #f5a623;
+  --kw: #ff79c6; --ty: #8be9fd; --nu: #bd93f9; --co: #7e8aa8; --st: #f1fa8c;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
+    --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
+    --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
+    --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
+    --code-bg: #0a0f1c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
+  --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
+  --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
+  --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
+  --code-bg: #0a0f1c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 22px 16px 56px; display: flex; flex-direction: column; gap: 16px; }
+.wrap > * { min-width: 0; }
+header.top { display: flex; flex-direction: column; gap: 6px; }
+.tag { align-self: flex-start; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-soft); padding: 3px 9px; border-radius: 4px; }
+h1 { font-size: clamp(1.45rem, 3.2vw, 2rem); line-height: 1.2; margin: 0; font-weight: 700; letter-spacing: -.015em; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 70ch; text-wrap: pretty; }
+.lede code, .msg code, .note code, td code, li code { font-family: var(--mono); font-size: .9em; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+.panel > h2 { margin: 0 0 10px; font-size: .78rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bar .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 4px; }
+.bar label { font-size: .85rem; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.btn { font: inherit; font-size: .9rem; font-weight: 500; color: var(--ink); background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--blue); }
+.btn:focus-visible, .field:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="dark"] .btn.primary { color: #1b1400; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #1b1400; } }
+.btn.on { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+.btn:disabled { opacity: .45; cursor: default; }
+.field { font: inherit; font-family: var(--mono); font-size: .9rem; width: 5.2em; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+select.field { width: auto; font-family: var(--sans); }
+.stage { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.canvas-scroll { overflow-x: auto; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); }
+svg.viz { display: block; width: 100%; height: auto; }
+svg.viz text { font-family: var(--mono); fill: var(--ink); }
+svg.viz .muted { fill: var(--muted); }
+/* reproductor */
+.player { display: flex; flex-direction: column; gap: 8px; }
+.player .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.player .count { font-family: var(--mono); font-size: .82rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-left: auto; }
+.player input[type=range] { accent-color: var(--accent); }
+.msg { min-height: 3.2em; padding: 10px 12px; border-radius: 8px; background: var(--panel-2); border-left: 4px solid var(--accent); font-size: .95rem; }
+.msg b { font-weight: 600; }
+/* código */
+.codebox { background: var(--code-bg); color: var(--code-ink); border-radius: 10px; padding: 10px 0; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.55; }
+.codebox .fname { padding: 0 14px 6px; color: var(--code-dim); font-size: 11.5px; }
+.codebox .ln { display: flex; white-space: pre; padding-right: 14px; border-left: 4px solid transparent; }
+.codebox .ln i { font-style: normal; width: 2.6em; text-align: right; padding-right: 10px; color: var(--code-dim); flex: none; user-select: none; }
+.codebox .ln.on { background: var(--code-hl); border-left-color: var(--code-hl-bar); }
+.codebox .k { color: var(--kw); } .codebox .t { color: var(--ty); } .codebox .n { color: var(--nu); } .codebox .c { color: var(--co); } .codebox .s { color: var(--st); }
+/* leyenda y notas */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .82rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend b { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line); }
+.note { font-size: .88rem; color: var(--muted); margin: 0; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: .88rem; margin: 0; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; font-family: var(--mono); overflow-wrap: anywhere; }
+table.t { border-collapse: collapse; font-size: .88rem; width: 100%; }
+table.t th, table.t td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { color: var(--muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+footer.foot { color: var(--muted); font-size: .82rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.gtools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.gtools .grp { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.bar label { max-width: 100%; min-width: 0; }
+.bar select.field { max-width: 100%; min-width: 0; }
+.gtools select.field { max-width: 100%; min-width: 0; }
+.gtools .grp { max-width: 100%; }
+.gtools .sep { width: 1px; align-self: stretch; background: var(--line); }
+#gsvg { touch-action: none; cursor: crosshair; }
+#gsvg .edge { stroke: var(--muted); stroke-width: 2; fill: none; transition: stroke .25s, stroke-width .25s; }
+#gsvg .edge.tree { stroke: var(--blue); stroke-width: 3.5; }
+#gsvg .edge.cur { stroke: var(--accent); stroke-width: 4; }
+#gsvg .edge.back { stroke: var(--red); stroke-width: 3.5; stroke-dasharray: 6 4; }
+#gsvg .edge.new { stroke: var(--green); stroke-width: 4; }
+#gsvg .node circle { fill: var(--node); stroke: var(--muted); stroke-width: 2.5; transition: fill .25s, stroke .25s; cursor: grab; }
+#gsvg .node.s-vis circle { fill: var(--blue-soft); stroke: var(--blue); }
+#gsvg .node.s-cur circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 4; }
+#gsvg .node.s-done circle { fill: var(--green-soft); stroke: var(--green); }
+#gsvg .node.s-red circle { fill: var(--red-soft); stroke: var(--red); stroke-width: 4; }
+#gsvg .node.s-q circle { fill: var(--purple-soft); stroke: var(--purple); }
+#gsvg .node.sel circle { stroke-dasharray: 5 3; stroke: var(--accent); stroke-width: 4; }
+#gsvg .node text { font-size: 15px; font-weight: 600; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+#gsvg .tag text, #gsvg text.tg { font-size: 12.5px; text-anchor: middle; font-weight: 600; pointer-events: none; }
+#gsvg text.tg { fill: var(--accent); }
+.adj { display: grid; grid-template-columns: auto 1fr; gap: 5px 8px; font-family: var(--mono); font-size: .88rem; align-items: center; }
+.adj .vn { color: var(--muted); text-align: right; }
+.adj .lst { display: flex; flex-wrap: wrap; gap: 4px; min-height: 26px; align-items: center; padding: 2px 6px; border: 1px dashed var(--line); border-radius: 6px; }
+.adj .lst.hot { border-color: var(--accent); background: var(--accent-soft); }
+.chip { display: inline-block; min-width: 1.8em; text-align: center; padding: 1px 7px; border-radius: 5px; background: var(--panel-2); border: 1px solid var(--line); }
+.chip.new { background: var(--green-soft); border-color: var(--green); color: var(--green); font-weight: 600; }
+.chip.cur { background: var(--accent-soft); border-color: var(--accent); }
+.chip.dead { opacity: .5; }
+.vec { display: flex; flex-wrap: wrap; gap: 4px; font-family: var(--mono); font-size: .86rem; }
+.vec .c { display: flex; flex-direction: column; align-items: stretch; text-align: center; min-width: 2.6em; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.vec .c i { font-style: normal; background: var(--panel-2); color: var(--muted); font-size: .72rem; padding: 0 4px; }
+.vec .c b { font-weight: 500; padding: 2px 4px; }
+.vec .c.hot b { background: var(--accent-soft); color: var(--accent); }
+.vec .c.ok b { background: var(--green-soft); }
+.listbox { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-family: var(--mono); font-size: .88rem; min-height: 28px; }
+.listbox .lab { color: var(--muted); font-size: .78rem; margin-right: 4px; text-transform: uppercase; letter-spacing: .06em; }
+.infos { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.cases .panel { box-shadow: none; }
+.cases h3 { margin: 0 0 6px; font-size: .98rem; }
+.cases p { margin: 0 0 6px; font-size: .9rem; color: var(--muted); }
+.cases p:last-child { margin: 0; }
+.toolbtn { min-width: 2.4em; }
+.hint { font-size: .82rem; color: var(--muted); margin: 0; }
+.back { font-size: .9rem; }
+a { color: var(--blue); }
+.colstack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+</style>
+<div class="wrap">
+  <header class="top">
+    <span class="tag">Tema 5</span>
+    <h1>Digrafo: grafos dirigidos con listas de adyacencia</h1>
+    <p class="lede">Aquí cada arista <code>v→w</code> tiene sentido: <code>ponArista(v, w)</code> mete <code>w</code> solo en la lista de <code>v</code>. Construye uno, mira cómo se rellenan las listas y ejecuta BFS, orden topológico o <code>inverso()</code> paso a paso sobre el código real.</p>
+    <a class="back" href="index.html">← Todas las estructuras</a>
+  </header>
+
+  <section class="panel">
+    <h2>1 · Construye el digrafo</h2>
+    <div class="gtools">
+      <div class="grp" role="group" aria-label="Herramienta">
+        <button class="btn toolbtn on" id="tMove" title="Arrastra vértices">✥ Mover</button>
+        <button class="btn toolbtn" id="tVert" title="Clic en el lienzo crea un vértice">＋ Vértice</button>
+        <button class="btn toolbtn" id="tEdge" title="Clic en dos vértices para unirlos">⤳ Arista</button>
+      </div>
+      <span class="sep"></span>
+      <div class="grp">
+        <label>ponArista(<input class="field" id="eV" type="number" min="0" value="0" style="width:3.6em">, <input class="field" id="eW" type="number" min="0" value="1" style="width:3.6em">)</label>
+        <button class="btn" id="bPon">Añadir</button>
+      </div>
+      <span class="sep"></span>
+      <div class="grp">
+        <select class="field" id="preset" aria-label="Ejemplos"></select>
+        <button class="btn" id="bRand">Aleatorio</button>
+        <button class="btn" id="bClear">Vaciar</button><button class="btn" id="bInv" title="Sustituye el grafo por g.inverso()">⇄ Invertir grafo</button>
+      </div>
+    </div>
+    <p class="hint" id="toolHint"></p>
+  </section>
+
+  <div class="stage">
+    <div class="colstack">
+      <section class="panel">
+        <h2>Digrafo (arrastra los vértices)</h2>
+        <div class="canvas-scroll"><svg id="gsvg" class="viz" viewBox="0 0 640 420" role="img" aria-label="Grafo interactivo"></svg></div>
+        <div class="legend" id="legend" style="margin-top:10px"></div>
+      </section>
+      <section class="panel">
+        <h2>2 · Ejecuta un algoritmo</h2>
+        <div class="bar" style="margin-bottom:10px">
+          <label>algoritmo <select class="field" id="algo"></select></label>
+          <label id="lblSrc">desde <input class="field" id="src" type="number" min="0" value="0" style="width:3.6em"></label>
+          <label id="lblDst">hasta <input class="field" id="dst" type="number" min="0" value="3" style="width:3.6em"></label>
+          <button class="btn primary" id="bRun">Ejecutar</button>
+        </div>
+        <div id="playerHost"></div>
+      </section>
+    </div>
+    <div class="colstack">
+      <section class="panel">
+        <h2>Lo que guarda la clase</h2>
+        <dl class="kv" style="margin-bottom:10px"><dt>_V</dt><dd id="kV">0</dd><dt>_A</dt><dd id="kA">0</dd></dl>
+        <div class="adj" id="adj" aria-label="Listas de adyacencia"></div>
+        <p class="note" style="margin-top:8px" id="adjNote"></p>
+      </section>
+      <section class="panel" id="datos">
+        <h2>Vectores y colas del algoritmo</h2>
+        <div id="state" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+      <section class="panel">
+        <h2>Código C++</h2>
+        <div id="codeHost" style="max-height:420px;overflow:auto"></div>
+        <div class="bar" style="margin-top:8px" id="codeTabs"></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel">
+    <h2>Para entenderlo</h2>
+    <div class="cases">
+      <div class="panel"><h3>Una arista, una lista</h3><p><code>ponArista(v, w)</code> añade <code>w</code> solo a <code>_ady[v]</code>. La suma de las longitudes de las listas es exactamente <code>A()</code> (en no dirigido era 2·A). <code>ady(v)</code> son los <b>sucesores</b> de <code>v</code>.</p></div>
+      <div class="panel"><h3>Llegar no es simétrico</h3><p>Que <code>w</code> sea alcanzable desde <code>v</code> no dice nada de <code>v</code> desde <code>w</code>. La BFS desde un origen da la distancia dirigida mínima; los vértices con <code>dist = -1</code> son los no alcanzables (05-1, 05-2).</p></div>
+      <div class="panel"><h3>Tres estados en el DFS</h3><p><code>0</code> sin visitar · <code>1</code> en la pila (se está explorando) · <code>2</code> terminado. Si desde <code>v</code> veo un vecino en estado <b>1</b>, esa arista vuelve a un antecesor: <b>ciclo</b>. Ver uno en estado 2 es normal.</p></div>
+      <div class="panel"><h3>Orden topológico = postorden inverso</h3><p>Cuando el DFS termina <code>v</code>, ya terminó todo lo que depende de él; guardando los vértices al terminar y dando la vuelta a la lista, cada tarea queda antes que sus sucesores. Solo existe si el digrafo <b>no tiene ciclos</b> (05-3).</p></div>
+      <div class="panel"><h3>inverso()</h3><p>Recorre cada arista <code>v→w</code> y mete <code>inv.ponArista(w, v)</code>. Cuesta O(V + A). Sirve para preguntar «¿quién llega a <code>v</code>?» con un recorrido normal sobre el inverso.</p></div>
+      <div class="panel"><h3>Grafo explícito o implícito</h3><p>En 05-2 se construyen los 10.000 vértices con sus 3 aristas de salida y se hace BFS. En 05-1 los vecinos salen de una fórmula <code>(a·x+b) mod M</code>; se puede construir el <code>Digrafo</code> o calcularlos al vuelo (más rápido si M es grande y N pequeño).</p></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Ejercicios del repositorio que lo usan</h2>
+    <table class="t">
+      <thead><tr><th>Nº</th><th>Problema</th><th>Idea</th></tr></thead>
+      <tbody>
+        <tr><td><code>05-1</code></td><td>Juego de Transformación Modular</td><td>BFS sobre x → (a·x+b) mod M</td></tr>
+        <tr><td><code>05-2</code></td><td>La máquina calculadora</td><td>BFS sobre los 10.000 números del marcador (+1, ×2, ÷3)</td></tr>
+        <tr><td><code>05-3</code></td><td>Ordenando tareas</td><td>Orden topológico (postorden inverso) y detección de ciclos</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <footer class="foot"><a href="index.html">← Todas las estructuras</a> · Código basado en <code>Digrafo.h</code> (A. Verdejo) · el comportamiento de la página sigue exactamente ese código.</footer>
+</div>
+
+<script>
+/* Utilidades comunes: reproductor paso a paso y panel de código. */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function esc(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+/* Panel de código C++ con coloreado sencillo y líneas resaltables (numeradas desde 1). */
+function mountCode(host, fname, lines) {
+  const kws = /^(for|if|else|while|return|const|class|struct|public|private|protected|void|bool|int|auto|true|false|template|typename|using|throw|new|delete|break|continue|static|nullptr)$/;
+  const tys = /^(Link|Set|Grafo|Digrafo|IndexPQ|Par|vector|queue|stack|string|T|std|Adys|Comparator|TreeNode|size_t)$/;
+  const tok = /(\/\/.*$)|("[^"]*")|(\b\d+\b)|(\b[A-Za-z_]\w*\b)|(\s+)|(.)/g;
+  host.classList.add('codebox');
+  host.innerHTML = '<div class="fname">' + esc(fname) + '</div>';
+  const rows = lines.map((src, i) => {
+    let html = '', m; tok.lastIndex = 0;
+    while ((m = tok.exec(src))) {
+      const t = m[0];
+      if (m[1]) html += '<span class="c">' + esc(t) + '</span>';
+      else if (m[2]) html += '<span class="s">' + esc(t) + '</span>';
+      else if (m[3]) html += '<span class="n">' + t + '</span>';
+      else if (m[4] && kws.test(t)) html += '<span class="k">' + t + '</span>';
+      else if (m[4] && tys.test(t)) html += '<span class="t">' + t + '</span>';
+      else html += esc(t);
+    }
+    const d = document.createElement('div');
+    d.className = 'ln'; d.innerHTML = '<i>' + (i + 1) + '</i><span>' + html + '</span>';
+    host.appendChild(d);
+    return d;
+  });
+  return function mark(active) {
+    const set = new Set(active || []);
+    rows.forEach((r, i) => r.classList.toggle('on', set.has(i + 1)));
+    const first = rows.find((r, i) => set.has(i + 1));
+    if (first) {
+      const top = first.offsetTop, h = host.clientHeight;
+      if (top < host.scrollTop + 20 || top > host.scrollTop + h - 40) host.scrollTop = Math.max(0, top - h / 3);
+    }
+  };
+}
+
+/* Reproductor: frames = [{ msg: 'html', lines: [nº de línea de código], ... }]
+   render(frame, prevFrame) lo implementa cada página. */
+class Player {
+  constructor({ render, mark }) {
+    this.render = render; this.mark = mark; this.frames = []; this.i = 0; this.timer = null;
+    this.$prev = $('#pPrev'); this.$next = $('#pNext'); this.$play = $('#pPlay'); this.$first = $('#pFirst'); this.$last = $('#pLast');
+    this.$speed = $('#pSpeed'); this.$count = $('#pCount'); this.$msg = $('#msg'); this.$seek = $('#pSeek');
+    this.$prev.onclick = () => { this.pause(); this.go(this.i - 1); };
+    this.$next.onclick = () => { this.pause(); this.go(this.i + 1); };
+    this.$first.onclick = () => { this.pause(); this.go(0); };
+    this.$last.onclick = () => { this.pause(); this.go(this.frames.length - 1); };
+    this.$play.onclick = () => this.toggle();
+    this.$seek.oninput = () => { this.pause(); this.go(+this.$seek.value); };
+    document.addEventListener('keydown', e => {
+      if (/INPUT|SELECT|TEXTAREA/.test((e.target.tagName || ''))) return;
+      if (e.key === 'ArrowRight') { this.pause(); this.go(this.i + 1); }
+      else if (e.key === 'ArrowLeft') { this.pause(); this.go(this.i - 1); }
+      else if (e.key === ' ') { e.preventDefault(); this.toggle(); }
+    });
+  }
+  delay() { return [1900, 1300, 900, 550, 280][(+this.$speed.value || 3) - 1]; }
+  /* Carga una secuencia nueva. start = frame inicial; play = arrancar solo. */
+  load(frames, { play = true, start = 0 } = {}) {
+    this.pause(); this.frames = frames; this.$seek.max = Math.max(0, frames.length - 1);
+    this.prevFrame = null; this.go(start, true);
+    if (play && frames.length > 1) this.play();
+  }
+  go(i, instant) {
+    if (!this.frames.length) return;
+    i = Math.max(0, Math.min(this.frames.length - 1, i));
+    const f = this.frames[i], prev = this.frames[this.i] || null;
+    this.i = i;
+    this.render(f, prev, !!instant);
+    this.$msg.innerHTML = f.msg || '';
+    if (this.mark) this.mark(f.lines || []);
+    this.$count.textContent = 'paso ' + (i + 1) + ' de ' + this.frames.length;
+    this.$seek.value = i;
+    this.$first.disabled = this.$prev.disabled = i === 0;
+    this.$last.disabled = this.$next.disabled = i === this.frames.length - 1;
+    if (i === this.frames.length - 1) this.pause();
+  }
+  play() {
+    if (this.i >= this.frames.length - 1) this.go(0, true);
+    this.$play.textContent = '⏸ Pausa'; this.$play.classList.add('on');
+    const tick = () => {
+      if (this.i >= this.frames.length - 1) { this.pause(); return; }
+      this.go(this.i + 1);
+      if (this.timer !== null) this.timer = setTimeout(tick, this.delay());
+    };
+    this.timer = setTimeout(tick, this.delay());
+  }
+  pause() { if (this.timer) clearTimeout(this.timer); this.timer = null; this.$play.textContent = '▶ Reproducir'; this.$play.classList.remove('on'); }
+  toggle() { this.timer ? this.pause() : this.play(); }
+}
+const PLAYER_HTML = `
+<div class="player">
+  <div class="msg" id="msg" role="status" aria-live="polite"></div>
+  <div class="row">
+    <button class="btn" id="pFirst" title="Primer paso" aria-label="Primer paso">⏮</button>
+    <button class="btn" id="pPrev" title="Paso anterior (←)" aria-label="Paso anterior">◀</button>
+    <button class="btn primary" id="pPlay">▶ Reproducir</button>
+    <button class="btn" id="pNext" title="Paso siguiente (→)" aria-label="Paso siguiente">▶|</button>
+    <button class="btn" id="pLast" title="Último paso" aria-label="Último paso">⏭</button>
+    <label>velocidad <input type="range" id="pSpeed" min="1" max="5" value="3"></label>
+    <span class="count" id="pCount"></span>
+  </div>
+  <input type="range" id="pSeek" min="0" max="0" value="0" aria-label="Posición en la secuencia" style="width:100%">
+</div>`;
+
+const DIR = true;
+const CLASE = DIR ? 'Digrafo' : 'Grafo';
+
+/* ---------- modelo: igual que la clase C++ ---------- */
+const G = { n: 0, A: 0, ady: [], pos: [] };
+function gReset() { G.n = 0; G.A = 0; G.ady = []; G.pos = []; }
+function gAddV(x, y) { G.ady.push([]); G.pos.push([x, y]); G.n++; return G.n - 1; }
+function gPon(v, w) {
+  if (v < 0 || v >= G.n || w < 0 || w >= G.n) throw new Error('Vertice inexistente');
+  G.A++; G.ady[v].push(w); if (!DIR) G.ady[w].push(v);
+}
+function gHay(u, v) { return G.ady[u].includes(v); }
+function gInv() { const r = { n: G.n, ady: Array.from({ length: G.n }, () => []) }; for (let v = 0; v < G.n; v++) for (const w of G.ady[v]) r.ady[w].push(v); return r; }
+
+/* aristas “lógicas” (cada una una vez) para dibujar */
+function edgeList() {
+  const L = [];
+  for (let v = 0; v < G.n; v++) for (const w of G.ady[v]) { if (DIR || v <= w) L.push([v, w]); }
+  // en no dirigido, v-w aparece en ady[v] y ady[w]; con v==w (bucle) aparece 2 veces: quitar duplicado
+  if (!DIR) { const seen = new Map(); return L.filter(([v, w]) => { if (v !== w) return true; const k = v; const c = (seen.get(k) || 0) + 1; seen.set(k, c); return c % 2 === 1; }); }
+  return L;
+}
+
+/* ---------- ejemplos ---------- */
+const PRESETS = [{"nombre": "Tareas con precedencias (sin ciclos)", "n": 7, "algo": "topo", "src": 0, "dst": 4, "pos": [[90, 110], [250, 60], [250, 200], [420, 110], [570, 110], [90, 320], [330, 330]], "e": [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4], [5, 2], [5, 6], [6, 4]]}, {"nombre": "Tareas con un ciclo (Imposible)", "n": 6, "algo": "topo", "src": 0, "dst": 3, "pos": [[80, 210], [230, 90], [400, 90], [550, 210], [400, 340], [230, 340]], "e": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 2], [5, 0], [5, 4]]}, {"nombre": "Transformación modular M=7 (x→2x+1, x→x+3)", "n": 7, "algo": "bfs", "src": 0, "dst": 5, "e": [[0, 1], [1, 3], [2, 5], [3, 0], [4, 2], [5, 4], [6, 6], [0, 3], [1, 4], [2, 5], [3, 6], [4, 0], [5, 1], [6, 2]]}, {"nombre": "Camino de ida pero no de vuelta", "n": 5, "algo": "bfs", "src": 0, "dst": 4, "pos": [[90, 210], [230, 100], [230, 320], [420, 210], [560, 210]], "e": [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4]]}];
+function layoutCircle(n, cx = 320, cy = 210, r = 150) { const out = []; for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + 2 * Math.PI * i / n; out.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return out; }
+function loadPreset(p) {
+  gReset();
+  const pts = p.pos || layoutCircle(p.n);
+  for (let i = 0; i < p.n; i++) gAddV(pts[i][0], pts[i][1]);
+  for (const [a, b] of p.e) gPon(a, b);
+  if (p.src != null) { $('#src').value = p.src; $('#dst').value = p.dst != null ? p.dst : 0; }
+  if (p.algo) $('#algo').value = p.algo;
+  afterEdit();
+}
+function randomGraph() {
+  const n = 7 + Math.floor(Math.random() * 3), m = n + 2 + Math.floor(Math.random() * 3);
+  gReset(); const pts = layoutCircle(n); for (let i = 0; i < n; i++) gAddV(pts[i][0], pts[i][1]);
+  let guard = 0; const wantDag = ALGOS_NEED_DAG_RANDOM && Math.random() < 0.6;
+  while (G.A < m && guard++ < 200) {
+    const a = Math.floor(Math.random() * n), b = Math.floor(Math.random() * n);
+    if (a === b || gHay(a, b) || (!DIR && gHay(b, a))) continue;
+    if (DIR && wantDag && a > b) continue;
+    gPon(a, b);
+  }
+  afterEdit();
+}
+let ALGOS_NEED_DAG_RANDOM = false;
+
+/* ---------- dibujo ---------- */
+const svg = $('#gsvg'); const R = 22;
+let visual = { node: {}, edge: {}, tag: {}, curEdge: null, sel: -1 };
+function drawGraph() {
+  svg.innerHTML = '';
+  if (DIR) {
+    const defs = el('defs', {}, svg);
+    for (const [id, cls] of [['ah', 'var(--muted)'], ['ahT', 'var(--blue)'], ['ahC', 'var(--accent)'], ['ahB', 'var(--red)'], ['ahN', 'var(--green)']]) {
+      const m = el('marker', { id, viewBox: '0 0 10 10', refX: '9', refY: '5', markerWidth: '7', markerHeight: '7', orient: 'auto-start-reverse' }, defs);
+      el('path', { d: 'M0 0 L10 5 L0 10 z', fill: cls }, m);
+    }
+  }
+  const eg = el('g', {}, svg), ng = el('g', {}, svg), tg = el('g', {}, svg);
+  const lst = edgeList();
+  const pairCount = {}; for (const [v, w] of lst) { const k = Math.min(v, w) + '_' + Math.max(v, w); pairCount[k] = (pairCount[k] || 0) + 1; }
+  const pairSeen = {};
+  visual.edgeEls = [];
+  lst.forEach(([v, w], idx) => {
+    const [x1, y1] = G.pos[v], [x2, y2] = G.pos[w];
+    let d;
+    if (v === w) { d = `M${x1 - 10} ${y1 - R + 2} C${x1 - 50} ${y1 - 70} ${x1 + 50} ${y1 - 70} ${x1 + 10} ${y1 - R + 2}`; }
+    else {
+      const k = Math.min(v, w) + '_' + Math.max(v, w); pairSeen[k] = (pairSeen[k] || 0) + 1;
+      const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L;
+      // en dirigido, v->w y w->v se curvan a lados opuestos; en general, aristas paralelas se separan
+      let off = 0;
+      if (DIR && gHay(w, v) && v !== w) off = 16;
+      if (pairCount[k] > 1 && !(DIR && gHay(w, v))) off = (pairSeen[k] - 1) * 18;
+      else if (pairCount[k] > 2) off += (pairSeen[k] - 1) * 10;
+      const nx = -uy, ny = ux;
+      const sx = x1 + ux * R + nx * off * 0.6, sy = y1 + uy * R + ny * off * 0.6;
+      const ex = x2 - ux * (R + (DIR ? 3 : 0)) + nx * off * 0.6, ey = y2 - uy * (R + (DIR ? 3 : 0)) + ny * off * 0.6;
+      const cx = (x1 + x2) / 2 + nx * off * 1.6, cy = (y1 + y2) / 2 + ny * off * 1.6;
+      d = off ? `M${sx} ${sy} Q${cx} ${cy} ${ex} ${ey}` : `M${sx} ${sy} L${ex} ${ey}`;
+    }
+    const p = el('path', { d, class: 'edge', 'marker-end': DIR ? 'url(#ah)' : '' }, eg);
+    if (!DIR) p.removeAttribute('marker-end');
+    visual.edgeEls.push({ v, w, el: p });
+  });
+  visual.nodeEls = [];
+  for (let i = 0; i < G.n; i++) {
+    const g = el('g', { class: 'node', 'data-v': i, transform: `translate(${G.pos[i][0]} ${G.pos[i][1]})` }, ng);
+    el('circle', { r: R }, g); const t = el('text', {}, g); t.textContent = i;
+    visual.nodeEls.push(g);
+    const tag = el('text', { class: 'tg', x: G.pos[i][0], y: G.pos[i][1] - R - 7 }, tg); visual.tag[i] = tag;
+  }
+  applyVisual();
+}
+let curFrame = null;
+function applyVisual() {
+  if (!visual.nodeEls) return;
+  const f = curFrame || {};
+  visual.nodeEls.forEach((g, i) => {
+    g.setAttribute('class', 'node' + (f.node && f.node[i] ? ' ' + f.node[i] : '') + (visual.sel === i ? ' sel' : ''));
+    if (visual.tag[i]) visual.tag[i].textContent = (f.tag && f.tag[i] != null) ? f.tag[i] : '';
+  });
+  visual.edgeEls.forEach(({ v, w, el: p }) => {
+    let c = '';
+    if (f.edge) { const k1 = v + '>' + w; const k2 = w + '>' + v; c = f.edge[k1] || (!DIR ? f.edge[k2] : '') || ''; }
+    p.setAttribute('class', 'edge' + (c ? ' ' + c : ''));
+    if (DIR) p.setAttribute('marker-end', 'url(#' + ({ tree: 'ahT', cur: 'ahC', back: 'ahB', new: 'ahN' }[c] || 'ah') + ')');
+  });
+}
+/* tabla de adyacencia */
+function drawAdj(f) {
+  const host = $('#adj'); host.innerHTML = '';
+  $('#kV').textContent = G.n; $('#kA').textContent = G.A;
+  const adys = (f && f.adys) || G.ady;
+  for (let v = 0; v < G.n; v++) {
+    const a = document.createElement('div'); a.className = 'vn'; a.textContent = ((f && f.adysName) || '_ady') + '[' + v + ']'; host.appendChild(a);
+    const l = document.createElement('div'); l.className = 'lst' + (f && f.hotList === v ? ' hot' : ''); host.appendChild(l);
+    adys[v].forEach((w, j) => {
+      const c = document.createElement('span'); c.className = 'chip';
+      if (f && f.newChip && f.newChip.v === v && f.newChip.j === j) c.classList.add('new');
+      if (f && f.curChip && f.curChip.v === v && f.curChip.j === j) c.classList.add('cur');
+      c.textContent = w; l.appendChild(c);
+    });
+    if (!adys[v].length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '∅'; l.appendChild(e); }
+  }
+  $('#adjNote').innerHTML = DIR
+    ? 'Cada arista <code>v→w</code> se guarda <b>una vez</b>: <code>w</code> entra solo en la lista de <code>v</code>. Por eso <code>_A</code> sube 1 y la suma de las longitudes de las listas es <code>_A</code>.'
+    : 'Cada arista <code>v-w</code> se guarda <b>dos veces</b> (<code>w</code> en la lista de <code>v</code> y <code>v</code> en la de <code>w</code>), pero <code>_A</code> sube 1. La suma de las longitudes de las listas es <code>2·_A</code>.';
+}
+
+/* ---------- interacción ---------- */
+let tool = 'move', pendingEdge = -1;
+function setTool(t) {
+  tool = t; pendingEdge = -1; visual.sel = -1;
+  $('#tMove').classList.toggle('on', t === 'move'); $('#tVert').classList.toggle('on', t === 'vert'); $('#tEdge').classList.toggle('on', t === 'edge');
+  $('#toolHint').textContent = { move: 'Arrastra los vértices para colocarlos como quieras.', vert: 'Haz clic en el lienzo para crear un vértice (hasta 14).', edge: DIR ? 'Haz clic en el vértice origen y luego en el destino: ponArista(v, w) añade v→w.' : 'Haz clic en dos vértices: ponArista(v, w) añade v-w.' }[t];
+  svg.style.cursor = t === 'vert' ? 'copy' : t === 'edge' ? 'pointer' : 'default';
+  applyVisual();
+}
+$('#tMove').onclick = () => setTool('move'); $('#tVert').onclick = () => setTool('vert'); $('#tEdge').onclick = () => setTool('edge');
+function svgPoint(e) { const r = svg.getBoundingClientRect(); const vb = svg.viewBox.baseVal; return [(e.clientX - r.left) * vb.width / r.width, (e.clientY - r.top) * vb.height / r.height]; }
+let drag = null;
+svg.addEventListener('pointerdown', e => {
+  const g = e.target.closest('.node'); const [px, py] = svgPoint(e);
+  if (tool === 'move' && g) { drag = { v: +g.dataset.v, dx: px - G.pos[+g.dataset.v][0], dy: py - G.pos[+g.dataset.v][1] }; svg.setPointerCapture(e.pointerId); }
+  else if (tool === 'vert' && !g) { if (G.n >= 14) { flashHint('Máximo 14 vértices para que se vea bien.'); return; } gAddV(Math.max(R, Math.min(640 - R, px)), Math.max(R + 14, Math.min(420 - R, py))); afterEdit(); }
+  else if (tool === 'edge' && g) {
+    const v = +g.dataset.v;
+    if (pendingEdge < 0) { pendingEdge = v; visual.sel = v; applyVisual(); }
+    else { addEdgeAnimated(pendingEdge, v); pendingEdge = -1; visual.sel = -1; }
+  }
+});
+svg.addEventListener('pointermove', e => {
+  if (!drag) return; const [px, py] = svgPoint(e);
+  G.pos[drag.v] = [Math.max(R, Math.min(640 - R, px - drag.dx)), Math.max(R + 14, Math.min(420 - R, py - drag.dy))];
+  const keep = curFrame; drawGraph(); curFrame = keep; applyVisual();
+});
+svg.addEventListener('pointerup', () => { drag = null; });
+function flashHint(t) { const h = $('#toolHint'); const old = h.textContent; h.textContent = t; setTimeout(() => { h.textContent = old; }, 2200); }
+
+function afterEdit() {
+  const n = Math.max(0, G.n - 1);
+  for (const id of ['#eV', '#eW', '#src', '#dst']) { $(id).max = n; if (+$(id).value > n) $(id).value = n; }
+  curFrame = null; drawGraph(); drawAdj(); $('#state').innerHTML = '<p class="note">Elige un algoritmo y pulsa <b>Ejecutar</b>.</p>';
+  if (player) { player.pause(); player.frames = []; $('#msg').innerHTML = 'Grafo modificado. Pulsa <b>Ejecutar</b> para recorrerlo.'; $('#pCount').textContent = ''; }
+}
+/* ponArista animado: se ve el push_back en la lista */
+function addEdgeAnimated(v, w) {
+  try { if (v < 0 || v >= G.n || w < 0 || w >= G.n || isNaN(v) || isNaN(w)) throw new Error('x'); }
+  catch (e) { flashHint('Vertice inexistente (el C++ lanzaría domain_error).'); return; }
+  const antes = G.ady.map(a => a.slice());
+  gPon(v, w);
+  const frames = [];
+  const base = { node: { [v]: 's-cur', [w]: 's-vis' }, edge: {} };
+  frames.push({ msg: `<code>g.ponArista(${v}, ${w})</code>: comprueba que ${v} y ${w} existen (si no, <code>domain_error</code>) y aumenta <code>_A</code> a <b>${G.A}</b>.`, lines: [L('clase','if (v < 0'),L('clase','throw'),L('clase','++_A')], ...base, adys: antes, hotList: -1 });
+  const dest = G.ady.map(a => a.slice());
+  const f2 = { msg: `<code>_ady[${v}].push_back(${w})</code>: ${w} entra al final de la lista de ${v}.`, lines: [L('clase','_ady[v].push_back(w)')], ...base, adys: G.ady.map((a, i) => i === v ? a : a.slice()), hotList: v, newChip: { v, j: G.ady[v].length - 1 } };
+  if (!DIR && !(v === w)) {
+    frames.push(f2);
+    frames.push({ msg: `Como el grafo es <b>no dirigido</b>, también <code>_ady[${w}].push_back(${v})</code>: la arista se guarda en las dos listas.`, lines: [0], ...base, adys: dest, hotList: w, newChip: { v: w, j: G.ady[w].length - 1 } });
+  } else {
+    if (!DIR && v === w) f2.msg += ' (un bucle <code>v-v</code> mete <code>v</code> dos veces en su propia lista).';
+    if (DIR) f2.msg += ' <b>Solo</b> en esa lista: en un digrafo la arista tiene sentido.';
+    frames.push(f2);
+  }
+  frames.push({ msg: `Listo: <code>_V = ${G.n}</code>, <code>_A = ${G.A}</code>. ${DIR ? 'Los sucesores de ' + v + ' son ahora ' + (G.ady[v].join(', ')) + '.' : 'Los adyacentes de ' + v + ' son ahora ' + G.ady[v].join(', ') + '.'}`, lines: [], node: {}, edge: { [v + '>' + w]: 'new' }, adys: dest, hotList: -1 });
+  drawGraph(); showCode('clase'); player.load(frames, { play: true });
+}
+$('#bPon').onclick = () => { addEdgeAnimated(+$('#eV').value, +$('#eW').value); };
+$('#bRand').onclick = randomGraph;
+$('#bClear').onclick = () => { gReset(); afterEdit(); };
+
+/* ---------- algoritmos (cada uno genera frames) ---------- */
+const ALGOS = {};
+function L(k, sub, occ = 0) {
+  let c = -1; const ls = CODES[k].lines;
+  for (let i = 0; i < ls.length; i++) if (ls[i].includes(sub)) { c++; if (c === occ) return i + 1; }
+  throw new Error('ancla no encontrada en ' + k + ': ' + sub);
+}
+const ek = (v, w) => DIR ? v + '>' + w : Math.min(v, w) + '>' + Math.max(v, w);
+function ctx() {
+  const f = [], st = { node: {}, edge: {}, tag: {} };
+  return { f, st, snap(msg, lines, vecs, extra) { f.push({ msg, lines, node: { ...st.node }, edge: { ...st.edge }, tag: { ...st.tag }, vecs: vecs || [], ...(extra || {}) }); } };
+}
+const vecOf = (name, arr, hot, okFn) => ({ kind: 'vec', name, vals: arr.map(x => x === null ? '·' : x), hot: hot == null ? -1 : hot, ok: okFn ? arr.map((x, i) => okFn(x) ? i : -1).filter(i => i >= 0) : [] });
+const listOf = (name, arr, hot) => ({ kind: 'list', name, vals: arr.slice(), hot: hot == null ? -1 : hot });
+const cl = a => a.map(x => x.slice());
+
+/* ---- BFS (CaminosBFS): dist, cola, camino mínimo al final ---- */
+ALGOS.bfs = (s, t) => {
+  const n = G.n, dist = Array(n).fill(-1), par = Array(n).fill(-1), q = [], C = ctx(), S = C.st;
+  const V = hot => [vecOf('dist', dist, hot, x => x >= 0), listOf('cola q (frente a la izquierda)', q, 0)];
+  C.snap(`<code>CaminosBFS(g, ${s})</code>: <code>dist</code> empieza con todo a <b>-1</b> («sin visitar»).`, [L('bfs', 'dist(g.V(), -1)')], V(-1));
+  dist[s] = 0; q.push(s); S.node[s] = 's-q'; S.tag[s] = 0;
+  C.snap(`El origen ${s} tiene <b>dist = 0</b> y entra en la cola.`, [L('bfs', 'dist[origen] = 0;'), L('bfs', 'q.push(origen);')], V(s));
+  while (q.length) {
+    const v = q.shift(); S.node[v] = 's-cur';
+    C.snap(`Saco el frente de la cola: <b>${v}</b> (dist = ${dist[v]}). Miro ${DIR ? 'sus sucesores' : 'sus vecinos'}: [${G.ady[v].join(', ') || 'ninguno'}].`, [L('bfs', 'while (!q.empty())'), L('bfs', 'int v = q.front(); q.pop();')], V(v));
+    for (const w of G.ady[v]) {
+      const k = ek(v, w), prev = S.edge[k];
+      S.edge[k] = 'cur';
+      if (dist[w] === -1) {
+        dist[w] = dist[v] + 1; par[w] = v; q.push(w); S.node[w] = 's-q'; S.tag[w] = dist[w];
+        C.snap(`${w} no estaba visitado → <code>dist[${w}] = dist[${v}] + 1 = ${dist[w]}</code> y entra en la cola.`, [L('bfs', 'for (int w : g.ady(v))'), L('bfs', 'if (dist[w] == -1)'), L('bfs', 'dist[w] = dist[v] + 1;'), L('bfs', 'q.push(w);')], V(w));
+        S.edge[k] = 'tree';
+      } else {
+        C.snap(`${w} ya tiene distancia (${dist[w]}): lo ignoro. ${dist[w] <= dist[v] ? 'Llegar otra vez no mejora nada: BFS ya lo alcanzó por un camino igual o más corto.' : ''}`, [L('bfs', 'for (int w : g.ady(v))'), L('bfs', 'if (dist[w] == -1)')], V(w));
+        S.edge[k] = prev || '';
+      }
+    }
+    S.node[v] = 's-done';
+  }
+  // resultado
+  const fin = [];
+  if (dist[t] >= 0) {
+    let x = t; const path = [t];
+    while (par[x] >= 0) { x = par[x]; path.push(x); }
+    path.reverse();
+    for (let i = 0; i + 1 < path.length; i++) S.edge[ek(path[i], path[i + 1])] = 'new';
+    path.forEach(x => { S.node[x] = 's-cur'; });
+    C.snap(`<b>Fin del BFS.</b> Distancia de ${s} a ${t}: <b>${dist[t]}</b> aristas. Camino mínimo: ${path.join(' ' + (DIR ? '→' : '–') + ' ')}. Los vértices con <code>dist = -1</code> (${dist.map((d, i) => d < 0 ? i : -1).filter(i => i >= 0).join(', ') || 'ninguno'}) ${DIR ? 'no son alcanzables desde ' + s : 'están en otra componente'}.`, [L('bfs', 'int distancia(int v) const')], V(t));
+  } else {
+    C.snap(`<b>Fin del BFS.</b> ${t} <b>no se alcanza</b> desde ${s} (<code>dist[${t}] = -1</code>).`, [L('bfs', 'int distancia(int v) const')], V(t));
+  }
+  return C.f;
+};
+
+/* ---- Orden topológico con DFS y 3 estados (OrdenTopologico) ---- */
+ALGOS.topo = () => {
+  const n = G.n, estado = Array(n).fill(0), post = [], pila = [], C = ctx(), S = C.st;
+  let hayCiclo = false;
+  const V = hot => [vecOf('estado (0 sin visitar · 1 en pila · 2 terminado)', estado, hot, x => x === 2), listOf('pila de llamadas', pila, pila.length - 1), listOf('post (orden de terminación)', post, -1)];
+  C.snap(`<code>OrdenTopologico(g)</code>: todos los estados a 0. Lanzo un DFS desde cada vértice sin visitar, <b>en orden</b>.`, [L('topo', 'estado(g.V(), 0)'), L('topo', 'if (estado[v] == 0) dfs(g, v);')], V(-1));
+  function dfs(v) {
+    estado[v] = 1; pila.push(v); S.node[v] = 's-cur';
+    C.snap(`<code>dfs(${v})</code>: <b>estado[${v}] = 1</b> (en la pila: lo estoy explorando).`, [L('topo', 'estado[v] = 1;')], V(v));
+    for (const w of G.ady[v]) {
+      if (hayCiclo) return;
+      const k = ek(v, w), prev = S.edge[k]; S.edge[k] = 'cur';
+      if (estado[w] === 1) {
+        hayCiclo = true; S.node[w] = 's-red'; S.node[v] = 's-red'; S.edge[k] = 'back';
+        C.snap(`Sucesor ${w}: <b>estado 1</b>, sigue en la pila ⇒ ${w} es un antecesor de ${v} y la arista ${v}→${w} <b>cierra un ciclo</b>. <code>hayCiclo = true</code> ⇒ <b>Imposible</b>.`, [L('topo', 'if (estado[w] == 1) hayCiclo = true;')], V(w));
+        return;
+      } else if (estado[w] === 0) {
+        C.snap(`Sucesor ${w}: estado 0 → <code>dfs(${w})</code>.`, [L('topo', 'for (int w : g.ady(v))'), L('topo', 'else if (estado[w] == 0) dfs(g, w);')], V(w));
+        S.edge[k] = 'tree'; S.node[v] = 's-vis';
+        dfs(w);
+        if (hayCiclo) return;
+        S.node[v] = 's-cur';
+      } else {
+        C.snap(`Sucesor ${w}: <b>estado 2</b> (ya terminado). Es normal, no hay ciclo: ${w} y todo lo que depende de él ya está en <code>post</code>.`, [L('topo', 'for (int w : g.ady(v))'), L('topo', 'if (estado[w] == 1) hayCiclo = true;')], V(w));
+        S.edge[k] = prev || '';
+      }
+    }
+    estado[v] = 2; pila.pop(); post.push(v); S.node[v] = 's-done';
+    C.snap(`${v} no tiene más sucesores: <b>estado[${v}] = 2</b> y entra en <code>post</code> (terminan primero las tareas que dependen de él).`, [L('topo', 'estado[v] = 2;'), L('topo', 'post.push_back(v);')], V(v));
+  }
+  for (let v = 0; v < n && !hayCiclo; v++) if (estado[v] === 0) {
+    C.snap(`${v} está sin visitar: nuevo DFS desde ${v}.`, [L('topo', 'if (estado[v] == 0) dfs(g, v);')], V(v));
+    dfs(v);
+  }
+  if (hayCiclo) {
+    C.snap(`<b>Imposible</b>: con un ciclo ninguna tarea del ciclo puede ir antes que las demás. El programa escribe <code>Imposible</code>.`, [L('topo', 'bool posible() const')], V(-1));
+  } else {
+    const orden = post.slice().reverse();
+    Object.keys(S.node).forEach(k => { S.node[k] = 's-done'; });
+    orden.forEach((x, i) => { S.tag[x] = i + 1; });
+    C.snap(`<code>reverse(post)</code> ⇒ <b>orden topológico: ${orden.join(' ')}</b>. Los números sobre los vértices indican su posición. Toda arista va de un vértice a otro posterior en el orden (hay muchos órdenes válidos; el juez acepta cualquiera).`, [L('topo', 'reverse(post.begin(), post.end());')], [...V(-1).slice(0, 2), listOf('orden topológico (post invertido)', orden, -1)]);
+  }
+  return C.f;
+};
+
+/* ---- inverso(): copia con todas las aristas invertidas ---- */
+ALGOS.inv = () => {
+  const C = ctx(), S = C.st, n = G.n, inv = Array.from({ length: n }, () => []);
+  const ex = (v, j) => ({ adys: cl(inv), adysName: 'inv._ady', hotList: v, newChip: v == null ? null : { v, j } });
+  C.snap(`<code>Digrafo inv(_V)</code>: mismos ${n} vértices y ninguna arista. Voy a recorrer cada arista <code>v→w</code> de <i>este</i> grafo.`, [L('clase', 'Digrafo inv(_V);')], [], ex(null));
+  for (let v = 0; v < n; v++) for (const w of G.ady[v]) {
+    const k = v + '>' + w; S.edge[k] = 'cur'; S.node[v] = 's-cur'; S.node[w] = 's-vis';
+    inv[w].push(v);
+    C.snap(`Arista <b>${v}→${w}</b> ⇒ <code>inv.ponArista(${w}, ${v})</code>: ${v} entra en la lista de ${w} del inverso.`, [L('clase', 'for (int v = 0; v < _V; ++v) {'), L('clase', 'inv.ponArista(w, v);')], [], ex(w, inv[w].length - 1));
+    S.edge[k] = ''; S.node[v] = ''; S.node[w] = '';
+  }
+  C.snap(`<code>return inv</code>: ahora <code>inv.ady(w)</code> son los <b>predecesores</b> de <code>w</code> en el grafo original. Pulsa <b>⇄ Invertir grafo</b> para quedarte con él y verlo dibujado.`, [L('clase', 'return inv;')], [], ex(null));
+  return C.f;
+};
+document.getElementById('bInv').onclick = () => {
+  const inv = gInv(); G.ady = inv.ady; afterEdit();
+  $('#msg').innerHTML = 'El grafo es ahora <code>g.inverso()</code>: todas las flechas giradas. Si lo vuelves a invertir, recuperas el original (salvo el orden dentro de las listas).';
+};
+
+
+/* ---------- código mostrado ---------- */
+const CODES = {"clase": {"f": "Digrafo.h (resumen)", "tab": "Digrafo.h", "lines": ["class Digrafo {", "   ", "   int _V;   // número de vértices", "   int _A;  // número de aristas", "   std::vector<Adys> _ady;   // vector de listas de adyacentes", "   ", "public:", "   ", "   Digrafo(int V) : _V(V), _A(0), _ady(_V) {}", "   ", "   // ... constructor desde un flujo de entrada omitido", "", "   int V() const { return _V; }", "   ", "   int A() const { return _A; }", "   ", "   void ponArista(int v, int w) {", "      if (v < 0 || v >= _V || w < 0 || w >= _V)", "         throw std::domain_error(\"Vertice inexistente\");", "      ++_A;", "      _ady[v].push_back(w);", "   }", "   ", "   bool hayArista(int u, int v) const {", "      for (int w : _ady[u])", "         if (w == v) return true;", "      return false;", "   }", "   ", "   Adys const& ady(int v) const {", "      if (v < 0 || v >= _V)", "         throw std::domain_error(\"Vertice inexistente\");", "      return _ady[v];", "   }", "   ", "   Digrafo inverso() const {", "      Digrafo inv(_V);", "      for (int v = 0; v < _V; ++v) {", "         for (int w : _ady[v]) {", "            inv.ponArista(w, v);", "         }", "      }", "      return inv;", "   }", "   ", "   // ... print() omitido", "   ", "};"]}, "bfs": {"f": "BFS (EJ_04-L / EJ_05-1)", "tab": "BFS", "lines": ["// (el mismo BFS del tema 4, con Digrafo)", "class CaminosBFS {", "public:", "    CaminosBFS(Digrafo const& g, int origen) : dist(g.V(), -1) {", "        bfs(g, origen);", "    }", "", "    int distancia(int v) const { return dist[v]; }", "", "private:", "    vector<int> dist;   // dist[v] = aristas desde el origen (-1 = sin visitar)", "", "    void bfs(Digrafo const& g, int origen) {", "        queue<int> q;", "        dist[origen] = 0;", "        q.push(origen);", "        while (!q.empty()) {", "            int v = q.front(); q.pop();", "            for (int w : g.ady(v)) {", "                if (dist[w] == -1) {", "                    dist[w] = dist[v] + 1;", "                    q.push(w);", "                }", "            }", "        }", "    }", "};"]}, "topo": {"f": "EJ_05-3.cpp", "tab": "Orden topológico", "lines": ["class OrdenTopologico {", "public:", "    OrdenTopologico(Digrafo const& g) : estado(g.V(), 0), hayCiclo(false) {", "        for (int v = 0; v < g.V() && !hayCiclo; ++v)", "            if (estado[v] == 0) dfs(g, v);", "        reverse(post.begin(), post.end());   // postorden inverso = orden topologico", "    }", "", "    bool posible() const { return !hayCiclo; }", "    vector<int> const& orden() const { return post; }", "", "private:", "    vector<int> estado;   // 0 = sin visitar, 1 = en la pila, 2 = terminado", "    vector<int> post;     // vertices en el orden en que el DFS los termina", "    bool hayCiclo;", "", "    void dfs(Digrafo const& g, int v) {", "        estado[v] = 1;", "        for (int w : g.ady(v)) {", "            if (hayCiclo) return;", "            if (estado[w] == 1) hayCiclo = true;        // w sigue en la pila: ciclo", "            else if (estado[w] == 0) dfs(g, w);", "        }", "        estado[v] = 2;", "        post.push_back(v);", "    }", "};"]}};
+let markFn = null, curCode = null;
+function showCode(name) {
+  if (curCode === name) return; curCode = name;
+  const c = CODES[name]; markFn = mountCode($('#codeHost'), c.f, c.lines);
+  $$('#codeTabs .btn').forEach(b => b.classList.toggle('on', b.dataset.k === name));
+}
+for (const k in CODES) { const b = document.createElement('button'); b.className = 'btn'; b.dataset.k = k; b.textContent = CODES[k].tab; b.onclick = () => { showCode(k); if (markFn) markFn([]); }; $('#codeTabs').appendChild(b); }
+
+/* ---------- arranque ---------- */
+$('#playerHost').innerHTML = PLAYER_HTML;
+const player = new Player({
+  render: f => { curFrame = f; applyVisual(); drawAdj(f); drawState(f); },
+  mark: lines => { if (markFn) markFn(lines); }
+});
+function drawState(f) {
+  const host = $('#state'); host.innerHTML = '';
+  if (!f || !f.vecs) { if (!f || !f.vecs) host.innerHTML = '<p class="note">Aquí aparecen los vectores del algoritmo (<code>visitado</code>, <code>dist</code>, <code>estado</code>…), la cola o la pila.</p>'; return; }
+  for (const blk of f.vecs) {
+    const d = document.createElement('div');
+    if (blk.kind === 'vec') {
+      d.innerHTML = '<div class="note" style="margin-bottom:3px"><code>' + esc(blk.name) + '</code></div>';
+      const v = document.createElement('div'); v.className = 'vec';
+      blk.vals.forEach((x, i) => { const c = document.createElement('div'); c.className = 'c' + (blk.hot === i ? ' hot' : (blk.ok && blk.ok.includes(i) ? ' ok' : '')); c.innerHTML = '<i>' + i + '</i><b>' + esc(x) + '</b>'; v.appendChild(c); });
+      d.appendChild(v);
+    } else {
+      d.innerHTML = '<div class="listbox"><span class="lab">' + esc(blk.name) + '</span></div>';
+      const lb = d.firstChild;
+      if (!blk.vals.length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '(vacía)'; lb.appendChild(e); }
+      blk.vals.forEach((x, i) => { const c = document.createElement('span'); c.className = 'chip' + (blk.hot === i ? ' cur' : ''); c.textContent = x; lb.appendChild(c); });
+    }
+    host.appendChild(d);
+  }
+}
+const ALGO_LIST = [{"id": "bfs", "nombre": "BFS: distancias desde un origen", "src": true, "dst": true, "code": "bfs"}, {"id": "topo", "nombre": "DFS: orden topológico y ciclos", "src": false, "dst": false, "code": "topo", "dag": true}, {"id": "inv", "nombre": "inverso(): invertir todas las aristas", "src": false, "dst": false, "code": "clase"}];
+for (const a of ALGO_LIST) { const o = document.createElement('option'); o.value = a.id; o.textContent = a.nombre; $('#algo').appendChild(o); }
+PRESETS.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.nombre; $('#preset').appendChild(o); });
+$('#preset').onchange = () => loadPreset(PRESETS[+$('#preset').value]);
+function updAlgoUI() {
+  const a = ALGO_LIST.find(x => x.id === $('#algo').value);
+  $('#lblSrc').hidden = !a.src; $('#lblDst').hidden = !a.dst;
+  ALGOS_NEED_DAG_RANDOM = !!a.dag;
+  showCode(a.code); if (markFn) markFn([]);
+}
+$('#algo').onchange = updAlgoUI;
+$('#bRun').onclick = () => {
+  const a = ALGO_LIST.find(x => x.id === $('#algo').value);
+  if (!G.n) { $('#msg').innerHTML = 'El grafo está vacío: crea o carga uno.'; return; }
+  const s = Math.max(0, Math.min(G.n - 1, +$('#src').value || 0)), t = Math.max(0, Math.min(G.n - 1, +$('#dst').value || 0));
+  const frames = ALGOS[a.id](s, t);
+  drawGraph(); showCode(a.code); player.load(frames, { play: true });
+};
+$('#legend').innerHTML = "<span><b style=\"border-color:var(--accent);background:var(--accent-soft)\"></b>vértice actual</span><span><b style=\"border-color:var(--blue);background:var(--blue-soft)\"></b>visitado / en la pila</span><span><b style=\"border-color:var(--purple);background:var(--purple-soft)\"></b>en la cola / 2.º color</span><span><b style=\"border-color:var(--green);background:var(--green-soft)\"></b>terminado</span><span><b style=\"border-color:var(--red);background:var(--red-soft)\"></b>conflicto / ciclo</span>";
+setTool('move');
+updAlgoUI();
+loadPreset(PRESETS[0]);
+player.load([{ msg: 'Carga un ejemplo, construye tu propio digrafo y elige un algoritmo. Con <b>Añadir</b> verás cómo <code>ponArista</code> rellena las listas de adyacencia.', lines: [] }], { play: false });
+window.__DA = { G, ALGOS, gPon, gAddV, gReset, loadPreset, PRESETS };
+</script>
+
+</body>
+</html>

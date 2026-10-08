@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cola de prioridad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<style>
+/* Sistema visual común de las visualizaciones de DA (cuaderno de laboratorio de algoritmos).
+   Cada página añade su CSS propio DESPUÉS de este bloque. */
+:root {
+  --bg: #f3f4f8;
+  --panel: #ffffff;
+  --panel-2: #eceef4;
+  --ink: #1a2133;
+  --muted: #5d667b;
+  --line: #d9deea;
+  --accent: #b86e00;        /* nodo activo / raíz / resultado */
+  --accent-soft: #fbeccd;
+  --blue: #1f6fb8;          /* comparando / visitando */
+  --blue-soft: #d9eafa;
+  --red: #c4372d;           /* intercambio / rotación / ciclo */
+  --red-soft: #fbdcd8;
+  --green: #1e7f57;         /* terminado / correcto */
+  --green-soft: #d6f1e4;
+  --purple: #6c4bc1;
+  --purple-soft: #e6dffa;
+  --node: #ffffff;
+  --code-bg: #121a2b;
+  --code-ink: #dce4f5;
+  --code-dim: #6f7b95;
+  --code-hl: #3a3010;
+  --code-hl-bar: #f5a623;
+  --kw: #ff79c6; --ty: #8be9fd; --nu: #bd93f9; --co: #7e8aa8; --st: #f1fa8c;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
+    --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
+    --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
+    --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
+    --code-bg: #0a0f1c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
+  --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
+  --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
+  --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
+  --code-bg: #0a0f1c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 22px 16px 56px; display: flex; flex-direction: column; gap: 16px; }
+.wrap > * { min-width: 0; }
+header.top { display: flex; flex-direction: column; gap: 6px; }
+.tag { align-self: flex-start; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-soft); padding: 3px 9px; border-radius: 4px; }
+h1 { font-size: clamp(1.45rem, 3.2vw, 2rem); line-height: 1.2; margin: 0; font-weight: 700; letter-spacing: -.015em; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 70ch; text-wrap: pretty; }
+.lede code, .msg code, .note code, td code, li code { font-family: var(--mono); font-size: .9em; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+.panel > h2 { margin: 0 0 10px; font-size: .78rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bar .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 4px; }
+.bar label { font-size: .85rem; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.btn { font: inherit; font-size: .9rem; font-weight: 500; color: var(--ink); background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--blue); }
+.btn:focus-visible, .field:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="dark"] .btn.primary { color: #1b1400; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #1b1400; } }
+.btn.on { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+.btn:disabled { opacity: .45; cursor: default; }
+.field { font: inherit; font-family: var(--mono); font-size: .9rem; width: 5.2em; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+select.field { width: auto; font-family: var(--sans); }
+.stage { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.canvas-scroll { overflow-x: auto; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); }
+svg.viz { display: block; width: 100%; height: auto; }
+svg.viz text { font-family: var(--mono); fill: var(--ink); }
+svg.viz .muted { fill: var(--muted); }
+/* reproductor */
+.player { display: flex; flex-direction: column; gap: 8px; }
+.player .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.player .count { font-family: var(--mono); font-size: .82rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-left: auto; }
+.player input[type=range] { accent-color: var(--accent); }
+.msg { min-height: 3.2em; padding: 10px 12px; border-radius: 8px; background: var(--panel-2); border-left: 4px solid var(--accent); font-size: .95rem; }
+.msg b { font-weight: 600; }
+/* código */
+.codebox { background: var(--code-bg); color: var(--code-ink); border-radius: 10px; padding: 10px 0; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.55; }
+.codebox .fname { padding: 0 14px 6px; color: var(--code-dim); font-size: 11.5px; }
+.codebox .ln { display: flex; white-space: pre; padding-right: 14px; border-left: 4px solid transparent; }
+.codebox .ln i { font-style: normal; width: 2.6em; text-align: right; padding-right: 10px; color: var(--code-dim); flex: none; user-select: none; }
+.codebox .ln.on { background: var(--code-hl); border-left-color: var(--code-hl-bar); }
+.codebox .k { color: var(--kw); } .codebox .t { color: var(--ty); } .codebox .n { color: var(--nu); } .codebox .c { color: var(--co); } .codebox .s { color: var(--st); }
+/* leyenda y notas */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .82rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend b { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line); }
+.note { font-size: .88rem; color: var(--muted); margin: 0; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: .88rem; margin: 0; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; font-family: var(--mono); overflow-wrap: anywhere; }
+table.t { border-collapse: collapse; font-size: .88rem; width: 100%; }
+table.t th, table.t td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { color: var(--muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+footer.foot { color: var(--muted); font-size: .82rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.back { align-self: flex-start; font-size: .88rem; color: var(--blue); text-decoration: none; }
+.back:hover { text-decoration: underline; }
+.back:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
+.ctrl { display: flex; flex-direction: column; gap: 10px; }
+.ctrl .bar label.chk { cursor: pointer; }
+.ctrl .grp { font-size: .78rem; color: var(--muted); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-right: 2px; }
+.field.num { width: 5.4em; }
+.field.list { width: 15em; max-width: 100%; }
+select.field.wide { max-width: 100%; }
+@media (max-width: 520px) { .ctrl .bar .sep { display: none; } }
+.desc { margin: 0; font-size: .88rem; color: var(--muted); }
+.desc b { color: var(--ink); font-weight: 600; }
+.left { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.right { position: sticky; top: 12px; min-width: 0; }
+@media (max-width: 860px) { .right { position: static; } }
+#code { position: relative; max-height: 640px; overflow: auto; }
+.inst { margin: 0 0 8px; font-size: .82rem; color: var(--muted); }
+.inst code { font-family: var(--mono); font-size: .95em; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.outbox { min-height: 24px; margin-bottom: 6px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .85rem; color: var(--muted); }
+.pill { font-family: var(--mono); font-size: .82rem; padding: 3px 10px; border-radius: 999px; background: var(--green-soft); color: var(--ink); border: 1px solid var(--green); }
+.stat { font-family: var(--mono); font-size: .8rem; color: var(--muted); margin: 6px 0 0; }
+/* árbol */
+svg.viz.tree { max-width: 600px; margin: 0 auto; }
+.hn { transition: transform var(--dur, .4s) ease; }
+.hn.nt { transition: none; }
+.hn circle { fill: var(--node); stroke: var(--line); stroke-width: 2; transition: fill .2s, stroke .2s; }
+.hn.root circle { stroke: var(--accent); }
+.hn.ok circle { stroke: var(--green); }
+.hn.sel circle { stroke: var(--accent); fill: var(--accent-soft); }
+.hn.done circle { stroke: var(--green); fill: var(--green-soft); }
+.hn.cmp circle { stroke: var(--blue); fill: var(--blue-soft); }
+.hn.mov circle { stroke: var(--red); fill: var(--red-soft); }
+.hn.hand circle { stroke: var(--purple); fill: var(--purple-soft); stroke-dasharray: 5 3; }
+svg.viz .hn text.vl { font-size: 13px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+svg.viz .hn text.vl.sm { font-size: 10px; }
+svg.viz .hn text.pm { font-size: 9px; text-anchor: middle; fill: var(--purple); display: none; font-weight: 600; }
+.hn.hand text.pm { display: block; }
+svg.viz text.ix { font-size: 9px; fill: var(--muted); text-anchor: middle; }
+.ghost { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 3 3; opacity: .7; }
+.edge { stroke: var(--line); stroke-width: 2; }
+.edge.cmp { stroke: var(--blue); } .edge.mov { stroke: var(--red); }
+/* array */
+.arrwrap { margin-top: 10px; }
+.arrlbl { font-size: .78rem; color: var(--muted); margin: 0 0 4px; }
+.arrlbl code { font-family: var(--mono); background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+#arr { display: flex; flex-wrap: wrap; gap: 4px; }
+.cell { width: 42px; text-align: center; font-family: var(--mono); }
+.cell .ixc { font-size: 10px; color: var(--muted); }
+.cell .bx { border: 2px solid var(--line); border-radius: 6px; background: var(--node); height: 32px; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; transition: background .2s, border-color .2s; }
+.cell.empty .bx { opacity: .35; border-style: dashed; }
+.cell.unused { width: 36px; }
+.cell.unused .bx { opacity: .45; border-style: dashed; font-size: 9px; font-weight: 400; color: var(--muted); }
+.cell.root .bx { border-color: var(--accent); }
+.cell.ok .bx { border-color: var(--green); }
+.cell.sel .bx { border-color: var(--accent); background: var(--accent-soft); }
+.cell.done .bx { border-color: var(--green); background: var(--green-soft); }
+.cell.cmp .bx { border-color: var(--blue); background: var(--blue-soft); }
+.cell.mov .bx { border-color: var(--red); background: var(--red-soft); }
+.cell.hand .bx { border-color: var(--purple); background: var(--purple-soft); border-style: dashed; }
+.cost { display: block; margin-top: 4px; font-size: .82rem; color: var(--muted); }
+.msg.err { border-left-color: var(--red); }
+.msg code { white-space: normal; overflow-wrap: anywhere; }
+.ideas { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 8px; font-size: .93rem; }
+.ideas li::marker { color: var(--accent); font-weight: 700; }
+.ideas code { font-family: var(--mono); font-size: .9em; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+.tbl-wrap { overflow-x: auto; }
+table.t td a { color: var(--blue); }
+table.t td:first-child { white-space: nowrap; }
+</style>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Todas las estructuras</a>
+  <header class="top">
+    <span class="tag">Tema 2</span>
+    <h1>Cola de prioridad</h1>
+    <p class="lede">Un montículo binario (<i>heap</i>) guardado en un array: <code>top</code> da el más prioritario en O(1) y <code>push</code> / <code>pop</code> cuestan O(log n). Es lo que hay debajo de <code>std::priority_queue</code>. Aquí lo ves a la vez como <b>árbol</b> y como <b>array</b>, con índices <b>desde 1</b> (como <code>IndexPQ</code>): padre = <code>i/2</code>, hijos = <code>2i</code> y <code>2i+1</code>.</p>
+  </header>
+
+  <section class="panel ctrl" aria-label="Controles">
+    <h2>Operaciones</h2>
+    <div class="bar">
+      <span class="grp">Ejemplo</span>
+      <select class="field wide" id="selPreset" aria-label="Ejemplo precargado"></select>
+      <span class="sep"></span>
+      <label>orden
+        <select class="field" id="selModo" aria-label="Orden de la cola">
+          <option value="min">mínimos (greater en la STL)</option>
+          <option value="max">máximos (por defecto en la STL)</option>
+        </select>
+      </label>
+    </div>
+    <p class="desc" id="presetDesc"></p>
+    <div class="bar">
+      <span class="grp">Elemento</span>
+      <label>valor <input class="field num" id="inVal" type="number" value="5" step="1" min="-999" max="9999" aria-label="Valor"></label>
+      <button class="btn primary" id="bPush">push</button>
+      <button class="btn" id="bPop">pop</button>
+      <button class="btn" id="bTop">top</button>
+      <button class="btn on" id="bScript" hidden></button>
+    </div>
+    <div class="bar">
+      <span class="grp">Lista</span>
+      <input class="field list" id="inList" type="text" value="" aria-label="Lista de valores separados por espacios" placeholder="p. ej. 9 4 7 1 5 3">
+      <button class="btn primary" id="bHeapify" title="Construcción en O(n): hundir desde n/2 hasta 1">Heapify (O(n))</button>
+      <button class="btn" id="bPushAll" title="n inserciones consecutivas: O(n log n)">n × push</button>
+      <span class="sep"></span>
+      <button class="btn" id="bRand">Aleatorio</button>
+      <button class="btn" id="bClear">Vaciar</button>
+      <button class="btn" id="bReset">Reiniciar ejemplo</button>
+    </div>
+  </section>
+
+  <div class="stage">
+    <div class="left">
+      <section class="panel" aria-label="Ejecución paso a paso">
+        <h2>Ejecución paso a paso</h2>
+        <div id="playerHost"></div>
+      </section>
+
+      <section class="panel" aria-label="Montículo">
+        <h2>Montículo · árbol y array (índices desde 1)</h2>
+        <div class="legend" style="margin-bottom:8px">
+          <span><b style="background:var(--node);border-color:var(--accent)"></b>raíz = <code>top()</code></span>
+          <span><b style="background:var(--blue-soft);border-color:var(--blue)"></b>comparando</span>
+          <span><b style="background:var(--red-soft);border-color:var(--red)"></b>baja/sube (movimiento)</span>
+          <span><b style="background:var(--purple-soft);border-color:var(--purple);border-style:dashed"></b><code>x</code> en la mano</span>
+          <span><b style="background:var(--green-soft);border-color:var(--green)"></b>colocado / ya es montículo</span>
+        </div>
+        <div class="outbox" id="outBox"></div>
+        <div class="canvas-scroll"><svg class="viz tree" id="svg" role="img" aria-label="Árbol del montículo"></svg></div>
+        <div class="arrwrap">
+          <p class="arrlbl"><code>v</code> (la posición 0 no se usa; padre de <code>i</code> = <code>i/2</code>, hijos = <code>2i</code> y <code>2i+1</code>)</p>
+          <div id="arr"></div>
+        </div>
+        <p class="stat" id="stat"></p>
+      </section>
+    </div>
+
+    <section class="panel right" aria-label="Código">
+      <h2>Código C++ · montículo</h2>
+      <p class="inst" id="inst"></p>
+      <div id="code"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <h2>Para entenderlo</h2>
+    <ol class="ideas">
+      <li><b>Solo se garantiza la raíz.</b> El invariante es local: cada nodo va antes (o empata) que sus dos hijos. No hay orden entre hermanos ni entre niveles; por eso el array <i>no</i> está ordenado, pero la raíz es siempre el más prioritario.</li>
+      <li><b>Un árbol completo en un array.</b> Se rellenan los niveles de izquierda a derecha, así que no hacen falta punteros. Con índices desde 1: padre <code>i/2</code>, hijos <code>2i</code> y <code>2i+1</code>. (<code>std::priority_queue</code> guarda lo mismo en un <code>vector</code> desde 0: padre <code>(i-1)/2</code>, hijos <code>2i+1</code> y <code>2i+2</code>; es solo una cuestión de desplazar el índice.)</li>
+      <li><b>Costes.</b> La altura es ⌊log₂ n⌋. <code>push</code> añade al final y <i>flota</i> (sube) como mucho hasta la raíz; <code>pop</code> mueve el último a la raíz y lo <i>hunde</i> como mucho hasta una hoja: ambos <b>O(log n)</b>. <code>top</code> es <b>O(1)</b>. Construir desde n datos con <b>heapify</b> (hundir desde <code>n/2</code> hasta 1) es <b>O(n)</b>, no O(n log n): casi la mitad de los nodos son hojas y no se mueven, y los de abajo se hunden poco.</li>
+      <li><b>¡Cuidado con el comparador!</b> <code>std::priority_queue&lt;T&gt;</code> es de <b>máximos</b>: su <code>Compare</code> (por defecto <code>less</code>) significa «tiene <i>menos</i> prioridad que». Para <b>mínimos</b> hay que usar <code>priority_queue&lt;T, vector&lt;T&gt;, greater&lt;T&gt;&gt;</code>. Con estructuras (EJ_02-4, EJ_02-5) se define <code>operator&lt;</code> pensando en máximos. En cambio, el <code>antes(a,b)</code> de <code>IndexPQ</code> y de este <code>Monticulo</code> significa «a sale antes que b», así que <code>less</code> da mínimos.</li>
+      <li><b>No se puede buscar ni modificar un elemento.</b> Solo se mira la cima. Por eso el patrón habitual es <i>sacar la cima, modificar la copia y volver a meterla</i> (EJ_02-2, 02-3, 02-4). Si hay que cambiar la prioridad de un elemento cualquiera, hace falta <code>IndexPQ</code> y su tabla <code>posiciones</code> (<a href="tema3-indexpq.html">tema 3</a>).</li>
+    </ol>
+  </section>
+
+  <section class="panel">
+    <h2>Ejercicios del repo que usan la cola de prioridad</h2>
+    <div class="tbl-wrap">
+    <table class="t">
+      <thead><tr><th>Nº</th><th>Problema</th><th>Cola</th></tr></thead>
+      <tbody>
+        <tr><td>02-1</td><td>Lo que cuesta sumar</td><td>Mínimos (<code>greater</code>): sumar siempre los dos menores y devolver la suma. Botón «paso del ejercicio» del primer ejemplo.</td></tr>
+        <tr><td>02-2</td><td>Unidad Curiosa de Monitorización</td><td>Mínimos de próximos envíos <code>(instante, id)</code>: sacar, sumar el periodo y volver a meter.</td></tr>
+        <tr><td>02-3</td><td>Reina del súper</td><td>Mínimos de cajas <code>(instante libre, nº de caja)</code>: el cliente va a la que antes se libera.</td></tr>
+        <tr><td>02-4</td><td>La ley D'Hondt</td><td>Máximos (<code>operator&lt;</code>) de cocientes votos / (1 + escaños).</td></tr>
+        <tr><td>02-5</td><td>Ordenando a los pacientes en urgencias</td><td>Máximos <code>(gravedad, orden de llegada)</code>.</td></tr>
+        <tr><td>02-6</td><td>Coleccionando cómics</td><td>Mínimos de las cimas de las pilas.</td></tr>
+        <tr><td>02-L</td><td>Cinemáticas digitales</td><td>Mínimos de instantes de liberación de las estaciones de renderizado. Segundo ejemplo.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer class="foot">Apuntes de DA · el <code>Monticulo</code> del panel de código es una versión didáctica de <code>std::priority_queue</code> escrita con la misma técnica del hueco que <code>IndexPQ.h</code>; la librería real no usa exactamente este código.</footer>
+</div>
+
+<script>
+/* Utilidades comunes: reproductor paso a paso y panel de código. */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function esc(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+/* Panel de código C++ con coloreado sencillo y líneas resaltables (numeradas desde 1). */
+function mountCode(host, fname, lines) {
+  const kws = /^(for|if|else|while|return|const|class|struct|public|private|protected|void|bool|int|auto|true|false|template|typename|using|throw|new|delete|break|continue|static|nullptr)$/;
+  const tys = /^(Link|Set|Grafo|Digrafo|IndexPQ|Par|vector|queue|stack|string|T|std|Adys|Comparator|TreeNode|size_t)$/;
+  const tok = /(\/\/.*$)|("[^"]*")|(\b\d+\b)|(\b[A-Za-z_]\w*\b)|(\s+)|(.)/g;
+  host.classList.add('codebox');
+  host.innerHTML = '<div class="fname">' + esc(fname) + '</div>';
+  const rows = lines.map((src, i) => {
+    let html = '', m; tok.lastIndex = 0;
+    while ((m = tok.exec(src))) {
+      const t = m[0];
+      if (m[1]) html += '<span class="c">' + esc(t) + '</span>';
+      else if (m[2]) html += '<span class="s">' + esc(t) + '</span>';
+      else if (m[3]) html += '<span class="n">' + t + '</span>';
+      else if (m[4] && kws.test(t)) html += '<span class="k">' + t + '</span>';
+      else if (m[4] && tys.test(t)) html += '<span class="t">' + t + '</span>';
+      else html += esc(t);
+    }
+    const d = document.createElement('div');
+    d.className = 'ln'; d.innerHTML = '<i>' + (i + 1) + '</i><span>' + html + '</span>';
+    host.appendChild(d);
+    return d;
+  });
+  return function mark(active) {
+    const set = new Set(active || []);
+    rows.forEach((r, i) => r.classList.toggle('on', set.has(i + 1)));
+    const first = rows.find((r, i) => set.has(i + 1));
+    if (first) {
+      const top = first.offsetTop, h = host.clientHeight;
+      if (top < host.scrollTop + 20 || top > host.scrollTop + h - 40) host.scrollTop = Math.max(0, top - h / 3);
+    }
+  };
+}
+
+/* Reproductor: frames = [{ msg: 'html', lines: [nº de línea de código], ... }]
+   render(frame, prevFrame) lo implementa cada página. */
+class Player {
+  constructor({ render, mark }) {
+    this.render = render; this.mark = mark; this.frames = []; this.i = 0; this.timer = null;
+    this.$prev = $('#pPrev'); this.$next = $('#pNext'); this.$play = $('#pPlay'); this.$first = $('#pFirst'); this.$last = $('#pLast');
+    this.$speed = $('#pSpeed'); this.$count = $('#pCount'); this.$msg = $('#msg'); this.$seek = $('#pSeek');
+    this.$prev.onclick = () => { this.pause(); this.go(this.i - 1); };
+    this.$next.onclick = () => { this.pause(); this.go(this.i + 1); };
+    this.$first.onclick = () => { this.pause(); this.go(0); };
+    this.$last.onclick = () => { this.pause(); this.go(this.frames.length - 1); };
+    this.$play.onclick = () => this.toggle();
+    this.$seek.oninput = () => { this.pause(); this.go(+this.$seek.value); };
+    document.addEventListener('keydown', e => {
+      if (/INPUT|SELECT|TEXTAREA/.test((e.target.tagName || ''))) return;
+      if (e.key === 'ArrowRight') { this.pause(); this.go(this.i + 1); }
+      else if (e.key === 'ArrowLeft') { this.pause(); this.go(this.i - 1); }
+      else if (e.key === ' ') { e.preventDefault(); this.toggle(); }
+    });
+  }
+  delay() { return [1900, 1300, 900, 550, 280][(+this.$speed.value || 3) - 1]; }
+  /* Carga una secuencia nueva. start = frame inicial; play = arrancar solo. */
+  load(frames, { play = true, start = 0 } = {}) {
+    this.pause(); this.frames = frames; this.$seek.max = Math.max(0, frames.length - 1);
+    this.prevFrame = null; this.go(start, true);
+    if (play && frames.length > 1) this.play();
+  }
+  go(i, instant) {
+    if (!this.frames.length) return;
+    i = Math.max(0, Math.min(this.frames.length - 1, i));
+    const f = this.frames[i], prev = this.frames[this.i] || null;
+    this.i = i;
+    this.render(f, prev, !!instant);
+    this.$msg.innerHTML = f.msg || '';
+    if (this.mark) this.mark(f.lines || []);
+    this.$count.textContent = 'paso ' + (i + 1) + ' de ' + this.frames.length;
+    this.$seek.value = i;
+    this.$first.disabled = this.$prev.disabled = i === 0;
+    this.$last.disabled = this.$next.disabled = i === this.frames.length - 1;
+    if (i === this.frames.length - 1) this.pause();
+  }
+  play() {
+    if (this.i >= this.frames.length - 1) this.go(0, true);
+    this.$play.textContent = '⏸ Pausa'; this.$play.classList.add('on');
+    const tick = () => {
+      if (this.i >= this.frames.length - 1) { this.pause(); return; }
+      this.go(this.i + 1);
+      if (this.timer !== null) this.timer = setTimeout(tick, this.delay());
+    };
+    this.timer = setTimeout(tick, this.delay());
+  }
+  pause() { if (this.timer) clearTimeout(this.timer); this.timer = null; this.$play.textContent = '▶ Reproducir'; this.$play.classList.remove('on'); }
+  toggle() { this.timer ? this.pause() : this.play(); }
+}
+const PLAYER_HTML = `
+<div class="player">
+  <div class="msg" id="msg" role="status" aria-live="polite"></div>
+  <div class="row">
+    <button class="btn" id="pFirst" title="Primer paso" aria-label="Primer paso">⏮</button>
+    <button class="btn" id="pPrev" title="Paso anterior (←)" aria-label="Paso anterior">◀</button>
+    <button class="btn primary" id="pPlay">▶ Reproducir</button>
+    <button class="btn" id="pNext" title="Paso siguiente (→)" aria-label="Paso siguiente">▶|</button>
+    <button class="btn" id="pLast" title="Último paso" aria-label="Último paso">⏭</button>
+    <label>velocidad <input type="range" id="pSpeed" min="1" max="5" value="3"></label>
+    <span class="count" id="pCount"></span>
+  </div>
+  <input type="range" id="pSeek" min="0" max="0" value="0" aria-label="Posición en la secuencia" style="width:100%">
+</div>`;
+
+
+/*LOGIC_START*/
+/* ===== Lógica pura (sin DOM): montículo con generación de FRAMES ===== */
+function H(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+/* Código C++ didáctico (mismo estilo que IndexPQ.h). Las 2 primeras líneas dependen del orden. */
+const CODE2 = [], L2 = {};
+function c2(text, key) { CODE2.push(text); if (key) L2[key] = CODE2.length; }
+c2('// Mínimos:  Monticulo<int, std::less<int>> cola;');
+c2('//   ≡  priority_queue<int, vector<int>, greater<int>> cola;');
+c2('template <typename T, typename Comparator = std::less<T>>');
+c2('class Monticulo {            // equivalente didáctico de std::priority_queue');
+c2('   std::vector<T> v;         // v[1..n]; la posición 0 no se usa');
+c2('   Comparator antes;         // antes(a,b): a debe salir antes que b');
+c2('public:');
+c2('   int size() const { return int(v.size()) - 1; }');
+c2('   T const& top() const { return v[1]; }', 'top');
+c2('');
+c2('   void push(T const& x) {', 'push_sig');
+c2('      v.push_back(x);', 'push_pb');
+c2('      flotar(size());', 'push_fl');
+c2('   }');
+c2('');
+c2('   void pop() {', 'pop_sig');
+c2('      if (size() > 1) {', 'pop_if');
+c2('         v[1] = std::move(v.back());', 'pop_mv');
+c2('         v.pop_back();', 'pop_pb');
+c2('         hundir(1);', 'pop_hu');
+c2('      } else', 'pop_else');
+c2('         v.pop_back();', 'pop_pb2');
+c2('   }');
+c2('');
+c2('   // heapify: construir el montículo desde n datos, O(n) (como make_heap)');
+c2('   void construir(std::vector<T> const& datos) {', 'cons_sig');
+c2('      v = {T()};  v.insert(v.end(), datos.begin(), datos.end());', 'cons_copy');
+c2('      for (int i = size() / 2; i >= 1; --i)', 'cons_for');
+c2('         hundir(i);', 'cons_hu');
+c2('   }');
+c2('');
+c2('private:');
+c2('   void flotar(int i) {', 'fl_sig');
+c2('      T x = std::move(v[i]);', 'fl_par');
+c2('      int hueco = i;', 'fl_hueco');
+c2('      while (hueco != 1 && antes(x, v[hueco/2])) {', 'fl_while');
+c2('         v[hueco] = std::move(v[hueco/2]);', 'fl_move');
+c2('         hueco /= 2;', 'fl_half');
+c2('      }');
+c2('      v[hueco] = std::move(x);', 'fl_end');
+c2('   }');
+c2('');
+c2('   void hundir(int i) {', 'hu_sig');
+c2('      T x = std::move(v[i]);', 'hu_par');
+c2('      int hueco = i;', 'hu_hueco');
+c2('      int hijo = 2*hueco;   // hijo izquierdo, si existe', 'hu_hijo');
+c2('      while (hijo <= size()) {', 'hu_while');
+c2('         // cambiar al hijo derecho si existe y va antes que el izquierdo');
+c2('         if (hijo < size() && antes(v[hijo + 1], v[hijo]))', 'hu_if1');
+c2('            ++hijo;', 'hu_inc');
+c2('         // subir el hijo si va antes que el elemento que se hunde');
+c2('         if (antes(v[hijo], x)) {', 'hu_if2');
+c2('            v[hueco] = std::move(v[hijo]);', 'hu_move');
+c2('            hueco = hijo; hijo = 2*hueco;', 'hu_next');
+c2('         }');
+c2('         else break;', 'hu_else');
+c2('      }');
+c2('      v[hueco] = std::move(x);', 'hu_end');
+c2('   }');
+c2('};');
+function codigo2(modo) {
+  const l = CODE2.slice();
+  if (modo === 'max') {
+    l[0] = '// Máximos:  Monticulo<int, std::greater<int>> cola;';
+    l[1] = '//   ≡  priority_queue<int> cola;     // less ⇒ máximos en la STL';
+  }
+  return l;
+}
+
+const CAP2 = 15;
+/* cfg = { modo: 'min'|'max' }. Los elementos son { id, v } (id solo sirve para animar cada nodo). */
+function crearMonticulo(cfg) {
+  const L = L2;
+  const S = { A: [null], frames: [], rec: true, cmp: 0, mov: 0, hand: null, hueco: 0, out: null, ready: 0, uid: 0 };
+  const antesP = (a, b) => cfg.modo === 'min' ? a.v < b.v : a.v > b.v;
+  const antes = (a, b) => { S.cmp++; return antesP(a, b); };
+  const size = () => S.A.length - 1;
+  const code = s => '<code>' + s + '</code>';
+  const reglaTxt = () => cfg.modo === 'min' ? 'sale antes el menor' : 'sale antes el mayor';
+  const nuevo = v => ({ id: ++S.uid, v: v });
+
+  function snap(extra) {
+    const arr = S.A.map(x => x ? { id: x.id, v: x.v } : null);
+    if (S.hand) arr[S.hueco] = { id: S.hand.id, v: S.hand.v };
+    return Object.assign({
+      arr: arr, hole: S.hand ? S.hueco : 0, cmp: null, res: null, mov: null, done: 0, sel: null, out: S.out, err: false, ready: S.ready,
+      st: { c: S.cmp, m: S.mov }, msg: '', lines: [], final: false
+    }, extra || {});
+  }
+  function F(msg, lines, extra) { if (S.rec) S.frames.push(Object.assign(snap(extra), { msg: msg, lines: lines || [] })); }
+  function razon(a, b, ok) {
+    if (a.v === b.v) return 'empate en ' + a.v + ': <code>antes</code> es estricta, un empate no cuenta como «va antes»';
+    return a.v + (ok ? ' va antes que ' : ' no va antes que ') + b.v + ' (' + reglaTxt() + ')';
+  }
+
+  function flotar(i) {
+    const x = S.A[i]; S.A[i] = null; S.hand = x; S.hueco = i; let hueco = i;
+    F(code('flotar(' + i + ')') + ': sacamos <b>x</b> = <b>' + x.v + '</b> de la posición ' + i + ' y queda un <i>hueco</i>. <code>hueco = ' + i + '</code>.', [L.fl_par, L.fl_hueco]);
+    for (;;) {
+      if (hueco === 1) { F('<code>hueco == 1</code>: x ha llegado a la raíz y no tiene padre. Fin del bucle.', [L.fl_while], { cmp: [1] }); break; }
+      const pp = hueco >> 1, padre = S.A[pp], ok = antes(x, padre);
+      F('Comparo x con su padre <b>' + padre.v + '</b> (<code>v[' + pp + ']</code>): ¿<code>antes(' + x.v + ', ' + padre.v + ')</code>? <b>' + (ok ? 'Sí' : 'No') + '</b>: ' + razon(x, padre, ok) + (ok ? '. El padre debe bajar.' : '. x se queda aquí.'),
+        [L.fl_while], { cmp: [hueco, pp], res: ok });
+      if (!ok) break;
+      S.A[hueco] = padre; S.A[pp] = null; S.mov++; S.hueco = pp;
+      F('El padre <b>' + padre.v + '</b> <span style="color:var(--red)">baja</span> al hueco: <code>v[' + hueco + '] = v[' + pp + ']</code>. Ahora <code>hueco = ' + pp + '</code>.', [L.fl_move, L.fl_half], { mov: { from: pp, to: hueco } });
+      hueco = pp;
+    }
+    S.A[hueco] = x; S.hand = null; S.hueco = 0;
+    F('<code>v[' + hueco + '] = x</code>: <b>' + x.v + '</b> queda colocado en la posición ' + hueco + (hueco === i ? ' (no se ha movido).' : '.'), [L.fl_end], { done: hueco });
+  }
+
+  function hundir(i) {
+    const x = S.A[i]; S.A[i] = null; S.hand = x; S.hueco = i; let hueco = i, hijo = 2 * hueco;
+    F(code('hundir(' + i + ')') + ': sacamos <b>x</b> = <b>' + x.v + '</b> de la posición ' + i + '. <code>hueco = ' + i + '</code>, <code>hijo = 2·hueco = ' + hijo + '</code> (hijo izquierdo, si existe).', [L.hu_par, L.hu_hueco, L.hu_hijo]);
+    let fin = true;
+    while (hijo <= size()) {
+      if (hijo < size()) {
+        const izq = S.A[hijo], der = S.A[hijo + 1], okd = antes(der, izq);
+        F('Hermanos: <b>' + izq.v + '</b> en <code>' + hijo + '</code> y <b>' + der.v + '</b> en <code>' + (hijo + 1) + '</code>. ¿<code>antes(derecho, izquierdo)</code>? <b>' + (okd ? 'Sí' : 'No') + '</b>: ' + razon(der, izq, okd) + '. ' + (okd ? 'Elijo el derecho: <code>++hijo</code> → ' + (hijo + 1) + '.' : 'Me quedo con el izquierdo (' + hijo + ').'),
+          okd ? [L.hu_while, L.hu_if1, L.hu_inc] : [L.hu_while, L.hu_if1], { cmp: [hijo, hijo + 1], res: okd });
+        if (okd) ++hijo;
+      }
+      const hj = S.A[hijo], ok = antes(hj, x);
+      F((hijo === size() && hijo === 2 * hueco ? 'Solo hay un hijo (' + hijo + ' == size()). ' : '') + 'El hijo candidato es <b>' + hj.v + '</b> (<code>v[' + hijo + ']</code>). ¿<code>antes(hijo, x)</code>? <b>' + (ok ? 'Sí' : 'No') + '</b>: ' + razon(hj, x, ok) + (ok ? '. El hijo debe subir.' : '. x se queda aquí: <code>break</code>.'),
+        ok ? [L.hu_if2] : [L.hu_if2, L.hu_else], { cmp: [hijo, hueco], res: ok });
+      if (!ok) { fin = false; break; }
+      S.A[hueco] = hj; S.A[hijo] = null; S.mov++; S.hueco = hijo;
+      F('El hijo <b>' + hj.v + '</b> <span style="color:var(--red)">sube</span> al hueco: <code>v[' + hueco + '] = v[' + hijo + ']</code>. <code>hueco = ' + hijo + '</code>, <code>hijo = ' + (2 * hijo) + '</code>.', [L.hu_move, L.hu_next], { mov: { from: hijo, to: hueco } });
+      hueco = hijo; hijo = 2 * hueco;
+    }
+    if (fin) F('<code>hijo = ' + hijo + ' &gt; size() = ' + size() + '</code>: el hueco ya no tiene hijos. Fin del bucle.', [L.hu_while], { cmp: [hueco] });
+    S.A[hueco] = x; S.hand = null; S.hueco = 0;
+    F('<code>v[' + hueco + '] = x</code>: <b>' + x.v + '</b> queda colocado en la posición ' + hueco + (hueco === i ? ' (no se ha movido).' : '.'), [L.hu_end], { done: hueco });
+  }
+
+  function _push(v) {
+    if (size() >= CAP2) { F('<b>Aviso</b>: esta demostración admite como mucho ' + CAP2 + ' elementos para que el árbol se vea bien (el montículo real no tiene ese límite).', [L.push_sig], { err: true }); return false; }
+    F(code('push(' + v + ')') + ': se añade el elemento al final del vector.', [L.push_sig, L.push_pb], {});
+    S.A.push(nuevo(v));
+    F('<code>v[' + size() + '] = ' + v + '</code>. Puede incumplir el invariante con su padre: <code>flotar(' + size() + ')</code>.', [L.push_pb, L.push_fl], { sel: [size()] });
+    flotar(size());
+    return true;
+  }
+
+  function _pop() {
+    if (size() === 0) { F('<b>Aviso</b>: cola vacía. En <code>std::priority_queue</code>, llamar a <code>pop()</code> con la cola vacía es comportamiento indefinido: hay que comprobar <code>empty()</code>.', [L.pop_sig], { err: true }); return; }
+    const raiz = S.A[1]; S.out = { v: raiz.v };
+    F(code('pop()') + ': sale la raíz <b>' + raiz.v + '</b>, el más prioritario.', [L.pop_sig], { sel: [1] });
+    if (size() > 1) {
+      const ult = S.A[S.A.length - 1], k = size();
+      S.A[1] = ult; S.A.pop(); S.mov++;
+      F('No se puede dejar la raíz vacía: el último, <b>' + ult.v + '</b>, pasa a <code>v[1]</code> y se quita la última posición (<code>pop_back</code>; ahora hay ' + size() + ' elementos). Como viene de abajo, seguramente no va antes que sus hijos: <code>hundir(1)</code>.',
+        [L.pop_if, L.pop_mv, L.pop_pb, L.pop_hu], { mov: { from: k, to: 1 } });
+      hundir(1);
+    } else {
+      S.A.pop();
+      F('Solo había un elemento: basta con <code>v.pop_back()</code>. La cola queda vacía.', [L.pop_if, L.pop_else, L.pop_pb2]);
+    }
+  }
+
+  function _construir(datos) {
+    S.A = [null]; S.ready = 0;
+    datos.forEach(v => S.A.push(nuevo(v)));
+    const n = size(), k = n >> 1;
+    F(code('construir(datos)') + ': se copian los <b>' + n + '</b> datos en <code>v[1..' + n + ']</code> tal cual. En general todavía <b>no</b> es un montículo.', [L.cons_sig, L.cons_copy]);
+    if (n <= 1) { F('Con ' + n + ' elemento' + (n === 1 ? '' : 's') + ' ya es un montículo: el bucle no hace nada.', [L.cons_for]); return; }
+    S.ready = k + 1;
+    F('Las hojas (índices ' + (k + 1) + '..' + n + ') ya son montículos de un solo elemento. El bucle empieza en <code>i = size()/2 = ' + k + '</code>, el último nodo que tiene hijos, y baja hasta 1.', [L.cons_for]);
+    for (let i = k; i >= 1; i--) {
+      S.ready = i + 1;
+      F('<code>i = ' + i + '</code>: <code>hundir(' + i + ')</code>. Los subárboles de sus hijos ya son montículos, así que solo falta hundir <b>' + S.A[i].v + '</b>.', [L.cons_for, L.cons_hu], { sel: [i] });
+      hundir(i);
+      S.ready = i;
+    }
+    S.ready = 0;
+    F('Montículo construido: la raíz es <b>' + S.A[1].v + '</b>. Solo se han hecho ' + k + ' hundimientos.', [L.cons_for], { sel: [1] });
+  }
+
+  function run(fn, costo) {
+    S.frames = []; S.cmp = 0; S.mov = 0; S.out = null; S.rec = true;
+    fn();
+    const fr = S.frames;
+    if (fr.length) {
+      const last = fr[fr.length - 1]; last.final = true;
+      if (!last.err && S.cmp + S.mov > 0) last.msg += '<span class="cost">' + (costo ? costo(S) : 'Coste de esta operación: ' + S.cmp + ' comparaciones y ' + S.mov + ' movimientos (O(log n)).') + '</span>';
+    }
+    return fr;
+  }
+
+  const api = {
+    S: S, cfg: cfg, size: size,
+    topV: () => size() ? S.A[1].v : null,
+    push(v) { return run(() => _push(v)); },
+    pop() { return run(_pop); },
+    top() {
+      return run(() => {
+        if (size() === 0) { F('<b>Aviso</b>: cola vacía; <code>top()</code> sobre una cola vacía es comportamiento indefinido.', [L.top], { err: true }); return; }
+        F(code('top()') + ' devuelve <code>v[1]</code> = <b>' + S.A[1].v + '</b>. Coste O(1): el más prioritario siempre está en la raíz.', [L.top], { sel: [1] });
+      });
+    },
+    construir(datos) { return run(() => _construir(datos), s => 'Coste: ' + s.cmp + ' comparaciones y ' + s.mov + ' movimientos para n = ' + datos.length + '. En total O(n); insertando uno a uno saldría O(n log n).'); },
+    pushAll(datos) {
+      return run(() => { S.A = [null]; S.ready = 0; for (const v of datos) { if (!_push(v)) break; } },
+        s => 'Coste total: ' + s.cmp + ' comparaciones y ' + s.mov + ' movimientos para n = ' + datos.length + ' inserciones (O(n log n) en el peor caso). Compáralo con «Heapify».');
+    },
+    note(msg) { return [Object.assign(snap({}), { msg: msg, final: true })]; },
+    errMsg(msg) { return [Object.assign(snap({ err: true }), { msg: msg, final: true })]; },
+    silent(fn) { const r = S.rec; S.rec = false; S.frames = []; try { fn(); } finally { S.rec = r; S.frames = []; } },
+    sPush(v) { api.silent(() => _push(v)); },
+    sConstruir(datos) { api.silent(() => _construir(datos)); },
+    clear() { S.A = [null]; S.hand = null; S.hueco = 0; S.out = null; S.ready = 0; S.frames = []; },
+    values() { return S.A.slice(1).map(x => x.v); }
+  };
+  return api;
+}
+/*LOGIC_END*/
+
+/* ================= Interfaz ================= */
+const PRESETS = [
+  { id: 'suma', titulo: 'EJ_02-1 · Lo que cuesta sumar', modo: 'min', lista: [9, 4, 7, 1, 5, 3, 6], val: 5,
+    desc: '<b>Cola de mínimos</b>: para sumar con el menor esfuerzo se suman siempre los dos números más pequeños y se devuelve la suma a la cola (<code>priority_queue</code> con <code>greater</code>). Pulsa «paso del ejercicio» hasta que quede un solo número; el esfuerzo es la suma de todas las sumas.',
+    script: 'suma' },
+  { id: 'cajas', titulo: 'EJ_02-3 / 02-L · Cajas y estaciones', modo: 'min', lista: [3, 8, 5, 12, 6, 9], val: 5,
+    desc: '<b>Cola de mínimos de instantes en que se libera</b> cada caja o estación (en el .cpp, pares <code>(instante, nº)</code>). Cada trabajo se asigna al que antes queda libre: <code>top</code>, <code>pop</code> y <code>push(libre + duración)</code>. La «duración» es el valor del campo de arriba.',
+    script: 'cajas' },
+  { id: 'dhondt', titulo: 'EJ_02-4 · La ley D\'Hondt', modo: 'max', lista: [168, 104, 78, 70, 46, 12], val: 84,
+    desc: '<b>Cola de máximos</b> de cocientes votos / (1 + escaños); aquí los números son esos cocientes ya calculados. Cada escaño va a la cima: <code>top</code>, <code>pop</code> y se vuelve a insertar con el cociente nuevo (por ejemplo, 168 → 84). Pruébalo a mano con <code>pop</code> y <code>push</code>.',
+    script: null },
+  { id: 'urg', titulo: 'EJ_02-5 · Urgencias', modo: 'max', lista: [3, 9, 5, 7, 2, 8], val: 6,
+    desc: '<b>Cola de máximos</b> de gravedad: <code>I</code> (ingreso) es <code>push</code> y <code>A</code> (atención) es <code>top</code> + <code>pop</code>. En el .cpp la prioridad es <code>(gravedad, orden de llegada)</code> para desempatar.',
+    script: null },
+  { id: 'libre', titulo: 'Libre · lista propia', modo: 'min', lista: [], val: 5,
+    desc: 'Escribe una lista de números en el campo «Lista» y pulsa <b>Heapify</b> (construcción en O(n)) o <b>n × push</b> (inserciones una a una) y compara cuántas comparaciones cuesta cada una. Cambia entre mínimos y máximos con «orden».',
+    script: null }
+];
+
+/* geometría: 4 niveles = 15 sitios */
+const G = { sw: 44, lh: 56, r: 17, d: 4, top: 26 };
+G.W = (1 << (G.d - 1)) * G.sw;
+G.H = G.top + (G.d - 1) * G.lh + G.r + 12;
+function xy(i) { const l = 31 - Math.clz32(i), k = i - (1 << l); return { x: (k + 0.5) * G.W / (1 << l), y: G.top + l * G.lh }; }
+
+const els = {};
+['selPreset', 'selModo', 'presetDesc', 'inVal', 'inList', 'bPush', 'bPop', 'bTop', 'bScript', 'bHeapify', 'bPushAll', 'bRand', 'bClear', 'bReset',
+  'playerHost', 'outBox', 'svg', 'arr', 'stat', 'inst', 'code'].forEach(id => els[id] = document.getElementById(id));
+els.playerHost.innerHTML = PLAYER_HTML;
+
+let markCode = mountCode(els.code, 'Monticulo.h (versión didáctica)', codigo2('min'));
+let P = null, Q = null, preset = PRESETS[0], scriptEstado = null;
+const nodes = new Map();
+const edgeEls = [], cellEls = [null];
+
+(function initSvg() {
+  const s = els.svg;
+  s.setAttribute('viewBox', '0 0 ' + G.W + ' ' + G.H);
+  const gGhost = el('g', {}, s), gEdge = el('g', {}, s);
+  el('g', { id: 'gNodes' }, s);
+  for (let i = 1; i < (1 << G.d); i++) {
+    const p = xy(i);
+    el('circle', { class: 'ghost', cx: p.x, cy: p.y, r: G.r }, gGhost);
+    const t = el('text', { class: 'ix', x: p.x, y: p.y - G.r - 3 }, gGhost); t.textContent = i;
+  }
+  for (let i = 2; i < (1 << G.d); i++) {
+    const a = xy(i >> 1), b = xy(i);
+    edgeEls[i] = el('line', { class: 'edge', x1: a.x, y1: a.y + G.r, x2: b.x, y2: b.y - G.r }, gEdge);
+  }
+  const c0 = document.createElement('div'); c0.className = 'cell unused'; c0.innerHTML = '<div class="ixc">0</div><div class="bx">sin usar</div>';
+  els.arr.appendChild(c0);
+  for (let i = 1; i < (1 << G.d); i++) {
+    const d = document.createElement('div'); d.className = 'cell empty';
+    d.innerHTML = '<div class="ixc">' + i + '</div><div class="bx">·</div>';
+    els.arr.appendChild(d);
+    cellEls[i] = { el: d, bx: d.querySelector('.bx') };
+  }
+})();
+
+function crearNodo() {
+  const g = el('g', { class: 'hn nt' }, document.getElementById('gNodes'));
+  el('circle', { r: G.r }, g);
+  const v = el('text', { class: 'vl', x: 0, y: 1 }, g);
+  const pm = el('text', { class: 'pm', x: 0, y: -G.r - 3 }, g); pm.textContent = 'x';
+  return { g: g, v: v };
+}
+
+function render(f, prev, instant) {
+  const dur = Math.max(160, Math.min(480, P.delay() * 0.5));
+  els.svg.style.setProperty('--dur', (instant ? 0 : dur) + 'ms');
+  const cmp = new Set(f.cmp || []), sel = new Set(f.sel || []);
+  const mov = f.mov ? new Set([f.mov.to]) : new Set();
+  const present = new Set(), n = f.arr.length - 1;
+  for (let i = 1; i <= n; i++) {
+    const it = f.arr[i]; if (!it) continue;
+    present.add(it.id);
+    let nd = nodes.get(it.id);
+    if (!nd) { nd = crearNodo(); nodes.set(it.id, nd); }
+    const p = xy(i);
+    nd.g.style.transform = 'translate(' + p.x + 'px,' + p.y + 'px)';
+    nd.v.textContent = it.v;
+    nd.v.setAttribute('class', 'vl' + (String(it.v).length > 3 ? ' sm' : ''));
+    const cl = ['hn'];
+    if (i === 1) cl.push('root');
+    if (f.hole === i) cl.push('hand');
+    else if (mov.has(i)) cl.push('mov');
+    else if (cmp.has(i)) cl.push('cmp');
+    else if (sel.has(i)) cl.push('sel');
+    else if (f.done === i) cl.push('done');
+    else if (f.ready && i >= f.ready) cl.push('ok');
+    const nt = nd.g.classList.contains('nt');
+    if (nt) cl.push('nt');
+    nd.g.setAttribute('class', cl.join(' '));
+    if (nt) requestAnimationFrame(() => requestAnimationFrame(() => nd.g.classList.remove('nt')));
+  }
+  for (const [id, nd] of nodes) if (!present.has(id)) { nd.g.remove(); nodes.delete(id); }
+  for (let i = 2; i < edgeEls.length; i++) {
+    const ed = edgeEls[i];
+    ed.style.display = i <= n ? '' : 'none';
+    let k = '';
+    if (i <= n) {
+      const par = i >> 1;
+      if (cmp.has(i) && cmp.has(par)) k = ' cmp';
+      if (f.mov && ((f.mov.to === i && f.mov.from === par) || (f.mov.to === par && f.mov.from === i))) k = ' mov';
+    }
+    ed.setAttribute('class', 'edge' + k);
+  }
+  for (let i = 1; i < cellEls.length; i++) {
+    const c = cellEls[i], it = i <= n ? f.arr[i] : null;
+    const cl = ['cell'];
+    if (!it) cl.push('empty');
+    else {
+      if (i === 1) cl.push('root');
+      if (f.hole === i) cl.push('hand'); else if (mov.has(i)) cl.push('mov'); else if (cmp.has(i)) cl.push('cmp');
+      else if (sel.has(i)) cl.push('sel'); else if (f.done === i) cl.push('done'); else if (f.ready && i >= f.ready) cl.push('ok');
+    }
+    c.el.setAttribute('class', cl.join(' '));
+    c.bx.textContent = it ? it.v : '·';
+    c.bx.style.fontSize = it && String(it.v).length > 3 ? '10px' : '';
+    c.el.title = it ? 'v[' + i + '] = ' + it.v : 'v[' + i + '] libre';
+  }
+  els.outBox.innerHTML = f.out ? 'Sale de la cola: <span class="pill">' + f.out.v + '</span>' : '';
+  els.stat.textContent = 'size() = ' + n + ' · comparaciones: ' + f.st.c + ' · movimientos: ' + f.st.m;
+  document.getElementById('msg').classList.toggle('err', !!f.err);
+}
+
+P = new Player({ render: (f, p, i) => render(f, p, i), mark: l => markCode(l) });
+
+function remontarCodigo() {
+  markCode = mountCode(els.code, 'Monticulo.h (versión didáctica)', codigo2(Q.cfg.modo));
+  els.inst.innerHTML = Q.cfg.modo === 'min'
+    ? '<code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; cola;</code> → <code>cola.push(x)</code>, <code>cola.top()</code>, <code>cola.pop()</code>. El constructor <code>priority_queue(first, last)</code> hace <code>construir</code> (heapify).'
+    : '<code>priority_queue&lt;int&gt; cola;</code> (comparador por defecto <code>less</code> ⇒ <b>máximos</b>) → <code>cola.push(x)</code>, <code>cola.top()</code>, <code>cola.pop()</code>. El constructor <code>priority_queue(first, last)</code> hace <code>construir</code> (heapify).';
+}
+
+function parseLista(txt) {
+  const t = txt.trim();
+  if (!t) return [];
+  const parts = t.split(/[\s,;]+/);
+  const out = [];
+  for (const p of parts) { if (!/^-?\d+$/.test(p)) return null; out.push(parseInt(p, 10)); }
+  return out;
+}
+
+function cargarPreset(pr) {
+  preset = pr;
+  Q = crearMonticulo({ modo: pr.modo });
+  els.selModo.value = pr.modo; els.presetDesc.innerHTML = pr.desc;
+  els.inVal.value = pr.val; els.inList.value = pr.lista.join(' ');
+  nodes.forEach(n => n.g.remove()); nodes.clear();
+  scriptEstado = { esfuerzo: 0, paso: 0 };
+  remontarCodigo(); actualizarScript();
+  if (pr.lista.length) Q.sConstruir(pr.lista);
+  mostrarEstado(pr.lista.length ? 'Ejemplo <b>' + esc(pr.titulo) + '</b> cargado: los ' + pr.lista.length + ' datos se han convertido en montículo con <code>construir</code>. Prueba <code>push</code>, <code>pop</code> o <code>top</code>.' : 'Cola vacía. Escribe una lista y pulsa Heapify, o inserta valores con <code>push</code>.');
+}
+function mostrarEstado(msg) { P.load(Q.note(msg), { play: false }); }
+function ejecutar(frames) { P.load(frames, { play: frames.length > 1 }); }
+
+function actualizarScript() {
+  const b = els.bScript;
+  if (!preset.script) { b.hidden = true; return; }
+  b.hidden = false;
+  if (preset.script === 'suma') b.textContent = Q.size() > 1 ? 'Paso del ejercicio: sumar los dos menores' : 'Quedó 1 número · volver a empezar';
+  else b.textContent = 'Paso del ejercicio: asignar un trabajo de duración ' + (parseInt(els.inVal.value, 10) || 0);
+}
+
+function leerVal() { const v = els.inVal.value.trim(); return /^-?\d+$/.test(v) ? parseInt(v, 10) : null; }
+
+els.selPreset.innerHTML = PRESETS.map((p, k) => '<option value="' + k + '">' + esc(p.titulo) + '</option>').join('');
+els.selPreset.onchange = () => cargarPreset(PRESETS[+els.selPreset.value]);
+els.bReset.onclick = () => cargarPreset(preset);
+els.bPush.onclick = () => { const v = leerVal(); ejecutar(v === null ? Q.errMsg('Escribe un valor entero.') : Q.push(v)); actualizarScript(); };
+els.bPop.onclick = () => { ejecutar(Q.pop()); actualizarScript(); };
+els.bTop.onclick = () => ejecutar(Q.top());
+els.inVal.oninput = actualizarScript;
+els.bClear.onclick = () => { Q.clear(); scriptEstado = { esfuerzo: 0, paso: 0 }; actualizarScript(); mostrarEstado('Cola vacía: <code>v</code> solo tiene la posición 0 sin usar.'); };
+function conLista(fn) {
+  const l = parseLista(els.inList.value);
+  if (l === null) return ejecutar(Q.errMsg('La lista debe contener solo números enteros separados por espacios.'));
+  if (l.length === 0) return ejecutar(Q.errMsg('Escribe al menos un número en la lista.'));
+  if (l.length > CAP2) return ejecutar(Q.errMsg('Esta demostración admite como mucho ' + CAP2 + ' elementos.'));
+  scriptEstado = { esfuerzo: 0, paso: 0 };
+  ejecutar(fn(l)); actualizarScript();
+}
+els.bHeapify.onclick = () => conLista(l => Q.construir(l));
+els.bPushAll.onclick = () => conLista(l => Q.pushAll(l));
+els.bRand.onclick = () => {
+  const n = 7 + Math.floor(Math.random() * 6);
+  const l = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * 99));
+  els.inList.value = l.join(' ');
+  conLista(x => Q.construir(x));
+};
+els.selModo.onchange = () => {
+  const vals = Q.values();
+  Q.cfg.modo = els.selModo.value; Q.clear();
+  if (vals.length) Q.sConstruir(vals);
+  remontarCodigo();
+  mostrarEstado('Orden cambiado a <b>' + (Q.cfg.modo === 'min' ? 'mínimos' : 'máximos') + '</b>. Se ha reconstruido el montículo con <code>construir</code> con los mismos valores.');
+};
+els.bScript.onclick = () => {
+  if (preset.script === 'suma') {
+    if (Q.size() <= 1) { cargarPreset(preset); return; }
+    const fr = [];
+    const a = Q.topV(); fr.push(...Q.pop());
+    const b = Q.topV(); fr.push(...Q.pop());
+    fr[0].msg = '<i>Paso del ejercicio: se sacan los dos menores, ' + a + ' y ' + b + ', y se devuelve su suma.</i> ' + fr[0].msg;
+    fr.push(...Q.push(a + b));
+    scriptEstado.esfuerzo += a + b;
+    fr[fr.length - 1].msg += '<br><b>esfuerzo += ' + a + ' + ' + b + '</b> → esfuerzo total = <b>' + scriptEstado.esfuerzo + '</b>' + (Q.size() === 1 ? ' (queda un solo número: fin).' : '.');
+    actualizarScript(); ejecutar(fr);
+  } else if (preset.script === 'cajas') {
+    const d = leerVal();
+    if (d === null || d < 0) return ejecutar(Q.errMsg('Escribe una duración entera no negativa.'));
+    if (Q.size() === 0) return ejecutar(Q.errMsg('No hay cajas en la cola.'));
+    const a = Q.topV(), fr = [...Q.pop()];
+    fr[0].msg = '<i>Llega un trabajo de duración ' + d + ': se asigna a la caja que antes se libera (' + a + ').</i> ' + fr[0].msg;
+    fr.push(...Q.push(a + d));
+    fr[fr.length - 1].msg += '<br>La caja que se liberaba en <b>' + a + '</b> queda ocupada hasta <b>' + (a + d) + '</b>.';
+    ejecutar(fr);
+  }
+};
+
+cargarPreset(PRESETS[0]);
+window.__hp = { get Q() { return Q; }, get player() { return P; } };
+</script>
+
+</body>
+</html>
