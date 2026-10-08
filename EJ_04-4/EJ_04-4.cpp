@@ -26,7 +26,7 @@ using namespace std;
     1) Los actores vienen por nombre --> unordered_map nombre -> numero
        de vertice, para poder usar Grafo (que trabaja con 0..V-1).
 
-    2) Como construir el grafo. Lo directo seria unir con una arista cada
+    2) Para construir el grafo, lo directo seria unir con una arista cada
        par de actores de la misma pelicula, pero una pelicula con k actores
        daria k*(k-1)/2 aristas (con 100.000 actores, imposible).
        Truco: meter tambien las PELICULAS como vertices:
@@ -100,6 +100,7 @@ void resuelveCaso() {
     int actores = id.size();
     Grafo g(actores + peliculas);
     for (int p = 0; p < peliculas; ++p)
+		// cada actor de la pelicula p se une a la pelicula p
         for (int a : reparto[p])
             g.ponArista(a, actores + p);
 
@@ -113,6 +114,7 @@ void resuelveCaso() {
         string actor; cin >> actor;
         int v = id[actor];
         cout << actor << ' ';
+
         if (hayBacon && caminos.hayCamino(v)) cout << caminos.distancia(v) / 2 << '\n';
         else cout << "INF\n";
     }
