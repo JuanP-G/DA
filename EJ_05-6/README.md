@@ -6,7 +6,7 @@
 Valores enteros para x1 … xN que cumplan todas las inecuaciones `xi < xj`, o `NO` si no existen.
 
 ## Cómo se plantea
-**Digrafo:** un vértice por variable y una arista `i → j` por cada `xi < xj`.
+**Digrafo:** un vértice por variable y una arista `i → j` por cada `xi < xj`. La entrada tiene justo el formato que lee el constructor `Digrafo(cin, 1)` (N, M y los pares; el `1` es porque las variables empiezan en 1), así que no hace falta añadir las aristas a mano.
 
 - Si hay un **ciclo** (`x1 < x2 < … < x1`) es imposible ⇒ `NO`.
 - Si es un **DAG**, existe un **orden topológico**: todas las aristas van hacia delante. Dando a cada variable su **posición** en ese orden (1, 2, …, N), cada arista `i → j` cumple `pos(i) < pos(j)` ⇒ `SI` y esas posiciones.

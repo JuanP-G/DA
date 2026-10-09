@@ -67,13 +67,10 @@ private:
 };
 
 void resuelveCaso() {
-    int n, m;
-    cin >> n >> m;
-    Digrafo g(n);
-    for (int k = 0; k < m; ++k) {
-        int i, j; cin >> i >> j;
-        g.ponArista(i - 1, j - 1);         // xi < xj
-    }
+    // El constructor lee N, M y las M inecuaciones "i j" (xi < xj --> arista i --> j);
+    // el 1 indica que las variables vienen numeradas desde 1 (resta 1 a cada vertice).
+    Digrafo g(cin, 1);
+    int n = g.V();
 
     Inecuaciones sis(g);
     if (!sis.posible()) {
