@@ -67,9 +67,7 @@ private:
 };
 
 void resuelveCaso() {
-    // El constructor lee N, M y las M inecuaciones "i j" (xi < xj --> arista i --> j);
-    // el 1 indica que las variables vienen numeradas desde 1 (resta 1 a cada vertice).
-    Digrafo g(cin, 1);
+    Digrafo g(cin, 1);   // lee N, M y las M inecuaciones "i j" (i < j  ->  arista i-1 --> j-1)
     int n = g.V();
 
     Inecuaciones sis(g);
