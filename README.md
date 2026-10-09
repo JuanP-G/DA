@@ -66,9 +66,10 @@ Todos usan [`Grafo.h`](Estructuras%20de%20datos/Grafo.h). Están numerados como 
 |---|---|---|
 | ¿A qué vértices se llega? ¿Es conexo? Número y tamaño de las componentes | DFS (o BFS: el orden da igual) | 04-1, 04-2, 04-3, 04-5 |
 | Una asignación que *obliga* a los vecinos (2 colores) | DFS propagando la restricción | 04-7 |
-| Distancia **mínima** en número de aristas | **BFS** (un DFS puede llegar por un camino largo) | 04-4, 04-6, 04-L, 05-1, 05-2 |
+| Distancia **mínima** en número de aristas | **BFS** (un DFS puede llegar por un camino largo) | 04-4, 04-6, 04-L, 05-1, 05-2, 05-5 |
 | Grafo **dirigido** cuyas aristas salen de una fórmula | Construir el `Digrafo` con `ponArista` y hacer BFS | 05-1, 05-2 |
-| Ordenar con precedencias («A antes que B») | **Orden topológico**: postorden inverso del DFS; ciclo ⇒ imposible | 05-3 |
+| Ordenar con precedencias («A antes que B», xi < xj) | **Orden topológico**: postorden inverso del DFS; ciclo ⇒ imposible | 05-3, 05-6 |
+| Grados de los vértices (p. ej. sumidero) | Salida = `ady(v).size()`; entrada = contar en todas las listas | 05-4 |
 | Camino compartido por dos personas hasta un destino (forma de **Y**) | BFS desde los 3 puntos y mínimo de la suma de distancias | 04-L |
 | Grupos con muchos miembros | No unir todos con todos: en estrella si solo importa la conexión, o con un vértice por grupo si importan las distancias | 04-5, 04-4 |
 
@@ -79,6 +80,9 @@ Todos usan [`Grafo.h`](Estructuras%20de%20datos/Grafo.h). Están numerados como 
 | 05-1 | Juego de Transformación Modular | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Juego%20de%20Transformaci%C3%B3n%20Modular.pdf) | [💻 Solución](EJ_05-1/EJ_05-1.cpp) · [📘 Explicación](EJ_05-1/README.md) | [🎬 Vídeo](Videos/05-1_transformacion_modular.mp4) | BFS en un `Digrafo` construido con x → (a·x+b) mod M |
 | 05-2 | La máquina calculadora | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-La%20m%C3%A1quina%20calculadora.pdf) | [💻 Solución](EJ_05-2/EJ_05-2.cpp) · [📘 Explicación](EJ_05-2/README.md) | [🎬 Vídeo](Videos/05-2_maquina_calculadora.mp4) | BFS en un `Digrafo` con los 10.000 números del marcador (+1, ×2, ÷3) |
 | 05-3 | Ordenando tareas | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Ordenando%20tareas.pdf) | [💻 Solución](EJ_05-3/EJ_05-3.cpp) · [📘 Explicación](EJ_05-3/README.md) | [🎬 Vídeo](Videos/05-3_ordenando_tareas.mp4) | Orden topológico: postorden inverso del DFS (+ ciclos) |
+| 05-4 | Sumidero en un grafo dirigido | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Sumidero%20en%20un%20grafo%20dirigido.pdf) | [💻 Solución](EJ_05-4/EJ_05-4.cpp) · [📘 Explicación](EJ_05-4/README.md) | — | Grados: salida 0 (`ady(v)` vacío) y entrada V − 1 (contando en las listas) |
+| 05-5 | Haciendo trampas en Serpientes y Escaleras | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Haciendo%20trampas%20en%20Serpientes%20y%20Escaleras.pdf) | [💻 Solución](EJ_05-5/EJ_05-5.cpp) · [📘 Explicación](EJ_05-5/README.md) | — | BFS: casilla v → destino(v + d), d = 1…K; serpiente/escalera = salto obligatorio |
+| 05-6 | Sistema de inecuaciones | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Sistema%20de%20inecuaciones.pdf) | [💻 Solución](EJ_05-6/EJ_05-6.cpp) · [📘 Explicación](EJ_05-6/README.md) | [🎬 Vídeo](Videos/05-6_sistema_inecuaciones.mp4) | xi < xj = arista i → j; ciclo ⇒ NO; si no, valor = posición en el orden topológico |
 
 ## Visualizaciones interactivas
 
