@@ -5,7 +5,7 @@ Cada vídeo es una lista de "segmentos": una imagen fija (1280x720) más una
 frase de narración. La duración de cada segmento la marca su audio. Al final
 se juntan con ffmpeg: vídeo H.264 + audio AAC + pista de subtítulos.
 
-Voz: Piper (TTS offline). Ruta del modelo en la variable PIPER_MODEL.
+Voz: Kokoro (TTS neuronal offline, recomendado) o Piper. Ver _sintetiza().
 """
 import os
 import re
@@ -349,25 +349,45 @@ def _acorta_silencios(a, sr, th=300, maxsil=0.3):
     return out
 
 
-def _tts(text, out_wav, gap=0.22):
+def _sintetiza(frase):
     """
-    Sintetiza la narración frase a frase, recortando el silencio que Piper deja
-    al final de cada una. Devuelve (duración total, [(frase, inicio, fin)]).
+    Devuelve (array int16, frecuencia) de una frase.
+    Motor según TTS_ENGINE:
+      kokoro (recomendado): voz neuronal natural. KOKORO_MODEL, KOKORO_VOICES y KOKORO_VOICE (ef_dora por defecto).
+      piper:  la voz antigua; PIPER_MODEL.
     """
     global _voice
     import array
+    motor = os.environ.get("TTS_ENGINE", "kokoro" if os.environ.get("KOKORO_MODEL") else "piper")
+    if motor == "kokoro":
+        if _voice is None:
+            from kokoro_onnx import Kokoro
+            _voice = Kokoro(os.environ["KOKORO_MODEL"], os.environ["KOKORO_VOICES"])
+        muestras, sr = _voice.create(frase, voice=os.environ.get("KOKORO_VOICE", "ef_dora"),
+                                     speed=float(os.environ.get("KOKORO_SPEED", "1.0")), lang="es")
+        a = array.array("h", (max(-32768, min(32767, int(x * 32767))) for x in muestras))
+        return a, sr
     from piper import PiperVoice, SynthesisConfig
     if _voice is None:
         _voice = PiperVoice.load(os.environ["PIPER_MODEL"])
-    sr = _voice.config.sample_rate
     # poco ruido = voz estable (con los valores por defecto el modelo mete pausas y balbuceos)
     cfg = SynthesisConfig(noise_scale=0.3, noise_w_scale=0.1, length_scale=1.0)
+    a = array.array("h")
+    for ch in _voice.synthesize(frase, syn_config=cfg):
+        a.frombytes(ch.audio_int16_bytes)
+    return a, _voice.config.sample_rate
+
+
+def _tts(text, out_wav, gap=0.22):
+    """
+    Sintetiza la narración frase a frase, recortando el silencio que queda
+    al final de cada una. Devuelve (duración total, [(frase, inicio, fin)]).
+    """
+    import array
     frases = [f for f in re.split(r"(?<=[.:;?!])\s+", text.strip()) if f]
-    pcm, tiempos, t = array.array("h"), [], 0.0
+    pcm, tiempos, t, sr = array.array("h"), [], 0.0, 16000
     for f in frases:
-        a = array.array("h")
-        for ch in _voice.synthesize(f, syn_config=cfg):
-            a.frombytes(ch.audio_int16_bytes)
+        a, sr = _sintetiza(f)
         a = _acorta_silencios(a, sr)
         # recorte de silencios al principio y al final
         th = 400
@@ -394,7 +414,10 @@ def _srt_time(t):
 
 # la narración deletrea siglas y letras para que la voz las lea bien; en los subtítulos se escriben normal
 _SUBS = [(r"\bT T L\b", "TTL"), (r"\bB F S\b", "BFS"), (r"\bD F S\b", "DFS"), (r"unordered map", "unordered_map"),
-         (r"\buve\b", "V"), (r"\bka\b", "k"), (r"\bene\b", "N"), (r"\bpe\b", "p"), (r"\bV más a\b", "V más A")]
+         (r"\buve\b", "V"), (r"\bka\b", "k"), (r"\bene\b", "N"), (r"\bpe\b", "p"), (r"\bV más a\b", "V más A"),
+         (r"\bT A D\b", "TAD"), (r"\bD A G\b", "DAG"), (r"\bE M T\b", "EMT"), (r"poner gemelas", "ponGemelas"),
+         (r"push front", "push_front"), (r"Page Rank", "PageRank"),
+         (r"\bequis (\d+)", r"x\1")]
 
 
 def _texto_sub(s):
@@ -424,16 +447,20 @@ def _wrap2(s, maxlen=58):
     return s[:cut] + "\n" + s[cut + 1:]
 
 
-def build(segments, out_mp4, pause=0.35):
+def build(segments, out_mp4, pause=0.35, chapters=None):
     """
     segments: lista de (Slide o Image, narración o None, duración mínima)
+    chapters: opcional, {índice de segmento: título}; se guardan como capítulos del mp4
     """
     out_mp4 = Path(out_mp4)
     tmp = Path(tempfile.mkdtemp(prefix="vid_"))
     concat_v, concat_a, subs = [], [], []
     t = 0.0
     sr = None
+    cap_t = []
     for i, (sl, narr, dmin) in enumerate(segments):
+        if chapters and i in chapters:
+            cap_t.append((t, chapters[i]))
         img = sl.img if isinstance(sl, Slide) else sl
         png = tmp / f"s{i:03}.png"
         img.save(png)
@@ -489,12 +516,23 @@ def build(segments, out_mp4, pause=0.35):
         for k, (a, b, s) in enumerate(subs, 1):
             f.write(f"{k}\n{_srt_time(a)} --> {_srt_time(b)}\n{s}\n\n")
 
+    meta = tmp / "meta.txt"
+    with open(meta, "w", encoding="utf-8") as f:
+        f.write(";FFMETADATA1\n")
+        for k, (a, titulo) in enumerate(cap_t):
+            b = cap_t[k + 1][0] if k + 1 < len(cap_t) else t
+            f.write(f"[CHAPTER]\nTIMEBASE=1/1000\nSTART={int(a * 1000)}\nEND={int(b * 1000)}\ntitle={titulo}\n")
+    if cap_t:
+        print("capítulos:")
+        for a, titulo in cap_t:
+            print(f"  {int(a // 60):02}:{int(a % 60):02}  {titulo}")
+
     out_mp4.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run([
         "ffmpeg", "-v", "error", "-y",
         "-f", "concat", "-safe", "0", "-i", str(lst),
-        "-i", str(full), "-i", str(srt),
-        "-map", "0:v", "-map", "1:a", "-map", "2:s",
+        "-i", str(full), "-i", str(srt), "-i", str(meta),
+        "-map", "0:v", "-map", "1:a", "-map", "2:s", "-map_chapters", "3",
         "-vf", f"fps={FPS},format=yuv420p",
         "-c:v", "libx264", "-preset", "slow", "-crf", "20", "-tune", "stillimage",
         "-c:a", "aac", "-b:a", "96k", "-ar", "44100",

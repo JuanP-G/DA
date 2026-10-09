@@ -1,6 +1,6 @@
 # EJ 05-6 · Sistema de inecuaciones
 
-📄 [Enunciado](<../Ejercicios juez/5-Grafos dirigidos/prob-Sistema de inecuaciones.pdf>) · 💻 [Solución](EJ_05-6.cpp)
+📄 [Enunciado](<../Ejercicios juez/5-Grafos dirigidos/prob-Sistema de inecuaciones.pdf>) · 💻 [Solución](EJ_05-6.cpp) · 🎬 [Vídeo](../Videos/05-6_sistema_inecuaciones.mp4)
 
 ## Qué piden
 Valores enteros para x1 … xN que cumplan todas las inecuaciones `xi < xj`, o `NO` si no existen.
@@ -12,6 +12,12 @@ Valores enteros para x1 … xN que cumplan todas las inecuaciones `xi < xj`, o `
 - Si es un **DAG**, existe un **orden topológico**: todas las aristas van hacia delante. Dando a cada variable su **posición** en ese orden (1, 2, …, N), cada arista `i → j` cumple `pos(i) < pos(j)` ⇒ `SI` y esas posiciones.
 
 Ciclo y orden salen del **mismo DFS con tres estados** que en [05-3](../EJ_05-3/README.md): 0 sin visitar, 1 en la pila, 2 terminado; un vecino en estado 1 es un ciclo, y el orden es el postorden inverso.
+
+## Cómo se asignan los valores
+El DFS mete cada vértice en `post` **cuando termina**, y al final `valor[post[i]] = n − i`: el primero en terminar recibe `n`, el último `1`.
+
+- Si hay arista `i → j`, `j` termina **antes** que `i` (o ya había terminado, o `i` lo visita y espera a que acabe) ⇒ `j` está antes en `post` ⇒ `valor[j] > valor[i]` ✓.
+- **Variables sueltas:** el constructor lanza un DFS desde **cada** vértice sin visitar; una variable sin aristas termina al momento, entra en `post` y recibe valor (cualquiera le vale, nadie la nombra). En el ejemplo 3: `post = x1 x2 x3` ⇒ `SI 3 2 1`.
 
 ## Por qué así
 - **Cualquier asignación válida vale:** el programa da `SI 1 3 2 4` en el ejemplo 1, el enunciado `SI 2 5 3 7`.

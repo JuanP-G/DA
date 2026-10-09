@@ -82,7 +82,7 @@ Todos usan [`Grafo.h`](Estructuras%20de%20datos/Grafo.h). Están numerados como 
 | 05-3 | Ordenando tareas | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Ordenando%20tareas.pdf) | [💻 Solución](EJ_05-3/EJ_05-3.cpp) · [📘 Explicación](EJ_05-3/README.md) | [🎬 Vídeo](Videos/05-3_ordenando_tareas.mp4) | Orden topológico: postorden inverso del DFS (+ ciclos) |
 | 05-4 | Sumidero en un grafo dirigido | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Sumidero%20en%20un%20grafo%20dirigido.pdf) | [💻 Solución](EJ_05-4/EJ_05-4.cpp) · [📘 Explicación](EJ_05-4/README.md) | — | Grados: salida 0 (`ady(v)` vacío) y entrada V − 1 (contando en las listas) |
 | 05-5 | Haciendo trampas en Serpientes y Escaleras | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Haciendo%20trampas%20en%20Serpientes%20y%20Escaleras.pdf) | [💻 Solución](EJ_05-5/EJ_05-5.cpp) · [📘 Explicación](EJ_05-5/README.md) | — | BFS: casilla v → destino(v + d), d = 1…K; serpiente/escalera = salto obligatorio |
-| 05-6 | Sistema de inecuaciones | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Sistema%20de%20inecuaciones.pdf) | [💻 Solución](EJ_05-6/EJ_05-6.cpp) · [📘 Explicación](EJ_05-6/README.md) | — | xi < xj = arista i → j; ciclo ⇒ NO; si no, valor = posición en el orden topológico |
+| 05-6 | Sistema de inecuaciones | [📄 PDF](Ejercicios%20juez/5-Grafos%20dirigidos/prob-Sistema%20de%20inecuaciones.pdf) | [💻 Solución](EJ_05-6/EJ_05-6.cpp) · [📘 Explicación](EJ_05-6/README.md) | [🎬 Vídeo](Videos/05-6_sistema_inecuaciones.mp4) | xi < xj = arista i → j; ciclo ⇒ NO; si no, valor = posición en el orden topológico |
 
 ## Visualizaciones interactivas
 
