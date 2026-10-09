@@ -171,6 +171,23 @@ footer{color:var(--muted);font-size:.82rem;padding-block:30px 40px}
 .sub{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 video{width:100%;max-width:960px;border-radius:10px;background:#000}iframe.pdf{width:100%;height:78vh;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
 .herr{margin-top:12px}
+.crumbs{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.86rem;color:var(--muted);padding-top:16px}
+.crumbs a{color:var(--muted);text-decoration:none}.crumbs a:hover{color:var(--blue)}.crumbs .back{font-weight:600;color:var(--ink);margin-right:6px}
+.tabs .btn .cnt{font-size:.75rem;color:var(--muted);margin-left:4px}.tabs .btn.off{opacity:.55}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}.bar .grow{flex:1}
+.bar .hint{font-size:.85rem;color:var(--muted)}
+.btn.prim{background:var(--accent);border-color:var(--accent);color:#fff}:root[data-theme=dark] .btn.prim{color:#1b1400}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .btn.prim{color:#1b1400}}
+.nada{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:26px;color:var(--muted);text-align:center}
+.vid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px;align-items:start}@media(max-width:860px){.vid{grid-template-columns:minmax(0,1fr)}}
+.caps{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;max-height:60vh;overflow:auto}
+.caps b{display:block;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:2px 4px 6px}
+.caps button{all:unset;display:flex;gap:10px;width:100%;box-sizing:border-box;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:.9rem}
+.caps button:hover,.caps button.on{background:var(--panel2)}.caps button span{font-family:var(--mono);color:var(--accent);font-size:.82rem}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:22px;flex-wrap:wrap}
+.vlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:12px}
+a.vcard{display:flex;flex-direction:column;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;color:inherit}
+a.vcard:hover{border-color:var(--green)}a.vcard .n{font-family:var(--mono);font-size:.75rem;color:var(--green)}a.vcard .d{font-size:.84rem;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none}.toast.on{opacity:1}
 """
 FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">'
 
@@ -184,30 +201,61 @@ function paint(src){let h='',m;TOK.lastIndex=0;while((m=TOK.exec(src))){const t=
  else if(m[5])h+='<span class="n">'+t+'</span>';else if(m[6]&&KW.test(t))h+='<span class="k">'+t+'</span>';else if(m[6]&&TY.test(t))h+='<span class="t">'+t+'</span>';else h+=esc(t)}return h}
 document.querySelectorAll('pre[data-code]').forEach(pre=>{
  const name=pre.dataset.code,src=pre.textContent.replace(/\n$/,'');
- const box=document.createElement('div');box.className='codebox';
+ const box=document.createElement('div');box.className='codebox';if(pre.id)box.id=pre.id;box.dataset.src=src;
  const head=document.createElement('div');head.className='fname';head.innerHTML='<span>'+esc(name)+'</span>';
- const b=document.createElement('button');b.className='btn';b.textContent='Copiar';b.onclick=()=>{(navigator.clipboard?navigator.clipboard.writeText(src):Promise.reject()).then(()=>{b.textContent='¡Copiado!';setTimeout(()=>b.textContent='Copiar',1500)}).catch(()=>{const r=document.createRange();r.selectNodeContents(box);getSelection().removeAllRanges();getSelection().addRange(r)})};
- head.appendChild(b);box.appendChild(head);
+ box.appendChild(head);
  src.split('\n').forEach((l,i)=>{const d=document.createElement('div');d.className='ln';d.innerHTML='<i>'+(i+1)+'</i><span>'+paint(l)+'</span>';box.appendChild(d)});
  pre.replaceWith(box)});
 """
 
-TABS_JS = r"""
-function show(id){document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===id));document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));
- document.querySelectorAll('.sub-pane').forEach(p=>{});}
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{show(b.dataset.tab);try{history.replaceState(null,'','#'+b.dataset.tab)}catch(e){}});
-document.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>{const g=b.dataset.group;document.querySelectorAll('[data-group="'+g+'"]').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('[data-subpane^="'+g+'"]').forEach(p=>p.style.display=p.dataset.subpane===b.dataset.sub?'block':'none')});
-const h=location.hash.slice(1);show(document.getElementById(h)?h:document.querySelector('.pane').id);
+COMUN_JS = r"""
+function toast(t){const e=document.getElementById('toast');if(!e)return;e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1600)}
+function copiar(txt,btn){const ok=()=>{toast('Copiado al portapapeles');if(btn){const o=btn.textContent;btn.textContent='¡Copiado!';setTimeout(()=>btn.textContent=o,1400)}};
+ if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(ok).catch(()=>viejo())}else viejo();
+ function viejo(){const t=document.createElement('textarea');t.value=txt;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok()}catch(e){toast('No se ha podido copiar')}t.remove()}}
+// «Volver»: si se llegó desde esta misma web, vuelve exactamente a donde estabas; si no, a la página indicada
+document.querySelectorAll('[data-back]').forEach(a=>a.addEventListener('click',ev=>{
+ let mismo=false;try{mismo=document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1}catch(e){}
+ if(mismo){ev.preventDefault();history.back()}}));
+document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{const el=document.getElementById(b.dataset.copy);copiar(el.dataset.src!==undefined?el.dataset.src:el.textContent,b)}));
 """
 
+TABS_JS = r"""
+// Pestañas: cada una tiene su #ancla. Cambiar de pestaña no llena el historial (replaceState),
+// así que «Atrás» del navegador te devuelve a la página anterior y no a la pestaña anterior.
+function show(id,scroll){if(!document.getElementById('p-'+id))return;
+ document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+id));
+ document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));
+ document.querySelectorAll('.pane:not(.on) video').forEach(v=>v.pause());
+ if(scroll)document.querySelector('.tabs').scrollIntoView({block:'start'})}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{show(b.dataset.tab);try{history.replaceState(null,'','#'+b.dataset.tab)}catch(e){}});
+document.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>{const g=b.dataset.group;document.querySelectorAll('[data-group="'+g+'"]').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('[data-subpane^="'+g+'"]').forEach(p=>p.style.display=p.dataset.subpane===b.dataset.sub?'block':'none')});
+window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
+const ini=location.hash.slice(1);show(document.getElementById('p-'+ini)?ini:(document.querySelector('[data-tab].pref')||document.querySelector('[data-tab]')).dataset.tab);
+// capítulos del vídeo
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const v=document.querySelector('#p-video video');v.currentTime=+b.dataset.t;v.play()});
+const vv=document.querySelector('#p-video video');if(vv){vv.addEventListener('timeupdate',()=>{let cur=null;document.querySelectorAll('[data-t]').forEach(b=>{if(+b.dataset.t<=vv.currentTime+0.3)cur=b});document.querySelectorAll('[data-t]').forEach(b=>b.classList.toggle('on',b===cur))})}
+// «Descargar todo»: zip generado en el navegador con los ficheros del ejercicio
+const zb=document.getElementById('zip');
+if(zb)zb.onclick=async()=>{const lista=JSON.parse(zb.dataset.files),nombre=zb.dataset.name;
+ if(typeof JSZip==='undefined'){toast('No se ha podido cargar el compresor; descarga los ficheros por separado');return}
+ const z=new JSZip(),txt=zb.textContent;zb.disabled=true;
+ try{let i=0;for(const [url,ruta] of lista){zb.textContent='Preparando… '+(++i)+'/'+lista.length;const r=await fetch(url);if(!r.ok)throw new Error(url);z.file(nombre+'/'+ruta,await r.blob(),{binary:true})}
+  zb.textContent='Comprimiendo…';const blob=await z.generateAsync({type:'blob',compression:'STORE'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nombre+'.zip';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);toast('Descarga lista')}
+ catch(e){toast('No se ha podido generar el zip')}finally{zb.disabled=false;zb.textContent=txt}};
+"""
 
-def pagina(titulo, cuerpo, prefijo="", extra_js="", desc=""):
+JSZIP = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>'
+
+
+def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head=""):
     nav = (f'<nav class="nav"><div class="wrap"><b>DA · DISEÑO DE ALGORITMOS</b>'
            f'<a href="{prefijo}index.html">Inicio</a><a href="{prefijo}index.html#herramientas">Herramientas</a>'
            + "".join(f'<a href="{prefijo}index.html#tema{t}">Tema {t}</a>' for t in TEMAS)
-           + f'<a href="{prefijo}index.html#estructuras">Estructuras</a></div></nav>')
+           + f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a href="{prefijo}videos.html">Vídeos</a></div></nav>')
     return (f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{FONTS}<style>{CSS}</style></head><body>{nav}{cuerpo}<script>{extra_js}</script></body></html>')
+            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{FONTS}<style>{CSS}</style>{head}</head><body>{nav}{cuerpo}<div class="toast" id="toast"></div><script>{COMUN_JS}{extra_js}</script></body></html>')
 
 
 def render_md(ruta_rel):
@@ -228,68 +276,188 @@ def render_md(ruta_rel):
     return h
 
 
-def pagina_ejercicio(e, slug):
-    carpeta = None
-    for _, r in e["sols"]:
-        carpeta = posixpath.dirname(r); break
-    # ficheros de código: soluciones del README + .h de la carpeta
-    codigos = []
-    vistos = set()
+def leer_texto(rel):
+    """Lee un fuente en UTF-8 o, si lo guardó así Visual Studio, en Windows-1252."""
+    b = (RAIZ / rel).read_bytes()
+    try:
+        return b.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return b.decode("cp1252", errors="replace")
+
+
+def tam_legible(n):
+    for u in ("B", "KB", "MB", "GB"):
+        if n < 1024 or u == "GB":
+            return f"{n:.0f} {u}" if u == "B" else f"{n:.1f} {u}".replace(".", ",")
+        n /= 1024
+
+
+def media_video(rel):
+    """Subtítulos (.vtt) y capítulos del mp4, si hay ffmpeg/ffprobe. Devuelve (ruta_vtt|None, [(seg, título)])."""
+    vtt, caps = None, []
+    src = RAIZ / rel
+    destino = OUT / (rel[:-4] + ".vtt")
+    if shutil.which("ffmpeg"):
+        destino.parent.mkdir(parents=True, exist_ok=True)
+        r = subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-map", "0:s:0", str(destino)], capture_output=True)
+        if r.returncode == 0 and destino.exists() and destino.stat().st_size > 10:
+            vtt = rel[:-4] + ".vtt"
+    if shutil.which("ffprobe"):
+        r = subprocess.run(["ffprobe", "-v", "error", "-show_chapters", "-of", "json", str(src)], capture_output=True, text=True)
+        try:
+            caps = [(float(c["start_time"]), c.get("tags", {}).get("title", "")) for c in json.loads(r.stdout).get("chapters", [])]
+        except Exception:
+            caps = []
+    return vtt, caps
+
+
+def mmss(t):
+    t = int(t)
+    return f"{t // 60}:{t % 60:02}"
+
+
+def descargar(rel, texto, extra=""):
+    return f'<a class="btn" href="{href_sitio(rel, True)}" download="{esc(posixpath.basename(rel))}"{extra}>{texto}</a>'
+
+
+def pagina_ejercicio(e, slug, ant=None, sig=None):
+    carpeta = posixpath.dirname(e["sols"][0][1]) if e["sols"] else None
+    # código: soluciones del README + .h de la carpeta
+    codigos, vistos = [], set()
     for etq, r in e["sols"]:
         if r.endswith((".cpp", ".h")) and r not in vistos:
-            codigos.append((etq, r)); vistos.add(r)
-    if carpeta:
-        for p in sorted((RAIZ / carpeta).glob("*.h")):
-            r = p.relative_to(RAIZ).as_posix()
-            if r not in vistos:
-                codigos.append((p.name, r)); vistos.add(r)
-    tab = []; panes = []
-    acc = []
+            codigos.append(r); vistos.add(r)
+    if carpeta and carpeta != "Estructuras de datos":
+        candidatos = sorted((RAIZ / carpeta).glob("*.h"))
+    elif carpeta:   # ficheros sueltos de «Estructuras de datos» (05-0): solo las cabeceras que incluyen
+        incl = set()
+        for r in list(codigos):
+            incl |= set(re.findall(r'#include\s+"([^"]+)"', leer_texto(r)))
+        candidatos = sorted(RAIZ / carpeta / h for h in incl if (RAIZ / carpeta / h).exists())
+    else:
+        candidatos = []
+    for p in candidatos:
+        r = p.relative_to(RAIZ).as_posix()
+        if r not in vistos:
+            codigos.append(r); vistos.add(r)
     herr = TEMAS[e["tema"]]["herr"]
+    tema = e["tema"]
+    ficheros_zip = []   # (url relativa a la página, ruta dentro del zip)
+
+    # 1 · Enunciado
     if e["pdf"]:
-        acc.append(f'<a class="btn" href="{href_sitio(e["pdf"], True)}">📄 Enunciado (PDF)</a>')
-    if e["video"]:
-        acc.append(f'<a class="btn" href="#video">🎬 Vídeo</a>')
-    if (RAIZ / "Visualizaciones" / herr).exists():
-        acc.append(f'<a class="btn" href="../herramientas/{herr}">🧩 Herramienta interactiva</a>')
-    if e["readme"]:
-        tab.append(("explicacion", "📘 Explicación"))
-        panes.append(f'<div class="pane" id="explicacion"><div class="md">{render_md(e["readme"])}</div></div>')
+        pdf = href_sitio(e["pdf"], True)
+        p_enun = (f'<div class="bar">{descargar(e["pdf"], "⬇ Descargar PDF")}<a class="btn" href="{pdf}" target="_blank" rel="noopener">↗ Abrir en otra pestaña</a>'
+                  f'<span class="hint">{tam_legible((RAIZ / e["pdf"]).stat().st_size)}</span></div>'
+                  f'<iframe class="pdf" src="{pdf}" title="Enunciado {esc(e["id"])}"></iframe>'
+                  f'<p class="hint" style="color:var(--muted);font-size:.85rem">¿No se ve? En el móvil los PDF no se muestran dentro de la página: usa «Abrir en otra pestaña» o «Descargar PDF».</p>')
+        ficheros_zip.append((pdf, "enunciado.pdf"))
+    else:
+        p_enun = '<div class="nada">Este ejercicio no tiene enunciado en PDF.</div>'
+
+    # 2 · Código
     if codigos:
-        tab.append(("codigo", "💻 Código"))
-        subs = "".join(f'<button class="btn{" on" if i == 0 else ""}" data-sub="c{i}" data-group="c">{esc(posixpath.basename(r))}</button>' for i, (_, r) in enumerate(codigos))
-        cods = "".join(
-            f'<div data-subpane="c{i}" style="display:{"block" if i == 0 else "none"}"><pre data-code="{esc(posixpath.basename(r))}">{esc((RAIZ / r).read_text(encoding="utf-8", errors="replace"))}</pre></div>'
-            for i, (_, r) in enumerate(codigos))
-        panes.append(f'<div class="pane" id="codigo"><div class="sub">{subs if len(codigos) > 1 else ""}</div>{cods}</div>')
-    if e["pdf"]:
-        tab.append(("enunciado", "📄 Enunciado"))
-        panes.append(f'<div class="pane" id="enunciado"><iframe class="pdf" src="{href_sitio(e["pdf"], True)}" title="Enunciado"></iframe><p class="i" style="color:var(--muted)">¿No se ve? <a href="{href_sitio(e["pdf"], True)}">Abre el PDF</a>.</p></div>')
+        subs = "".join(f'<button class="btn{" on" if i == 0 else ""}" data-sub="c{i}" data-group="c">{esc(posixpath.basename(r))}</button>' for i, r in enumerate(codigos))
+        cods = []
+        for i, r in enumerate(codigos):
+            txt = leer_texto(r)
+            nombre = posixpath.basename(r)
+            tipo = "solución" if r.endswith(".cpp") else "estructura de datos"
+            cods.append(f'<div data-subpane="c{i}" style="display:{"block" if i == 0 else "none"}"><div class="bar"><button class="btn" data-copy="src{i}">⧉ Copiar código</button>'
+                        f'{descargar(r, "⬇ Descargar " + esc(nombre))}<span class="hint">{tipo} · {txt.count(chr(10)) + 1} líneas</span></div>'
+                        f'<pre data-code="{esc(nombre)}" id="src{i}">{esc(txt)}</pre></div>')
+            ficheros_zip.append((href_sitio(r, True), ("codigo/" if r.endswith(".cpp") else "estructuras/") + nombre))
+        p_cod = f'<div class="sub">{subs if len(codigos) > 1 else ""}</div>{"".join(cods)}'
+    else:
+        p_cod = '<div class="nada">Todavía no hay código para este ejercicio.</div>'
+
+    # 3 · Explicación
+    if e["readme"]:
+        crudo = (RAIZ / e["readme"]).read_text(encoding="utf-8")
+        p_exp = (f'<div class="bar"><button class="btn" data-copy="md-src">⧉ Copiar (Markdown)</button>{descargar(e["readme"], "⬇ Descargar .md", "")}</div>'
+                 f'<div class="md">{render_md(e["readme"])}</div><script type="text/plain" id="md-src">{esc(crudo)}</script>')
+        ficheros_zip.append((href_sitio(e["readme"], True), "explicacion.md"))
+    else:
+        p_exp = '<div class="nada">Todavía no hay explicación escrita para este ejercicio.</div>'
+
+    # 4 · Vídeo
     if e["video"]:
-        tab.append(("video", "🎬 Vídeo"))
-        panes.append(f'<div class="pane" id="video"><video controls preload="metadata" src="{href_sitio(e["video"], True)}"></video></div>')
-    if not panes:
-        tab.append(("vacio", "Sin contenido")); panes.append('<div class="pane" id="vacio"><p>Todavía no hay material para este ejercicio.</p></div>')
-    cuerpo = (f'<div class="wrap"><div class="ejhead"><span class="tag">Tema {e["tema"]} · {esc(TEMAS[e["tema"]]["nombre"])}</span>'
-              f'<h1>{esc(e["id"])} · {esc(e["titulo"])}</h1><p class="lede">{esc(e["idea"])}</p><div class="acc">{"".join(acc)}</div></div>'
-              f'<div class="tabs">{"".join(f"<button class=btn data-tab={i}>{esc(t)}</button>" for i, t in tab)}</div>{"".join(panes)}</div>')
-    return pagina(f'{e["id"]} {e["titulo"]}', cuerpo, "../", HIGHLIGHT_JS + TABS_JS, e["idea"])
+        vurl = href_sitio(e["video"], True)
+        vtt, caps = media_video(e["video"])
+        track = f'<track kind="subtitles" srclang="es" label="Español" src="../{quote(vtt)}" default>' if vtt else ""
+        lista_caps = ("<div class='caps'><b>Capítulos</b>" + "".join(f'<button data-t="{t:.2f}"><span>{mmss(t)}</span>{esc(ti)}</button>' for t, ti in caps) + "</div>") if caps else ""
+        p_vid = (f'<div class="bar">{descargar(e["video"], "⬇ Descargar vídeo")}<span class="hint">{tam_legible((RAIZ / e["video"]).stat().st_size)} · subtítulos con el botón CC del reproductor</span></div>'
+                 f'<div class="{"vid" if caps else ""}"><video controls preload="metadata" playsinline src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div>')
+        ficheros_zip.append((vurl, "video.mp4"))
+    else:
+        p_vid = '<div class="nada">Este ejercicio todavía no tiene vídeo.</div>'
+
+    tabs = [("enunciado", "📄 Enunciado", bool(e["pdf"]), p_enun), ("codigo", "💻 Código", bool(codigos), p_cod),
+            ("explicacion", "📘 Explicación", bool(e["readme"]), p_exp), ("video", "🎬 Vídeo", bool(e["video"]), p_vid)]
+    pref = "explicacion" if e["readme"] else ("codigo" if codigos else "enunciado")
+    botones = "".join(f'<button class="btn{"" if hay else " off"}{" pref" if i == pref else ""}" data-tab="{i}">{t}</button>' for i, t, hay, _ in tabs)
+    panes = "".join(f'<div class="pane" id="p-{i}">{c}</div>' for i, _, _, c in tabs)
+
+    acc = []
+    if ficheros_zip:
+        total = 0
+        for url, _ in ficheros_zip:
+            pass
+        acc.append(f'<button class="btn prim" id="zip" data-name="{esc(e["id"] + " " + e["titulo"])}" data-files="{esc(json.dumps(ficheros_zip, ensure_ascii=False))}">⬇ Descargar todo (.zip)</button>')
+    if (RAIZ / "Visualizaciones" / herr).exists():
+        acc.append(f'<a class="btn" href="../herramientas/{herr}">🧩 Herramienta interactiva del tema</a>')
+    contenido_zip = ", ".join(x for x, ok in (("enunciado", e["pdf"]), ("código", codigos), ("explicación", e["readme"]), ("vídeo", e["video"])) if ok)
+
+    pager = '<div class="pager">' + (f'<a class="btn" href="{ant[0]}.html">← {esc(ant[1])}</a>' if ant else "<span></span>") + \
+            (f'<a class="btn" href="{sig[0]}.html">{esc(sig[1])} →</a>' if sig else "<span></span>") + "</div>"
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#tema{tema}" data-back>← Volver</a>'
+              f'<a href="../index.html">Inicio</a>›<a href="../index.html#tema{tema}">Tema {tema}</a>›<span>{esc(e["id"])}</span></div>'
+              f'<div class="ejhead"><span class="tag">Tema {tema} · {esc(TEMAS[tema]["nombre"])}</span>'
+              f'<h1>{esc(e["id"])} · {esc(e["titulo"])}</h1><p class="lede">{md_inline(e["idea"])}</p>'
+              f'<div class="acc">{"".join(acc)}</div>'
+              + (f'<p class="hint" style="margin:0;color:var(--muted);font-size:.85rem">El zip incluye: {contenido_zip}.</p>' if ficheros_zip else "")
+              + f'</div><div class="tabs">{botones}</div>{panes}{pager}</div>')
+    return pagina(f'{e["id"]} {e["titulo"]}', cuerpo, "../", HIGHLIGHT_JS + TABS_JS, e["idea"], JSZIP)
 
 
 def pagina_cabecera(nombre):
     rel = f"Estructuras de datos/{nombre}"
     herr = next((TEMAS[t]["herr"] for t in TEMAS if nombre in TEMAS[t]["cab"]), None)
     extra = f'<a class="btn" href="../herramientas/{herr}">🧩 Herramienta interactiva</a>' if herr and (RAIZ / "Visualizaciones" / herr).exists() else ""
-    cuerpo = (f'<div class="wrap"><div class="ejhead"><span class="tag">Estructura de datos</span><h1>{esc(nombre)}</h1>'
-              f'<div class="acc"><a class="btn" href="{href_sitio(rel, True)}" download>⬇ Descargar</a>{extra}</div></div>'
-              f'<pre data-code="{esc(nombre)}">{esc((RAIZ / rel).read_text(encoding="utf-8", errors="replace"))}</pre></div>')
+    txt = leer_texto(rel)
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#estructuras" data-back>← Volver</a>'
+              f'<a href="../index.html">Inicio</a>›<a href="../index.html#estructuras">Estructuras</a>›<span>{esc(nombre)}</span></div>'
+              f'<div class="ejhead"><span class="tag">Estructura de datos</span><h1>{esc(nombre)}</h1>'
+              f'<div class="acc"><button class="btn" data-copy="src0">⧉ Copiar código</button>{descargar(rel, "⬇ Descargar " + esc(nombre))}{extra}</div></div>'
+              f'<pre data-code="{esc(nombre)}" id="src0">{esc(txt)}</pre></div>')
     return pagina(nombre, cuerpo, "../", HIGHLIGHT_JS)
+
+
+def pagina_videos(ej, slugs):
+    bloques = []
+    for t, info in TEMAS.items():
+        cards = []
+        for i, e in enumerate(ej):
+            if e["tema"] == t and e["video"]:
+                mb = tam_legible((RAIZ / e["video"]).stat().st_size)
+                cards.append(f'<a class="vcard" href="ej/{slugs[i]}.html#video"><span class="n">▶ {esc(e["id"])} · {mb}</span><b>{esc(e["titulo"])}</b><span class="d">{md_inline(e["idea"])}</span></a>')
+        if cards:
+            bloques.append(f'<section class="bloque"><h2>Tema {t} · {esc(info["nombre"])}</h2><div class="vlist">{"".join(cards)}</div></section>')
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="index.html" data-back>← Volver</a><a href="index.html">Inicio</a>›<span>Vídeos</span></div>'
+              f'<div class="hero"><span class="tag">Vídeos</span><h1>Vídeos explicativos</h1><p class="lede">Se ven aquí mismo, con subtítulos y, en los largos, capítulos. Cada uno abre la página de su ejercicio, donde también se puede descargar.</p></div>'
+              f'{"".join(bloques)}</div>')
+    return pagina("Vídeos · DA", cuerpo, "", "")
+
+
+VOLVER_HERR = ('<a href="../index.html#herramientas" onclick="try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){history.back();return false}}catch(e){}" '
+               'style="position:fixed;left:12px;bottom:12px;z-index:99;font:600 14px system-ui,sans-serif;background:#151d31;color:#e7ecf7;border:1px solid #2a3556;'
+               'padding:8px 12px;border-radius:9px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.25)">← Volver a la web</a>')
 
 
 def chips(e, slug):
     c = []
-    if e["pdf"]: c.append(f'<a class="chip p" href="{href_sitio(e["pdf"])}">PDF</a>')
-    c.append(f'<a class="chip" href="ej/{slug}.html#codigo">Código</a>' if e["sols"] else "")
+    if e["pdf"]: c.append(f'<a class="chip p" href="ej/{slug}.html#enunciado">Enunciado</a>')
+    if e["sols"]: c.append(f'<a class="chip" href="ej/{slug}.html#codigo">Código</a>')
     if e["readme"]: c.append(f'<a class="chip" href="ej/{slug}.html#explicacion">Explicación</a>')
     if e["video"]: c.append(f'<a class="chip v" href="ej/{slug}.html#video">Vídeo</a>')
     return "".join(c)
@@ -317,7 +485,11 @@ def main():
         while s in usados:
             s = f'{e["id"].lower()}-{n}'; n += 1
         usados.add(s); slugs[i] = s
-        (OUT / "ej" / f"{s}.html").write_text(pagina_ejercicio(e, s), encoding="utf-8")
+    for i, e in enumerate(ej):
+        ant = (slugs[i - 1], f'{ej[i - 1]["id"]} {ej[i - 1]["titulo"]}') if i > 0 else None
+        sig = (slugs[i + 1], f'{ej[i + 1]["id"]} {ej[i + 1]["titulo"]}') if i + 1 < len(ej) else None
+        (OUT / "ej" / f"{slugs[i]}.html").write_text(pagina_ejercicio(e, slugs[i], ant, sig), encoding="utf-8")
+    (OUT / "videos.html").write_text(pagina_videos(ej, slugs), encoding="utf-8")
 
     # estructuras de datos
     dir_est = RAIZ / "Estructuras de datos"
@@ -331,7 +503,9 @@ def main():
     if herr_dir.exists():
         (OUT / "herramientas").mkdir()
         for p in herr_dir.glob("*.html"):
-            shutil.copy2(p, OUT / "herramientas" / p.name)
+            h = p.read_text(encoding="utf-8")
+            h = re.sub(r"(<body[^>]*>)", lambda m: m.group(1) + VOLVER_HERR, h, count=1)
+            (OUT / "herramientas" / p.name).write_text(h, encoding="utf-8")
 
     # portada
     n_pdf = sum(1 for e in ej if e["pdf"]); n_vid = sum(1 for e in ej if e["video"]); n_sol = sum(1 for e in ej if e["sols"])
@@ -358,16 +532,19 @@ def main():
 <input class="search" id="q" type="search" placeholder="Buscar ejercicio (nombre, número, técnica…)" aria-label="Buscar ejercicio"></div>
 <section class="bloque" id="herramientas"><h2>Herramientas interactivas</h2><p class="lede">Ejecutan la misma lógica que el C++ de la asignatura y resaltan el código línea a línea.</p><div class="tools">{tools_html}</div></section>
 <div id="temas">{"".join(tema_html)}<p class="vacio" id="vacio">Ningún ejercicio coincide con la búsqueda.</p></div>
-<section class="bloque" id="estructuras"><h2>Estructuras de datos</h2><p class="lede">Las cabeceras que da la asignatura, con visor de código.</p><div class="cabs">{est_html}</div></section>
+<section class="bloque" id="estructuras"><h2>Estructuras de datos</h2><p class="lede">Las cabeceras que da la asignatura, con visor de código, copiar y descargar.</p><div class="cabs">{est_html}</div></section>
+<section class="bloque" id="videos"><h2>Vídeos</h2><p class="lede">{n_vid} vídeos explicativos que se ven aquí mismo, con subtítulos. <a href="videos.html">Ver todos los vídeos →</a></p></section>
 <footer>Web generada automáticamente desde el repositorio{" · commit <code>" + esc(sha) + "</code>" if sha else ""} · {ahora}</footer></div>"""
-    js = """const q=document.getElementById('q');q.oninput=()=>{const v=q.value.trim().toLowerCase();let any=0;
+    js = """const q=document.getElementById('q');function filtra(){const v=q.value.trim().toLowerCase();let any=0;
 document.querySelectorAll('.tema').forEach(s=>{let vis=0;s.querySelectorAll('.fila').forEach(f=>{const ok=!v||f.dataset.q.includes(v);f.style.display=ok?'':'none';if(ok)vis++});s.style.display=vis?'':'none';any+=vis});
-document.getElementById('vacio').style.display=any?'none':'block'}"""
+document.getElementById('vacio').style.display=any?'none':'block';try{sessionStorage.setItem('q',q.value)}catch(e){}}
+q.oninput=filtra;window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');if(g&&!q.value){q.value=g}}catch(e){}if(q.value)filtra()});"""
     (OUT / "index.html").write_text(pagina("DA · Diseño de Algoritmos", cuerpo, "", js, "Ejercicios, soluciones, vídeos y herramientas interactivas de Diseño de Algoritmos"), encoding="utf-8")
     (OUT / ".nojekyll").write_text("")
 
     # copiar ficheros referenciados + código de cada ejercicio
     for e in ej:
+        if e["readme"]: COPIAR.add(e["readme"])
         if e["sols"]:
             for p in (RAIZ / posixpath.dirname(e["sols"][0][1])).glob("*"):
                 if p.suffix in (".cpp", ".h"):
