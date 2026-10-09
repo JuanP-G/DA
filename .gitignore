@@ -87,3 +87,8 @@ venv/
 *.log
 *.bak
 tmp/
+
+# ---------- Generador de vídeos ----------
+Videos/generador/preview/
+*.onnx
+*.onnx.json
