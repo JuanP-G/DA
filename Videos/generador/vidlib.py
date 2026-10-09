@@ -416,7 +416,8 @@ def _srt_time(t):
 _SUBS = [(r"\bT T L\b", "TTL"), (r"\bB F S\b", "BFS"), (r"\bD F S\b", "DFS"), (r"unordered map", "unordered_map"),
          (r"\buve\b", "V"), (r"\bka\b", "k"), (r"\bene\b", "N"), (r"\bpe\b", "p"), (r"\bV más a\b", "V más A"),
          (r"\bT A D\b", "TAD"), (r"\bD A G\b", "DAG"), (r"\bE M T\b", "EMT"), (r"poner gemelas", "ponGemelas"),
-         (r"push front", "push_front"), (r"Page Rank", "PageRank")]
+         (r"push front", "push_front"), (r"Page Rank", "PageRank"),
+         (r"\bequis (\d+)", r"x\1")]
 
 
 def _texto_sub(s):
