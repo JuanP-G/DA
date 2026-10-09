@@ -2,7 +2,7 @@
 import sys
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line
 
-CPP = "../../EJ_04-7/EJ_04-7.cpp"
+CPP = "../../4-Grafos no dirigidos/EJ_04-7/EJ_04-7.cpp"
 NOMBRE = "Grafo bipartito"
 
 P1 = {0: (820, 140), 2: (960, 140), 1: (735, 235), 6: (1095, 235), 4: (950, 270), 5: (1050, 360), 3: (850, 365)}

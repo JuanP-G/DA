@@ -2,7 +2,7 @@
 import sys
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line, C
 
-CPP = "../../EJ_05-3/EJ_05-3.cpp"
+CPP = "../../5-Grafos dirigidos/EJ_05-3/EJ_05-3.cpp"
 NOMBRE = "Ordenando tareas"
 TEMA = "Tema 5 · Grafos dirigidos"
 

@@ -2,7 +2,7 @@
 import sys
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line, C
 
-CPP = "../../EJ_04-1/EJ_04-1.cpp"
+CPP = "../../4-Grafos no dirigidos/EJ_04-1/EJ_04-1.cpp"
 NOMBRE = "Árboles libres"
 
 # caso 1 y 2 del enunciado (mismas posiciones que el dibujo del PDF)

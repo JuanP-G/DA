@@ -4,7 +4,7 @@ import math
 from collections import deque
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line
 
-CPP = "../../EJ_04-5/EJ_04-5.cpp"
+CPP = "../../4-Grafos no dirigidos/EJ_04-5/EJ_04-5.cpp"
 NOMBRE = "¡Las noticias vuelan!"
 
 N = 7

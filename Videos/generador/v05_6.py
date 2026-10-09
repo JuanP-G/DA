@@ -2,7 +2,7 @@
 import sys
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line, C
 
-CPP = "../../EJ_05-6/EJ_05-6.cpp"
+CPP = "../../5-Grafos dirigidos/EJ_05-6/EJ_05-6.cpp"
 NOMBRE = "Sistema de inecuaciones"
 TEMA = "Tema 5 · Grafos dirigidos"
 

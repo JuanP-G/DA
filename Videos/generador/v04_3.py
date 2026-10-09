@@ -2,7 +2,7 @@
 import sys
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line, C
 
-CPP = "../../EJ_04-3/EJ_04-3.cpp"
+CPP = "../../4-Grafos no dirigidos/EJ_04-3/EJ_04-3.cpp"
 NOMBRE = "Detección de manchas negras"
 
 B1 = ["-#-#---#", "-###---#", "----####", "-#------", "-#-#----", "-###-##-", "###--##-", "--#-----"]

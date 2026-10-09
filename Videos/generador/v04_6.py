@@ -3,7 +3,7 @@ import sys
 from collections import deque
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line
 
-CPP = "../../EJ_04-6/EJ_04-6.cpp"
+CPP = "../../4-Grafos no dirigidos/EJ_04-6/EJ_04-6.cpp"
 NOMBRE = "Un nodo muy muy lejano"
 
 # red 1 del ejemplo; nodos 1..7 -> vértices 0..6

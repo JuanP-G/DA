@@ -3,7 +3,7 @@ import sys
 from collections import deque
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line, C, font
 
-CPP = "../../EJ_05-2/EJ_05-2.cpp"
+CPP = "../../5-Grafos dirigidos/EJ_05-2/EJ_05-2.cpp"
 NOMBRE = "La máquina calculadora"
 TEMA = "Tema 5 · Grafos dirigidos"
 MARC = 10000
