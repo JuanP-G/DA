@@ -105,7 +105,7 @@ Las cabeceras que da la asignatura están juntas en [`Estructuras de datos/`](Es
 | Fichero | Qué es | Se usa en |
 |---|---|---|
 | [`Grafo.h`](Estructuras%20de%20datos/Grafo.h) | Grafo no dirigido con listas de adyacencia (`V()`, `A()`, `ady(v)`, `ponArista`) | Tema 4 |
-| [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h) | Grafo dirigido con la misma interfaz (+ `hayArista`, `inverso()`) | Tema 5 (05-1 … 05-6) |
+| [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h) | Grafo dirigido con la misma interfaz (+ `hayArista`, `inverso()`) | Tema 5 (05-1, 05-2, 05-3) |
 | [`IndexPQ.h`](Estructuras%20de%20datos/IndexPQ.h) | Cola de prioridad con índices (`push`, `update`, `top`, `pop`, `priority`) | Tema 3 |
 | [`TreeSet_AVL_plantilla.h`](Estructuras%20de%20datos/TreeSet_AVL_plantilla.h) | Conjunto sobre árbol AVL (`Set<T>`), con `kesimo` | 01-2 |
 | [`bintree.h`](Estructuras%20de%20datos/bintree.h) | Árbol binario `BinTree<T>` | 01-1 genérico, 01-2 |
