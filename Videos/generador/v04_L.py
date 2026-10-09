@@ -3,7 +3,7 @@ import sys
 from collections import deque
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line, C
 
-CPP = "../../EJ_04-L/EJ_04-L.cpp"
+CPP = "../../4-Grafos no dirigidos/EJ_04-L/EJ_04-L.cpp"
 NOMBRE = "Peaje a la sombra"
 
 # ejemplo 1 del enunciado: N=6, A=1, L=3, T=6 (vértices 0..5)

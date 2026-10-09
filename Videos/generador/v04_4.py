@@ -3,7 +3,7 @@ import sys
 from collections import deque
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line, C
 
-CPP = "../../EJ_04-4/EJ_04-4.cpp"
+CPP = "../../4-Grafos no dirigidos/EJ_04-4/EJ_04-4.cpp"
 NOMBRE = "Los números de Bacon"
 
 PELIS = [

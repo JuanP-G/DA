@@ -2,7 +2,7 @@
 import sys
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line
 
-CPP = "../../EJ_04-2/EJ_04-2.cpp"
+CPP = "../../4-Grafos no dirigidos/EJ_04-2/EJ_04-2.cpp"
 NOMBRE = "Los amigos de mis amigos"
 
 # caso 2 del enunciado; personas 1..10 -> vértices 0..9 (Grafo(cin, 1) resta 1)

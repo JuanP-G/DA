@@ -70,8 +70,8 @@ def pagina(modo):
     dirigido = modo == "dir"
     if dirigido:
         clase = clase_cabecera("Estructuras de datos/Digrafo.h", "Digrafo")
-        bfs = ["// (el mismo BFS del tema 4, con Digrafo)"] + [l.replace("Grafo const&", "Digrafo const&") for l in clase_ejercicio("EJ_04-L/EJ_04-L.cpp", "CaminosBFS")]
-        topo = clase_ejercicio("EJ_05-3/EJ_05-3.cpp", "OrdenTopologico")
+        bfs = ["// (el mismo BFS del tema 4, con Digrafo)"] + [l.replace("Grafo const&", "Digrafo const&") for l in clase_ejercicio("4-Grafos no dirigidos/EJ_04-L/EJ_04-L.cpp", "CaminosBFS")]
+        topo = clase_ejercicio("5-Grafos dirigidos/EJ_05-3/EJ_05-3.cpp", "OrdenTopologico")
         codes = {
             "clase": {"f": "Digrafo.h (resumen)", "tab": "Digrafo.h", "lines": clase},
             "bfs": {"f": "BFS (EJ_04-L / EJ_05-1)", "tab": "BFS", "lines": bfs},
@@ -106,9 +106,9 @@ def pagina(modo):
         }
     else:
         clase = clase_cabecera("Estructuras de datos/Grafo.h", "Grafo")
-        comp = clase_ejercicio("EJ_04-2/EJ_04-2.cpp", "MaximaCompConexa")
-        bfs = clase_ejercicio("EJ_04-L/EJ_04-L.cpp", "CaminosBFS")
-        bip = clase_ejercicio("EJ_04-7/EJ_04-7.cpp", "Bipartito")
+        comp = clase_ejercicio("4-Grafos no dirigidos/EJ_04-2/EJ_04-2.cpp", "MaximaCompConexa")
+        bfs = clase_ejercicio("4-Grafos no dirigidos/EJ_04-L/EJ_04-L.cpp", "CaminosBFS")
+        bip = clase_ejercicio("4-Grafos no dirigidos/EJ_04-7/EJ_04-7.cpp", "Bipartito")
         codes = {
             "clase": {"f": "Grafo.h (resumen)", "tab": "Grafo.h", "lines": clase},
             "comp": {"f": "EJ_04-2.cpp", "tab": "Componentes (DFS)", "lines": comp},

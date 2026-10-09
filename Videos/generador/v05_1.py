@@ -4,7 +4,7 @@ import sys
 from collections import deque
 from vidlib import Slide, portada, ideas, cierre, build, code_lines, find_line, C
 
-CPP = "../../EJ_05-1/EJ_05-1.cpp"
+CPP = "../../5-Grafos dirigidos/EJ_05-1/EJ_05-1.cpp"
 NOMBRE = "Juego de Transformación Modular"
 TEMA = "Tema 5 · Grafos dirigidos"
 

@@ -7,9 +7,9 @@ Construye la web del repositorio en sitio/_site/ (HTML estático, sin servidor).
 
 Qué usa (todo sale del propio repositorio, así que la web se actualiza sola):
   · README.md            -> tablas de cada tema (nº, título, PDF, solución, vídeo, idea)
-  · EJ_0T-N/             -> carpetas de ejercicios no listadas en el README (se añaden igualmente)
-  · EJ_*/README.md       -> explicación de cada ejercicio
-  · Videos/*.mp4, Ejercicios juez/**.pdf, Estructuras de datos/*.h
+  · <tema>/EJ_0T-N/     -> carpetas de ejercicios no listadas en el README (se añaden igualmente)
+  · <tema>/EJ_*/README.md -> explicación de cada ejercicio
+  · Videos/*.mp4, <tema>/Enunciados/*.pdf, Estructuras de datos/*.h
   · Visualizaciones/*.html -> herramientas interactivas (se copian a herramientas/)
 
 Solo se enlazan los ficheros que existen de verdad.
@@ -100,9 +100,9 @@ def leer_readme():
 
 def descubrir(ej):
     """Carpetas EJ_0T-N que no aparecen en el README."""
-    conocidos = {s[1].split("/")[0] for e in ej for s in e["sols"]}
-    for d in sorted(RAIZ.glob("EJ_0[1-9]-*")):
-        if not d.is_dir() or d.name in conocidos:
+    conocidos = {posixpath.dirname(s[1]) for e in ej for s in e["sols"]}
+    for d in sorted(RAIZ.glob("*/EJ_0[1-9]-*")):   # <tema>/EJ_0T-N
+        if not d.is_dir() or d.relative_to(RAIZ).as_posix() in conocidos:
             continue
         m = re.match(r"EJ_0(\d)-(\w+)", d.name)
         cpp = sorted(p for p in d.glob("*.cpp"))
