@@ -2,7 +2,18 @@
 
 Cada `v04_X.py` es el guion de un vídeo: una lista de diapositivas, cada una con su frase de narración. Las trazas de ejecución salen de **simular el mismo algoritmo del `.cpp`** (mismo orden de adyacentes que `Grafo.h`). El código que aparece en pantalla se lee del `.cpp` real, con sus números de línea.
 
-`vidlib.py` dibuja las diapositivas (Pillow), genera la voz (Piper, offline) y monta el vídeo con ffmpeg: H.264 + audio AAC + pista de subtítulos en castellano.
+`vidlib.py` dibuja las diapositivas (Pillow), genera la voz (Kokoro, offline; o Piper, la voz antigua) y monta el vídeo con ffmpeg: H.264 + audio AAC + pista de subtítulos en castellano.
+
+## Voz
+
+Desde el vídeo 05-0 se usa **Kokoro** (`pip install kokoro-onnx`), mucho más natural que la voz Piper `es-mls_10246-low` de los vídeos anteriores. Modelos: `kokoro-v1.0.onnx` y `voices-v1.0.bin` de las [releases de kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx/releases/tag/model-files-v1.0).
+
+```bash
+export KOKORO_MODEL=/ruta/kokoro-v1.0.onnx KOKORO_VOICES=/ruta/voices-v1.0.bin
+export KOKORO_VOICE=ef_dora      # o em_alex (masculina)
+```
+
+Sin `KOKORO_MODEL` se usa Piper (`PIPER_MODEL`), como antes.
 
 ## Requisitos
 

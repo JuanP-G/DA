@@ -5,7 +5,7 @@ Cada vídeo es una lista de "segmentos": una imagen fija (1280x720) más una
 frase de narración. La duración de cada segmento la marca su audio. Al final
 se juntan con ffmpeg: vídeo H.264 + audio AAC + pista de subtítulos.
 
-Voz: Piper (TTS offline). Ruta del modelo en la variable PIPER_MODEL.
+Voz: Kokoro (TTS neuronal offline, recomendado) o Piper. Ver _sintetiza().
 """
 import os
 import re
@@ -349,25 +349,45 @@ def _acorta_silencios(a, sr, th=300, maxsil=0.3):
     return out
 
 
-def _tts(text, out_wav, gap=0.22):
+def _sintetiza(frase):
     """
-    Sintetiza la narración frase a frase, recortando el silencio que Piper deja
-    al final de cada una. Devuelve (duración total, [(frase, inicio, fin)]).
+    Devuelve (array int16, frecuencia) de una frase.
+    Motor según TTS_ENGINE:
+      kokoro (recomendado): voz neuronal natural. KOKORO_MODEL, KOKORO_VOICES y KOKORO_VOICE (ef_dora por defecto).
+      piper:  la voz antigua; PIPER_MODEL.
     """
     global _voice
     import array
+    motor = os.environ.get("TTS_ENGINE", "kokoro" if os.environ.get("KOKORO_MODEL") else "piper")
+    if motor == "kokoro":
+        if _voice is None:
+            from kokoro_onnx import Kokoro
+            _voice = Kokoro(os.environ["KOKORO_MODEL"], os.environ["KOKORO_VOICES"])
+        muestras, sr = _voice.create(frase, voice=os.environ.get("KOKORO_VOICE", "ef_dora"),
+                                     speed=float(os.environ.get("KOKORO_SPEED", "1.0")), lang="es")
+        a = array.array("h", (max(-32768, min(32767, int(x * 32767))) for x in muestras))
+        return a, sr
     from piper import PiperVoice, SynthesisConfig
     if _voice is None:
         _voice = PiperVoice.load(os.environ["PIPER_MODEL"])
-    sr = _voice.config.sample_rate
     # poco ruido = voz estable (con los valores por defecto el modelo mete pausas y balbuceos)
     cfg = SynthesisConfig(noise_scale=0.3, noise_w_scale=0.1, length_scale=1.0)
+    a = array.array("h")
+    for ch in _voice.synthesize(frase, syn_config=cfg):
+        a.frombytes(ch.audio_int16_bytes)
+    return a, _voice.config.sample_rate
+
+
+def _tts(text, out_wav, gap=0.22):
+    """
+    Sintetiza la narración frase a frase, recortando el silencio que queda
+    al final de cada una. Devuelve (duración total, [(frase, inicio, fin)]).
+    """
+    import array
     frases = [f for f in re.split(r"(?<=[.:;?!])\s+", text.strip()) if f]
-    pcm, tiempos, t = array.array("h"), [], 0.0
+    pcm, tiempos, t, sr = array.array("h"), [], 0.0, 16000
     for f in frases:
-        a = array.array("h")
-        for ch in _voice.synthesize(f, syn_config=cfg):
-            a.frombytes(ch.audio_int16_bytes)
+        a, sr = _sintetiza(f)
         a = _acorta_silencios(a, sr)
         # recorte de silencios al principio y al final
         th = 400
