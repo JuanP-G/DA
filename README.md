@@ -22,9 +22,9 @@ Carpeta [`1-Arboles AVL/`](1-Arboles%20AVL).
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| 01-1 | ¿Es un árbol AVL? (enteros) | [📄 PDF](1-Arboles%20AVL/Enunciados/prob-%C2%BFEs%20un%20%C3%A1rbol%20AVL_.pdf) | [💻 Solución](1-Arboles%20AVL/EJ_01-1/EJ%2001-1.cpp) | — | Postorden: altura, mínimo y máximo de cada subárbol |
-| 01-1 | ¿Es un árbol AVL? (genérico) | [📄 PDF](1-Arboles%20AVL/Enunciados/prob-%C2%BFEs%20un%20%C3%A1rbol%20AVL_%20%281%29.pdf) | [💻 Versión 1](1-Arboles%20AVL/EJ_01-1%20%28generico%20v1%29/EJ%2001-1%20%28GENERICO%29.cpp) · [💻 Versión final](1-Arboles%20AVL/EJ_01-1%20%28generico%29/EJ%2001-1%20%28GENERICO%20BIEN%29.cpp) | — | Lo mismo con `template <class T>` y `BinTree<T>` |
-| 01-2 | Encontrar el k-ésimo elemento en un árbol AVL | [📄 PDF](1-Arboles%20AVL/Enunciados/prob-Encontrar%20el%20k-%C3%A9simo%20elemento%20en%20un%20%C3%A1rbol%20AVL.pdf) | [💻 Solución](1-Arboles%20AVL/EJ_01-2/EJ%2001-2.cpp) | — | `Set` AVL con tamaño de subárbol → `kesimo` |
+| 01-1 | ¿Es un árbol AVL? (enteros) | [📄 PDF](1-Arboles%20AVL/Enunciados/prob-%C2%BFEs%20un%20%C3%A1rbol%20AVL_.pdf) | [💻 Solución](1-Arboles%20AVL/EJ_01-1/EJ%2001-1.cpp) · [📘 Explicación](1-Arboles%20AVL/EJ_01-1/README.md) | — | Postorden: altura, mínimo y máximo de cada subárbol |
+| 01-1 | ¿Es un árbol AVL? (genérico) | [📄 PDF](1-Arboles%20AVL/Enunciados/prob-%C2%BFEs%20un%20%C3%A1rbol%20AVL_%20%281%29.pdf) | [💻 Versión 1](1-Arboles%20AVL/EJ_01-1%20%28generico%20v1%29/EJ%2001-1%20%28GENERICO%29.cpp) · [💻 Versión final](1-Arboles%20AVL/EJ_01-1%20%28generico%29/EJ%2001-1%20%28GENERICO%20BIEN%29.cpp) · [📘 Explicación](1-Arboles%20AVL/EJ_01-1%20%28generico%29/README.md) | — | Lo mismo con `template <class T>` y `BinTree<T>` |
+| 01-2 | Encontrar el k-ésimo elemento en un árbol AVL | [📄 PDF](1-Arboles%20AVL/Enunciados/prob-Encontrar%20el%20k-%C3%A9simo%20elemento%20en%20un%20%C3%A1rbol%20AVL.pdf) | [💻 Solución](1-Arboles%20AVL/EJ_01-2/EJ%2001-2.cpp) · [📘 Explicación](1-Arboles%20AVL/EJ_01-2/README.md) | — | `Set` AVL con tamaño de subárbol → `kesimo` |
 
 ## Tema 2 · Colas de prioridad
 
@@ -32,13 +32,13 @@ Carpeta [`2-Colas de prioridad/`](2-Colas%20de%20prioridad).
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| 02-1 | Lo que cuesta sumar | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Lo%20que%20cuesta%20sumar.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-1/EJ_02-1.cpp) | — | Cola de mínimos: sumar siempre los dos menores |
-| 02-2 | Unidad Curiosa de Monitorización | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Unidad%20Curiosa%20de%20Monitorizaci%C3%B3n.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-2/EJ_02-2.cpp) | — | Cola de mínimos de próximos envíos (instante, id) |
-| 02-3 | Reina del súper | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Reina%20del%20s%C3%BAper.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-3/EJ_02-3.cpp) | — | Cola de mínimos de cajas (instante libre, nº de caja) |
-| 02-4 | La ley D'Hondt | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-La%20ley%20D%27Hondt.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-4/EJ_02-4.cpp) | — | Cola de máximos de cocientes votos / (1 + escaños) |
-| 02-5 | Ordenando a los pacientes en urgencias | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Ordenando%20a%20los%20pacientes%20en%20urgencias.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-5/EJ_02-5.cpp) | — | Cola de máximos (gravedad, orden de llegada) |
-| 02-6 | Coleccionando cómics | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Coleccionando%20c%C3%B3mics.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-6/EJ_02-6.cpp) | — | Cola de mínimos de cimas de pila + `Pila.h` |
-| 02-L | Cinemáticas digitales | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Cinem%C3%A1ticas%20digitales.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-L/EJ_02-L.cpp) | — | Cola de mínimos de estaciones de renderizado |
+| 02-1 | Lo que cuesta sumar | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Lo%20que%20cuesta%20sumar.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-1/EJ_02-1.cpp) · [📘 Explicación](2-Colas%20de%20prioridad/EJ_02-1/README.md) | — | Cola de mínimos: sumar siempre los dos menores |
+| 02-2 | Unidad Curiosa de Monitorización | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Unidad%20Curiosa%20de%20Monitorizaci%C3%B3n.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-2/EJ_02-2.cpp) · [📘 Explicación](2-Colas%20de%20prioridad/EJ_02-2/README.md) | — | Cola de mínimos de próximos envíos (instante, id) |
+| 02-3 | Reina del súper | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Reina%20del%20s%C3%BAper.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-3/EJ_02-3.cpp) · [📘 Explicación](2-Colas%20de%20prioridad/EJ_02-3/README.md) | — | Cola de mínimos de cajas (instante libre, nº de caja) |
+| 02-4 | La ley D'Hondt | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-La%20ley%20D%27Hondt.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-4/EJ_02-4.cpp) · [📘 Explicación](2-Colas%20de%20prioridad/EJ_02-4/README.md) | — | Cola de máximos de cocientes votos / (1 + escaños) |
+| 02-5 | Ordenando a los pacientes en urgencias | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Ordenando%20a%20los%20pacientes%20en%20urgencias.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-5/EJ_02-5.cpp) · [📘 Explicación](2-Colas%20de%20prioridad/EJ_02-5/README.md) | — | Cola de máximos (gravedad, orden de llegada) |
+| 02-6 | Coleccionando cómics | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Coleccionando%20c%C3%B3mics.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-6/EJ_02-6.cpp) · [📘 Explicación](2-Colas%20de%20prioridad/EJ_02-6/README.md) | — | Cola de mínimos de cimas de pila + `Pila.h` |
+| 02-L | Cinemáticas digitales | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Cinem%C3%A1ticas%20digitales.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-L/EJ_02-L.cpp) · [📘 Explicación](2-Colas%20de%20prioridad/EJ_02-L/README.md) | — | Cola de mínimos de estaciones de renderizado |
 
 ## Tema 3 · Colas de prioridad variable (IndexPQ)
 
@@ -46,16 +46,16 @@ Carpeta [`3-Colas de prioridad variable (Heapsort)/`](3-Colas%20de%20prioridad%2
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| 03-1 | Volando drones | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-Volando%20drones.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-1/EJ_03-1.cpp) | — | Dos colas de máximos de pilas (9V y 1,5V) |
-| 03-2 | 12 points go to… | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-12%20points%20go%20to%E2%80%A6.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-2/EJ_03-2.cpp) | — | `IndexPQ` de países con `update` de puntos |
-| 03-3 | Multitarea | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-Multitarea.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-3/EJ_03-3.cpp) | — | `IndexPQ` de intervalos (tareas únicas y periódicas) |
-| 03-4 | Pájaros en vuelo | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-P%C3%A1jaros%20en%20vuelo.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-4/EJ_03-4.cpp) | [🎬 Vídeo](Videos/03-4_pajaros_en_vuelo.mp4) | Mediana con dos montículos (máximos · mínimos) |
-| 03-5 | Tridente de temas candentes | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-Tridente%20de%20temas%20candentes.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-5/EJ_03-5.cpp) | [🎬 Vídeo](Videos/03-5_tridente_temas_candentes.mp4) | `IndexPQ` de temas (citas, último C) |
-| 03-L | La batalla por las audiencias | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-La%20batalla%20por%20las%20audiencias.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-L/EJ_03-L.cpp) | [🎬 Vídeo](Videos/03-L_batalla_audiencias.mp4) | `IndexPQ` de canales; el líder acumula minutos |
+| 03-1 | Volando drones | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-Volando%20drones.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-1/EJ_03-1.cpp) · [📘 Explicación](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-1/README.md) | — | Dos colas de máximos de pilas (9V y 1,5V) |
+| 03-2 | 12 points go to… | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-12%20points%20go%20to%E2%80%A6.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-2/EJ_03-2.cpp) · [📘 Explicación](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-2/README.md) | — | `IndexPQ` de países con `update` de puntos |
+| 03-3 | Multitarea | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-Multitarea.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-3/EJ_03-3.cpp) · [📘 Explicación](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-3/README.md) | — | `IndexPQ` de intervalos (tareas únicas y periódicas) |
+| 03-4 | Pájaros en vuelo | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-P%C3%A1jaros%20en%20vuelo.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-4/EJ_03-4.cpp) · [📘 Explicación](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-4/README.md) | [🎬 Vídeo](Videos/03-4_pajaros_en_vuelo.mp4) | Mediana con dos montículos (máximos · mínimos) |
+| 03-5 | Tridente de temas candentes | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-Tridente%20de%20temas%20candentes.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-5/EJ_03-5.cpp) · [📘 Explicación](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-5/README.md) | [🎬 Vídeo](Videos/03-5_tridente_temas_candentes.mp4) | `IndexPQ` de temas (citas, último C) |
+| 03-L | La batalla por las audiencias | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-La%20batalla%20por%20las%20audiencias.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-L/EJ_03-L.cpp) · [📘 Explicación](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-L/README.md) | [🎬 Vídeo](Videos/03-L_batalla_audiencias.mp4) | `IndexPQ` de canales; el líder acumula minutos |
 
 ## Tema 4 · Grafos no dirigidos
 
-Carpeta [`4-Grafos no dirigidos/`](4-Grafos%20no%20dirigidos). Todos usan [`Grafo.h`](Estructuras%20de%20datos/Grafo.h) y están numerados como en el juez.
+Carpeta [`4-Grafos no dirigidos/`](4-Grafos%20no%20dirigidos). Todos usan [`Grafo.h`](Estructuras%20de%20datos/Grafo.h) y están numerados como en el juez. Los algoritmos del tema (DFS, BFS, componentes, bipartito, ciclos) están juntos en [`Grafo_algoritmos.h`](Estructuras%20de%20datos/Grafo_algoritmos.h).
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
@@ -80,7 +80,7 @@ Carpeta [`4-Grafos no dirigidos/`](4-Grafos%20no%20dirigidos). Todos usan [`Graf
 
 ## Tema 5 · Grafos dirigidos
 
-Carpeta [`5-Grafos dirigidos/`](5-Grafos%20dirigidos). Todos usan [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h). La fila 05-0 es la **explicación general del tema** (vídeo de 23 min con capítulos).
+Carpeta [`5-Grafos dirigidos/`](5-Grafos%20dirigidos). Todos usan [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h); los algoritmos del tema están juntos en [`Digrafo_algoritmos.h`](Estructuras%20de%20datos/Digrafo_algoritmos.h). La fila 05-0 es la **explicación general del tema** (vídeo de 23 min con capítulos).
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
@@ -129,6 +129,8 @@ Las cabeceras de la asignatura están en [`Estructuras de datos/`](Estructuras%2
 | [`Pila.h`](Estructuras%20de%20datos/Pila.h) | Pila `Pila<T>` | 02-6 |
 | [`IndexPQ.h`](Estructuras%20de%20datos/IndexPQ.h) | Cola de prioridad con índices (`push`, `update`, `top`, `pop`, `priority`) | Tema 3 |
 | [`Grafo.h`](Estructuras%20de%20datos/Grafo.h) | Grafo no dirigido con listas de adyacencia (`V()`, `A()`, `ady(v)`, `ponArista`) | Tema 4 |
+| [`Grafo_algoritmos.h`](Estructuras%20de%20datos/Grafo_algoritmos.h) | Algoritmos del tema 4 juntos: `CaminosDFS`, `CaminosBFS`, `ComponentesConexas`, `Bipartito`, `CicloGrafo` (extra) y `esArbolLibre` | Tema 4 |
+| [`Grafo_demo.cpp`](Estructuras%20de%20datos/Grafo_demo.cpp) | Ejecuta esos algoritmos sobre un grafo de ejemplo de 13 vértices y 3 componentes | Tema 4 |
 | [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h) | Grafo dirigido con la misma interfaz (+ `hayArista`, `inverso()`, constructor desde `cin`) | Tema 5 |
 | [`Digrafo_algoritmos.h`](Estructuras%20de%20datos/Digrafo_algoritmos.h) | Algoritmos del tema 5 juntos: `DFSDirigido`, `BFSDirigido`, `OrdenTopologico`, `CicloDirigido` y `CFC` (componentes fuertemente conexas, extra) | Vídeo 05-0 |
 | [`Digrafo_demo.cpp`](Estructuras%20de%20datos/Digrafo_demo.cpp) | Ejecuta esos algoritmos sobre los grafos de las transparencias | Vídeo 05-0 |
@@ -164,9 +166,9 @@ Las carpetas de cada tema coinciden con las carpetas de la solución de Visual S
 │   ├── EJ_05-1/                 un proyecto de VS por ejercicio
 │   │   ├── EJ_05-1.cpp
 │   │   ├── Digrafo.h            copia de la cabecera que usa
-│   │   └── README.md            explicación: planteamiento, traza y coste
+│   │   └── README.md            explicación: qué piden, planteamiento, traza y coste
 │   └── …
-├── Estructuras de datos/        cabeceras de la asignatura (+ algoritmos del tema 5)
+├── Estructuras de datos/        cabeceras de la asignatura (+ algoritmos de los temas 4 y 5)
 ├── Videos/                      vídeos explicativos
 │   └── generador/               scripts que los generan
 ├── Visualizaciones/             herramientas interactivas (abre index.html)

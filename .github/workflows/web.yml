@@ -24,12 +24,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install markdown
+      # ffmpeg/ffprobe: subtítulos (.vtt) y capítulos de los vídeos para el reproductor de la web
+      - run: which ffmpeg ffprobe || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
       - run: python3 sitio/construir.py
-      # Copia descargable de la web (útil aunque Pages no esté activado)
-      - uses: actions/upload-artifact@v4
-        with:
-          name: web-DA
-          path: sitio/_site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
