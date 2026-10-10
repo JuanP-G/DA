@@ -69,12 +69,15 @@ private:
 void resuelveCaso() {
     int n, m;
     cin >> n >> m;
+
+	// vertices 0..n-1, aristas m
     Digrafo g(n);
     for (int i = 0; i < m; ++i) {
         int a, b; cin >> a >> b;
         g.ponArista(a - 1, b - 1);   // a antes que b
     }
 
+	// orden topologico (si es posible)
     OrdenTopologico ot(g);
     if (!ot.posible()) {
         cout << "Imposible\n";

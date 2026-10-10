@@ -52,10 +52,12 @@ private:
     void bfs(Digrafo const& g, int s, int t) {
         queue<int> q;
         dist[s] = 0;
+
         q.push(s);
         while (!q.empty()) {
             int x = q.front(); q.pop();
             if (x == t) return;               // t ya tiene su distancia minima
+
             for (int y : g.ady(x)) {
                 if (dist[y] == -1) {
                     dist[y] = dist[x] + 1;
@@ -69,7 +71,9 @@ private:
 void resuelveCaso() {
     int m, s, t, n;
     cin >> m >> s >> t >> n;
-    vector<pair<int, int>> ops(n);
+	vector<pair<int, int>> ops(n); // operaciones (a, b) de la forma x --> (a*x + b) mod M
+
+	// leer operaciones y quitar repetidas (mismo a y mismo b modulo M)
     for (auto& op : ops) {
         cin >> op.first >> op.second;
         op.first %= m;                    // lo que cuenta es a y b modulo M
@@ -78,11 +82,13 @@ void resuelveCaso() {
     sort(ops.begin(), ops.end());
     ops.erase(unique(ops.begin(), ops.end()), ops.end());   // quita operaciones repetidas
 
+	// construir el grafo de la maquina: vertices 0..M-1, aristas x --> (a*x + b) mod M
     Digrafo g(m);
     for (int x = 0; x < m; ++x)
         for (auto const& op : ops)
             g.ponArista(x, (op.first * x + op.second) % m);   // x --> resultado de la operacion
-
+ 
+	// BFS desde s hasta t
     TransformacionModular tm(g, s, t);
     cout << tm.jugadas(t) << '\n';
 }

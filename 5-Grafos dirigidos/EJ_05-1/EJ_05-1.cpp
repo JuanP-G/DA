@@ -55,10 +55,12 @@ private:
     void bfs(Digrafo const& g, int inicial, int final_) {
         queue<int> q;
         dist[inicial] = 0;
+
         q.push(inicial);
         while (!q.empty()) {
             int x = q.front(); q.pop();
             if (x == final_) { pulsaciones = dist[x]; return; }   // ya no hace falta seguir
+
             for (int y : g.ady(x)) {
                 if (dist[y] == -1) {
                     dist[y] = dist[x] + 1;
@@ -83,6 +85,7 @@ Digrafo construyeMaquina() {
 void resuelveCaso(Digrafo const& g) {
     int inicial, final_;
     cin >> inicial >> final_;
+
     MaquinaCalculadora mc(g, inicial, final_);
     cout << mc.minimoPulsaciones() << '\n';
 }
