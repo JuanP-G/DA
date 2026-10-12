@@ -4,6 +4,8 @@
 
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#303 · ¿Es un árbol AVL?](https://aceptaelreto.com/problem/statement.php?id=303) — *mismo problema*. Mismo enunciado: el árbol llega en preorden y -1 es el árbol vacío.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-303_es_un_arbol_AVL.cpp`](<../../Acepta el Reto/ACR-303_es_un_arbol_AVL.cpp>)
 <!-- acr:fin -->
 
 ## Qué piden

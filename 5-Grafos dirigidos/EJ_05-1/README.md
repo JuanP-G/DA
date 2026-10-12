@@ -3,7 +3,9 @@
 📄 [Enunciado](<../Enunciados/prob-La máquina calculadora.pdf>) · 💻 [Solución](EJ_05-1.cpp) · 🎬 [Vídeo](../../Videos/05-1_maquina_calculadora.mp4)
 
 <!-- acr:inicio -->
-🔗 **Para practicar lo mismo en Acepta el Reto:** [#319 · La máquina calculadora](https://aceptaelreto.com/problem/statement.php?id=319) — *problema relacionado*. No es el mismo problema, pero es el caso particular de la transformación modular: BFS sobre estados con 3 operaciones y módulo 10.000.
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#319 · La máquina calculadora](https://aceptaelreto.com/problem/statement.php?id=319) — *mismo problema*. Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-319_maquina_calculadora.cpp`](<../../Acepta el Reto/ACR-319_maquina_calculadora.cpp>)
 <!-- acr:fin -->
 
 ## Qué piden

@@ -3,7 +3,9 @@
 📄 [Enunciado](<../Enunciados/prob-Unidad Curiosa de Monitorización.pdf>) · 💻 [Solución](EJ_02-2.cpp)
 
 <!-- acr:inicio -->
-🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#351 · Unidad Curiosa de Monitorización](https://aceptaelreto.com/problem/statement.php?id=351) — *casi el mismo problema*. Misma historia, pero allí los límites son menores (hasta 2.500 usuarios y 10.000 envíos; aquí 25.000 y 100.000). Revisa también el separador de la salida.
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#351 · Unidad Curiosa de Monitorización](https://aceptaelreto.com/problem/statement.php?id=351) — *casi el mismo problema*. Misma historia, pero allí los límites son menores (hasta 2.500 usuarios y 10.000 envíos; aquí 25.000 y 100.000) y el separador de cada caso es `----` (cuatro guiones).
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-351_unidad_curiosa_de_monitorizacion.cpp`](<../../Acepta el Reto/ACR-351_unidad_curiosa_de_monitorizacion.cpp>)
 <!-- acr:fin -->
 
 ## Qué piden

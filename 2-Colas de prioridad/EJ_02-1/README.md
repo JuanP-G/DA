@@ -4,6 +4,8 @@
 
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#289 · Lo que cuesta sumar](https://aceptaelreto.com/problem/statement.php?id=289) — *mismo problema*. Mismo enunciado.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-289_lo_que_cuesta_sumar.cpp`](<../../Acepta el Reto/ACR-289_lo_que_cuesta_sumar.cpp>)
 <!-- acr:fin -->
 
 ## Qué piden

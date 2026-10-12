@@ -4,6 +4,8 @@
 
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#505 · Volando drones](https://aceptaelreto.com/problem/statement.php?id=505) — *mismo problema*. Mismo problema; los ejemplos del enunciado son algo distintos.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-505_volando_drones.cpp`](<../../Acepta el Reto/ACR-505_volando_drones.cpp>)
 <!-- acr:fin -->
 
 ## Qué piden

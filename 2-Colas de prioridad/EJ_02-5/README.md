@@ -3,7 +3,9 @@
 📄 [Enunciado](<../Enunciados/prob-Ordenando a los pacientes en urgencias.pdf>) · 💻 [Solución](EJ_02-5.cpp)
 
 <!-- acr:inicio -->
-🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#311 · Ordenando a los pacientes en urgencias](https://aceptaelreto.com/problem/statement.php?id=311) — *mismo problema*. Mismo enunciado. Comprueba el separador de la salida en el enunciado de allí.
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#311 · Ordenando a los pacientes en urgencias](https://aceptaelreto.com/problem/statement.php?id=311) — *mismo problema*. Mismo enunciado, pero el separador de cada caso es `----` (cuatro guiones).
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-311_pacientes_en_urgencias.cpp`](<../../Acepta el Reto/ACR-311_pacientes_en_urgencias.cpp>)
 <!-- acr:fin -->
 
 ## Qué piden

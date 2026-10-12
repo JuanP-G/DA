@@ -10,9 +10,13 @@ La web (sitio/construir.py) lee el mismo JSON, no hace falta tocar nada más.
 Uso:  python3 herramientas/enlaces_acepta.py
 """
 import json
+import posixpath
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from para_acepta import EJERCICIOS as GENERADOS  # noqa: E402  (qué problemas tienen versión lista para enviar)
 
 RAIZ = Path(__file__).resolve().parent.parent
 DATOS = RAIZ / "herramientas" / "acepta_el_reto.json"
@@ -36,12 +40,25 @@ def enlace(e):
     return f"[#{e['num']} · {e['problema']}]({URL.format(num=e['num'])})"
 
 
-def linea_ejercicio(e):
+def fichero_listo(e, carpeta):
+    """Nombre de la versión lista para enviar si existe y se generó desde esta carpeta (si no, None)."""
+    g = GENERADOS.get(e.get("num"))
+    if not g or e["tipo"] == "relacionado" or posixpath.dirname(g["fuente"]) != carpeta:
+        return None
+    nombre = f"ACR-{e['num']}_{g['slug']}.cpp"
+    return nombre if (RAIZ / "Acepta el Reto" / nombre).is_file() else None
+
+
+def linea_ejercicio(e, carpeta):
     if e["tipo"] == "relacionado":
         cab = "🔗 **Para practicar lo mismo en Acepta el Reto:**"
     else:
         cab = "🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura):"
-    return f"{EJ_INI}\n{cab} {enlace(e)} — *{ETIQUETA[e['tipo']]}*. {e.get('nota', '')}\n{EJ_FIN}"
+    txt = f"{EJ_INI}\n{cab} {enlace(e)} — *{ETIQUETA[e['tipo']]}*. {e.get('nota', '')}"
+    f = fichero_listo(e, carpeta)
+    if f:
+        txt += f"\n\n📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`{f}`](<../../Acepta el Reto/{f}>)"
+    return txt + f"\n{EJ_FIN}"
 
 
 def poner_bloque(texto, bloque, ini, fin, despues_de=None):
@@ -75,7 +92,7 @@ def actualizar_readmes(datos):
             if e["tipo"] == "ninguno":
                 nuevo = quitar_bloque(t, EJ_INI, EJ_FIN) if EJ_INI in t else t
             else:
-                nuevo = poner_bloque(t, linea_ejercicio(e), EJ_INI, EJ_FIN, despues_de="📄")
+                nuevo = poner_bloque(t, linea_ejercicio(e, c), EJ_INI, EJ_FIN, despues_de="📄")
             if nuevo != t:
                 p.write_text(nuevo, encoding="utf-8")
                 tocados += 1
@@ -93,15 +110,19 @@ def seccion_raiz(datos):
     f.append("- **Mismo problema** no siempre significa misma entrada: la versión de la asignatura puede empezar con el número de casos, "
              "mientras que en Acepta el Reto algunos terminan con una línea especial (por ejemplo `0 0 0 0`). Mira la sección *Entrada* y adapta el bucle de lectura.")
     f.append("- **Casi el mismo problema** cambia algún límite o el formato; la idea de la solución sirve igual.")
+    f.append("- **Código para enviar**: Acepta el Reto solo admite un fichero `.cpp`, así que en [`Acepta el Reto/`](<Acepta el Reto>) hay una versión de cada solución con las cabeceras (`Grafo.h`, `Digrafo.h`, `IndexPQ.h`…) copiadas dentro y la lectura de la entrada adaptada. Se generan con `python3 herramientas/para_acepta.py`, no se editan a mano.")
     f.append("- **Relacionado** es otro problema que practica la misma técnica.")
     f.append("- Los enlaces se han comprobado a mano comparando enunciados; si encuentras alguno mal, avisa o corrígelo en `herramientas/acepta_el_reto.json`.")
     f.append("")
-    f.append("| Nº | Ejercicio | Acepta el Reto | Relación | A tener en cuenta |")
-    f.append("|:--:|---|---|---|---|")
+    f.append("| Nº | Ejercicio | Acepta el Reto | Relación | Código para enviar | A tener en cuenta |")
+    f.append("|:--:|---|---|---|---|---|")
     for e in con:
         titulo = e.get("titulo_contiene")
         etq = e["problema"] if not titulo else f"{e['problema']} ({titulo})"
-        f.append(f"| {e['id']} | {etq} | [#{e['num']}]({URL.format(num=e['num'])}) | {ETIQUETA[e['tipo']]} | {e.get('nota', '')} |")
+        carp = e["carpeta"][0] if isinstance(e["carpeta"], list) else e["carpeta"]
+        fl = fichero_listo(e, carp)
+        env = f"[📥 {fl.split('_')[0]}](<Acepta el Reto/{fl}>)" if fl else "—"
+        f.append(f"| {e['id']} | {etq} | [#{e['num']}]({URL.format(num=e['num'])}) | {ETIQUETA[e['tipo']]} | {env} | {e.get('nota', '')} |")
     f.append("")
     f.append("**Sin equivalente que haya encontrado:** " + ", ".join(e["id"] for e in sin) +
              ". Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).")

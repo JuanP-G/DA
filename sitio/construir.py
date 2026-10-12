@@ -349,10 +349,33 @@ def acepta_url(x):
     return f"https://aceptaelreto.com/problem/statement.php?id={x['num']}"
 
 
-def acepta_caja(x):
+sys.path.insert(0, str(RAIZ / "herramientas"))
+try:
+    from para_acepta import EJERCICIOS as ACR_GENERADOS   # qué problemas tienen versión lista para enviar
+except Exception:                                           # la web no debe romperse por esto
+    ACR_GENERADOS = {}
+
+
+def acepta_fichero(x, e):
+    """Ruta (relativa al repo) de la versión lista para enviar de este ejercicio, si existe."""
+    g = ACR_GENERADOS.get(x["num"])
+    if not g or x["tipo"] == "relacionado" or not e["sols"] or posixpath.dirname(g["fuente"]) != posixpath.dirname(e["sols"][0][1]):
+        return None
+    rel = f"Acepta el Reto/ACR-{x['num']}_{g['slug']}.cpp"
+    return rel if existe(rel) else None
+
+
+def acepta_caja(x, fichero=None):
     cab = "Para practicar lo mismo en Acepta el Reto" if x["tipo"] == "relacionado" else "Pruébalo en Acepta el Reto, sin necesidad del juez de la asignatura"
+    envio = ""
+    if fichero:
+        txt = leer_texto(fichero)
+        envio = (f'<div class="bar" style="margin:8px 0 0"><button class="btn prim" data-copy="acr-src">⧉ Copiar código para Acepta el Reto</button>'
+                 f'{descargar(fichero, "⬇ Descargar " + esc(posixpath.basename(fichero)))}'
+                 f'<span class="hint">un solo fichero, con las cabeceras dentro y su formato de entrada · {txt.count(chr(10)) + 1} líneas</span></div>'
+                 f'<script type="text/plain" id="acr-src">{esc(txt)}</script>')
     return (f'<div class="acr{" rel" if x["tipo"] == "relacionado" else ""}"><b>🔗 {cab}</b>'
-            f'<a href="{acepta_url(x)}" target="_blank" rel="noopener">#{x["num"]} · {esc(x["problema"])} ↗</a> · {ACR_ETQ[x["tipo"]]}. {esc(x.get("nota", ""))}</div>')
+            f'<a href="{acepta_url(x)}" target="_blank" rel="noopener">#{x["num"]} · {esc(x["problema"])} ↗</a> · {ACR_ETQ[x["tipo"]]}. {esc(x.get("nota", ""))}{envio}</div>')
 
 
 def pagina_ejercicio(e, slug, ant=None, sig=None):
@@ -391,8 +414,11 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     else:
         p_enun = '<div class="nada">Este ejercicio no tiene enunciado en PDF.</div>'
 
+    acr_fich = acepta_fichero(acr, e) if acr else None
     if acr:
-        p_enun = acepta_caja(acr) + p_enun
+        p_enun = acepta_caja(acr, acr_fich) + p_enun
+        if acr_fich:
+            ficheros_zip.append((href_sitio(acr_fich, True), "acepta_el_reto/" + posixpath.basename(acr_fich)))
 
     # 2 · Código
     if codigos:
@@ -447,7 +473,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
         acc.append(f'<a class="btn" href="{acepta_url(acr)}" target="_blank" rel="noopener">🔗 Probar en Acepta el Reto #{acr["num"]}</a>')
     if (RAIZ / "Visualizaciones" / herr).exists():
         acc.append(f'<a class="btn" href="../herramientas/{herr}">🧩 Herramienta interactiva del tema</a>')
-    contenido_zip = ", ".join(x for x, ok in (("enunciado", e["pdf"]), ("código", codigos), ("explicación", e["readme"]), ("vídeo", e["video"])) if ok)
+    contenido_zip = ", ".join(x for x, ok in (("enunciado", e["pdf"]), ("código", codigos), ("explicación", e["readme"]), ("vídeo", e["video"]), ("versión para Acepta el Reto", acr_fich)) if ok)
 
     pager = '<div class="pager">' + (f'<a class="btn" href="{ant[0]}.html">← {esc(ant[1])}</a>' if ant else "<span></span>") + \
             (f'<a class="btn" href="{sig[0]}.html">{esc(sig[1])} →</a>' if sig else "<span></span>") + "</div>"
