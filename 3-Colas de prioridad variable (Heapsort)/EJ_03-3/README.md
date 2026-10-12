@@ -2,6 +2,10 @@
 
 📄 [Enunciado](<../Enunciados/prob-Multitarea.pdf>) · 💻 [Solución](EJ_03-3.cpp)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#649 · Multitarea](https://aceptaelreto.com/problem/statement.php?id=649) — *casi el mismo problema*. Mismo problema; allí los instantes llegan hasta 10^9 (aquí 10^8) y el formato de la primera línea puede diferir: comprueba cómo termina la entrada.
+<!-- acr:fin -->
+
 ## Qué piden
 Con tareas únicas `[c, f)` y periódicas (que se repiten cada `p` minutos), decir si hay dos que se solapen dentro de `[0, T)`.
 

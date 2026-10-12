@@ -2,6 +2,10 @@
 
 📄 [Enunciado](<../Enunciados/prob-La máquina calculadora.pdf>) · 💻 [Solución](EJ_05-1.cpp) · 🎬 [Vídeo](../../Videos/05-1_maquina_calculadora.mp4)
 
+<!-- acr:inicio -->
+🔗 **Para practicar lo mismo en Acepta el Reto:** [#319 · La máquina calculadora](https://aceptaelreto.com/problem/statement.php?id=319) — *problema relacionado*. No es el mismo problema, pero es el caso particular de la transformación modular: BFS sobre estados con 3 operaciones y módulo 10.000.
+<!-- acr:fin -->
+
 ## Qué piden
 Marcador de 4 dígitos con botones `+1`, `×2` y `÷3` (módulo 10.000, división entera): mínimo de pulsaciones de un número inicial a uno final.
 

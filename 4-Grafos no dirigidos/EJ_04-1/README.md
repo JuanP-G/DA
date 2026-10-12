@@ -2,6 +2,10 @@
 
 📄 [Enunciado](<../Enunciados/prob-Árboles libres.pdf>) · 💻 [Solución](EJ_04-1.cpp) · 🎬 [Vídeo](../../Videos/04-1_arboles_libres.mp4)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#307 · Árboles libres](https://aceptaelreto.com/problem/statement.php?id=307) — *mismo problema*. Mismo enunciado.
+<!-- acr:fin -->
+
 ## Qué piden
 Decidir si un grafo no dirigido es **árbol libre**, es decir, **acíclico y conexo**.
 

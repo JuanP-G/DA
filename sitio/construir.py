@@ -177,6 +177,7 @@ video{width:100%;max-width:960px;border-radius:10px;background:#000}iframe.pdf{w
 .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}.bar .grow{flex:1}
 .bar .hint{font-size:.85rem;color:var(--muted)}
 .btn.prim{background:var(--accent);border-color:var(--accent);color:#fff}:root[data-theme=dark] .btn.prim{color:#1b1400}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .btn.prim{color:#1b1400}}
+.acr{background:var(--green-soft);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:10px;padding:10px 14px;margin:0 0 12px;font-size:.92rem;line-height:1.5}.acr.rel{background:var(--blue-soft);border-left-color:var(--blue)}.acr b{display:block;margin-bottom:2px}.acr a{font-weight:600}
 .nada{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:26px;color:var(--muted);text-align:center}
 .vid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px;align-items:start}@media(max-width:860px){.vid{grid-template-columns:minmax(0,1fr)}}
 .caps{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;max-height:60vh;overflow:auto}
@@ -320,6 +321,40 @@ def descargar(rel, texto, extra=""):
     return f'<a class="btn" href="{href_sitio(rel, True)}" download="{esc(posixpath.basename(rel))}"{extra}>{texto}</a>'
 
 
+ACR_ETQ = {"igual": "Mismo problema", "parecido": "Casi el mismo problema", "relacionado": "Problema relacionado (misma técnica)"}
+
+
+def cargar_acepta():
+    """Equivalentes en Acepta el Reto (herramientas/acepta_el_reto.json)."""
+    p = RAIZ / "herramientas" / "acepta_el_reto.json"
+    if not p.exists():
+        return []
+    try:
+        return [x for x in json.loads(p.read_text(encoding="utf-8"))["ejercicios"] if x.get("tipo") != "ninguno"]
+    except (ValueError, KeyError):
+        return []
+
+
+ACEPTA = cargar_acepta()
+
+
+def acepta_de(e):
+    for x in ACEPTA:
+        if x["id"] == e["id"] and (not x.get("titulo_contiene") or x["titulo_contiene"].lower() in e["titulo"].lower()):
+            return x
+    return None
+
+
+def acepta_url(x):
+    return f"https://aceptaelreto.com/problem/statement.php?id={x['num']}"
+
+
+def acepta_caja(x):
+    cab = "Para practicar lo mismo en Acepta el Reto" if x["tipo"] == "relacionado" else "Pruébalo en Acepta el Reto, sin necesidad del juez de la asignatura"
+    return (f'<div class="acr{" rel" if x["tipo"] == "relacionado" else ""}"><b>🔗 {cab}</b>'
+            f'<a href="{acepta_url(x)}" target="_blank" rel="noopener">#{x["num"]} · {esc(x["problema"])} ↗</a> · {ACR_ETQ[x["tipo"]]}. {esc(x.get("nota", ""))}</div>')
+
+
 def pagina_ejercicio(e, slug, ant=None, sig=None):
     carpeta = posixpath.dirname(e["sols"][0][1]) if e["sols"] else None
     # código: soluciones del README + .h de la carpeta
@@ -344,6 +379,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     tema = e["tema"]
     ficheros_zip = []   # (url relativa a la página, ruta dentro del zip)
 
+    acr = acepta_de(e)
     # 1 · Enunciado
     if e["pdf"]:
         pdf = href_sitio(e["pdf"], True)
@@ -354,6 +390,9 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
         ficheros_zip.append((pdf, "enunciado.pdf"))
     else:
         p_enun = '<div class="nada">Este ejercicio no tiene enunciado en PDF.</div>'
+
+    if acr:
+        p_enun = acepta_caja(acr) + p_enun
 
     # 2 · Código
     if codigos:
@@ -404,6 +443,8 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
         for url, _ in ficheros_zip:
             pass
         acc.append(f'<button class="btn prim" id="zip" data-name="{esc(e["id"] + " " + e["titulo"])}" data-files="{esc(json.dumps(ficheros_zip, ensure_ascii=False))}">⬇ Descargar todo (.zip)</button>')
+    if acr:
+        acc.append(f'<a class="btn" href="{acepta_url(acr)}" target="_blank" rel="noopener">🔗 Probar en Acepta el Reto #{acr["num"]}</a>')
     if (RAIZ / "Visualizaciones" / herr).exists():
         acc.append(f'<a class="btn" href="../herramientas/{herr}">🧩 Herramienta interactiva del tema</a>')
     contenido_zip = ", ".join(x for x, ok in (("enunciado", e["pdf"]), ("código", codigos), ("explicación", e["readme"]), ("vídeo", e["video"])) if ok)

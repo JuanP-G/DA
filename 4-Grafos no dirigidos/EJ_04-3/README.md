@@ -2,6 +2,10 @@
 
 📄 [Enunciado](<../Enunciados/prob-Detección de manchas negras.pdf>) · 💻 [Solución](EJ_04-3.cpp) · 🎬 [Vídeo](../../Videos/04-3_manchas_negras.mp4)
 
+<!-- acr:inicio -->
+🔗 **Para practicar lo mismo en Acepta el Reto:** [#412 · Ovejas negras](https://aceptaelreto.com/problem/statement.php?id=412) — *problema relacionado*. No es el mismo problema, pero practica la misma técnica: recorrer una cuadrícula de píxeles por sus componentes conexas.
+<!-- acr:fin -->
+
 ## Qué piden
 En un bitmap de píxeles blancos (`-`) y negros (`#`): **cuántas manchas negras** hay y **cuántos píxeles tiene la mayor**. Dos píxeles negros están en la misma mancha si se puede ir de uno a otro pasando solo por negros y moviéndose **en horizontal o vertical**.
 

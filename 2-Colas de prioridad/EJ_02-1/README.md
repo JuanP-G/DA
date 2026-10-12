@@ -2,6 +2,10 @@
 
 📄 [Enunciado](<../Enunciados/prob-Lo que cuesta sumar.pdf>) · 💻 [Solución](EJ_02-1.cpp)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#289 · Lo que cuesta sumar](https://aceptaelreto.com/problem/statement.php?id=289) — *mismo problema*. Mismo enunciado.
+<!-- acr:fin -->
+
 ## Qué piden
 Sumar N números con el **mínimo esfuerzo total**, sabiendo que sumar `a + b` cuesta `a + b`.
 

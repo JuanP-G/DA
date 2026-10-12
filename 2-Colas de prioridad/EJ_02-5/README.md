@@ -2,6 +2,10 @@
 
 📄 [Enunciado](<../Enunciados/prob-Ordenando a los pacientes en urgencias.pdf>) · 💻 [Solución](EJ_02-5.cpp)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#311 · Ordenando a los pacientes en urgencias](https://aceptaelreto.com/problem/statement.php?id=311) — *mismo problema*. Mismo enunciado. Comprueba el separador de la salida en el enunciado de allí.
+<!-- acr:fin -->
+
 ## Qué piden
 Procesar ingresos (`I nombre gravedad`) y atenciones (`A`); en cada `A` escribir el paciente **más grave** y, a igualdad, **el que más tiempo lleva esperando**.
 

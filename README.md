@@ -104,6 +104,43 @@ Carpeta [`5-Grafos dirigidos/`](5-Grafos%20dirigidos). Todos usan [`Digrafo.h`](
 
 ---
 
+<!-- acr-seccion:inicio -->
+## Probar sin el juez: Acepta el Reto
+
+Muchos enunciados de la asignatura salen de [Acepta el Reto](https://aceptaelreto.com), que es público y no hace falta tener acceso al juez de la UCM: puedes enviar ahí tu solución y comprobar si es correcta sin mirar la mía. Cuatro cosas que conviene saber antes:
+
+- **Mismo problema** no siempre significa misma entrada: la versión de la asignatura puede empezar con el número de casos, mientras que en Acepta el Reto algunos terminan con una línea especial (por ejemplo `0 0 0 0`). Mira la sección *Entrada* y adapta el bucle de lectura.
+- **Casi el mismo problema** cambia algún límite o el formato; la idea de la solución sirve igual.
+- **Relacionado** es otro problema que practica la misma técnica.
+- Los enlaces se han comprobado a mano comparando enunciados; si encuentras alguno mal, avisa o corrígelo en `herramientas/acepta_el_reto.json`.
+
+| Nº | Ejercicio | Acepta el Reto | Relación | A tener en cuenta |
+|:--:|---|---|---|---|
+| 01-1 | ¿Es un árbol AVL? (enteros) | [#303](https://aceptaelreto.com/problem/statement.php?id=303) | mismo problema | Mismo enunciado: el árbol llega en preorden y -1 es el árbol vacío. |
+| 01-1 | ¿Es un árbol AVL? (genérico) | [#303](https://aceptaelreto.com/problem/statement.php?id=303) | casi el mismo problema | Mismo problema, pero en Acepta el Reto solo hay enteros y el árbol viene en preorden (aquí llega con paréntesis y puede ser de palabras). Sirve para probar la lógica del AVL cambiando la lectura. |
+| 02-1 | Lo que cuesta sumar | [#289](https://aceptaelreto.com/problem/statement.php?id=289) | mismo problema | Mismo enunciado. |
+| 02-2 | Unidad Curiosa de Monitorización | [#351](https://aceptaelreto.com/problem/statement.php?id=351) | casi el mismo problema | Misma historia, pero allí los límites son menores (hasta 2.500 usuarios y 10.000 envíos; aquí 25.000 y 100.000). Revisa también el separador de la salida. |
+| 02-3 | Reina del súper | [#341](https://aceptaelreto.com/problem/statement.php?id=341) | casi el mismo problema | Misma historia, pero allí hay como mucho 5 cajas y 1.000 clientes (aquí hasta 250.000 y 500.000), así que tu solución con cola de prioridad también pasa. |
+| 02-5 | Ordenando a los pacientes en urgencias | [#311](https://aceptaelreto.com/problem/statement.php?id=311) | mismo problema | Mismo enunciado. Comprueba el separador de la salida en el enunciado de allí. |
+| 03-1 | Volando drones | [#505](https://aceptaelreto.com/problem/statement.php?id=505) | mismo problema | Mismo problema; los ejemplos del enunciado son algo distintos. |
+| 03-3 | Multitarea | [#649](https://aceptaelreto.com/problem/statement.php?id=649) | casi el mismo problema | Mismo problema; allí los instantes llegan hasta 10^9 (aquí 10^8) y el formato de la primera línea puede diferir: comprueba cómo termina la entrada. |
+| 03-4 | Pájaros en vuelo | [#271](https://aceptaelreto.com/problem/statement.php?id=271) | mismo problema | Mismo enunciado (la entrada termina con «0 0»). |
+| 04-1 | Árboles libres | [#307](https://aceptaelreto.com/problem/statement.php?id=307) | mismo problema | Mismo enunciado. |
+| 04-2 | Los amigos de mis amigos son mis amigos | [#352](https://aceptaelreto.com/problem/statement.php?id=352) | mismo problema | Mismo enunciado: la primera línea es el número de casos. |
+| 04-3 | Ovejas negras | [#412](https://aceptaelreto.com/problem/statement.php?id=412) | problema relacionado | No es el mismo problema, pero practica la misma técnica: recorrer una cuadrícula de píxeles por sus componentes conexas. |
+| 04-7 | Grafo bipartito | [#279](https://aceptaelreto.com/problem/statement.php?id=279) | mismo problema | Mismo enunciado. |
+| 05-1 | La máquina calculadora | [#319](https://aceptaelreto.com/problem/statement.php?id=319) | problema relacionado | No es el mismo problema, pero es el caso particular de la transformación modular: BFS sobre estados con 3 operaciones y módulo 10.000. |
+| 05-2 | La máquina calculadora | [#319](https://aceptaelreto.com/problem/statement.php?id=319) | mismo problema | Mismo enunciado. Aquí la entrada empieza con el número de casos; comprueba allí cómo se indica el final. |
+| 05-3 | Despegando pósits | [#654](https://aceptaelreto.com/problem/statement.php?id=654) | problema relacionado | No es el mismo problema, pero es un orden topológico por capas (con detección de ciclos: «IMPOSIBLE»). |
+| 05-5 | Haciendo trampas en Serpientes y Escaleras | [#253](https://aceptaelreto.com/problem/statement.php?id=253) | mismo problema | Mismo enunciado, pero allí la entrada termina con la línea «0 0 0 0» en vez de empezar con el número de casos: cambia el bucle de lectura. |
+
+**Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
+
+Para añadir o corregir un enlace: edita `herramientas/acepta_el_reto.json` y ejecuta `python3 herramientas/enlaces_acepta.py`.
+<!-- acr-seccion:fin -->
+
+---
+
 ## Visualizaciones interactivas
 
 Una página HTML por estructura, en [`Visualizaciones/`](Visualizaciones). Ejecutan la misma lógica que el C++ de la asignatura, muestran el código real con la línea activa resaltada y dejan construir ejemplos propios y avanzar o retroceder paso a paso (flechas del teclado).

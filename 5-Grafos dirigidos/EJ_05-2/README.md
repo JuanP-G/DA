@@ -2,6 +2,10 @@
 
 📄 [Enunciado](<../Enunciados/prob-Juego de Transformación Modular.pdf>) · 💻 [Solución](EJ_05-2.cpp) · 🎬 [Vídeo](../../Videos/05-2_transformacion_modular.mp4)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#319 · La máquina calculadora](https://aceptaelreto.com/problem/statement.php?id=319) — *mismo problema*. Mismo enunciado. Aquí la entrada empieza con el número de casos; comprueba allí cómo se indica el final.
+<!-- acr:fin -->
+
 ## Qué piden
 Con N operaciones `x ← (aᵢ·x + bᵢ) mod M`, el mínimo de jugadas para pasar de `S` a `T` (o `-1`).
 

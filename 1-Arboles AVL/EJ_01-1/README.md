@@ -2,6 +2,10 @@
 
 📄 [Enunciado](<../Enunciados/prob-¿Es un árbol AVL_.pdf>) · 💻 [Solución](<EJ 01-1.cpp>)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#303 · ¿Es un árbol AVL?](https://aceptaelreto.com/problem/statement.php?id=303) — *mismo problema*. Mismo enunciado: el árbol llega en preorden y -1 es el árbol vacío.
+<!-- acr:fin -->
+
 ## Qué piden
 Dado un árbol binario de enteros (en preorden, con `-1` como árbol vacío), decidir si es **AVL**: de búsqueda (estricto) y con alturas de los hijos que difieren como mucho en 1 en todo nodo.
 
