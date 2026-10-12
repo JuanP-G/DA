@@ -2,6 +2,10 @@
 
 📄 [Enunciado](<../Enunciados/prob-Ordenando tareas.pdf>) · 💻 [Solución](EJ_05-3.cpp) · 🎬 [Vídeo](../../Videos/05-3_ordenando_tareas.mp4)
 
+<!-- acr:inicio -->
+🔗 **Para practicar lo mismo en Acepta el Reto:** [#654 · Despegando pósits](https://aceptaelreto.com/problem/statement.php?id=654) — *problema relacionado*. No es el mismo problema, pero es un orden topológico por capas (con detección de ciclos: «IMPOSIBLE»).
+<!-- acr:fin -->
+
 ## Qué piden
 Un orden de las tareas que respete todas las dependencias «A antes que B», o `Imposible`.
 

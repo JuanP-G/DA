@@ -2,6 +2,12 @@
 
 📄 [Enunciado](<../Enunciados/prob-La máquina calculadora.pdf>) · 💻 [Solución](EJ_05-1.cpp) · 🎬 [Vídeo](../../Videos/05-1_maquina_calculadora.mp4)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#319 · La máquina calculadora](https://aceptaelreto.com/problem/statement.php?id=319) — *mismo problema*. Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-319_maquina_calculadora.cpp`](<../../Acepta el Reto/ACR-319_maquina_calculadora.cpp>)
+<!-- acr:fin -->
+
 ## Qué piden
 Marcador de 4 dígitos con botones `+1`, `×2` y `÷3` (módulo 10.000, división entera): mínimo de pulsaciones de un número inicial a uno final.
 

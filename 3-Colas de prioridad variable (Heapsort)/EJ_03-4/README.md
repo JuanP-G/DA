@@ -2,6 +2,12 @@
 
 📄 [Enunciado](<../Enunciados/prob-Pájaros en vuelo.pdf>) · 💻 [Solución](EJ_03-4.cpp) · 🎬 [Vídeo](../../Videos/03-4_pajaros_en_vuelo.mp4)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#271 · Pájaros en vuelo](https://aceptaelreto.com/problem/statement.php?id=271) — *mismo problema*. Mismo enunciado (la entrada termina con «0 0»).
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-271_pajaros_en_vuelo.cpp`](<../../Acepta el Reto/ACR-271_pajaros_en_vuelo.cpp>)
+<!-- acr:fin -->
+
 ## Qué piden
 A una bandada que empieza con un pájaro se le unen parejas; tras cada pareja hay que dar la **mediana** de las edades (el pájaro del centro).
 

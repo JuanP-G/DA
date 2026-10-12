@@ -2,6 +2,10 @@
 
 📄 [Enunciado](<../Enunciados/prob-¿Es un árbol AVL_ (1).pdf>) · 💻 [Solución](<EJ 01-1 (GENERICO BIEN).cpp>)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#303 · ¿Es un árbol AVL?](https://aceptaelreto.com/problem/statement.php?id=303) — *casi el mismo problema*. Mismo problema, pero en Acepta el Reto solo hay enteros y el árbol viene en preorden (aquí llega con paréntesis y puede ser de palabras). Sirve para probar la lógica del AVL cambiando la lectura.
+<!-- acr:fin -->
+
 ## Qué piden
 Lo mismo que en [EJ 01-1](<../EJ_01-1/README.md>), pero el árbol puede ser de enteros (`N`) o de palabras (`P`) y viene en formato `(izq raíz der)`, con `.` como vacío. Se lee hasta fin de entrada.
 

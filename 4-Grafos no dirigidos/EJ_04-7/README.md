@@ -2,6 +2,12 @@
 
 📄 [Enunciado](<../Enunciados/prob-Grafo bipartito.pdf>) · 💻 [Solución](EJ_04-7.cpp) · 🎬 [Vídeo](../../Videos/04-7_grafo_bipartito.mp4)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#279 · Grafo bipartito](https://aceptaelreto.com/problem/statement.php?id=279) — *mismo problema*. Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-279_grafo_bipartito.cpp`](<../../Acepta el Reto/ACR-279_grafo_bipartito.cpp>)
+<!-- acr:fin -->
+
 ## Qué piden
 Si los vértices se pueden **pintar con dos colores** de forma que ninguna arista una dos vértices del mismo color.
 

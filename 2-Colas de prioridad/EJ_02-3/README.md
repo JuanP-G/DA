@@ -2,6 +2,12 @@
 
 📄 [Enunciado](<../Enunciados/prob-Reina del súper.pdf>) · 💻 [Solución](EJ_02-3.cpp)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#341 · Reina del súper](https://aceptaelreto.com/problem/statement.php?id=341) — *casi el mismo problema*. Misma historia, pero allí hay como mucho 5 cajas y 1.000 clientes (aquí hasta 250.000 y 500.000), así que tu solución con cola de prioridad también pasa. Allí no hay caso final `0 0`: la entrada acaba con el fichero.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-341_reina_del_super.cpp`](<../../Acepta el Reto/ACR-341_reina_del_super.cpp>)
+<!-- acr:fin -->
+
 ## Qué piden
 Con N cajas y una **fila única** de C clientes (cada uno con su tiempo de atención), decir en qué caja acabará Ismael, que va detrás del último.
 

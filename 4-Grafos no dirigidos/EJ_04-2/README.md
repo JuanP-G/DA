@@ -2,6 +2,12 @@
 
 📄 [Enunciado](<../Enunciados/prob-Los amigos de mis amigos son mis amigos.pdf>) · 💻 [Solución](EJ_04-2.cpp) · 🎬 [Vídeo](../../Videos/04-2_amigos_de_mis_amigos.mp4)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#352 · Los amigos de mis amigos son mis amigos](https://aceptaelreto.com/problem/statement.php?id=352) — *mismo problema*. Mismo enunciado: la primera línea es el número de casos.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-352_amigos_de_mis_amigos.cpp`](<../../Acepta el Reto/ACR-352_amigos_de_mis_amigos.cpp>)
+<!-- acr:fin -->
+
 ## Qué piden
 Cuántas personas tiene el **grupo de amigos más grande**, sabiendo que la amistad es transitiva.
 

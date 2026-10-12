@@ -2,6 +2,12 @@
 
 📄 [Enunciado](<../Enunciados/prob-Haciendo trampas en Serpientes y Escaleras.pdf>) · 💻 [Solución](EJ_05-5.cpp)
 
+<!-- acr:inicio -->
+🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#253 · Haciendo trampas en Serpientes y Escaleras](https://aceptaelreto.com/problem/statement.php?id=253) — *mismo problema*. Mismo enunciado, pero allí la entrada termina con la línea «0 0 0 0» en vez de empezar con el número de casos.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-253_serpientes_y_escaleras.cpp`](<../../Acepta el Reto/ACR-253_serpientes_y_escaleras.cpp>)
+<!-- acr:fin -->
+
 ## Qué piden
 Con un dado trucado (eliges la cara, de 1 a K), el **mínimo número de tiradas** para ir de la casilla 1 a la N².
 

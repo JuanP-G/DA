@@ -104,6 +104,44 @@ Carpeta [`5-Grafos dirigidos/`](5-Grafos%20dirigidos). Todos usan [`Digrafo.h`](
 
 ---
 
+<!-- acr-seccion:inicio -->
+## Probar sin el juez: Acepta el Reto
+
+Muchos enunciados de la asignatura salen de [Acepta el Reto](https://aceptaelreto.com), que es público y no hace falta tener acceso al juez de la UCM: puedes enviar ahí tu solución y comprobar si es correcta sin mirar la mía. Cuatro cosas que conviene saber antes:
+
+- **Mismo problema** no siempre significa misma entrada: la versión de la asignatura puede empezar con el número de casos, mientras que en Acepta el Reto algunos terminan con una línea especial (por ejemplo `0 0 0 0`). Mira la sección *Entrada* y adapta el bucle de lectura.
+- **Casi el mismo problema** cambia algún límite o el formato; la idea de la solución sirve igual.
+- **Código para enviar**: Acepta el Reto solo admite un fichero `.cpp`, así que en [`Acepta el Reto/`](<Acepta el Reto>) hay una versión de cada solución con las cabeceras (`Grafo.h`, `Digrafo.h`, `IndexPQ.h`…) copiadas dentro y la lectura de la entrada adaptada. Se generan con `python3 herramientas/para_acepta.py`, no se editan a mano.
+- **Relacionado** es otro problema que practica la misma técnica.
+- Los enlaces se han comprobado a mano comparando enunciados; si encuentras alguno mal, avisa o corrígelo en `herramientas/acepta_el_reto.json`.
+
+| Nº | Ejercicio | Acepta el Reto | Relación | Código para enviar | A tener en cuenta |
+|:--:|---|---|---|---|---|
+| 01-1 | ¿Es un árbol AVL? (enteros) | [#303](https://aceptaelreto.com/problem/statement.php?id=303) | mismo problema | [📥 ACR-303](<Acepta el Reto/ACR-303_es_un_arbol_AVL.cpp>) | Mismo enunciado: el árbol llega en preorden y -1 es el árbol vacío. |
+| 01-1 | ¿Es un árbol AVL? (genérico) | [#303](https://aceptaelreto.com/problem/statement.php?id=303) | casi el mismo problema | — | Mismo problema, pero en Acepta el Reto solo hay enteros y el árbol viene en preorden (aquí llega con paréntesis y puede ser de palabras). Sirve para probar la lógica del AVL cambiando la lectura. |
+| 02-1 | Lo que cuesta sumar | [#289](https://aceptaelreto.com/problem/statement.php?id=289) | mismo problema | [📥 ACR-289](<Acepta el Reto/ACR-289_lo_que_cuesta_sumar.cpp>) | Mismo enunciado. |
+| 02-2 | Unidad Curiosa de Monitorización | [#351](https://aceptaelreto.com/problem/statement.php?id=351) | casi el mismo problema | [📥 ACR-351](<Acepta el Reto/ACR-351_unidad_curiosa_de_monitorizacion.cpp>) | Misma historia, pero allí los límites son menores (hasta 2.500 usuarios y 10.000 envíos; aquí 25.000 y 100.000) y el separador de cada caso es `----` (cuatro guiones). |
+| 02-3 | Reina del súper | [#341](https://aceptaelreto.com/problem/statement.php?id=341) | casi el mismo problema | [📥 ACR-341](<Acepta el Reto/ACR-341_reina_del_super.cpp>) | Misma historia, pero allí hay como mucho 5 cajas y 1.000 clientes (aquí hasta 250.000 y 500.000), así que tu solución con cola de prioridad también pasa. Allí no hay caso final `0 0`: la entrada acaba con el fichero. |
+| 02-5 | Ordenando a los pacientes en urgencias | [#311](https://aceptaelreto.com/problem/statement.php?id=311) | mismo problema | [📥 ACR-311](<Acepta el Reto/ACR-311_pacientes_en_urgencias.cpp>) | Mismo enunciado, pero el separador de cada caso es `----` (cuatro guiones). |
+| 03-1 | Volando drones | [#505](https://aceptaelreto.com/problem/statement.php?id=505) | mismo problema | [📥 ACR-505](<Acepta el Reto/ACR-505_volando_drones.cpp>) | Mismo problema; los ejemplos del enunciado son algo distintos. |
+| 03-3 | Multitarea | [#649](https://aceptaelreto.com/problem/statement.php?id=649) | casi el mismo problema | [📥 ACR-649](<Acepta el Reto/ACR-649_multitarea.cpp>) | Mismo problema; allí los instantes llegan hasta 10^9 (aquí 10^8) y no hay número de casos: se lee hasta el final del fichero. |
+| 03-4 | Pájaros en vuelo | [#271](https://aceptaelreto.com/problem/statement.php?id=271) | mismo problema | [📥 ACR-271](<Acepta el Reto/ACR-271_pajaros_en_vuelo.cpp>) | Mismo enunciado (la entrada termina con «0 0»). |
+| 04-1 | Árboles libres | [#307](https://aceptaelreto.com/problem/statement.php?id=307) | mismo problema | [📥 ACR-307](<Acepta el Reto/ACR-307_arboles_libres.cpp>) | Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero. |
+| 04-2 | Los amigos de mis amigos son mis amigos | [#352](https://aceptaelreto.com/problem/statement.php?id=352) | mismo problema | [📥 ACR-352](<Acepta el Reto/ACR-352_amigos_de_mis_amigos.cpp>) | Mismo enunciado: la primera línea es el número de casos. |
+| 04-3 | Ovejas negras | [#412](https://aceptaelreto.com/problem/statement.php?id=412) | problema relacionado | — | No es el mismo problema, pero practica la misma técnica: recorrer una cuadrícula de píxeles por sus componentes conexas. |
+| 04-7 | Grafo bipartito | [#279](https://aceptaelreto.com/problem/statement.php?id=279) | mismo problema | [📥 ACR-279](<Acepta el Reto/ACR-279_grafo_bipartito.cpp>) | Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero. |
+| 05-1 | La máquina calculadora | [#319](https://aceptaelreto.com/problem/statement.php?id=319) | mismo problema | [📥 ACR-319](<Acepta el Reto/ACR-319_maquina_calculadora.cpp>) | Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero. |
+| 05-2 | La máquina calculadora | [#319](https://aceptaelreto.com/problem/statement.php?id=319) | problema relacionado | — | No es el mismo problema, pero es el caso particular de la transformación modular: BFS sobre estados con 3 operaciones y módulo 10.000. |
+| 05-3 | Despegando pósits | [#654](https://aceptaelreto.com/problem/statement.php?id=654) | problema relacionado | — | No es el mismo problema, pero es un orden topológico por capas (con detección de ciclos: «IMPOSIBLE»). |
+| 05-5 | Haciendo trampas en Serpientes y Escaleras | [#253](https://aceptaelreto.com/problem/statement.php?id=253) | mismo problema | [📥 ACR-253](<Acepta el Reto/ACR-253_serpientes_y_escaleras.cpp>) | Mismo enunciado, pero allí la entrada termina con la línea «0 0 0 0» en vez de empezar con el número de casos. |
+
+**Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
+
+Para añadir o corregir un enlace: edita `herramientas/acepta_el_reto.json` y ejecuta `python3 herramientas/enlaces_acepta.py`.
+<!-- acr-seccion:fin -->
+
+---
+
 ## Visualizaciones interactivas
 
 Una página HTML por estructura, en [`Visualizaciones/`](Visualizaciones). Ejecutan la misma lógica que el C++ de la asignatura, muestran el código real con la línea activa resaltada y dejan construir ejemplos propios y avanzar o retroceder paso a paso (flechas del teclado).
@@ -168,12 +206,13 @@ Las carpetas de cada tema coinciden con las carpetas de la solución de Visual S
 │   │   ├── Digrafo.h            copia de la cabecera que usa
 │   │   └── README.md            explicación: qué piden, planteamiento, traza y coste
 │   └── …
+├── Acepta el Reto/              versiones de las soluciones listas para enviar a aceptaelreto.com (un solo fichero)
 ├── Estructuras de datos/        cabeceras de la asignatura (+ algoritmos de los temas 4 y 5)
 ├── Videos/                      vídeos explicativos
 │   └── generador/               scripts que los generan
 ├── Visualizaciones/             herramientas interactivas (abre index.html)
 ├── sitio/                       generador de la web
-└── herramientas/                script para recolocar los proyectos de VS tras la reorganización
+└── herramientas/                recolocar proyectos de VS, enlaces y generador de «Acepta el Reto/»
 ```
 
 ## Añadir un ejercicio nuevo
@@ -181,7 +220,8 @@ Las carpetas de cada tema coinciden con las carpetas de la solución de Visual S
 1. En VS: clic derecho en la carpeta del tema de la solución → *Agregar → Nuevo proyecto*, con **Ubicación** `…\DA\<tema>\` (por ejemplo `…\DA\5-Grafos dirigidos\`) y nombre `EJ_0T-N`.
 2. El PDF del enunciado, en `<tema>/Enunciados/`.
 3. Una fila en la tabla del tema de este README (si no, la web lo añade igualmente al detectar la carpeta, pero sin título).
-4. Commit y push: la web se actualiza sola.
+4. Si el problema también está en Acepta el Reto: añade su fila a `herramientas/acepta_el_reto.json` (y, si quieres la versión lista para enviar, una entrada en `herramientas/para_acepta.py`) y ejecuta `python3 herramientas/enlaces_acepta.py` y `python3 herramientas/para_acepta.py --probar`.
+5. Commit y push: la web se actualiza sola.
 
 ## Compilar y probar
 

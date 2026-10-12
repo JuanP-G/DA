@@ -1,0 +1,28 @@
+# Acepta el Reto: versiones listas para enviar
+
+Acepta el Reto ([aceptaelreto.com](https://aceptaelreto.com)) es un juez público: se registra uno y puede enviar su solución sin pasar por el de la asignatura. Solo admite **un fichero `.cpp`**, así que `#include "Grafo.h"` no compila allí. Los ficheros de esta carpeta son las soluciones del repo con:
+
+1. las cabeceras propias (`Grafo.h`, `Digrafo.h`, `IndexPQ.h`) copiadas dentro, y
+2. la lectura de la entrada y la salida cambiadas al formato de Acepta el Reto cuando difiere del de la asignatura.
+
+**Cómo usarlos:** abre el que corresponda, copia **todo** su contenido y pégalo en la página de envío del problema (lenguaje C++).
+
+> No los edites a mano: se regeneran con `python3 herramientas/para_acepta.py` (añade `--probar` para compilarlos y ejecutarlos con las pruebas de [`pruebas/`](pruebas)). Si cambias una solución, vuelve a ejecutar el script.
+
+| Ejercicio | Problema en Acepta el Reto | Fichero | Qué cambia respecto a la asignatura |
+|:--:|---|---|---|
+| 01-1 | [#303 · ¿Es un árbol AVL?](https://aceptaelreto.com/problem/statement.php?id=303) | [`ACR-303_es_un_arbol_AVL.cpp`](ACR-303_es_un_arbol_AVL.cpp) | nada: el formato ya coincide |
+| 02-1 | [#289 · Lo que cuesta sumar](https://aceptaelreto.com/problem/statement.php?id=289) | [`ACR-289_lo_que_cuesta_sumar.cpp`](ACR-289_lo_que_cuesta_sumar.cpp) | nada: el formato ya coincide |
+| 02-2 | [#351 · Unidad Curiosa de Monitorización](https://aceptaelreto.com/problem/statement.php?id=351) | [`ACR-351_unidad_curiosa_de_monitorizacion.cpp`](ACR-351_unidad_curiosa_de_monitorizacion.cpp) | el separador de cada caso es `----` (cuatro guiones) |
+| 02-3 | [#341 · Reina del súper](https://aceptaelreto.com/problem/statement.php?id=341) | [`ACR-341_reina_del_super.cpp`](ACR-341_reina_del_super.cpp) | la entrada termina al acabarse el fichero (no hay caso `0 0`) |
+| 02-5 | [#311 · Ordenando a los pacientes en urgencias](https://aceptaelreto.com/problem/statement.php?id=311) | [`ACR-311_pacientes_en_urgencias.cpp`](ACR-311_pacientes_en_urgencias.cpp) | el separador de cada caso es `----` (cuatro guiones) |
+| 03-1 | [#505 · Volando drones](https://aceptaelreto.com/problem/statement.php?id=505) | [`ACR-505_volando_drones.cpp`](ACR-505_volando_drones.cpp) | solo se copian las cabeceras (el formato ya coincide) |
+| 03-3 | [#649 · Multitarea](https://aceptaelreto.com/problem/statement.php?id=649) | [`ACR-649_multitarea.cpp`](ACR-649_multitarea.cpp) | no hay número de casos: se lee hasta el final del fichero; los instantes llegan hasta 10^9: `long long` |
+| 03-4 | [#271 · Pájaros en vuelo](https://aceptaelreto.com/problem/statement.php?id=271) | [`ACR-271_pajaros_en_vuelo.cpp`](ACR-271_pajaros_en_vuelo.cpp) | nada: el formato ya coincide |
+| 04-1 | [#307 · Árboles libres](https://aceptaelreto.com/problem/statement.php?id=307) | [`ACR-307_arboles_libres.cpp`](ACR-307_arboles_libres.cpp) | no hay número de casos: se lee hasta el final del fichero |
+| 04-2 | [#352 · Los amigos de mis amigos son mis amigos](https://aceptaelreto.com/problem/statement.php?id=352) | [`ACR-352_amigos_de_mis_amigos.cpp`](ACR-352_amigos_de_mis_amigos.cpp) | solo se copian las cabeceras (el formato ya coincide) |
+| 04-7 | [#279 · Grafo bipartito](https://aceptaelreto.com/problem/statement.php?id=279) | [`ACR-279_grafo_bipartito.cpp`](ACR-279_grafo_bipartito.cpp) | no hay número de casos: se lee hasta el final del fichero |
+| 05-1 | [#319 · La máquina calculadora](https://aceptaelreto.com/problem/statement.php?id=319) | [`ACR-319_maquina_calculadora.cpp`](ACR-319_maquina_calculadora.cpp) | no hay número de casos: se lee hasta el final del fichero |
+| 05-5 | [#253 · Haciendo trampas en Serpientes y Escaleras](https://aceptaelreto.com/problem/statement.php?id=253) | [`ACR-253_serpientes_y_escaleras.cpp`](ACR-253_serpientes_y_escaleras.cpp) | la entrada termina con la línea `0 0 0 0` |
+
+Las versiones de `pruebas/` son los ejemplos de los enunciados (los de Acepta el Reto y los de la asignatura, en el formato de Acepta el Reto).
