@@ -37,6 +37,7 @@ using namespace std;
 
 class Tiradas {
 public:
+	// minimo de tiradas desde s a v (-1 si no se llega)
     Tiradas(Digrafo const& g, int s) : dist(g.V(), -1) {
         bfs(g, s);
     }
@@ -64,20 +65,25 @@ private:
 };
 
 void resuelveCaso() {
-    int n, k, s, e;
-    cin >> n >> k >> s >> e;
-    int casillas = n * n;
+    int N, K, S, E;
+    cin >> N >> K >> S >> E;
 
+	// Generamos el grafo con N*N vertices (casillas)
+    int casillas = N * N;
+    Digrafo g(casillas);
+
+	// destino[c] = casilla a la que se llega desde c (c - 1 en el grafo)
     vector<int> destino(casillas);
     for (int c = 0; c < casillas; ++c) destino[c] = c;
-    for (int i = 0; i < s + e; ++i) {      // serpientes y escaleras: igual
+    for (int i = 0; i < S + E; ++i) {      // serpientes y escaleras: igual
         int a, b; cin >> a >> b;
         destino[a - 1] = b - 1;
     }
 
-    Digrafo g(casillas);
+	//Ahora generamos las aristas
     for (int v = 0; v < casillas; ++v)
-        for (int d = 1; d <= k && v + d < casillas; ++d)
+		// desde la casilla v, tirando un d (1..K) se llega a destino[v + d]
+        for (int d = 1; d <= K && v + d < casillas; ++d)
             g.ponArista(v, destino[v + d]);   // tirar un d desde v
 
     Tiradas t(g, 0);

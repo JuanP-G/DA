@@ -30,14 +30,20 @@ using namespace std;
 */
 
 int sumidero(Digrafo const& g) {
+	// grado de entrada de cada vertice
     vector<int> entrada(g.V(), 0);
+
+	// recorre todas las listas de adyacencia y cuenta cuantas veces aparece cada vertice
     for (int v = 0; v < g.V(); ++v)
         for (int w : g.ady(v))
             ++entrada[w];                  // arista v --> w: una mas de entrada a w
 
+	// busca un vertice con salida 0 y entrada V - 1 (un vertice sumidero)
     for (int v = 0; v < g.V(); ++v)
         if (g.ady(v).empty() && entrada[v] == g.V() - 1)
-            return v;
+			return v;                     // hay sumidero
+
+	// no hay sumidero
     return -1;
 }
 
@@ -48,6 +54,7 @@ bool resuelveCaso() {
     int s = sumidero(g);
     if (s == -1) cout << "NO\n";
     else cout << "SI " << s << '\n';
+
     return true;
 }
 
