@@ -1,6 +1,6 @@
 # EJ 06-4 · La selva de Tarzán
 
-📄 [Enunciado](<../Enunciados/prob-La selva de Tarzán.pdf>) · 💻 Solución en código: *pendiente* (esta carpeta solo trae la explicación, `GrafoValorado.h` y `ConjuntosDisjuntos.h`)
+📄 [Enunciado](<../Enunciados/prob-La selva de Tarzán.pdf>) · 💻 [Solución](EJ_06-4.cpp)
 
 ## Qué piden
 N árboles y M saltos posibles; cada salto entre dos árboles exige una **cuerda de al menos cierta longitud**. Tarzán lleva **una sola cuerda** y quiere poder llegar de cualquier árbol a cualquier otro. ¿Cuál es la **longitud mínima** de cuerda que lo permite? Si aunque la cuerda fuese infinita no se puede, `Imposible`.

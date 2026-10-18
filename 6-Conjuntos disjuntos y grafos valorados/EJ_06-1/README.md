@@ -1,9 +1,11 @@
 # EJ 06-1 · Petroleros hundidos
 
-📄 [Enunciado](<../Enunciados/prob-Petroleros hundidos.pdf>) · 💻 Solución en código: *pendiente* (esta carpeta solo trae la explicación y `ConjuntosDisjuntos.h`)
+📄 [Enunciado](<../Enunciados/prob-Petroleros hundidos.pdf>) · 💻 [Solución](EJ_06-1.cpp)
 
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#288 · Petroleros hundidos](https://aceptaelreto.com/problem/statement.php?id=288) — *casi el mismo problema*. Mismo problema, pero allí no hay número de casos (se lee hasta el final del fichero) y, según el ejemplo de la página, el mar va como espacio en blanco en vez de `-`: lee cada fila con `getline` y comprueba que la longitud es C.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-288_petroleros_hundidos.cpp`](<../../Acepta el Reto/ACR-288_petroleros_hundidos.cpp>)
 <!-- acr:fin -->
 
 ## Qué piden

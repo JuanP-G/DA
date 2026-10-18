@@ -11,7 +11,7 @@ Ejercicios del juez de **Diseño de Algoritmos** resueltos en C++, cada uno con 
 | [3 · Colas de prioridad variable](#tema-3--colas-de-prioridad-variable-indexpq) | `IndexPQ` | 6 | 3 | [`tema3-indexpq.html`](Visualizaciones/tema3-indexpq.html) |
 | [4 · Grafos no dirigidos](#tema-4--grafos-no-dirigidos) | `Grafo` | 8 | 8 | [`tema4-grafo.html`](Visualizaciones/tema4-grafo.html) |
 | [5 · Grafos dirigidos](#tema-5--grafos-dirigidos) | `Digrafo` | 6 + teoría | 5 | [`tema5-digrafo.html`](Visualizaciones/tema5-digrafo.html) |
-| [6 · Conjuntos disjuntos y grafos valorados](#tema-6--conjuntos-disjuntos-y-grafos-valorados) | `ConjuntosDisjuntos`, `GrafoValorado` | 5 (explicación, sin código) + teoría | 1 | — |
+| [6 · Conjuntos disjuntos y grafos valorados](#tema-6--conjuntos-disjuntos-y-grafos-valorados) | `ConjuntosDisjuntos`, `GrafoValorado` | 5 + teoría | 1 | — |
 
 **Más abajo:** [Visualizaciones](#visualizaciones-interactivas) · [Estructuras de datos](#estructuras-de-datos) · [Vídeos](#vídeos) · [Organización](#organización-del-repositorio) · [Añadir un ejercicio](#añadir-un-ejercicio-nuevo) · [Compilar](#compilar-y-probar) · [Web](#web-del-repositorio)
 
@@ -105,16 +105,16 @@ Carpeta [`5-Grafos dirigidos/`](5-Grafos%20dirigidos). Todos usan [`Digrafo.h`](
 
 ## Tema 6 · Conjuntos disjuntos y grafos valorados
 
-Carpeta [`6-Conjuntos disjuntos y grafos valorados/`](6-Conjuntos%20disjuntos%20y%20grafos%20valorados). Usan [`ConjuntosDisjuntos.h`](Estructuras%20de%20datos/ConjuntosDisjuntos.h) y [`GrafoValorado.h`](Estructuras%20de%20datos/GrafoValorado.h). La fila 06-0 es el **resumen del tema** (con la respuesta a la autoevaluación 6.1). De momento cada ejercicio trae **solo la explicación** de cómo resolverlo; el código lo escribes tú.
+Carpeta [`6-Conjuntos disjuntos y grafos valorados/`](6-Conjuntos%20disjuntos%20y%20grafos%20valorados). Usan [`ConjuntosDisjuntos.h`](Estructuras%20de%20datos/ConjuntosDisjuntos.h) y [`GrafoValorado.h`](Estructuras%20de%20datos/GrafoValorado.h). La fila 06-0 es el **resumen del tema** (con la respuesta a la autoevaluación 6.1).
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
 | 06-0 | Teoría del tema (explicación general) | — | [📘 Explicación del tema (resumen y autoevaluación)](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/README.md) | [🎬 Vídeo](Videos/06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4) | Conjuntos disjuntos (búsqueda rápida, unión rápida, por tamaños, compresión), grafos valorados, propiedad del corte, Kruskal y Prim |
-| 06-1 | Petroleros hundidos | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Petroleros%20hundidos.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-1/README.md) | — | Conjuntos disjuntos sobre las celdas (8 vecinos): `unir` al añadir petróleo y `cardinal` para el máximo |
-| 06-2 | Camiones de reparto | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Camiones%20de%20reparto.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-2/README.md) | — | `GrafoValorado` + DFS por consulta que solo cruza aristas con valor ≥ anchura |
-| 06-3 | Recorriendo el archipiélago en bicicleta | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Recorriendo%20el%20archipi%C3%A9lago%20en%20bicicleta.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-3/README.md) | — | Kruskal: suma del árbol de recubrimiento de coste mínimo (o «No hay puentes suficientes») |
-| 06-4 | La selva de Tarzán | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-La%20selva%20de%20Tarz%C3%A1n.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-4/README.md) | — | Kruskal: la última arista aceptada (máximo del ARM) es la cuerda mínima |
-| 06-5 | Las minas del emperador Trajano | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Las%20minas%20del%20emperador%20Trajano.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-5/README.md) | — | Kruskal hasta que `origen` y `destino` quedan unidos: esa arista es el camino minimax |
+| 06-1 | Petroleros hundidos | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Petroleros%20hundidos.pdf) | [💻 Solución](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-1/EJ_06-1.cpp) · [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-1/README.md) | — | Conjuntos disjuntos sobre las celdas (8 vecinos): `unir` al añadir petróleo y `cardinal` para el máximo |
+| 06-2 | Camiones de reparto | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Camiones%20de%20reparto.pdf) | [💻 Solución](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-2/EJ_06-2.cpp) · [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-2/README.md) | — | `GrafoValorado` + DFS por consulta que solo cruza aristas con valor ≥ anchura |
+| 06-3 | Recorriendo el archipiélago en bicicleta | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Recorriendo%20el%20archipi%C3%A9lago%20en%20bicicleta.pdf) | [💻 Solución](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-3/EJ_06-3.cpp) · [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-3/README.md) | — | Kruskal: suma del árbol de recubrimiento de coste mínimo (o «No hay puentes suficientes») |
+| 06-4 | La selva de Tarzán | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-La%20selva%20de%20Tarz%C3%A1n.pdf) | [💻 Solución](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-4/EJ_06-4.cpp) · [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-4/README.md) | — | Kruskal: la última arista aceptada (máximo del ARM) es la cuerda mínima |
+| 06-5 | Las minas del emperador Trajano | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Las%20minas%20del%20emperador%20Trajano.pdf) | [💻 Solución](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-5/EJ_06-5.cpp) · [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-5/README.md) | — | Kruskal hasta que `origen` y `destino` quedan unidos: esa arista es el camino minimax |
 
 **Qué técnica usar**
 
@@ -158,9 +158,9 @@ Muchos enunciados de la asignatura salen de [Acepta el Reto](https://aceptaelret
 | 05-2 | La máquina calculadora | [#319](https://aceptaelreto.com/problem/statement.php?id=319) | problema relacionado | — | No es el mismo problema, pero es el caso particular de la transformación modular: BFS sobre estados con 3 operaciones y módulo 10.000. |
 | 05-3 | Despegando pósits | [#654](https://aceptaelreto.com/problem/statement.php?id=654) | problema relacionado | — | No es el mismo problema, pero es un orden topológico por capas (con detección de ciclos: «IMPOSIBLE»). |
 | 05-5 | Haciendo trampas en Serpientes y Escaleras | [#253](https://aceptaelreto.com/problem/statement.php?id=253) | mismo problema | [📥 ACR-253](<Acepta el Reto/ACR-253_serpientes_y_escaleras.cpp>) | Mismo enunciado, pero allí la entrada termina con la línea «0 0 0 0» en vez de empezar con el número de casos. |
-| 06-1 | Petroleros hundidos | [#288](https://aceptaelreto.com/problem/statement.php?id=288) | casi el mismo problema | — | Mismo problema, pero allí no hay número de casos (se lee hasta el final del fichero) y, según el ejemplo de la página, el mar va como espacio en blanco en vez de `-`: lee cada fila con `getline` y comprueba que la longitud es C. |
-| 06-2 | Camiones de reparto | [#646](https://aceptaelreto.com/problem/statement.php?id=646) | mismo problema | — | Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero. |
-| 06-3 | Recorriendo el archipiélago en bicicleta | [#645](https://aceptaelreto.com/problem/statement.php?id=645) | casi el mismo problema | — | Misma historia, pero allí los límites son menores (hasta 1.000 islas y 10.000 puentes; aquí 10.000 y 100.000) y no hay número de casos: se lee hasta el final del fichero. |
+| 06-1 | Petroleros hundidos | [#288](https://aceptaelreto.com/problem/statement.php?id=288) | casi el mismo problema | [📥 ACR-288](<Acepta el Reto/ACR-288_petroleros_hundidos.cpp>) | Mismo problema, pero allí no hay número de casos (se lee hasta el final del fichero) y, según el ejemplo de la página, el mar va como espacio en blanco en vez de `-`: lee cada fila con `getline` y comprueba que la longitud es C. |
+| 06-2 | Camiones de reparto | [#646](https://aceptaelreto.com/problem/statement.php?id=646) | mismo problema | [📥 ACR-646](<Acepta el Reto/ACR-646_camiones_de_reparto.cpp>) | Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero. |
+| 06-3 | Recorriendo el archipiélago en bicicleta | [#645](https://aceptaelreto.com/problem/statement.php?id=645) | casi el mismo problema | [📥 ACR-645](<Acepta el Reto/ACR-645_archipielago_en_bicicleta.cpp>) | Misma historia, pero allí los límites son menores (hasta 1.000 islas y 10.000 puentes; aquí 10.000 y 100.000) y no hay número de casos: se lee hasta el final del fichero. |
 
 **Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6, 06-4, 06-5. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
 
@@ -236,7 +236,7 @@ Las carpetas de cada tema coinciden con las carpetas de la solución de Visual S
 │   │   ├── Digrafo.h            copia de la cabecera que usa
 │   │   └── README.md            explicación: qué piden, planteamiento, traza y coste
 │   └── …
-├── 6-Conjuntos disjuntos y grafos valorados/   explicaciones (sin código aún) y resumen del tema
+├── 6-Conjuntos disjuntos y grafos valorados/   ejercicios (código + explicación) y resumen del tema
 ├── Acepta el Reto/              versiones de las soluciones listas para enviar a aceptaelreto.com (un solo fichero)
 ├── Estructuras de datos/        cabeceras de la asignatura (+ algoritmos de los temas 4 y 5)
 ├── Videos/                      vídeos explicativos

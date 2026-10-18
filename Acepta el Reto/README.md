@@ -24,5 +24,8 @@ Acepta el Reto ([aceptaelreto.com](https://aceptaelreto.com)) es un juez públic
 | 04-7 | [#279 · Grafo bipartito](https://aceptaelreto.com/problem/statement.php?id=279) | [`ACR-279_grafo_bipartito.cpp`](ACR-279_grafo_bipartito.cpp) | no hay número de casos: se lee hasta el final del fichero |
 | 05-1 | [#319 · La máquina calculadora](https://aceptaelreto.com/problem/statement.php?id=319) | [`ACR-319_maquina_calculadora.cpp`](ACR-319_maquina_calculadora.cpp) | no hay número de casos: se lee hasta el final del fichero |
 | 05-5 | [#253 · Haciendo trampas en Serpientes y Escaleras](https://aceptaelreto.com/problem/statement.php?id=253) | [`ACR-253_serpientes_y_escaleras.cpp`](ACR-253_serpientes_y_escaleras.cpp) | la entrada termina con la línea `0 0 0 0` |
+| 06-1 | [#288 · Petroleros hundidos](https://aceptaelreto.com/problem/statement.php?id=288) | [`ACR-288_petroleros_hundidos.cpp`](ACR-288_petroleros_hundidos.cpp) | no hay número de casos: se lee hasta el final del fichero (el mar va como espacio en blanco: la solución solo mira dónde hay `#`) |
+| 06-2 | [#646 · Camiones de reparto](https://aceptaelreto.com/problem/statement.php?id=646) | [`ACR-646_camiones_de_reparto.cpp`](ACR-646_camiones_de_reparto.cpp) | no hay número de casos: se lee hasta el final del fichero |
+| 06-3 | [#645 · Recorriendo el archipiélago en bicicleta](https://aceptaelreto.com/problem/statement.php?id=645) | [`ACR-645_archipielago_en_bicicleta.cpp`](ACR-645_archipielago_en_bicicleta.cpp) | no hay número de casos: se lee hasta el final del fichero |
 
 Las versiones de `pruebas/` son los ejemplos de los enunciados (los de Acepta el Reto y los de la asignatura, en el formato de Acepta el Reto).

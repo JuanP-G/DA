@@ -49,7 +49,7 @@ python v05_teoria.py             # genera el mp4 (tarda unos minutos)
 
 `v06_teoria.py` genera `../06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4` (con capítulos y subtítulos): relaciones de equivalencia dinámicas, búsqueda rápida, unión rápida, unión por tamaños y compresión de caminos, la autoevaluación 6.1 paso a paso, los ejercicios 06-1 a 06-5, `GrafoValorado.h`, la propiedad del corte, y Kruskal y Prim sobre un grafo de 6 vértices.
 
-- Los ejercicios del tema 6 aún no tienen `.cpp`, así que las trazas salen de **simular los algoritmos en el propio guion** (los resultados coinciden con los ejemplos de los enunciados). El código que se ve en pantalla es el de `Estructuras de datos/ConjuntosDisjuntos.h` y `GrafoValorado.h`.
+- Cuando se hizo el vídeo los ejercicios del tema 6 aún no tenían `.cpp`, así que las trazas salen de **simular los algoritmos en el propio guion** (los resultados coinciden con los ejemplos de los enunciados). El código que se ve en pantalla es el de `Estructuras de datos/ConjuntosDisjuntos.h` y `GrafoValorado.h`.
 - Para unión por tamaños se sigue el criterio de desempate de las transparencias (en empate, la raíz de `b` cuelga de la de `a`); la cabecera hace lo contrario y el vídeo lo advierte.
 
 ```bash

@@ -70,6 +70,15 @@ EJERCICIOS = {
                   (r"(cout << t\.distancia\(casillas - 1\) << '\\n';)", r"\1\n    return true;", "la entrada termina con la línea `0 0 0 0`"),
                   (r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", "while (resuelveCaso());", "la entrada termina con la línea `0 0 0 0`"),
               ]),
+    288: dict(id="06-1", titulo="Petroleros hundidos", fuente="6-Conjuntos disjuntos y grafos valorados/EJ_06-1/EJ_06-1.cpp", slug="petroleros_hundidos",
+              cambios=[(r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
+                        "no hay número de casos: se lee hasta el final del fichero (el mar va como espacio en blanco: la solución solo mira dónde hay `#`)")]),
+    646: dict(id="06-2", titulo="Camiones de reparto", fuente="6-Conjuntos disjuntos y grafos valorados/EJ_06-2/EJ_06-2.cpp", slug="camiones_de_reparto",
+              cambios=[(r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
+                        "no hay número de casos: se lee hasta el final del fichero")]),
+    645: dict(id="06-3", titulo="Recorriendo el archipiélago en bicicleta", fuente="6-Conjuntos disjuntos y grafos valorados/EJ_06-3/EJ_06-3.cpp", slug="archipielago_en_bicicleta",
+              cambios=[(r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
+                        "no hay número de casos: se lee hasta el final del fichero")]),
 }
 
 
