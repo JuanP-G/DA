@@ -1,4 +1,4 @@
-# Generador de los vídeos de los temas 4 y 5
+# Generador de los vídeos de los temas 4, 5 y 6
 
 Cada `v04_X.py` es el guion de un vídeo: una lista de diapositivas, cada una con su frase de narración. Las trazas de ejecución salen de **simular el mismo algoritmo del `.cpp`** (mismo orden de adyacentes que `Grafo.h`). El código que aparece en pantalla se lee del `.cpp` real, con sus números de línea.
 
@@ -44,3 +44,16 @@ python v05_teoria.py --preview   # solo las imágenes
 python v05_teoria.py             # genera el mp4 (tarda unos minutos)
 ```
 
+
+## Vídeo de teoría del tema 6
+
+`v06_teoria.py` genera `../06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4` (con capítulos y subtítulos): relaciones de equivalencia dinámicas, búsqueda rápida, unión rápida, unión por tamaños y compresión de caminos, la autoevaluación 6.1 paso a paso, los ejercicios 06-1 a 06-5, `GrafoValorado.h`, la propiedad del corte, y Kruskal y Prim sobre un grafo de 6 vértices.
+
+- Los ejercicios del tema 6 aún no tienen `.cpp`, así que las trazas salen de **simular los algoritmos en el propio guion** (los resultados coinciden con los ejemplos de los enunciados). El código que se ve en pantalla es el de `Estructuras de datos/ConjuntosDisjuntos.h` y `GrafoValorado.h`.
+- Para unión por tamaños se sigue el criterio de desempate de las transparencias (en empate, la raíz de `b` cuelga de la de `a`); la cabecera hace lo contrario y el vídeo lo advierte.
+
+```bash
+export KOKORO_MODEL=/ruta/kokoro-v1.0.onnx KOKORO_VOICES=/ruta/voices-v1.0.bin KOKORO_VOICE=ef_dora
+python v06_teoria.py --preview   # solo las imágenes
+python v06_teoria.py             # genera el mp4 (varios minutos: sintetiza la voz de cada diapositiva)
+```

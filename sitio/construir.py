@@ -33,6 +33,7 @@ TEMAS = {
     3: dict(nombre="Colas de prioridad variable (IndexPQ)", resumen="Montículo con tabla de posiciones para cambiar la prioridad de un elemento ya insertado.", herr="tema3-indexpq.html", cab=["IndexPQ.h"]),
     4: dict(nombre="Grafos no dirigidos", resumen="Listas de adyacencia, DFS para componentes y colores, BFS para distancias mínimas.", herr="tema4-grafo.html", cab=["Grafo.h"]),
     5: dict(nombre="Grafos dirigidos", resumen="Digrafos: BFS dirigido, orden topológico (postorden inverso) y detección de ciclos.", herr="tema5-digrafo.html", cab=["Digrafo.h"]),
+    6: dict(nombre="Conjuntos disjuntos y grafos valorados", resumen="Particiones que solo se unen, grafos con valores en las aristas y árbol de recubrimiento de coste mínimo (Kruskal y Prim).", herr="tema6-kruskal.html", cab=["ConjuntosDisjuntos.h", "GrafoValorado.h"]),
 }
 HERRAMIENTAS = [
     ("tema1-avl.html", "Tema 1", "Árbol AVL", "Inserta, borra y pide el k-ésimo; mira el factor de equilibrio y cada rotación."),
@@ -379,7 +380,7 @@ def acepta_caja(x, fichero=None):
 
 
 def pagina_ejercicio(e, slug, ant=None, sig=None):
-    carpeta = posixpath.dirname(e["sols"][0][1]) if e["sols"] else None
+    carpeta = posixpath.dirname(e["sols"][0][1]) if e["sols"] else (posixpath.dirname(e["readme"]) if e["readme"] else None)   # sin código aún: la carpeta del README
     # código: soluciones del README + .h de la carpeta
     codigos, vistos = [], set()
     for etq, r in e["sols"]:
@@ -612,8 +613,8 @@ q.oninput=filtra;window.addEventListener('pageshow',()=>{try{const g=sessionStor
     # copiar ficheros referenciados + código de cada ejercicio
     for e in ej:
         if e["readme"]: COPIAR.add(e["readme"])
-        if e["sols"]:
-            for p in (RAIZ / posixpath.dirname(e["sols"][0][1])).glob("*"):
+        if e["sols"] or e["readme"]:
+            for p in (RAIZ / posixpath.dirname((e["sols"][0][1] if e["sols"] else e["readme"]))).glob("*"):
                 if p.suffix in (".cpp", ".h"):
                     COPIAR.add(p.relative_to(RAIZ).as_posix())
     for c in cabs:

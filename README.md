@@ -11,6 +11,7 @@ Ejercicios del juez de **Diseño de Algoritmos** resueltos en C++, cada uno con 
 | [3 · Colas de prioridad variable](#tema-3--colas-de-prioridad-variable-indexpq) | `IndexPQ` | 6 | 3 | [`tema3-indexpq.html`](Visualizaciones/tema3-indexpq.html) |
 | [4 · Grafos no dirigidos](#tema-4--grafos-no-dirigidos) | `Grafo` | 8 | 8 | [`tema4-grafo.html`](Visualizaciones/tema4-grafo.html) |
 | [5 · Grafos dirigidos](#tema-5--grafos-dirigidos) | `Digrafo` | 6 + teoría | 5 | [`tema5-digrafo.html`](Visualizaciones/tema5-digrafo.html) |
+| [6 · Conjuntos disjuntos y grafos valorados](#tema-6--conjuntos-disjuntos-y-grafos-valorados) | `ConjuntosDisjuntos`, `GrafoValorado` | 5 (explicación, sin código) + teoría | 1 | — |
 
 **Más abajo:** [Visualizaciones](#visualizaciones-interactivas) · [Estructuras de datos](#estructuras-de-datos) · [Vídeos](#vídeos) · [Organización](#organización-del-repositorio) · [Añadir un ejercicio](#añadir-un-ejercicio-nuevo) · [Compilar](#compilar-y-probar) · [Web](#web-del-repositorio)
 
@@ -102,6 +103,29 @@ Carpeta [`5-Grafos dirigidos/`](5-Grafos%20dirigidos). Todos usan [`Digrafo.h`](
 | Grados de los vértices (p. ej. sumidero) | Salida = `ady(v).size()`; entrada = contar en todas las listas | 05-4 |
 | La entrada es «V, A y A pares» | Leer con el constructor `Digrafo g(cin, primer)` | 05-4, 05-6 |
 
+## Tema 6 · Conjuntos disjuntos y grafos valorados
+
+Carpeta [`6-Conjuntos disjuntos y grafos valorados/`](6-Conjuntos%20disjuntos%20y%20grafos%20valorados). Usan [`ConjuntosDisjuntos.h`](Estructuras%20de%20datos/ConjuntosDisjuntos.h) y [`GrafoValorado.h`](Estructuras%20de%20datos/GrafoValorado.h). La fila 06-0 es el **resumen del tema** (con la respuesta a la autoevaluación 6.1). De momento cada ejercicio trae **solo la explicación** de cómo resolverlo; el código lo escribes tú.
+
+| Nº | Problema | Enunciado | Solución | Vídeo | Idea |
+|:--:|---|:--:|---|:--:|---|
+| 06-0 | Teoría del tema (explicación general) | — | [📘 Explicación del tema (resumen y autoevaluación)](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/README.md) | [🎬 Vídeo](Videos/06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4) | Conjuntos disjuntos (búsqueda rápida, unión rápida, por tamaños, compresión), grafos valorados, propiedad del corte, Kruskal y Prim |
+| 06-1 | Petroleros hundidos | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Petroleros%20hundidos.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-1/README.md) | — | Conjuntos disjuntos sobre las celdas (8 vecinos): `unir` al añadir petróleo y `cardinal` para el máximo |
+| 06-2 | Camiones de reparto | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Camiones%20de%20reparto.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-2/README.md) | — | `GrafoValorado` + DFS por consulta que solo cruza aristas con valor ≥ anchura |
+| 06-3 | Recorriendo el archipiélago en bicicleta | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Recorriendo%20el%20archipi%C3%A9lago%20en%20bicicleta.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-3/README.md) | — | Kruskal: suma del árbol de recubrimiento de coste mínimo (o «No hay puentes suficientes») |
+| 06-4 | La selva de Tarzán | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-La%20selva%20de%20Tarz%C3%A1n.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-4/README.md) | — | Kruskal: la última arista aceptada (máximo del ARM) es la cuerda mínima |
+| 06-5 | Las minas del emperador Trajano | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Las%20minas%20del%20emperador%20Trajano.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-5/README.md) | — | Kruskal hasta que `origen` y `destino` quedan unidos: esa arista es el camino minimax |
+
+**Qué técnica usar**
+
+| Lo que pide el problema | Herramienta | Ejercicios |
+|---|---|---|
+| Una relación que solo se va **juntando** y hay que saber tamaños de grupos o si dos están juntos | **Conjuntos disjuntos** (`unir`, `unidos`, `cardinal`) | 06-1 |
+| Alcanzabilidad solo por aristas que cumplen una condición | DFS/BFS que **filtra** por `a.valor()` | 06-2 |
+| Conectarlo todo al menor coste total | **Kruskal** (ordenar aristas + conjuntos disjuntos para evitar ciclos) o Prim; suma de valores | 06-3 |
+| El mayor «salto» mínimo necesario para conectar todo | Kruskal: valor de la **última** arista aceptada | 06-4 |
+| Mejor camino entre **dos** vértices cuando cuenta la arista más mala (no la suma) | Kruskal con parada en cuanto `origen` y `destino` están unidos | 06-5 |
+
 ---
 
 <!-- acr-seccion:inicio -->
@@ -134,8 +158,11 @@ Muchos enunciados de la asignatura salen de [Acepta el Reto](https://aceptaelret
 | 05-2 | La máquina calculadora | [#319](https://aceptaelreto.com/problem/statement.php?id=319) | problema relacionado | — | No es el mismo problema, pero es el caso particular de la transformación modular: BFS sobre estados con 3 operaciones y módulo 10.000. |
 | 05-3 | Despegando pósits | [#654](https://aceptaelreto.com/problem/statement.php?id=654) | problema relacionado | — | No es el mismo problema, pero es un orden topológico por capas (con detección de ciclos: «IMPOSIBLE»). |
 | 05-5 | Haciendo trampas en Serpientes y Escaleras | [#253](https://aceptaelreto.com/problem/statement.php?id=253) | mismo problema | [📥 ACR-253](<Acepta el Reto/ACR-253_serpientes_y_escaleras.cpp>) | Mismo enunciado, pero allí la entrada termina con la línea «0 0 0 0» en vez de empezar con el número de casos. |
+| 06-1 | Petroleros hundidos | [#288](https://aceptaelreto.com/problem/statement.php?id=288) | casi el mismo problema | — | Mismo problema, pero allí no hay número de casos (se lee hasta el final del fichero) y, según el ejemplo de la página, el mar va como espacio en blanco en vez de `-`: lee cada fila con `getline` y comprueba que la longitud es C. |
+| 06-2 | Camiones de reparto | [#646](https://aceptaelreto.com/problem/statement.php?id=646) | mismo problema | — | Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero. |
+| 06-3 | Recorriendo el archipiélago en bicicleta | [#645](https://aceptaelreto.com/problem/statement.php?id=645) | casi el mismo problema | — | Misma historia, pero allí los límites son menores (hasta 1.000 islas y 10.000 puentes; aquí 10.000 y 100.000) y no hay número de casos: se lee hasta el final del fichero. |
 
-**Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
+**Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6, 06-4, 06-5. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
 
 Para añadir o corregir un enlace: edita `herramientas/acepta_el_reto.json` y ejecuta `python3 herramientas/enlaces_acepta.py`.
 <!-- acr-seccion:fin -->
@@ -169,6 +196,8 @@ Las cabeceras de la asignatura están en [`Estructuras de datos/`](Estructuras%2
 | [`Grafo.h`](Estructuras%20de%20datos/Grafo.h) | Grafo no dirigido con listas de adyacencia (`V()`, `A()`, `ady(v)`, `ponArista`) | Tema 4 |
 | [`Grafo_algoritmos.h`](Estructuras%20de%20datos/Grafo_algoritmos.h) | Algoritmos del tema 4 juntos: `CaminosDFS`, `CaminosBFS`, `ComponentesConexas`, `Bipartito`, `CicloGrafo` (extra) y `esArbolLibre` | Tema 4 |
 | [`Grafo_demo.cpp`](Estructuras%20de%20datos/Grafo_demo.cpp) | Ejecuta esos algoritmos sobre un grafo de ejemplo de 13 vértices y 3 componentes | Tema 4 |
+| [`ConjuntosDisjuntos.h`](Estructuras%20de%20datos/ConjuntosDisjuntos.h) | Partición en conjuntos disjuntos con unión por tamaños y compresión de caminos (`unir`, `buscar`, `unidos`, `cardinal`, `num_cjtos`) | Tema 6 |
+| [`GrafoValorado.h`](Estructuras%20de%20datos/GrafoValorado.h) | Grafo no dirigido valorado: `Arista<Valor>` (`uno`, `otro`, `valor`) y `GrafoValorado<Valor>` (`ady`, `aristas`, `ponArista`) | Tema 6 |
 | [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h) | Grafo dirigido con la misma interfaz (+ `hayArista`, `inverso()`, constructor desde `cin`) | Tema 5 |
 | [`Digrafo_algoritmos.h`](Estructuras%20de%20datos/Digrafo_algoritmos.h) | Algoritmos del tema 5 juntos: `DFSDirigido`, `BFSDirigido`, `OrdenTopologico`, `CicloDirigido` y `CFC` (componentes fuertemente conexas, extra) | Vídeo 05-0 |
 | [`Digrafo_demo.cpp`](Estructuras%20de%20datos/Digrafo_demo.cpp) | Ejecuta esos algoritmos sobre los grafos de las transparencias | Vídeo 05-0 |
@@ -181,6 +210,7 @@ Todos en [`Videos/`](Videos), con subtítulos en castellano (y capítulos el de 
 | Vídeo | Contenido |
 |---|---|
 | [`05-0_grafos_dirigidos_teoria.mp4`](Videos/05-0_grafos_dirigidos_teoria.mp4) | **Teoría completa del tema 5** (23 min, 10 capítulos) |
+| [`06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4`](Videos/06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4) | **Teoría completa del tema 6**: conjuntos disjuntos, grafos valorados, Kruskal y Prim, y cómo se aplican a 06-1 … 06-5 (con capítulos) |
 | `03-4`, `03-5`, `03-L` | Ejercicios del tema 3 |
 | `04-1` … `04-7`, `04-L` | Ejercicios del tema 4 |
 | `05-1`, `05-2`, `05-3`, `05-6` | Ejercicios del tema 5 |
@@ -206,6 +236,7 @@ Las carpetas de cada tema coinciden con las carpetas de la solución de Visual S
 │   │   ├── Digrafo.h            copia de la cabecera que usa
 │   │   └── README.md            explicación: qué piden, planteamiento, traza y coste
 │   └── …
+├── 6-Conjuntos disjuntos y grafos valorados/   explicaciones (sin código aún) y resumen del tema
 ├── Acepta el Reto/              versiones de las soluciones listas para enviar a aceptaelreto.com (un solo fichero)
 ├── Estructuras de datos/        cabeceras de la asignatura (+ algoritmos de los temas 4 y 5)
 ├── Videos/                      vídeos explicativos

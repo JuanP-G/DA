@@ -51,6 +51,15 @@
     {"id": "05-4", "carpeta": "5-Grafos dirigidos/EJ_05-4", "tipo": "ninguno"},
     {"id": "05-5", "carpeta": "5-Grafos dirigidos/EJ_05-5", "tipo": "igual", "problema": "Haciendo trampas en Serpientes y Escaleras", "num": 253,
      "nota": "Mismo enunciado, pero allí la entrada termina con la línea «0 0 0 0» en vez de empezar con el número de casos."},
-    {"id": "05-6", "carpeta": "5-Grafos dirigidos/EJ_05-6", "tipo": "ninguno"}
+    {"id": "05-6", "carpeta": "5-Grafos dirigidos/EJ_05-6", "tipo": "ninguno"},
+
+    {"id": "06-1", "carpeta": "6-Conjuntos disjuntos y grafos valorados/EJ_06-1", "tipo": "parecido", "problema": "Petroleros hundidos", "num": 288,
+     "nota": "Mismo problema, pero allí no hay número de casos (se lee hasta el final del fichero) y, según el ejemplo de la página, el mar va como espacio en blanco en vez de `-`: lee cada fila con `getline` y comprueba que la longitud es C."},
+    {"id": "06-2", "carpeta": "6-Conjuntos disjuntos y grafos valorados/EJ_06-2", "tipo": "igual", "problema": "Camiones de reparto", "num": 646,
+     "nota": "Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero."},
+    {"id": "06-3", "carpeta": "6-Conjuntos disjuntos y grafos valorados/EJ_06-3", "tipo": "parecido", "problema": "Recorriendo el archipiélago en bicicleta", "num": 645,
+     "nota": "Misma historia, pero allí los límites son menores (hasta 1.000 islas y 10.000 puentes; aquí 10.000 y 100.000) y no hay número de casos: se lee hasta el final del fichero."},
+    {"id": "06-4", "carpeta": "6-Conjuntos disjuntos y grafos valorados/EJ_06-4", "tipo": "ninguno"},
+    {"id": "06-5", "carpeta": "6-Conjuntos disjuntos y grafos valorados/EJ_06-5", "tipo": "ninguno"}
   ]
 }
