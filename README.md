@@ -11,7 +11,7 @@ Ejercicios del juez de **Diseño de Algoritmos** resueltos en C++, cada uno con 
 | [3 · Colas de prioridad variable](#tema-3--colas-de-prioridad-variable-indexpq) | `IndexPQ` | 6 | 3 | [`tema3-indexpq.html`](Visualizaciones/tema3-indexpq.html) |
 | [4 · Grafos no dirigidos](#tema-4--grafos-no-dirigidos) | `Grafo` | 8 | 8 | [`tema4-grafo.html`](Visualizaciones/tema4-grafo.html) |
 | [5 · Grafos dirigidos](#tema-5--grafos-dirigidos) | `Digrafo` | 6 + teoría | 5 | [`tema5-digrafo.html`](Visualizaciones/tema5-digrafo.html) |
-| [6 · Conjuntos disjuntos y grafos valorados](#tema-6--conjuntos-disjuntos-y-grafos-valorados) | `ConjuntosDisjuntos`, `GrafoValorado` | 5 + teoría | 1 | — |
+| [6 · Conjuntos disjuntos y grafos valorados](#tema-6--conjuntos-disjuntos-y-grafos-valorados) | `ConjuntosDisjuntos`, `GrafoValorado` | 5 + teoría | 1 | [`tema6-kruskal.html`](Visualizaciones/tema6-kruskal.html) |
 
 **Más abajo:** [Visualizaciones](#visualizaciones-interactivas) · [Estructuras de datos](#estructuras-de-datos) · [Vídeos](#vídeos) · [Organización](#organización-del-repositorio) · [Añadir un ejercicio](#añadir-un-ejercicio-nuevo) · [Compilar](#compilar-y-probar) · [Web](#web-del-repositorio)
 
@@ -180,6 +180,7 @@ Una página HTML por estructura, en [`Visualizaciones/`](Visualizaciones). Ejecu
 | [`tema3-indexpq.html`](Visualizaciones/tema3-indexpq.html) | `IndexPQ` | `push`, `update`, `pop` con la tabla `posiciones` |
 | [`tema4-grafo.html`](Visualizaciones/tema4-grafo.html) | `Grafo` | construir el grafo, listas de adyacencia, DFS (componentes), BFS, bipartito |
 | [`tema5-digrafo.html`](Visualizaciones/tema5-digrafo.html) | `Digrafo` | construir el digrafo, BFS, orden topológico con ciclos, `inverso()` |
+| [`tema6-kruskal.html`](Visualizaciones/tema6-kruskal.html) | `ConjuntosDisjuntos`, `GrafoValorado` | laboratorio de las 4 implementaciones de conjuntos disjuntos (autoevaluación 6.1, peor caso), manchas de petróleo (06-1), Kruskal y Prim sobre tu grafo |
 
 Se pueden usar desde la [web](https://juanp-g.github.io/DA/#herramientas) o descargando la carpeta y abriendo `index.html`. Se generan con `python3 Visualizaciones/_fuente/gen_grafos.py && python3 Visualizaciones/_fuente/build.py`.
 
@@ -198,6 +199,8 @@ Las cabeceras de la asignatura están en [`Estructuras de datos/`](Estructuras%2
 | [`Grafo_demo.cpp`](Estructuras%20de%20datos/Grafo_demo.cpp) | Ejecuta esos algoritmos sobre un grafo de ejemplo de 13 vértices y 3 componentes | Tema 4 |
 | [`ConjuntosDisjuntos.h`](Estructuras%20de%20datos/ConjuntosDisjuntos.h) | Partición en conjuntos disjuntos con unión por tamaños y compresión de caminos (`unir`, `buscar`, `unidos`, `cardinal`, `num_cjtos`) | Tema 6 |
 | [`GrafoValorado.h`](Estructuras%20de%20datos/GrafoValorado.h) | Grafo no dirigido valorado: `Arista<Valor>` (`uno`, `otro`, `valor`) y `GrafoValorado<Valor>` (`ady`, `aristas`, `ponArista`) | Tema 6 |
+| [`ConjuntosDisjuntos_variantes.h`](Estructuras%20de%20datos/ConjuntosDisjuntos_variantes.h) · [`_demo.cpp`](Estructuras%20de%20datos/ConjuntosDisjuntos_demo.cpp) | Las cuatro versiones de las transparencias (búsqueda rápida, unión rápida, por tamaños, con compresión) con contador de accesos | Tema 6 |
+| [`GrafoValorado_algoritmos.h`](Estructuras%20de%20datos/GrafoValorado_algoritmos.h) · [`_demo.cpp`](Estructuras%20de%20datos/GrafoValorado_demo.cpp) | `ARM_Kruskal` y `ARM_Prim` de las transparencias | Tema 6 |
 | [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h) | Grafo dirigido con la misma interfaz (+ `hayArista`, `inverso()`, constructor desde `cin`) | Tema 5 |
 | [`Digrafo_algoritmos.h`](Estructuras%20de%20datos/Digrafo_algoritmos.h) | Algoritmos del tema 5 juntos: `DFSDirigido`, `BFSDirigido`, `OrdenTopologico`, `CicloDirigido` y `CFC` (componentes fuertemente conexas, extra) | Vídeo 05-0 |
 | [`Digrafo_demo.cpp`](Estructuras%20de%20datos/Digrafo_demo.cpp) | Ejecuta esos algoritmos sobre los grafos de las transparencias | Vídeo 05-0 |

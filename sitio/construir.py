@@ -41,6 +41,7 @@ HERRAMIENTAS = [
     ("tema3-indexpq.html", "Tema 3", "IndexPQ", "Montículo con tabla de posiciones y update paso a paso."),
     ("tema4-grafo.html", "Tema 4", "Grafo", "Construye un grafo y ejecuta DFS, BFS y bipartito sobre el código real."),
     ("tema5-digrafo.html", "Tema 5", "Digrafo", "BFS, orden topológico con ciclos e inverso() paso a paso."),
+    ("tema6-kruskal.html", "Tema 6", "Conjuntos disjuntos y ARM", "Las cuatro implementaciones de conjuntos disjuntos y Kruskal / Prim paso a paso."),
 ]
 COPIAR = set()   # rutas relativas (posix) de ficheros del repo que hay que copiar a _site
 
