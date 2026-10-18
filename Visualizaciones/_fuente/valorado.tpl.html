@@ -112,6 +112,7 @@ a { color: var(--blue); }
           <label>algoritmo <select class="field" id="algo"></select></label>
           <label id="lblSrc">desde <input class="field" id="src" type="number" min="0" value="0" style="width:3.6em"></label>
           <label id="lblDst">hasta <input class="field" id="dst" type="number" min="0" value="3" style="width:3.6em"></label>
+          <label id="lblTxt">cargas <input class="field" id="txt" type="text" value="" style="width:11em" placeholder="10 5 15 8"></label>
           <label id="lblPar">ancho <input class="field" id="par" type="number" min="0" value="15" style="width:4.2em"></label>
           <button class="btn primary" id="bRun">Ejecutar</button>
         </div>
@@ -188,6 +189,7 @@ function loadPreset(p) {
   for (const [a, b, c] of p.e) gPon(a, b, c);
   if (p.src != null) { $('#src').value = p.src; $('#dst').value = p.dst != null ? p.dst : 0; }
   if (p.par != null) $('#par').value = p.par;
+  if (p.txt != null) $('#txt').value = p.txt;
   if (p.algo) { $('#algo').value = p.algo; updAlgoUI(); }
   afterEdit();
 }
@@ -205,19 +207,21 @@ function randomGraph() {
 
 /* ---------- dibujo ---------- */
 const svg = $('#gsvg'); const R = 22;
+let UNDIR = false;                                  /* «calles de doble sentido»: el digrafo lleva las dos aristas y se dibuja sin flechas */
+const arrows = () => DIR && !UNDIR;
 let visual = { sel: -1 };
 function edgeGeom(e, off) {
   const [x1, y1] = G.pos[e.v], [x2, y2] = G.pos[e.w];
   const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
   const sx = x1 + ux * R + nx * off * 0.6, sy = y1 + uy * R + ny * off * 0.6;
-  const ex = x2 - ux * (R + (DIR ? 3 : 0)) + nx * off * 0.6, ey = y2 - uy * (R + (DIR ? 3 : 0)) + ny * off * 0.6;
+  const ex = x2 - ux * (R + (arrows() ? 3 : 0)) + nx * off * 0.6, ey = y2 - uy * (R + (arrows() ? 3 : 0)) + ny * off * 0.6;
   const cx = (x1 + x2) / 2 + nx * off * 1.6, cy = (y1 + y2) / 2 + ny * off * 1.6;
   if (!off) return { d: `M${sx} ${sy} L${ex} ${ey}`, mx: (sx + ex) / 2, my: (sy + ey) / 2 };
   return { d: `M${sx} ${sy} Q${cx} ${cy} ${ex} ${ey}`, mx: 0.25 * sx + 0.5 * cx + 0.25 * ex, my: 0.25 * sy + 0.5 * cy + 0.25 * ey };
 }
 function drawGraph() {
   svg.innerHTML = '';
-  if (DIR) {
+  if (arrows()) {
     const defs = el('defs', {}, svg);
     for (const [id, cls] of [['ah', 'var(--muted)'], ['ahT', 'var(--blue)'], ['ahC', 'var(--accent)'], ['ahB', 'var(--red)'], ['ahN', 'var(--green)']]) {
       const m = el('marker', { id, viewBox: '0 0 10 10', refX: '9', refY: '5', markerWidth: '7', markerHeight: '7', orient: 'auto-start-reverse' }, defs);
@@ -236,7 +240,7 @@ function drawGraph() {
     else { const m = j - 1; off = m === 0 ? 0 : (m % 2 ? 1 : -1) * Math.ceil(m / 2) * 22; if (e.v > e.w) off = -off; }
     const { d, mx, my } = edgeGeom(e, off);
     const g = el('g', { class: 'eg', 'data-id': e.id }, eg);
-    const p = el('path', { d, class: 'edge' }, g); if (DIR) p.setAttribute('marker-end', 'url(#ah)');
+    const p = el('path', { d, class: 'edge' }, g); if (arrows()) p.setAttribute('marker-end', 'url(#ah)');
     const lab = el('g', { class: 'lab', transform: `translate(${mx} ${my})` }, g);
     const w = 9 * String(e.c).length + 10;
     el('rect', { x: -w / 2, y: -9, width: w, height: 18, rx: 4 }, lab);
@@ -262,15 +266,15 @@ function applyVisual() {
   visual.edgeEls.forEach(({ e, g, p }) => {
     const c = (f.edge && f.edge[e.id]) || '';
     g.setAttribute('class', 'eg' + (c ? ' ' + c : ''));
-    if (DIR) p.setAttribute('marker-end', 'url(#' + ({ tree: 'ahT', cur: 'ahC', back: 'ahB', new: 'ahN' }[c] || 'ah') + ')');
+    if (arrows()) p.setAttribute('marker-end', 'url(#' + ({ tree: 'ahT', cur: 'ahC', back: 'ahB', new: 'ahN' }[c] || 'ah') + ')');
   });
 }
 /* tabla de adyacencia */
-const chipTxt = (e, v) => (DIR ? e.w : otro(e, v)) + ' (' + e.c + ')';
+const chipTxt = (e, v) => (arrows() ? e.w : otro(e, v)) + ' (' + e.c + ')';
 function drawAdj(f) {
   const host = $('#adj'); host.innerHTML = '';
   $('#kV').textContent = G.n; $('#kA').textContent = G.A;
-  const adys = (f && f.adys) || G.ady;
+  const adys = (f && f.adys) || (UNDIR ? G.ady.map((_, v) => G.edges.filter(e => e.v === v || e.w === v)) : G.ady);
   for (let v = 0; v < G.n; v++) {
     const a = document.createElement('div'); a.className = 'vn'; a.textContent = '_ady[' + v + ']'; host.appendChild(a);
     const l = document.createElement('div'); l.className = 'lst' + (f && f.hotList === v ? ' hot' : ''); host.appendChild(l);
@@ -281,7 +285,9 @@ function drawAdj(f) {
     });
     if (!(adys[v] || []).length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '∅'; l.appendChild(e); }
   }
-  $('#adjNote').innerHTML = DIR
+  $('#adjNote').innerHTML = UNDIR
+    ? 'Las calles se recorren en <b>los dos sentidos</b>: en el código se llama dos veces a <code>ponArista</code> por calle (<code>v→w</code> y <code>w→v</code>), así que cada calle está en la lista de sus dos extremos (aquí se muestra el otro extremo y el valor).'
+    : DIR
     ? 'Cada arista <code>v→w</code> (con su valor entre paréntesis) se guarda <b>una vez</b>, en la lista de <code>v</code>: la suma de las longitudes de las listas es <code>_A</code>.'
     : 'Cada arista <code>v–w</code> es <b>un único objeto</b> <code>Arista</code> compartido: está en la lista de <code>v</code> y en la de <code>w</code> (la lista de <code>v</code> muestra el <i>otro</i> extremo y el valor). <code>_A</code> sube 1 pero la suma de las listas es <code>2·_A</code>; <code>aristas()</code> devuelve cada una solo una vez.';
 }
@@ -424,7 +430,9 @@ PRESETS.forEach((p, i) => { const o = document.createElement('option'); o.value 
 $('#preset').onchange = () => loadPreset(PRESETS[+$('#preset').value]);
 function updAlgoUI() {
   const a = ALGO_LIST.find(x => x.id === $('#algo').value);
-  $('#lblSrc').hidden = !a.src; $('#lblDst').hidden = !a.dst; $('#lblPar').hidden = !a.par;
+  $('#lblSrc').hidden = !a.src; $('#lblDst').hidden = !a.dst; $('#lblPar').hidden = !a.par; $('#lblTxt').hidden = !a.txt;
+  if (a.txt) $('#lblTxt').firstChild.textContent = a.txt + ' ';
+  const u = !!a.undir; if (u !== UNDIR) { UNDIR = u; curFrame = null; drawGraph(); drawAdj(); }
   if (a.par) $('#lblPar').firstChild.textContent = a.par + ' ';
   showCode(a.code); if (markFn) markFn([]);
 }
@@ -433,7 +441,7 @@ $('#bRun').onclick = () => {
   const a = ALGO_LIST.find(x => x.id === $('#algo').value);
   if (!G.n) { $('#msg').innerHTML = 'El grafo está vacío: crea o carga uno.'; return; }
   const s = Math.max(0, Math.min(G.n - 1, +$('#src').value || 0)), t = Math.max(0, Math.min(G.n - 1, +$('#dst').value || 0)), par = +$('#par').value || 0;
-  const frames = ALGOS[a.id](s, t, par);
+  const frames = ALGOS[a.id](s, t, par, $('#txt').value);
   drawGraph(); showCode(a.code); player.load(frames, { play: true });
 };
 $('#legend').innerHTML = @@LEGEND@@;

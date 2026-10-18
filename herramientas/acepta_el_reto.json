@@ -60,6 +60,9 @@
     {"id": "06-3", "carpeta": "6-Conjuntos disjuntos y grafos valorados/EJ_06-3", "tipo": "parecido", "problema": "Recorriendo el archipiélago en bicicleta", "num": 645,
      "nota": "Misma historia, pero allí los límites son menores (hasta 1.000 islas y 10.000 puentes; aquí 10.000 y 100.000) y no hay número de casos: se lee hasta el final del fichero."},
     {"id": "06-4", "carpeta": "6-Conjuntos disjuntos y grafos valorados/EJ_06-4", "tipo": "ninguno"},
-    {"id": "06-5", "carpeta": "6-Conjuntos disjuntos y grafos valorados/EJ_06-5", "tipo": "ninguno"}
+    {"id": "06-5", "carpeta": "6-Conjuntos disjuntos y grafos valorados/EJ_06-5", "tipo": "ninguno"},
+    {"id": "07-1", "carpeta": "7-Digrafos valorados y caminos minimos/EJ_07-1", "tipo": "parecido", "problema": "Navegando sin teclado", "num": 318, "nota": "Misma historia, pero allí los límites son menores (hasta 1.000 páginas; aquí 3.000 páginas y 30.000 enlaces) y no hay número de casos: se lee hasta el final del fichero."},
+    {"id": "07-2", "carpeta": "7-Digrafos valorados y caminos minimos/EJ_07-2", "tipo": "parecido", "problema": "Camino al cole", "num": 358, "nota": "Misma historia, pero allí los límites son distintos (hasta 10.000 intersecciones y 100.000 calles de hasta 100.000 de longitud; aquí 100.000, 200.000 y 10.000) y no hay número de casos: se lee hasta el final del fichero."},
+    {"id": "07-3", "carpeta": "7-Digrafos valorados y caminos minimos/EJ_07-3", "tipo": "parecido", "problema": "RapidEats", "num": 813, "nota": "Allí solo se pide el **tiempo mínimo** de cada pedido (sin la ruta: `30` en vez de `30: 1 -> 3`) y no hay número de casos (se lee hasta el final del fichero); el resto es igual."}
   ]
 }

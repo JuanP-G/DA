@@ -157,6 +157,78 @@ def tema6():
     })
 
 
+# ----------------------------------------------------------------------------------------------- tema 7
+def tema7():
+    clase = clase_tpl("Estructuras de datos/DigrafoValorado.h", "DigrafoValorado",
+                      [("(std::istream & flujo", "// ... constructor desde un flujo de entrada omitido"), ("void print(", "// ... print() omitido")])
+    arista = clase_tpl("Estructuras de datos/DigrafoValorado.h", "AristaDirigida", [("void print(", "// ... print() omitido")])
+    ej = lambda n, sig="void resuelveCaso()": funcion(f"{TEMA7}/EJ_07-{n}/EJ_07-{n}.cpp", sig)
+    codes = {
+        "clase": {"f": "DigrafoValorado.h (resumen)", "tab": "DigrafoValorado.h", "lines": clase},
+        "arista": {"f": "DigrafoValorado.h · AristaDirigida", "tab": "AristaDirigida", "lines": arista},
+        "dijkstra": {"f": "DigrafoValorado_algoritmos.h · Dijkstra", "tab": "Dijkstra", "lines": clase_tpl("Estructuras de datos/DigrafoValorado_algoritmos.h", "Dijkstra")},
+        "dijkstra_vec": {"f": "DigrafoValorado_algoritmos.h · DijkstraVector", "tab": "Dijkstra con vector", "lines": clase_tpl("Estructuras de datos/DigrafoValorado_algoritmos.h", "DijkstraVector")},
+        "e71": {"f": "EJ_07-1.cpp", "tab": "07-1", "lines": ej(1)},
+        "e72": {"f": "EJ_07-2.cpp", "tab": "07-2", "lines": ej(2)},
+        "e73": {"f": "EJ_07-3.cpp", "tab": "07-3", "lines": ej(3)},
+    }
+    algo_list = [
+        {"id": "dij_pq", "nombre": "Dijkstra con IndexPQ: caminos mínimos desde un origen (Dijkstra)", "src": True, "dst": False, "code": "dijkstra"},
+        {"id": "dij_vec", "nombre": "Dijkstra con vector, sin cola de prioridad (DijkstraVector, O(V²))", "src": True, "dst": False, "code": "dijkstra_vec"},
+        {"id": "e71", "nombre": "07-1 Navegando sin teclado: enlace + carga de la página", "src": True, "dst": True, "txt": "cargas", "code": "e71"},
+        {"id": "e72", "nombre": "07-2 Camino al cole: contar caminos mínimos (calles de doble sentido)", "src": True, "dst": True, "undir": True, "code": "e72"},
+        {"id": "e73", "nombre": "07-3 RapidEats: tiempo y ruta con ulti[] (tramos de doble sentido)", "src": True, "dst": True, "undir": True, "code": "e73"},
+    ]
+    p = lambda n, nombre, e, **kw: dict(nombre=nombre, n=n, e=e, **kw)
+    slides = [[0, 1, 5], [0, 7, 8], [0, 4, 9], [1, 3, 15], [1, 2, 12], [1, 7, 4], [7, 2, 7], [7, 5, 6], [4, 7, 5], [4, 5, 4], [4, 6, 20], [5, 2, 1], [5, 6, 13], [2, 3, 3], [2, 6, 11], [3, 6, 9]]
+    pos_slides = [[144, 202], [275, 165], [415, 245], [479, 164], [145, 356], [341, 313], [546, 361], [275, 246]]
+    presets = [
+        p(8, "El digrafo de las transparencias (8 vértices)", slides, algo="dij_pq", src=0, dst=6, pos=pos_slides),
+        p(8, "El mismo digrafo con Dijkstra con vector", slides, algo="dij_vec", src=0, dst=6, pos=pos_slides),
+        p(3, "¿Árbol de caminos mínimos = ARM? (triángulo)", [[0, 1, 2], [1, 2, 2], [0, 2, 3]], algo="dij_pq", src=0, dst=2, pos=[[110, 300], [320, 110], [530, 300]]),
+        p(4, "07-1 · Navegando sin teclado (ejemplo 1: 53)", [[0, 1, 10], [0, 2, 20], [0, 3, 100], [1, 3, 20], [2, 3, 20]], algo="e71", src=0, dst=3, txt="10 5 15 8", pos=[[80, 210], [270, 90], [270, 330], [520, 210]]),
+        p(4, "07-1 · Navegando sin teclado (ejemplo 2: IMPOSIBLE)", [[0, 1, 10], [0, 2, 20], [1, 2, 40], [3, 1, 10]], algo="e71", src=0, dst=3, txt="10 5 15 8", pos=[[80, 210], [270, 90], [270, 330], [520, 210]]),
+        p(7, "07-2 · Camino al cole (ejemplo 1: 4 formas)", [[0, 1, 5], [0, 2, 7], [1, 3, 10], [2, 3, 8], [1, 4, 30], [3, 4, 12], [3, 6, 25], [3, 5, 11], [4, 6, 13], [5, 6, 30]], algo="e72", src=0, dst=6, pos=[[60, 210], [190, 90], [190, 330], [320, 210], [450, 90], [450, 330], [580, 210]]),
+        p(4, "07-3 · RapidEats (ejemplo 1: del punto 4 al 1)", [[0, 1, 15], [0, 2, 30], [1, 2, 20], [3, 2, 10]], algo="e73", src=3, dst=0, pos=[[120, 210], [300, 90], [330, 300], [540, 300]]),
+    ]
+    ideas = "\n".join([
+        li("Relajar una arista", "Si ir por <code>v → w</code> mejora el camino más corto conocido hasta <code>w</code> (<code>dist[v] + valor &lt; dist[w]</code>), se actualizan <code>dist[w]</code> y <code>ulti[w]</code>. Todo el tema es repetir esto en un orden inteligente."),
+        li("Dijkstra: el más cercano primero", "Con valores <b>≥ 0</b>, el vértice de menor <code>dist</code> que aún no se ha tratado ya no puede mejorar: su distancia es <b>definitiva</b>. Se saca de la cola de prioridad y se relajan sus aristas salientes. Cada arista se relaja <b>una vez</b>."),
+        li("Por qué O(A log V)", "V <code>pop</code> y como mucho A <code>update</code>, cada uno de coste log V (la <code>IndexPQ</code> del tema 3 permite cambiar la prioridad de un vértice que ya está en la cola)."),
+        li("Con un vector en vez de cola", "Si en cada paso se recorre <code>dist</code> buscando el mínimo no tratado, el coste baja a O(V² + A). Peor en grafos dispersos, <b>mejor en los densos</b> (A ≈ V²). Compara los accesos al vector con «Dijkstra con vector»."),
+        li("El camino, hacia atrás", "<code>ulti[v]</code> guarda la <b>última arista</b> del camino mínimo hasta <code>v</code>. Para escribir el camino se retrocede desde el destino hasta el origen y se meten los vértices por delante (07-3)."),
+        li("Caminos mínimos ≠ ARM", "El árbol de caminos mínimos depende del <b>origen</b> y minimiza la distancia a cada vértice; el ARM no depende de él y minimiza la <b>suma</b> de las aristas. En el triángulo de ejemplo salen costes distintos: 5 frente a 4."),
+        li("07-1: coste también en los vértices", "Se suma la carga de la página a la arista que <b>entra</b> en ella y la de la página inicial a <code>dist[origen]</code>: así hay un solo tipo de coste y vale Dijkstra tal cual."),
+        li("07-2: contar caminos mínimos", "Con un segundo vector <code>formas[]</code>: si <code>dist[w]</code> mejora, <code>formas[w] = formas[v]</code>; si empata, <code>formas[w] += formas[v]</code>. Las aristas azules son las que aparecen en algún camino mínimo."),
+    ])
+    tabla = "\n".join([
+        fila("07-1", "Navegando sin teclado", "Dijkstra con coste en vértices y aristas: <code>t + carga[w]</code> y <code>dist[0] = carga[0]</code>"),
+        fila("07-2", "Camino al cole", "Dijkstra que cuenta caminos mínimos (sustituir si mejora, sumar si empata)"),
+        fila("07-3", "RapidEats con ruta", "Dijkstra por pedido y reconstrucción de la ruta con <code>ulti[]</code>"),
+    ])
+    return pagina({
+        "TITULO": "Dijkstra y caminos mínimos", "TEMA": "7", "H1": "Dígrafos valorados y caminos de coste mínimo",
+        "LEDE": "Un dígrafo con un valor en cada arista y el algoritmo de Dijkstra: relajación de aristas, cola de prioridad variable (y la variante con un simple vector), árbol de caminos mínimos y las variantes de los ejercicios (cargas en los vértices, contar caminos y escribir la ruta). Todo paso a paso sobre el código real.",
+        "GRAFO": "dígrafo valorado", "GRAFO_H2": "Dígrafo valorado (arrastra los vértices)", "HEADER": "<code>DigrafoValorado.h</code> y <code>IndexPQ.h</code>", "DIR": "true",
+        "PASO1": "1", "PASO2": "2", "EXTRA_CSS": "", "TABS_HTML": "", "LAB_HTML": "",
+        "IDEAS": ideas, "TABLA": tabla,
+        "PRESETS": json.dumps(presets, ensure_ascii=False), "CODES": json.dumps(codes, ensure_ascii=False), "ALGO_LIST": json.dumps(algo_list, ensure_ascii=False),
+        "ALGOS": js("valorado_algos_t7.js"),
+        "LEGEND": json.dumps(
+            '<span><b style="border-color:var(--accent);background:var(--accent-soft)"></b>arista que se relaja / vértice que sale de la cola</span>'
+            '<span><b style="border-color:var(--blue);background:var(--blue-soft)"></b>arista de <code>ulti[]</code> (mejor camino conocido)</span>'
+            '<span><b style="border-color:var(--purple);background:var(--purple-soft)"></b>vértice en la cola</span>'
+            '<span><b style="border-color:var(--green);background:var(--green-soft)"></b>distancia definitiva / árbol final</span>'
+            '<span><b style="border-color:var(--red);background:var(--red-soft)"></b>destino no alcanzable</span>', ensure_ascii=False),
+        "PESO_RND": "pesos[pi++]",
+        "L_PON1": "L('clase','if (v < 0'),L('clase','throw'),L('clase','++_A')",
+        "L_PON2": "L('clase','_ady[v].push_back(arista)')", "L_PON3": "0",
+        "LAB_INIT": "", "LAB_START": "mostrarTab('graf');",
+        "EXPORTS": "dijkstra",
+    })
+
+
 if __name__ == "__main__":
     (AQUI / "tema6-kruskal.frag.html").write_text(tema6(), encoding="utf-8")
+    (AQUI / "tema7-dijkstra.frag.html").write_text(tema7(), encoding="utf-8")
     print("ok")

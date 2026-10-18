@@ -79,6 +79,17 @@ EJERCICIOS = {
     645: dict(id="06-3", titulo="Recorriendo el archipiélago en bicicleta", fuente="6-Conjuntos disjuntos y grafos valorados/EJ_06-3/EJ_06-3.cpp", slug="archipielago_en_bicicleta",
               cambios=[(r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
                         "no hay número de casos: se lee hasta el final del fichero")]),
+    318: dict(id="07-1", titulo="Navegando sin teclado", fuente="7-Digrafos valorados y caminos minimos/EJ_07-1/EJ_07-1.cpp", slug="navegando_sin_teclado",
+              cambios=[(r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
+                        "no hay número de casos: se lee hasta el final del fichero")]),
+    358: dict(id="07-2", titulo="Camino al cole", fuente="7-Digrafos valorados y caminos minimos/EJ_07-2/EJ_07-2.cpp", slug="camino_al_cole",
+              cambios=[(r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
+                        "no hay número de casos: se lee hasta el final del fichero")]),
+    813: dict(id="07-3", titulo="RapidEats", fuente="7-Digrafos valorados y caminos minimos/EJ_07-3/EJ_07-3.cpp", slug="rapideats",
+              cambios=[(r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
+                        "no hay número de casos: se lee hasta el final del fichero"),
+                       (r"(?s)deque<int> camino;.*?cout << '\\n';", "cout << dist[destino] << '\\\\n';",
+                        "allí solo se pide el tiempo mínimo de cada pedido (sin la ruta): se escribe `30` en vez de `30: 1 -> 3`")]),
 }
 
 

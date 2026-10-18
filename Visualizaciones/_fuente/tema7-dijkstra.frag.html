@@ -1,0 +1,628 @@
+<title>Dijkstra y caminos mínimos</title>
+<style>
+/*SHARED_CSS*/
+.gtools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.gtools .grp { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; max-width: 100%; }
+.gtools .sep { width: 1px; align-self: stretch; background: var(--line); }
+.bar label { max-width: 100%; min-width: 0; }
+.bar select.field, .gtools select.field { max-width: 100%; min-width: 0; }
+svg.gs { touch-action: none; }
+svg.gs .eg path.edge { stroke: var(--muted); stroke-width: 2.2; fill: none; transition: stroke .25s, stroke-width .25s; }
+svg.gs .eg .lab rect { fill: var(--bg); stroke: var(--line); stroke-width: 1; transition: stroke .25s, fill .25s; }
+svg.gs .eg .lab text { font-size: 12.5px; font-weight: 600; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+svg.gs .eg.tree path.edge { stroke: var(--blue); stroke-width: 4; }
+svg.gs .eg.tree .lab rect { stroke: var(--blue); fill: var(--blue-soft); }
+svg.gs .eg.cur path.edge { stroke: var(--accent); stroke-width: 4.5; }
+svg.gs .eg.cur .lab rect { stroke: var(--accent); fill: var(--accent-soft); }
+svg.gs .eg.back path.edge { stroke: var(--red); stroke-width: 3.5; stroke-dasharray: 6 4; }
+svg.gs .eg.back .lab rect { stroke: var(--red); fill: var(--red-soft); }
+svg.gs .eg.new path.edge { stroke: var(--green); stroke-width: 5; }
+svg.gs .eg.new .lab rect { stroke: var(--green); fill: var(--green-soft); }
+svg.gs .eg.dead path.edge { opacity: .35; }
+svg.gs .eg.dead .lab { opacity: .45; }
+svg.gs .node circle { fill: var(--node); stroke: var(--muted); stroke-width: 2.5; transition: fill .25s, stroke .25s; cursor: grab; }
+svg.gs .node.s-vis circle { fill: var(--blue-soft); stroke: var(--blue); }
+svg.gs .node.s-cur circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 4; }
+svg.gs .node.s-done circle { fill: var(--green-soft); stroke: var(--green); }
+svg.gs .node.s-red circle { fill: var(--red-soft); stroke: var(--red); stroke-width: 4; }
+svg.gs .node.s-q circle { fill: var(--purple-soft); stroke: var(--purple); }
+svg.gs .node.sel circle { stroke-dasharray: 5 3; stroke: var(--accent); stroke-width: 4; }
+svg.gs .node text { font-size: 15px; font-weight: 600; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+#gsvg text.tg { font-size: 12.5px; text-anchor: middle; font-weight: 600; pointer-events: none; fill: var(--accent); }
+.adj { display: grid; grid-template-columns: auto 1fr; gap: 5px 8px; font-family: var(--mono); font-size: .88rem; align-items: center; }
+.adj .vn { color: var(--muted); text-align: right; }
+.adj .lst { display: flex; flex-wrap: wrap; gap: 4px; min-height: 26px; align-items: center; padding: 2px 6px; border: 1px dashed var(--line); border-radius: 6px; }
+.adj .lst.hot { border-color: var(--accent); background: var(--accent-soft); }
+.chip { display: inline-block; min-width: 1.8em; text-align: center; padding: 1px 7px; border-radius: 5px; background: var(--panel-2); border: 1px solid var(--line); font-family: var(--mono); font-size: .86rem; }
+.chip.new { background: var(--green-soft); border-color: var(--green); color: var(--green); font-weight: 600; }
+.chip.cur { background: var(--accent-soft); border-color: var(--accent); }
+.chip.ok { background: var(--blue-soft); border-color: var(--blue); }
+.chip.bad { background: var(--red-soft); border-color: var(--red); text-decoration: line-through; }
+.chip.dead { opacity: .5; }
+.vec { display: flex; flex-wrap: wrap; gap: 4px; font-family: var(--mono); font-size: .86rem; }
+.vec .c { display: flex; flex-direction: column; align-items: stretch; text-align: center; min-width: 2.6em; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.vec .c i { font-style: normal; background: var(--panel-2); color: var(--muted); font-size: .72rem; padding: 0 4px; }
+.vec .c b { font-weight: 500; padding: 2px 4px; }
+.vec .c.hot b { background: var(--accent-soft); color: var(--accent); }
+.vec .c.ok b { background: var(--green-soft); }
+.vec .c.bad b { background: var(--red-soft); }
+.listbox { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-family: var(--mono); font-size: .88rem; min-height: 28px; }
+.listbox .lab { color: var(--muted); font-size: .78rem; margin-right: 4px; text-transform: uppercase; letter-spacing: .06em; }
+.cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.cases .panel { box-shadow: none; }
+.cases h3 { margin: 0 0 6px; font-size: .98rem; }
+.cases p { margin: 0 0 6px; font-size: .9rem; color: var(--muted); }
+.cases p:last-child { margin: 0; }
+.toolbtn { min-width: 2.4em; }
+.hint { font-size: .82rem; color: var(--muted); margin: 0; }
+.back { font-size: .9rem; }
+a { color: var(--blue); }
+.colstack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.tabs .btn { border-radius: 8px 8px 0 0; }
+.tabs .btn.on { background: var(--panel); border-bottom-color: var(--panel); }
+.tabpanel { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+[hidden] { display: none !important; }
+
+</style>
+<div class="wrap">
+  <header class="top">
+    <span class="tag">Tema 7</span>
+    <h1>Dígrafos valorados y caminos de coste mínimo</h1>
+    <p class="lede">Un dígrafo con un valor en cada arista y el algoritmo de Dijkstra: relajación de aristas, cola de prioridad variable (y la variante con un simple vector), árbol de caminos mínimos y las variantes de los ejercicios (cargas en los vértices, contar caminos y escribir la ruta). Todo paso a paso sobre el código real.</p>
+    <a class="back" href="index.html">← Todas las estructuras</a>
+  </header>
+
+
+  <div class="tabpanel" id="tabGraf">
+  <section class="panel">
+    <h2>1 · Construye el dígrafo valorado</h2>
+    <div class="gtools">
+      <div class="grp" role="group" aria-label="Herramienta">
+        <button class="btn toolbtn on" id="tMove" title="Arrastra vértices">✥ Mover</button>
+        <button class="btn toolbtn" id="tVert" title="Clic en el lienzo crea un vértice">＋ Vértice</button>
+        <button class="btn toolbtn" id="tEdge" title="Clic en dos vértices para unirlos">⤳ Arista</button>
+      </div>
+      <span class="sep"></span>
+      <div class="grp">
+        <label>valor <input class="field" id="eC" type="number" min="0" value="5" style="width:4em"></label>
+        <label>ponArista(<input class="field" id="eV" type="number" min="0" value="0" style="width:3.6em">, <input class="field" id="eW" type="number" min="0" value="1" style="width:3.6em">)</label>
+        <button class="btn" id="bPon">Añadir</button>
+      </div>
+      <span class="sep"></span>
+      <div class="grp">
+        <select class="field" id="preset" aria-label="Ejemplos"></select>
+        <button class="btn" id="bRand">Aleatorio</button>
+        <button class="btn" id="bClear">Vaciar</button>
+      </div>
+    </div>
+    <p class="hint" id="toolHint"></p>
+  </section>
+
+  <div class="stage">
+    <div class="colstack">
+      <section class="panel">
+        <h2>Dígrafo valorado (arrastra los vértices)</h2>
+        <div class="canvas-scroll"><svg id="gsvg" class="viz gs" viewBox="0 0 640 420" role="img" aria-label="Dígrafo valorado (arrastra los vértices)"></svg></div>
+        <div class="legend" id="legend" style="margin-top:10px"></div>
+      </section>
+      <section class="panel">
+        <h2>2 · Ejecuta un algoritmo</h2>
+        <div class="bar" style="margin-bottom:10px">
+          <label>algoritmo <select class="field" id="algo"></select></label>
+          <label id="lblSrc">desde <input class="field" id="src" type="number" min="0" value="0" style="width:3.6em"></label>
+          <label id="lblDst">hasta <input class="field" id="dst" type="number" min="0" value="3" style="width:3.6em"></label>
+          <label id="lblTxt">cargas <input class="field" id="txt" type="text" value="" style="width:11em" placeholder="10 5 15 8"></label>
+          <label id="lblPar">ancho <input class="field" id="par" type="number" min="0" value="15" style="width:4.2em"></label>
+          <button class="btn primary" id="bRun">Ejecutar</button>
+        </div>
+        <div id="playerHost"></div>
+      </section>
+    </div>
+    <div class="colstack">
+      <section class="panel">
+        <h2>Lo que guarda la clase</h2>
+        <dl class="kv" style="margin-bottom:10px"><dt>_V</dt><dd id="kV">0</dd><dt>_A</dt><dd id="kA">0</dd></dl>
+        <div class="adj" id="adj" aria-label="Listas de adyacencia"></div>
+        <p class="note" style="margin-top:8px" id="adjNote"></p>
+      </section>
+      <section class="panel" id="datos">
+        <h2>Vectores y colas del algoritmo</h2>
+        <div id="state" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+      <section class="panel">
+        <h2>Código C++</h2>
+        <div id="codeHost" style="max-height:420px;overflow:auto"></div>
+        <div class="bar" style="margin-top:8px" id="codeTabs"></div>
+      </section>
+    </div>
+  </div>
+  </div>
+
+  <section class="panel">
+    <h2>Para entenderlo</h2>
+    <div class="cases">
+      <div class="panel"><h3>Relajar una arista</h3><p>Si ir por <code>v → w</code> mejora el camino más corto conocido hasta <code>w</code> (<code>dist[v] + valor &lt; dist[w]</code>), se actualizan <code>dist[w]</code> y <code>ulti[w]</code>. Todo el tema es repetir esto en un orden inteligente.</p></div>
+      <div class="panel"><h3>Dijkstra: el más cercano primero</h3><p>Con valores <b>≥ 0</b>, el vértice de menor <code>dist</code> que aún no se ha tratado ya no puede mejorar: su distancia es <b>definitiva</b>. Se saca de la cola de prioridad y se relajan sus aristas salientes. Cada arista se relaja <b>una vez</b>.</p></div>
+      <div class="panel"><h3>Por qué O(A log V)</h3><p>V <code>pop</code> y como mucho A <code>update</code>, cada uno de coste log V (la <code>IndexPQ</code> del tema 3 permite cambiar la prioridad de un vértice que ya está en la cola).</p></div>
+      <div class="panel"><h3>Con un vector en vez de cola</h3><p>Si en cada paso se recorre <code>dist</code> buscando el mínimo no tratado, el coste baja a O(V² + A). Peor en grafos dispersos, <b>mejor en los densos</b> (A ≈ V²). Compara los accesos al vector con «Dijkstra con vector».</p></div>
+      <div class="panel"><h3>El camino, hacia atrás</h3><p><code>ulti[v]</code> guarda la <b>última arista</b> del camino mínimo hasta <code>v</code>. Para escribir el camino se retrocede desde el destino hasta el origen y se meten los vértices por delante (07-3).</p></div>
+      <div class="panel"><h3>Caminos mínimos ≠ ARM</h3><p>El árbol de caminos mínimos depende del <b>origen</b> y minimiza la distancia a cada vértice; el ARM no depende de él y minimiza la <b>suma</b> de las aristas. En el triángulo de ejemplo salen costes distintos: 5 frente a 4.</p></div>
+      <div class="panel"><h3>07-1: coste también en los vértices</h3><p>Se suma la carga de la página a la arista que <b>entra</b> en ella y la de la página inicial a <code>dist[origen]</code>: así hay un solo tipo de coste y vale Dijkstra tal cual.</p></div>
+      <div class="panel"><h3>07-2: contar caminos mínimos</h3><p>Con un segundo vector <code>formas[]</code>: si <code>dist[w]</code> mejora, <code>formas[w] = formas[v]</code>; si empata, <code>formas[w] += formas[v]</code>. Las aristas azules son las que aparecen en algún camino mínimo.</p></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Ejercicios del repositorio que lo usan</h2>
+    <table class="t">
+      <thead><tr><th>Nº</th><th>Problema</th><th>Idea</th></tr></thead>
+      <tbody>
+        <tr><td><code>07-1</code></td><td>Navegando sin teclado</td><td>Dijkstra con coste en vértices y aristas: <code>t + carga[w]</code> y <code>dist[0] = carga[0]</code></td></tr>
+        <tr><td><code>07-2</code></td><td>Camino al cole</td><td>Dijkstra que cuenta caminos mínimos (sustituir si mejora, sumar si empata)</td></tr>
+        <tr><td><code>07-3</code></td><td>RapidEats con ruta</td><td>Dijkstra por pedido y reconstrucción de la ruta con <code>ulti[]</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+  <footer class="foot"><a href="index.html">← Todas las estructuras</a> · Código basado en <code>DigrafoValorado.h</code> y <code>IndexPQ.h</code> (A. Verdejo) · el comportamiento de la página sigue exactamente ese código.</footer>
+</div>
+
+<script>
+/*SHARED_JS*/
+const DIR = true;
+const INF = '∞';
+
+/* ---------- modelo: igual que la clase C++ ---------- */
+const G = { n: 0, A: 0, ady: [], pos: [], edges: [] };
+function gReset() { G.n = 0; G.A = 0; G.ady = []; G.pos = []; G.edges = []; }
+function gAddV(x, y) { G.ady.push([]); G.pos.push([x, y]); G.n++; return G.n - 1; }
+/* arista: { id, v, w, c }; en no dirigido el mismo objeto está en ady[v] y ady[w] */
+function gPon(v, w, c) {
+  if (v < 0 || v >= G.n || w < 0 || w >= G.n) throw new Error('Vertice inexistente');
+  const e = { id: G.edges.length, v, w, c }; G.edges.push(e); G.A++;
+  G.ady[v].push(e); if (!DIR) G.ady[w].push(e);
+  return e;
+}
+const otro = (e, u) => (e.v === u ? e.w : e.v);
+const hasta = e => e.w;
+const sig = (e, u) => (DIR ? e.w : otro(e, u));            /* vértice al que lleva e viniendo de u */
+const gCopia = () => G.ady.map(a => a.slice());
+
+/* ---------- ejemplos ---------- */
+const PRESETS = [{"nombre": "El digrafo de las transparencias (8 vértices)", "n": 8, "e": [[0, 1, 5], [0, 7, 8], [0, 4, 9], [1, 3, 15], [1, 2, 12], [1, 7, 4], [7, 2, 7], [7, 5, 6], [4, 7, 5], [4, 5, 4], [4, 6, 20], [5, 2, 1], [5, 6, 13], [2, 3, 3], [2, 6, 11], [3, 6, 9]], "algo": "dij_pq", "src": 0, "dst": 6, "pos": [[144, 202], [275, 165], [415, 245], [479, 164], [145, 356], [341, 313], [546, 361], [275, 246]]}, {"nombre": "El mismo digrafo con Dijkstra con vector", "n": 8, "e": [[0, 1, 5], [0, 7, 8], [0, 4, 9], [1, 3, 15], [1, 2, 12], [1, 7, 4], [7, 2, 7], [7, 5, 6], [4, 7, 5], [4, 5, 4], [4, 6, 20], [5, 2, 1], [5, 6, 13], [2, 3, 3], [2, 6, 11], [3, 6, 9]], "algo": "dij_vec", "src": 0, "dst": 6, "pos": [[144, 202], [275, 165], [415, 245], [479, 164], [145, 356], [341, 313], [546, 361], [275, 246]]}, {"nombre": "¿Árbol de caminos mínimos = ARM? (triángulo)", "n": 3, "e": [[0, 1, 2], [1, 2, 2], [0, 2, 3]], "algo": "dij_pq", "src": 0, "dst": 2, "pos": [[110, 300], [320, 110], [530, 300]]}, {"nombre": "07-1 · Navegando sin teclado (ejemplo 1: 53)", "n": 4, "e": [[0, 1, 10], [0, 2, 20], [0, 3, 100], [1, 3, 20], [2, 3, 20]], "algo": "e71", "src": 0, "dst": 3, "txt": "10 5 15 8", "pos": [[80, 210], [270, 90], [270, 330], [520, 210]]}, {"nombre": "07-1 · Navegando sin teclado (ejemplo 2: IMPOSIBLE)", "n": 4, "e": [[0, 1, 10], [0, 2, 20], [1, 2, 40], [3, 1, 10]], "algo": "e71", "src": 0, "dst": 3, "txt": "10 5 15 8", "pos": [[80, 210], [270, 90], [270, 330], [520, 210]]}, {"nombre": "07-2 · Camino al cole (ejemplo 1: 4 formas)", "n": 7, "e": [[0, 1, 5], [0, 2, 7], [1, 3, 10], [2, 3, 8], [1, 4, 30], [3, 4, 12], [3, 6, 25], [3, 5, 11], [4, 6, 13], [5, 6, 30]], "algo": "e72", "src": 0, "dst": 6, "pos": [[60, 210], [190, 90], [190, 330], [320, 210], [450, 90], [450, 330], [580, 210]]}, {"nombre": "07-3 · RapidEats (ejemplo 1: del punto 4 al 1)", "n": 4, "e": [[0, 1, 15], [0, 2, 30], [1, 2, 20], [3, 2, 10]], "algo": "e73", "src": 3, "dst": 0, "pos": [[120, 210], [300, 90], [330, 300], [540, 300]]}];
+function layoutCircle(n, cx = 320, cy = 210, r = 150) { const out = []; for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + 2 * Math.PI * i / n; out.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return out; }
+function loadPreset(p) {
+  gReset();
+  const pts = p.pos || layoutCircle(p.n);
+  for (let i = 0; i < p.n; i++) gAddV(pts[i][0], pts[i][1]);
+  for (const [a, b, c] of p.e) gPon(a, b, c);
+  if (p.src != null) { $('#src').value = p.src; $('#dst').value = p.dst != null ? p.dst : 0; }
+  if (p.par != null) $('#par').value = p.par;
+  if (p.txt != null) $('#txt').value = p.txt;
+  if (p.algo) { $('#algo').value = p.algo; updAlgoUI(); }
+  afterEdit();
+}
+function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+function randomGraph() {
+  const n = rnd(6, 9); gReset(); const pts = layoutCircle(n); for (let i = 0; i < n; i++) gAddV(pts[i][0], pts[i][1]);
+  const usados = new Set(), clave = (a, b) => (DIR ? a + '_' + b : Math.min(a, b) + '_' + Math.max(a, b));
+  const pesos = []; for (let i = 1; i <= 30; i++) pesos.push(i); pesos.sort(() => Math.random() - 0.5);
+  let pi = 0;
+  const poner = (a, b) => { if (a === b || usados.has(clave(a, b))) return false; usados.add(clave(a, b)); gPon(a, b, pesos[pi++]); return true; };
+  for (let v = 1; v < n; v++) { const u = rnd(0, v - 1); DIR && Math.random() < 0.5 ? poner(v, u) : poner(u, v); }   /* conexo (como grafo) */
+  let extra = rnd(3, 6), guard = 0; while (extra > 0 && guard++ < 200) if (poner(rnd(0, n - 1), rnd(0, n - 1))) extra--;
+  afterEdit();
+}
+
+/* ---------- dibujo ---------- */
+const svg = $('#gsvg'); const R = 22;
+let UNDIR = false;                                  /* «calles de doble sentido»: el digrafo lleva las dos aristas y se dibuja sin flechas */
+const arrows = () => DIR && !UNDIR;
+let visual = { sel: -1 };
+function edgeGeom(e, off) {
+  const [x1, y1] = G.pos[e.v], [x2, y2] = G.pos[e.w];
+  const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+  const sx = x1 + ux * R + nx * off * 0.6, sy = y1 + uy * R + ny * off * 0.6;
+  const ex = x2 - ux * (R + (arrows() ? 3 : 0)) + nx * off * 0.6, ey = y2 - uy * (R + (arrows() ? 3 : 0)) + ny * off * 0.6;
+  const cx = (x1 + x2) / 2 + nx * off * 1.6, cy = (y1 + y2) / 2 + ny * off * 1.6;
+  if (!off) return { d: `M${sx} ${sy} L${ex} ${ey}`, mx: (sx + ex) / 2, my: (sy + ey) / 2 };
+  return { d: `M${sx} ${sy} Q${cx} ${cy} ${ex} ${ey}`, mx: 0.25 * sx + 0.5 * cx + 0.25 * ex, my: 0.25 * sy + 0.5 * cy + 0.25 * ey };
+}
+function drawGraph() {
+  svg.innerHTML = '';
+  if (arrows()) {
+    const defs = el('defs', {}, svg);
+    for (const [id, cls] of [['ah', 'var(--muted)'], ['ahT', 'var(--blue)'], ['ahC', 'var(--accent)'], ['ahB', 'var(--red)'], ['ahN', 'var(--green)']]) {
+      const m = el('marker', { id, viewBox: '0 0 10 10', refX: '9', refY: '5', markerWidth: '7', markerHeight: '7', orient: 'auto-start-reverse' }, defs);
+      el('path', { d: 'M0 0 L10 5 L0 10 z', fill: cls }, m);
+    }
+  }
+  const eg = el('g', {}, svg), ng = el('g', {}, svg), tg = el('g', {}, svg);
+  const cnt = {};   /* nº de aristas ya dibujadas en el mismo par (ordenado en dirigido, sin orden en no dirigido) */
+  const hayInversa = e => DIR && G.edges.some(f => f.v === e.w && f.w === e.v);
+  visual.edgeEls = []; visual.nodeEls = []; visual.tag = {};
+  for (const e of G.edges) {
+    const k = DIR ? e.v + '>' + e.w : Math.min(e.v, e.w) + '_' + Math.max(e.v, e.w);
+    const j = cnt[k] = (cnt[k] || 0) + 1;
+    let off;
+    if (DIR) off = (hayInversa(e) ? 18 : 0) + (j - 1) * 20;
+    else { const m = j - 1; off = m === 0 ? 0 : (m % 2 ? 1 : -1) * Math.ceil(m / 2) * 22; if (e.v > e.w) off = -off; }
+    const { d, mx, my } = edgeGeom(e, off);
+    const g = el('g', { class: 'eg', 'data-id': e.id }, eg);
+    const p = el('path', { d, class: 'edge' }, g); if (arrows()) p.setAttribute('marker-end', 'url(#ah)');
+    const lab = el('g', { class: 'lab', transform: `translate(${mx} ${my})` }, g);
+    const w = 9 * String(e.c).length + 10;
+    el('rect', { x: -w / 2, y: -9, width: w, height: 18, rx: 4 }, lab);
+    const t = el('text', {}, lab); t.textContent = e.c;
+    visual.edgeEls.push({ e, g, p });
+  }
+  for (let i = 0; i < G.n; i++) {
+    const g = el('g', { class: 'node', 'data-v': i, transform: `translate(${G.pos[i][0]} ${G.pos[i][1]})` }, ng);
+    el('circle', { r: R }, g); const t = el('text', {}, g); t.textContent = i;
+    visual.nodeEls.push(g);
+    visual.tag[i] = el('text', { class: 'tg', x: G.pos[i][0], y: G.pos[i][1] - R - 7 }, tg);
+  }
+  applyVisual();
+}
+let curFrame = null;
+function applyVisual() {
+  if (!visual.nodeEls) return;
+  const f = curFrame || {};
+  visual.nodeEls.forEach((g, i) => {
+    g.setAttribute('class', 'node' + (f.node && f.node[i] ? ' ' + f.node[i] : '') + (visual.sel === i ? ' sel' : ''));
+    if (visual.tag[i]) visual.tag[i].textContent = (f.tag && f.tag[i] != null) ? f.tag[i] : '';
+  });
+  visual.edgeEls.forEach(({ e, g, p }) => {
+    const c = (f.edge && f.edge[e.id]) || '';
+    g.setAttribute('class', 'eg' + (c ? ' ' + c : ''));
+    if (arrows()) p.setAttribute('marker-end', 'url(#' + ({ tree: 'ahT', cur: 'ahC', back: 'ahB', new: 'ahN' }[c] || 'ah') + ')');
+  });
+}
+/* tabla de adyacencia */
+const chipTxt = (e, v) => (arrows() ? e.w : otro(e, v)) + ' (' + e.c + ')';
+function drawAdj(f) {
+  const host = $('#adj'); host.innerHTML = '';
+  $('#kV').textContent = G.n; $('#kA').textContent = G.A;
+  const adys = (f && f.adys) || (UNDIR ? G.ady.map((_, v) => G.edges.filter(e => e.v === v || e.w === v)) : G.ady);
+  for (let v = 0; v < G.n; v++) {
+    const a = document.createElement('div'); a.className = 'vn'; a.textContent = '_ady[' + v + ']'; host.appendChild(a);
+    const l = document.createElement('div'); l.className = 'lst' + (f && f.hotList === v ? ' hot' : ''); host.appendChild(l);
+    (adys[v] || []).forEach((e, j) => {
+      const c = document.createElement('span'); c.className = 'chip';
+      if (f && f.newChip && f.newChip.v === v && f.newChip.j === j) c.classList.add('new');
+      c.textContent = chipTxt(e, v); l.appendChild(c);
+    });
+    if (!(adys[v] || []).length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '∅'; l.appendChild(e); }
+  }
+  $('#adjNote').innerHTML = UNDIR
+    ? 'Las calles se recorren en <b>los dos sentidos</b>: en el código se llama dos veces a <code>ponArista</code> por calle (<code>v→w</code> y <code>w→v</code>), así que cada calle está en la lista de sus dos extremos (aquí se muestra el otro extremo y el valor).'
+    : DIR
+    ? 'Cada arista <code>v→w</code> (con su valor entre paréntesis) se guarda <b>una vez</b>, en la lista de <code>v</code>: la suma de las longitudes de las listas es <code>_A</code>.'
+    : 'Cada arista <code>v–w</code> es <b>un único objeto</b> <code>Arista</code> compartido: está en la lista de <code>v</code> y en la de <code>w</code> (la lista de <code>v</code> muestra el <i>otro</i> extremo y el valor). <code>_A</code> sube 1 pero la suma de las listas es <code>2·_A</code>; <code>aristas()</code> devuelve cada una solo una vez.';
+}
+
+/* ---------- interacción ---------- */
+let tool = 'move', pendingEdge = -1;
+function setTool(t) {
+  tool = t; pendingEdge = -1; visual.sel = -1;
+  $('#tMove').classList.toggle('on', t === 'move'); $('#tVert').classList.toggle('on', t === 'vert'); $('#tEdge').classList.toggle('on', t === 'edge');
+  $('#toolHint').textContent = { move: 'Arrastra los vértices para colocarlos como quieras.', vert: 'Haz clic en el lienzo para crear un vértice (hasta 14).', edge: DIR ? 'Escribe el valor y haz clic en el vértice origen y luego en el destino: ponArista({v, w, valor}) añade v→w.' : 'Escribe el valor y haz clic en dos vértices: ponArista({v, w, valor}) añade v–w.' }[t];
+  svg.style.cursor = t === 'vert' ? 'copy' : t === 'edge' ? 'pointer' : 'default';
+  applyVisual();
+}
+$('#tMove').onclick = () => setTool('move'); $('#tVert').onclick = () => setTool('vert'); $('#tEdge').onclick = () => setTool('edge');
+function svgPoint(e) { const r = svg.getBoundingClientRect(); const vb = svg.viewBox.baseVal; return [(e.clientX - r.left) * vb.width / r.width, (e.clientY - r.top) * vb.height / r.height]; }
+let drag = null;
+svg.addEventListener('pointerdown', e => {
+  const g = e.target.closest('.node'); const [px, py] = svgPoint(e);
+  if (tool === 'move' && g) { drag = { v: +g.dataset.v, dx: px - G.pos[+g.dataset.v][0], dy: py - G.pos[+g.dataset.v][1] }; svg.setPointerCapture(e.pointerId); }
+  else if (tool === 'vert' && !g) { if (G.n >= 14) { flashHint('Máximo 14 vértices para que se vea bien.'); return; } gAddV(Math.max(R, Math.min(640 - R, px)), Math.max(R + 14, Math.min(420 - R, py))); afterEdit(); }
+  else if (tool === 'edge' && g) {
+    const v = +g.dataset.v;
+    if (pendingEdge < 0) { pendingEdge = v; visual.sel = v; applyVisual(); }
+    else { const a = pendingEdge; pendingEdge = -1; visual.sel = -1; addEdgeAnimated(a, v, +$('#eC').value); }
+  }
+});
+svg.addEventListener('pointermove', e => {
+  if (!drag) return; const [px, py] = svgPoint(e);
+  G.pos[drag.v] = [Math.max(R, Math.min(640 - R, px - drag.dx)), Math.max(R + 14, Math.min(420 - R, py - drag.dy))];
+  const keep = curFrame; drawGraph(); curFrame = keep; applyVisual();
+});
+svg.addEventListener('pointerup', () => { drag = null; });
+function flashHint(t) { const h = $('#toolHint'); const old = h.textContent; h.textContent = t; setTimeout(() => { h.textContent = old; }, 2400); }
+
+function afterEdit() {
+  const n = Math.max(0, G.n - 1);
+  for (const id of ['#eV', '#eW', '#src', '#dst']) { $(id).max = n; if (+$(id).value > n) $(id).value = n; }
+  curFrame = null; drawGraph(); drawAdj(); $('#state').innerHTML = '<p class="note">Elige un algoritmo y pulsa <b>Ejecutar</b>.</p>';
+  if (player) { player.pause(); player.frames = []; $('#msg').innerHTML = 'Grafo modificado. Pulsa <b>Ejecutar</b> para recorrerlo.'; $('#pCount').textContent = ''; }
+}
+/* ponArista animado: se ve el push_back en la lista */
+function addEdgeAnimated(v, w, c) {
+  if (isNaN(v) || isNaN(w) || v < 0 || v >= G.n || w < 0 || w >= G.n) { flashHint('Vertice inexistente (el C++ lanzaría invalid_argument).'); return; }
+  if (v === w) { flashHint('Sin bucles: en estos problemas una arista une dos vértices distintos.'); return; }
+  if (isNaN(c) || c < 0) { flashHint('El valor tiene que ser un número no negativo.'); return; }
+  if (G.n && tabActual() !== 'graf') mostrarTab('graf');
+  const antes = gCopia();
+  const e = gPon(v, w, c);
+  const dest = gCopia();
+  const frames = [];
+  const base = { node: { [v]: 's-cur', [w]: 's-vis' }, edge: {} };
+  frames.push({ msg: `<code>g.ponArista({${v}, ${w}, ${c}})</code>: se crea la arista, se comprueba que ${v} y ${w} existen (si no, <code>invalid_argument</code>) y <code>_A</code> sube a <b>${G.A}</b>.`, lines: [L('clase','if (v < 0'),L('clase','throw'),L('clase','++_A')], ...base, adys: antes, hotList: -1 });
+  const f2 = { msg: `<code>_ady[${v}].push_back(arista)</code>: la arista entra al final de la lista de ${v}${DIR ? ' (con destino ' + w + ' y valor ' + c + ')' : ' (desde ahí se ve el extremo ' + w + ' con valor ' + c + ')'}.`, lines: [L('clase','_ady[v].push_back(arista)')], ...base, adys: DIR ? dest : antes.map((a, i) => i === v ? dest[i] : a), hotList: v, newChip: { v, j: dest[v].length - 1 } };
+  frames.push(f2);
+  if (!DIR) frames.push({ msg: `Como el grafo es <b>no dirigido</b>, también <code>_ady[${w}].push_back(arista)</code>: es <b>el mismo objeto</b> en las dos listas.`, lines: [0], ...base, adys: dest, hotList: w, newChip: { v: w, j: dest[w].length - 1 } });
+  frames.push({ msg: `Listo: <code>_V = ${G.n}</code>, <code>_A = ${G.A}</code>.`, lines: [], node: {}, edge: { [e.id]: 'new' }, adys: dest, hotList: -1 });
+  drawGraph(); showCode('clase'); player.load(frames, { play: true });
+}
+$('#bPon').onclick = () => { addEdgeAnimated(+$('#eV').value, +$('#eW').value, +$('#eC').value); };
+$('#bRand').onclick = randomGraph;
+$('#bClear').onclick = () => { gReset(); afterEdit(); };
+
+/* ---------- ayudas para los algoritmos ---------- */
+const ALGOS = {};
+function L(k, sub, occ = 0) {
+  let c = -1; const ls = CODES[k].lines;
+  for (let i = 0; i < ls.length; i++) if (ls[i].includes(sub)) { c++; if (c === occ) return i + 1; }
+  throw new Error('ancla no encontrada en ' + k + ': ' + sub);
+}
+function ctx() {
+  const f = [], st = { node: {}, edge: {}, tag: {} };
+  return { f, st, snap(msg, lines, vecs, extra) { f.push({ msg, lines, node: { ...st.node }, edge: { ...st.edge }, tag: { ...st.tag }, vecs: vecs || [], ...(extra || {}) }); } };
+}
+const vecOf = (name, arr, hot, okFn) => ({ kind: 'vec', name, vals: arr.map(x => x === null ? '·' : x), hot: hot == null ? -1 : hot, ok: okFn ? arr.map((x, i) => okFn(x) ? i : -1).filter(i => i >= 0) : [] });
+const listOf = (name, arr, hot) => ({ kind: 'list', name, vals: arr.slice(), hot: hot == null ? -1 : hot });
+const chipsOf = (name, items) => ({ kind: 'chips', name, items });   /* items: [{ t, cls }] */
+const textOf = (name, html) => ({ kind: 'text', name, html });
+const eTxt = e => e.v + (DIR ? '→' : '–') + e.w + ' (' + e.c + ')';
+/* ---- Dijkstra y sus variantes: Dijkstra (IndexPQ), DijkstraVector, 07-1 (carga en vértices), 07-2 (contar caminos), 07-3 (ruta) ---- */
+const fd = x => (x === Infinity ? '∞' : x);
+function cargasDe(txt, n) {
+  const v = String(txt || '').split(/[\s,;]+/).filter(x => x !== '').map(Number).map(x => (isNaN(x) || x < 0 ? 0 : Math.floor(x)));
+  while (v.length < n) v.push(0);
+  return v.slice(0, n);
+}
+/* coste del ARM del grafo sin sentidos (para compararlo con el árbol de caminos mínimos) */
+function costeARMsinSentidos() {
+  const p = [...Array(G.n).keys()], f = a => (p[a] === a ? a : (p[a] = f(p[a])));
+  let tot = 0, k = 0;
+  for (const e of G.edges.slice().sort((a, b) => a.c - b.c)) { const a = f(e.v), b = f(e.w); if (a !== b) { p[a] = b; tot += e.c; k++; } }
+  return k === G.n - 1 ? tot : null;
+}
+
+function dijkstra(mode, s, t, txt) {
+  const n = G.n, C = ctx(), S = C.st;
+  const und = mode === 'e72' || mode === 'e73';
+  const code = { pq: 'dijkstra', vec: 'dijkstra_vec', e71: 'e71', e72: 'e72', e73: 'e73' }[mode];
+  const carga = mode === 'e71' ? cargasDe(txt, n) : null;
+  const nb = v => (und ? G.edges.filter(e => e.v === v || e.w === v).map(e => ({ e, to: otro(e, v) })) : G.ady[v].map(e => ({ e, to: e.w })));
+  const peso = (e, to) => e.c + (carga ? carga[to] : 0);
+  const dist = Array(n).fill(Infinity), par = Array(n).fill(null).map(() => []), done = Array(n).fill(false), inq = Array(n).fill(false);
+  const formas = Array(n).fill(0);
+  const origDist = carga ? carga[s] : 0;
+  const ln = k => L(code, k);
+  const tagOf = v => (dist[v] === Infinity ? '' : (mode === 'e72' ? dist[v] + ' ×' + formas[v] : '' + dist[v]));
+  const refrescaTags = () => { for (let v = 0; v < n; v++) S.tag[v] = tagOf(v); };
+  const refrescaTree = () => {
+    for (const e of G.edges) if (S.edge[e.id] === 'tree') S.edge[e.id] = '';
+    par.forEach(l => l.forEach(id => { S.edge[id] = 'tree'; }));
+  };
+  const ultiTxt = v => (par[v].length ? par[v].map(id => { const e = G.edges[id]; return (und ? otro(e, v) : e.v) + '→' + v; }).join(' | ') : '–');
+  let comps = 0;                         /* accesos al vector al buscar el mínimo (versión con vector) */
+  const pqChips = hot => {
+    const q = []; for (let v = 0; v < n; v++) if (inq[v]) q.push(v);
+    q.sort((a, b) => dist[a] - dist[b] || a - b);
+    return q.map(v => ({ t: v + ' (' + dist[v] + ')', cls: v === hot ? 'cur' : '' }));
+  };
+  const V = hot => {
+    const out = [vecOf('dist', dist.map(fd), hot)];
+    out[0].ok = done.map((d, i) => (d ? i : -1)).filter(i => i >= 0 && i !== hot);
+    out.push(vecOf('ulti (arista que llega)', par.map((_, v) => ultiTxt(v)), -1));
+    if (mode === 'e72') out.push(vecOf('formas', formas.map((x, v) => (dist[v] === Infinity ? 0 : x)), hot));
+    if (mode === 'vec') out.push(vecOf('tratado', done.map(x => (x ? 'T' : 'F')), -1, x => x === 'T'), textOf('accesos al vector buscando el mínimo', comps + ''));
+    else out.push(chipsOf('cola de prioridad pq (la menor va primero)', pqChips(hot)));
+    return out;
+  };
+  const arista = (e, v, to) => (und ? v + '–' + to : v + '→' + to) + ' (' + e.c + ')';
+
+  /* ----- inicio ----- */
+  const intro = {
+    pq: `<code>Dijkstra(g, ${s})</code>: <code>dist</code> empieza en ∞ para todos (<code>INF</code>), <code>dist[${s}] = 0</code> y el origen entra en la cola de prioridad con prioridad 0.`,
+    vec: `<code>DijkstraVector(g, ${s})</code>: <code>dist</code> empieza en ∞, <code>dist[${s}] = 0</code> y no hay cola: en cada paso se recorrerá el vector buscando el mínimo.`,
+    e71: `<b>07-1</b>: la página de partida (vértice ${s}, página ${s + 1} del enunciado) también hay que cargarla, así que <code>dist[0] = carga[0] = ${origDist}</code>. El coste de cada arista es <b>tiempo del enlace + carga de la página a la que llega</b> (<code>t + carga[w]</code>), con cargas <code>${carga ? carga.join(' ') : ''}</code>.`,
+    e72: `<b>07-2</b>: las calles se recorren en los dos sentidos. <code>dist[0] = 0</code> y <code>formas[0] = 1</code>: hay una forma de estar en casa (no moverse). <code>formas[v]</code> contará los caminos mínimos hasta <code>v</code>.`,
+    e73: `<b>07-3</b>: Dijkstra desde el origen del pedido (${s}). Además de <code>dist</code> se guarda <code>ulti[w]</code> = vértice anterior en el camino mínimo.`,
+  }[mode];
+  dist[s] = origDist; formas[s] = 1; inq[s] = mode !== 'vec';
+  S.node[s] = mode === 'vec' ? 's-cur' : 's-q'; refrescaTags();
+  C.snap(intro, mode === 'vec' ? [ln('dist[origen] = 0;')] : mode === 'e71' ? [ln('dist[0] = carga[0];'), ln('pq.push(0, dist[0]);')] : mode === 'e72' ? [ln('dist[0] = 0;'), ln('formas[0] = 1;'), ln('pq.push(0, 0);')] : [ln('dist[origen] = 0;'), ln('pq.push(origen, 0);')], V(-1));
+
+  let paso = 0, parar = false;
+  while (!parar) {
+    let v = -1;
+    if (mode === 'vec') {
+      for (let u = 0; u < n; u++) if (!done[u] && dist[u] !== Infinity && (v === -1 || dist[u] < dist[v])) v = u;
+      comps += n;
+      if (v === -1) {
+        C.snap(`Paso ${++paso}: se recorren los ${n} vértices (accesos acumulados: <b>${comps}</b>) y <b>ninguno</b> no tratado tiene <code>dist</code> finita: lo que queda no es alcanzable. <code>break</code>.`, [ln('for (int u = 0; u < g.V(); ++u)'), ln('if (v == -1) break;')], V(-1));
+        break;
+      }
+      Object.keys(S.node).forEach(k => { if (S.node[k] === 's-cur') S.node[k] = 's-done'; });
+      S.node[v] = 's-cur'; done[v] = true;
+      C.snap(`Paso ${++paso}: se recorre el vector <code>dist</code> entero (${n} accesos; en total ${comps}) y el no tratado de menor distancia es <b>${v}</b> con <code>dist[${v}] = ${dist[v]}</code>. <code>tratado[${v}] = true</code>: su distancia ya es definitiva.`, [ln('for (int u = 0; u < g.V(); ++u)'), ln('tratado[v] = true;')], V(v));
+    } else {
+      let q = []; for (let u = 0; u < n; u++) if (inq[u]) q.push(u);
+      if (!q.length) break;
+      q.sort((a, b) => dist[a] - dist[b] || a - b); v = q[0];
+      Object.keys(S.node).forEach(k => { if (S.node[k] === 's-cur') S.node[k] = 's-done'; });
+      S.node[v] = 's-cur'; inq[v] = false; done[v] = true;
+      C.snap(`Paso ${++paso}: <code>pq.top().elem</code> es <b>${v}</b> (la menor prioridad, <code>dist[${v}] = ${dist[v]}</code>); <code>pop()</code> lo saca. Su distancia ya es <b>definitiva</b>: ahora se relajan sus aristas.`, [ln('int v = pq.top().elem; pq.pop();'), ...(mode === 'e71' ? [ln('while (!pq.empty())')] : [])], V(v));
+      if ((mode === 'e71' && v === t) || (mode === 'e73' && v === t)) {
+        C.snap(`<code>v == ${mode === 'e71' ? 'N - 1' : 'destino'}</code>: la distancia al destino ya es definitiva y no hace falta seguir. <code>break</code>.`, [ln(mode === 'e71' ? 'if (v == N - 1) break;' : 'if (v == destino) break;')], V(v));
+        parar = true; break;
+      }
+    }
+    for (const { e, to: w } of nb(v)) {
+      const w0 = S.edge[e.id], cst = peso(e, w), nuevo = dist[v] + cst;
+      S.edge[e.id] = 'cur';
+      const formula = carga ? `${dist[v]} + ${e.c} + carga[${w}] (${carga[w]}) = ${nuevo}` : `${dist[v]} + ${e.c} = ${nuevo}`;
+      const lnFor = ln(mode === 'vec' ? 'for (auto a : g.ady(v)) {' : mode === 'pq' ? 'for (auto a : g.ady(v))' : 'for (auto a : g.ady(v)) {');
+      const lnIf = mode === 'e72' ? ln('int d = dist[v] + a.valor();') : mode === 'pq' ? ln('if (dist[w] > dist[v] + a.valor())') : mode === 'vec' ? ln('if (dist[w] > dist[v] + a.valor())') : ln('if (dist[w] > dist[v] + a.valor()) {');
+      C.snap(`Relajar <b>${arista(e, v, w)}</b>: <code>dist[${v}] + valor${carga ? ' + carga' : ''}</code> = ${formula}; <code>dist[${w}]</code> vale ${fd(dist[w])}.`, [lnFor, lnIf], V(w));
+      if (nuevo < dist[w]) {
+        const antes = dist[w];
+        par[w].forEach(id => { if (S.edge[id] === 'tree') S.edge[id] = ''; });
+        dist[w] = nuevo; par[w] = [e.id]; formas[w] = formas[v];
+        if (mode !== 'vec') { inq[w] = true; if (!done[w]) S.node[w] = 's-q'; }
+        S.edge[e.id] = 'tree'; refrescaTags();
+        const lines = mode === 'e72' ? [ln('if (d < dist[w]) {'), ln('formas[w] = formas[v];'), ln('pq.update(w, d);')]
+          : mode === 'e73' ? [ln('dist[w] = dist[v] + a.valor();'), ln('ulti[w] = v;'), ln('pq.update(w, dist[w]);')]
+          : mode === 'e71' ? [ln('dist[w] = dist[v] + a.valor();'), ln('pq.update(w, dist[w]);')]
+          : mode === 'vec' ? [ln('if (dist[w] > dist[v] + a.valor())')]
+          : [ln('dist[w] = dist[v] + a.valor(); ulti[w] = a;'), ln('pq.update(w, dist[w]);')];
+        C.snap(`${nuevo} &lt; ${fd(antes)}: <b>mejora</b>. <code>dist[${w}] = ${nuevo}</code>${mode === 'e72' ? `, <code>formas[${w}] = formas[${v}] = ${formas[v]}</code> (los caminos anteriores a ${w} ya no valen)` : ''}, <code>ulti[${w}]</code> pasa a ser ${arista(e, v, w)}${mode === 'vec' ? '' : `; <code>pq.update(${w}, ${nuevo})</code> ${antes === Infinity ? '(mete a ' + w + ' en la cola)' : '(le cambia la prioridad)'}`}.`, lines, V(w));
+      } else if (mode === 'e72' && nuevo === dist[w] && dist[w] !== Infinity) {
+        par[w].push(e.id); formas[w] += formas[v]; S.edge[e.id] = 'tree'; refrescaTags();
+        C.snap(`${nuevo} = <code>dist[${w}]</code>: otra forma <b>igual de buena</b> de llegar a ${w}. <code>formas[${w}] += formas[${v}]</code> (${formas[v]}) → <b>${formas[w]}</b>.`, [ln('} else if (d == dist[w]) {'), ln('formas[w] += formas[v];')], V(w));
+      } else {
+        S.edge[e.id] = w0 === 'cur' ? '' : (w0 || '');
+        if (par[w].includes(e.id)) S.edge[e.id] = 'tree';
+        C.snap(`${nuevo} ${nuevo === dist[w] ? '=' : '≥'} ${fd(dist[w])}: <b>no mejora</b>${done[w] ? ` (además ${w} ya está tratado)` : ''}. No se cambia nada.`, [lnIf], V(w));
+      }
+    }
+    if (mode === 'vec' && done.every(x => x)) break;
+  }
+
+  /* ----- resultado ----- */
+  Object.keys(S.node).forEach(k => { S.node[k] = ''; });
+  const alc = v => dist[v] !== Infinity;
+  for (let v = 0; v < n; v++) S.node[v] = alc(v) ? 's-done' : '';
+  refrescaTree(); refrescaTags();
+  if (mode === 'e73') {
+    if (!alc(t)) { S.node[t] = 's-red'; C.snap(`<b>Fin.</b> <code>dist[${t}]</code> es ∞: no hay camino del vértice ${s} al ${t} (puntos ${s + 1} y ${t + 1} del enunciado). Se escribe <b>NO LLEGA</b>.`, [ln('if (dist[destino] == INF) {')], V(-1)); C.f.res = { dist: null }; return C.f; }
+    const camino = [t]; for (let v = t; v !== s;) { const e = G.edges[par[v][0]]; v = otro(e, v); camino.unshift(v); }
+    for (const e of G.edges) S.edge[e.id] = '';
+    C.snap(`Ya hay camino: <code>dist[${t}] = ${dist[t]}</code>. Para escribirlo se <b>retrocede</b> desde el destino con <code>ulti[]</code>, metiendo cada vértice por delante.`, [ln('if (dist[destino] == INF) {')], V(-1));
+    const cur = [t]; S.node[t] = 's-done';
+    C.snap(`<code>camino.push_front(${t})</code> (empezamos por el destino): camino = <code>${cur.join(' -> ')}</code>.`, [ln('for (int v = destino; v != origen; v = ulti[v]) camino.push_front(v);')], V(t));
+    for (let v = t; v !== s;) {
+      const eid = par[v][0], e = G.edges[eid], u = otro(e, v); S.edge[eid] = 'new'; S.node[u] = 's-done'; cur.unshift(u); v = u;
+      C.snap(`<code>v = ulti[v]</code> → <b>${u}</b>: ${v === s ? 'es el origen, se acabó el retroceso' : 'se sigue hacia atrás'}. camino = <code>${cur.join(' -> ')}</code>.`, [ln('for (int v = destino; v != origen; v = ulti[v]) camino.push_front(v);')], V(-1));
+    }
+    C.snap(`<b>Fin.</b> Se escribe <b>${dist[t]}: ${cur.map(x => x + 1).join(' -> ')}</b> (en el enunciado los puntos se numeran desde 1: el vértice <code>v</code> se escribe como <code>v + 1</code>).`, [ln('cout << dist[destino] << ":";')], V(-1));
+    C.f.res = { dist: dist[t], camino: cur }; return C.f;
+  }
+  if (mode === 'e71') {
+    if (alc(t)) { for (let v = t; v !== s;) { const e = G.edges[par[v][0]]; S.edge[e.id] = 'new'; v = e.v; } }
+    S.node[t] = alc(t) ? 's-done' : 's-red';
+    C.snap(alc(t) ? `<b>Fin.</b> Tiempo mínimo para llegar al vértice ${t} (página ${t + 1} del enunciado): <b>${dist[t]}</b> ms (incluye la carga de la página de partida y de la de llegada).` : `<b>Fin.</b> <code>dist[${t}]</code> sigue en ∞: no hay ninguna cadena de enlaces hasta el vértice ${t}. Se escribe <b>IMPOSIBLE</b>.`, [ln('if (dist[N - 1] == INF)')], V(-1));
+    C.f.res = { dist: alc(t) ? dist[t] : null }; return C.f;
+  }
+  if (mode === 'e72') {
+    S.node[t] = alc(t) ? 's-done' : 's-red';
+    C.snap(alc(t) ? `<b>Fin.</b> <code>formas[${t}] = ${formas[t]}</code>: Lucas puede ir de ${s} a ${t} de <b>${formas[t]}</b> ${formas[t] === 1 ? 'forma' : 'formas'} distintas recorriendo la distancia mínima (<b>${dist[t]}</b>). Las aristas azules son las que están en algún camino mínimo.` : `<b>Fin.</b> No se llega a ${t}: <code>formas[${t}]</code> sigue en 0 y se escribe <b>0</b>.`, [ln('cout << formas[N - 1]')], V(-1));
+    C.f.res = { formas: alc(t) ? formas[t] : 0, dist: dist[t] }; return C.f;
+  }
+  /* pq y vec: árbol de caminos mínimos */
+  let suma = 0, aristas = 0;
+  par.forEach(l => l.forEach(id => { S.edge[id] = 'new'; suma += G.edges[id].c; aristas++; }));
+  const todos = dist.every(x => x !== Infinity), arm = todos ? costeARMsinSentidos() : null;
+  const extra = todos && arm !== null
+    ? ` <b>¿Es un ARM?</b> El árbol suma <b>${suma}</b>; un árbol de recubrimiento de coste mínimo del mismo grafo (sin mirar los sentidos) sumaría <b>${arm}</b>${suma === arm ? ': aquí coinciden en coste' : ': <b>no es el mismo árbol</b>'} (los dos responden a preguntas distintas).` : '';
+  const sinAlcanzar = dist.map((x, v) => (x === Infinity ? v : -1)).filter(v => v >= 0);
+  C.snap(`<b>Fin.</b> ${mode === 'pq' ? 'La cola se vacía' : 'No quedan vértices con <code>dist</code> finita'}: <code>dist</code> tiene las distancias mínimas desde ${s} y las aristas verdes forman el <b>árbol de caminos mínimos</b> (<code>ulti[]</code>).${sinAlcanzar.length ? ` ${sinAlcanzar.join(', ')} no ${sinAlcanzar.length > 1 ? 'son alcanzables' : 'es alcanzable'} (<code>hayCamino</code> = false).` : ''}${mode === 'vec' ? ` Se han hecho <b>${comps}</b> accesos al vector: del orden de V² = ${n * n}.` : ''}${extra}`, [mode === 'vec' ? ln('if (v == -1) break;') : ln('bool hayCamino(int v) const')], V(-1));
+  C.f.res = { dist: dist.map(fd), suma, arm, comps };
+  return C.f;
+}
+ALGOS.dij_pq = s => dijkstra('pq', s);
+ALGOS.dij_vec = s => dijkstra('vec', s);
+ALGOS.e71 = (s, t, _p, txt) => dijkstra('e71', s, t, txt);
+ALGOS.e72 = (s, t) => dijkstra('e72', s, t);
+ALGOS.e73 = (s, t) => dijkstra('e73', s, t);
+
+
+/* ---------- código mostrado ---------- */
+const CODES = {"clase": {"f": "DigrafoValorado.h (resumen)", "tab": "DigrafoValorado.h", "lines": ["template <typename Valor>", "class DigrafoValorado {", "public:", "", "   DigrafoValorado(int v) : _V(v), _A(0), _ady(_V) {}", "   ", "   // ... constructor desde un flujo de entrada omitido", "", "   int V() const { return _V; }", "", "   int A() const { return _A; }", "   ", "   void ponArista(AristaDirigida<Valor> arista) {", "      int v = arista.desde(), w = arista.hasta();", "      if (v < 0 || v >= _V || w < 0 || w >= _V)", "         throw std::invalid_argument(\"Vertice inexistente\");", "      ++_A;", "      _ady[v].push_back(arista);", "   }", "   ", "   bool hayArista(int v, int w) const {", "      for (auto a : _ady[v])", "         if (a.hasta() == w) return true;", "      return false;", "   }", "   ", "   AdysDirVal<Valor> const& ady(int v) const {", "      if (v < 0 || v >= _V)", "         throw std::invalid_argument(\"Vertice inexistente\");", "      return _ady[v];", "   }", "   ", "   DigrafoValorado<Valor> inverso() const {", "      DigrafoValorado<Valor> inv(_V);", "      for (auto v = 0; v < _V; ++v) {", "         for (auto a : _ady[v]) {", "            inv.ponArista({a.hasta(), a.desde(), a.valor()});", "         }", "      }", "      return inv;", "   }", "   ", "   // ... print() omitido", "   ", "private:", "   int _V;   //número de vértices", "   int _A;   //número de aristas", "   std::vector<AdysDirVal<Valor>> _ady;   // vector de listas de adyacentes", "   ", "};"]}, "arista": {"f": "DigrafoValorado.h · AristaDirigida", "tab": "AristaDirigida", "lines": ["template <typename Valor>", "class AristaDirigida {", "public:", "   AristaDirigida(): pimpl(nullptr) {}", "", "   AristaDirigida(int v, int w, Valor valor): pimpl(std::make_shared<AristaDirigida_impl>(v, w, valor)) {}", "", "   int desde() const { return pimpl->v; }", "", "   int hasta() const { return pimpl->w; }", "", "   Valor valor() const { return pimpl->valor; }", "", "   // ... print() omitido", "", "   bool operator<(AristaDirigida<Valor> const& b) const {", "      return valor() < b.valor();", "   }", "", "   bool operator>(AristaDirigida<Valor> const& b) const {", "      return b.valor() < valor();", "   }", "", "private:", "   struct AristaDirigida_impl {", "      int v, w;", "      Valor valor;", "      AristaDirigida_impl(int v, int w, Valor valor) : v(v), w(w), valor(valor) {}", "   };", "   std::shared_ptr<AristaDirigida_impl> pimpl;", "};"]}, "dijkstra": {"f": "DigrafoValorado_algoritmos.h · Dijkstra", "tab": "Dijkstra", "lines": ["template <typename Valor>", "class Dijkstra {", "public:", "   Dijkstra(DigrafoValorado<Valor> const& g, int orig)", "      : origen(orig), dist(g.V(), INF), ulti(g.V()), pq(g.V()) {", "      dist[origen] = 0;", "      pq.push(origen, 0);", "      while (!pq.empty()) {", "         int v = pq.top().elem; pq.pop();      // el más cercano que queda: su dist ya es definitiva", "         for (auto a : g.ady(v))", "            relajar(a);", "      }", "   }", "", "   bool hayCamino(int v) const { return dist[v] != INF; }", "   Valor distancia(int v) const { return dist[v]; }", "", "   // Camino mínimo origen -> v (vacío si v == origen; se debe comprobar hayCamino(v) antes).", "   Camino<Valor> camino(int v) const {", "      Camino<Valor> cam;", "      // recuperamos el camino retrocediendo desde v con ulti[]", "      for (int u = v; u != origen; u = ulti[u].desde())", "         cam.push_front(ulti[u]);", "      return cam;", "   }", "", "private:", "   const Valor INF = std::numeric_limits<Valor>::max();", "   int origen;", "   std::vector<Valor> dist;", "   std::vector<AristaDirigida<Valor>> ulti;", "   IndexPQ<Valor> pq;", "", "   void relajar(AristaDirigida<Valor> a) {", "      int v = a.desde(), w = a.hasta();", "      if (dist[w] > dist[v] + a.valor()) {", "         dist[w] = dist[v] + a.valor(); ulti[w] = a;", "         pq.update(w, dist[w]);                // push si w no estaba en la cola", "      }", "   }", "};"]}, "dijkstra_vec": {"f": "DigrafoValorado_algoritmos.h · DijkstraVector", "tab": "Dijkstra con vector", "lines": ["template <typename Valor>", "class DijkstraVector {", "public:", "   DijkstraVector(DigrafoValorado<Valor> const& g, int orig)", "      : origen(orig), dist(g.V(), INF), ulti(g.V()) {", "      std::vector<bool> tratado(g.V(), false);", "      dist[origen] = 0;", "      for (int paso = 0; paso < g.V(); ++paso) {", "         int v = -1;", "         for (int u = 0; u < g.V(); ++u)       // mínimo entre los no tratados con dist finita", "            if (!tratado[u] && dist[u] != INF && (v == -1 || dist[u] < dist[v])) v = u;", "         if (v == -1) break;                   // el resto no es alcanzable", "         tratado[v] = true;", "         for (auto a : g.ady(v)) {", "            int w = a.hasta();", "            if (dist[w] > dist[v] + a.valor()) { dist[w] = dist[v] + a.valor(); ulti[w] = a; }", "         }", "      }", "   }", "", "   bool hayCamino(int v) const { return dist[v] != INF; }", "   Valor distancia(int v) const { return dist[v]; }", "   Camino<Valor> camino(int v) const {", "      Camino<Valor> cam;", "      for (int u = v; u != origen; u = ulti[u].desde()) cam.push_front(ulti[u]);", "      return cam;", "   }", "", "private:", "   const Valor INF = std::numeric_limits<Valor>::max();", "   int origen;", "   std::vector<Valor> dist;", "   std::vector<AristaDirigida<Valor>> ulti;", "};"]}, "e71": {"f": "EJ_07-1.cpp", "tab": "07-1", "lines": ["void resuelveCaso() {", "    int N, M;", "    cin >> N;", "    vector<int> carga(N);", "    for (int& c : carga) cin >> c;", "", "    DigrafoValorado<int> g(N);", "    cin >> M;", "    for (int i = 0; i < M; ++i) {", "        int v, w, t;", "        cin >> v >> w >> t;", "        --v; --w;                                   // paginas desde 1", "        g.ponArista({v, w, t + carga[w]});          // enlace + carga de la pagina a la que llega", "    }", "", "    // Dijkstra desde la pagina 0 (la \"1\" del enunciado)", "    const int INF = numeric_limits<int>::max();", "    vector<int> dist(N, INF);", "    IndexPQ<int> pq(N);", "    dist[0] = carga[0];                             // la primera pagina tambien se carga", "    pq.push(0, dist[0]);", "    while (!pq.empty()) {", "        int v = pq.top().elem; pq.pop();", "        if (v == N - 1) break;                      // ya es definitiva la distancia al destino", "        for (auto a : g.ady(v)) {", "            int w = a.hasta();", "            if (dist[w] > dist[v] + a.valor()) {    // relajacion", "                dist[w] = dist[v] + a.valor();", "                pq.update(w, dist[w]);", "            }", "        }", "    }", "", "    if (dist[N - 1] == INF) cout << \"IMPOSIBLE\\n\";", "    else cout << dist[N - 1] << '\\n';", "}"]}, "e72": {"f": "EJ_07-2.cpp", "tab": "07-2", "lines": ["void resuelveCaso() {", "    int N, C;", "    cin >> N >> C;", "    DigrafoValorado<int> g(N);", "    for (int i = 0; i < C; ++i) {", "        int u, v, l;", "        cin >> u >> v >> l;", "        --u; --v;", "        g.ponArista({u, v, l});      // calle de doble sentido: las dos aristas dirigidas", "        g.ponArista({v, u, l});", "    }", "", "    const int INF = numeric_limits<int>::max();", "    vector<int> dist(N, INF);", "    vector<unsigned long long> formas(N, 0);", "    IndexPQ<int> pq(N);", "", "    dist[0] = 0;", "    formas[0] = 1;                   // una forma de estar en casa: no moverse", "    pq.push(0, 0);", "    while (!pq.empty()) {", "        int v = pq.top().elem; pq.pop();", "        for (auto a : g.ady(v)) {", "            int w = a.hasta();", "            int d = dist[v] + a.valor();", "            if (d < dist[w]) {", "                dist[w] = d;", "                formas[w] = formas[v];", "                pq.update(w, d);", "            } else if (d == dist[w]) {", "                formas[w] += formas[v];", "            }", "        }", "    }", "", "    cout << formas[N - 1] << '\\n';   // 0 si no se llega", "}"]}, "e73": {"f": "EJ_07-3.cpp", "tab": "07-3", "lines": ["void resuelveCaso() {", "    int N, C;", "    cin >> N >> C;", "    DigrafoValorado<int> g(N);", "    for (int i = 0; i < C; ++i) {", "        int u, v, t;", "        cin >> u >> v >> t;", "        --u; --v;", "        g.ponArista({u, v, t});", "        g.ponArista({v, u, t});", "    }", "", "    const int INF = numeric_limits<int>::max();", "    int K; cin >> K;", "    while (K--) {", "        int origen, destino;", "        cin >> origen >> destino;", "        --origen; --destino;", "", "        // Dijkstra desde el origen del pedido", "        vector<int> dist(N, INF);", "        vector<int> ulti(N, -1);          // vertice anterior en el camino minimo", "        IndexPQ<int> pq(N);", "        dist[origen] = 0;", "        pq.push(origen, 0);", "        while (!pq.empty()) {", "            int v = pq.top().elem; pq.pop();", "            if (v == destino) break;      // la distancia al destino ya es definitiva", "            for (auto a : g.ady(v)) {", "                int w = a.hasta();", "                if (dist[w] > dist[v] + a.valor()) {", "                    dist[w] = dist[v] + a.valor();", "                    ulti[w] = v;", "                    pq.update(w, dist[w]);", "                }", "            }", "        }", "", "        if (dist[destino] == INF) {", "            cout << \"NO LLEGA\\n\";", "        } else {", "            deque<int> camino;            // se reconstruye hacia atras desde el destino", "            for (int v = destino; v != origen; v = ulti[v]) camino.push_front(v);", "            camino.push_front(origen);", "", "            cout << dist[destino] << \":\";", "            for (size_t i = 0; i < camino.size(); ++i)", "                cout << (i == 0 ? \" \" : \" -> \") << camino[i] + 1;", "            cout << '\\n';", "        }", "    }", "    cout << \"---\\n\";", "}"]}};
+let markFn = null, curCode = null;
+function showCode(name) {
+  if (curCode === name) return; curCode = name;
+  const c = CODES[name]; markFn = mountCode($('#codeHost'), c.f, c.lines);
+  $$('#codeTabs .btn').forEach(b => b.classList.toggle('on', b.dataset.k === name));
+}
+for (const k in CODES) { const b = document.createElement('button'); b.className = 'btn'; b.dataset.k = k; b.textContent = CODES[k].tab; b.onclick = () => { showCode(k); if (markFn) markFn([]); }; $('#codeTabs').appendChild(b); }
+
+/* ---------- arranque ---------- */
+$('#playerHost').innerHTML = PLAYER_HTML;
+const playerEl = $('#playerHost').firstElementChild;
+let tabCur = 'graf';
+const tabActual = () => tabCur;
+function mostrarTab(t) {
+  tabCur = t;
+  const lab = $('#tabLab'); if (lab) lab.hidden = t !== 'lab';
+  $('#tabGraf').hidden = t !== 'graf';
+  const lh = $('#labPlayerHost'); (t === 'lab' && lh ? lh : $('#playerHost')).appendChild(playerEl);
+  $$('.tabs .btn').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  player.pause(); player.frames = []; $('#pCount').textContent = '';
+  if (t === 'lab' && window.labEnter) window.labEnter(); else { $('#msg').innerHTML = 'Pulsa <b>Ejecutar</b> para ver el algoritmo paso a paso.'; }
+  try { history.replaceState(null, '', '#' + t); } catch (e) { /* sin historial */ }
+}
+$$('.tabs .btn').forEach(b => { b.onclick = () => mostrarTab(b.dataset.t); });
+const player = new Player({
+  render: f => { if (tabCur === 'lab') { window.labRender(f); return; } curFrame = f; applyVisual(); drawAdj(f); drawState(f); },
+  mark: lines => { if (tabCur === 'lab') { window.labMark(lines); return; } if (markFn) markFn(lines); }
+});
+function drawState(f) {
+  const host = $('#state'); host.innerHTML = '';
+  if (!f || !f.vecs || !f.vecs.length) { host.innerHTML = '<p class="note">Aquí aparecen los vectores del algoritmo (<code>dist</code>, <code>p</code>, <code>tam</code>…), la cola de prioridad o la lista de aristas.</p>'; return; }
+  for (const blk of f.vecs) {
+    const d = document.createElement('div');
+    if (blk.kind === 'vec') {
+      d.innerHTML = '<div class="note" style="margin-bottom:3px"><code>' + esc(blk.name) + '</code></div>';
+      const v = document.createElement('div'); v.className = 'vec';
+      blk.vals.forEach((x, i) => { const c = document.createElement('div'); c.className = 'c' + (blk.hot === i ? ' hot' : (blk.ok && blk.ok.includes(i) ? ' ok' : '')); c.innerHTML = '<i>' + i + '</i><b>' + esc(x) + '</b>'; v.appendChild(c); });
+      d.appendChild(v);
+    } else if (blk.kind === 'chips') {
+      d.innerHTML = '<div class="listbox"><span class="lab">' + esc(blk.name) + '</span></div>';
+      const lb = d.firstChild;
+      if (!blk.items.length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '(vacía)'; lb.appendChild(e); }
+      blk.items.forEach(it => { const c = document.createElement('span'); c.className = 'chip ' + (it.cls || ''); c.textContent = it.t; lb.appendChild(c); });
+    } else if (blk.kind === 'text') {
+      d.innerHTML = '<div class="note" style="margin-bottom:3px"><code>' + esc(blk.name) + '</code></div><div style="font-family:var(--mono);font-size:.88rem">' + blk.html + '</div>';
+    } else {
+      d.innerHTML = '<div class="listbox"><span class="lab">' + esc(blk.name) + '</span></div>';
+      const lb = d.firstChild;
+      if (!blk.vals.length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '(vacía)'; lb.appendChild(e); }
+      blk.vals.forEach((x, i) => { const c = document.createElement('span'); c.className = 'chip' + (blk.hot === i ? ' cur' : ''); c.textContent = x; lb.appendChild(c); });
+    }
+    host.appendChild(d);
+  }
+}
+const ALGO_LIST = [{"id": "dij_pq", "nombre": "Dijkstra con IndexPQ: caminos mínimos desde un origen (Dijkstra)", "src": true, "dst": false, "code": "dijkstra"}, {"id": "dij_vec", "nombre": "Dijkstra con vector, sin cola de prioridad (DijkstraVector, O(V²))", "src": true, "dst": false, "code": "dijkstra_vec"}, {"id": "e71", "nombre": "07-1 Navegando sin teclado: enlace + carga de la página", "src": true, "dst": true, "txt": "cargas", "code": "e71"}, {"id": "e72", "nombre": "07-2 Camino al cole: contar caminos mínimos (calles de doble sentido)", "src": true, "dst": true, "undir": true, "code": "e72"}, {"id": "e73", "nombre": "07-3 RapidEats: tiempo y ruta con ulti[] (tramos de doble sentido)", "src": true, "dst": true, "undir": true, "code": "e73"}];
+for (const a of ALGO_LIST) { const o = document.createElement('option'); o.value = a.id; o.textContent = a.nombre; $('#algo').appendChild(o); }
+PRESETS.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.nombre; $('#preset').appendChild(o); });
+$('#preset').onchange = () => loadPreset(PRESETS[+$('#preset').value]);
+function updAlgoUI() {
+  const a = ALGO_LIST.find(x => x.id === $('#algo').value);
+  $('#lblSrc').hidden = !a.src; $('#lblDst').hidden = !a.dst; $('#lblPar').hidden = !a.par; $('#lblTxt').hidden = !a.txt;
+  if (a.txt) $('#lblTxt').firstChild.textContent = a.txt + ' ';
+  const u = !!a.undir; if (u !== UNDIR) { UNDIR = u; curFrame = null; drawGraph(); drawAdj(); }
+  if (a.par) $('#lblPar').firstChild.textContent = a.par + ' ';
+  showCode(a.code); if (markFn) markFn([]);
+}
+$('#algo').onchange = updAlgoUI;
+$('#bRun').onclick = () => {
+  const a = ALGO_LIST.find(x => x.id === $('#algo').value);
+  if (!G.n) { $('#msg').innerHTML = 'El grafo está vacío: crea o carga uno.'; return; }
+  const s = Math.max(0, Math.min(G.n - 1, +$('#src').value || 0)), t = Math.max(0, Math.min(G.n - 1, +$('#dst').value || 0)), par = +$('#par').value || 0;
+  const frames = ALGOS[a.id](s, t, par, $('#txt').value);
+  drawGraph(); showCode(a.code); player.load(frames, { play: true });
+};
+$('#legend').innerHTML = "<span><b style=\"border-color:var(--accent);background:var(--accent-soft)\"></b>arista que se relaja / vértice que sale de la cola</span><span><b style=\"border-color:var(--blue);background:var(--blue-soft)\"></b>arista de <code>ulti[]</code> (mejor camino conocido)</span><span><b style=\"border-color:var(--purple);background:var(--purple-soft)\"></b>vértice en la cola</span><span><b style=\"border-color:var(--green);background:var(--green-soft)\"></b>distancia definitiva / árbol final</span><span><b style=\"border-color:var(--red);background:var(--red-soft)\"></b>destino no alcanzable</span>";
+setTool('move');
+
+updAlgoUI();
+loadPreset(PRESETS[0]);
+player.load([{ msg: 'Carga un ejemplo, construye tu propio dígrafo valorado y elige un algoritmo. Con <b>Añadir</b> verás cómo <code>ponArista</code> rellena las listas de adyacencia.', lines: [] }], { play: false });
+mostrarTab('graf');
+window.__DA = { G, ALGOS, gPon, gAddV, gReset, loadPreset, PRESETS, dijkstra };
+</script>
