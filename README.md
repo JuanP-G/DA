@@ -109,7 +109,7 @@ Carpeta [`6-Conjuntos disjuntos y grafos valorados/`](6-Conjuntos%20disjuntos%20
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| 06-0 | Teoría del tema (explicación general) | — | [📘 Explicación del tema (resumen y autoevaluación)](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/README.md) | — | Conjuntos disjuntos (búsqueda rápida, unión rápida, por tamaños, compresión), grafos valorados, propiedad del corte, Kruskal y Prim |
+| 06-0 | Teoría del tema (explicación general) | — | [📘 Explicación del tema (resumen y autoevaluación)](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/README.md) | [🎬 Vídeo](Videos/06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4) | Conjuntos disjuntos (búsqueda rápida, unión rápida, por tamaños, compresión), grafos valorados, propiedad del corte, Kruskal y Prim |
 | 06-1 | Petroleros hundidos | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Petroleros%20hundidos.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-1/README.md) | — | Conjuntos disjuntos sobre las celdas (8 vecinos): `unir` al añadir petróleo y `cardinal` para el máximo |
 | 06-2 | Camiones de reparto | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Camiones%20de%20reparto.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-2/README.md) | — | `GrafoValorado` + DFS por consulta que solo cruza aristas con valor ≥ anchura |
 | 06-3 | Recorriendo el archipiélago en bicicleta | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Recorriendo%20el%20archipi%C3%A9lago%20en%20bicicleta.pdf) | [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-3/README.md) | — | Kruskal: suma del árbol de recubrimiento de coste mínimo (o «No hay puentes suficientes») |
@@ -210,6 +210,7 @@ Todos en [`Videos/`](Videos), con subtítulos en castellano (y capítulos el de 
 | Vídeo | Contenido |
 |---|---|
 | [`05-0_grafos_dirigidos_teoria.mp4`](Videos/05-0_grafos_dirigidos_teoria.mp4) | **Teoría completa del tema 5** (23 min, 10 capítulos) |
+| [`06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4`](Videos/06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4) | **Teoría completa del tema 6**: conjuntos disjuntos, grafos valorados, Kruskal y Prim, y cómo se aplican a 06-1 … 06-5 (con capítulos) |
 | `03-4`, `03-5`, `03-L` | Ejercicios del tema 3 |
 | `04-1` … `04-7`, `04-L` | Ejercicios del tema 4 |
 | `05-1`, `05-2`, `05-3`, `05-6` | Ejercicios del tema 5 |
