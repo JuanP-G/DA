@@ -1,0 +1,1156 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conjuntos disjuntos y Kruskal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<style>
+/* Sistema visual común de las visualizaciones de DA (cuaderno de laboratorio de algoritmos).
+   Cada página añade su CSS propio DESPUÉS de este bloque. */
+:root {
+  --bg: #f3f4f8;
+  --panel: #ffffff;
+  --panel-2: #eceef4;
+  --ink: #1a2133;
+  --muted: #5d667b;
+  --line: #d9deea;
+  --accent: #b86e00;        /* nodo activo / raíz / resultado */
+  --accent-soft: #fbeccd;
+  --blue: #1f6fb8;          /* comparando / visitando */
+  --blue-soft: #d9eafa;
+  --red: #c4372d;           /* intercambio / rotación / ciclo */
+  --red-soft: #fbdcd8;
+  --green: #1e7f57;         /* terminado / correcto */
+  --green-soft: #d6f1e4;
+  --purple: #6c4bc1;
+  --purple-soft: #e6dffa;
+  --node: #ffffff;
+  --code-bg: #121a2b;
+  --code-ink: #dce4f5;
+  --code-dim: #6f7b95;
+  --code-hl: #3a3010;
+  --code-hl-bar: #f5a623;
+  --kw: #ff79c6; --ty: #8be9fd; --nu: #bd93f9; --co: #7e8aa8; --st: #f1fa8c;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
+    --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
+    --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
+    --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
+    --code-bg: #0a0f1c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
+  --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
+  --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
+  --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
+  --code-bg: #0a0f1c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 22px 16px 56px; display: flex; flex-direction: column; gap: 16px; }
+.wrap > * { min-width: 0; }
+header.top { display: flex; flex-direction: column; gap: 6px; }
+.tag { align-self: flex-start; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-soft); padding: 3px 9px; border-radius: 4px; }
+h1 { font-size: clamp(1.45rem, 3.2vw, 2rem); line-height: 1.2; margin: 0; font-weight: 700; letter-spacing: -.015em; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 70ch; text-wrap: pretty; }
+.lede code, .msg code, .note code, td code, li code { font-family: var(--mono); font-size: .9em; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+.panel > h2 { margin: 0 0 10px; font-size: .78rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bar .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 4px; }
+.bar label { font-size: .85rem; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.btn { font: inherit; font-size: .9rem; font-weight: 500; color: var(--ink); background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--blue); }
+.btn:focus-visible, .field:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="dark"] .btn.primary { color: #1b1400; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #1b1400; } }
+.btn.on { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+.btn:disabled { opacity: .45; cursor: default; }
+.field { font: inherit; font-family: var(--mono); font-size: .9rem; width: 5.2em; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+select.field { width: auto; font-family: var(--sans); }
+.stage { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.canvas-scroll { overflow-x: auto; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); }
+svg.viz { display: block; width: 100%; height: auto; }
+svg.viz text { font-family: var(--mono); fill: var(--ink); }
+svg.viz .muted { fill: var(--muted); }
+/* reproductor */
+.player { display: flex; flex-direction: column; gap: 8px; }
+.player .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.player .count { font-family: var(--mono); font-size: .82rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-left: auto; }
+.player input[type=range] { accent-color: var(--accent); }
+.msg { min-height: 3.2em; padding: 10px 12px; border-radius: 8px; background: var(--panel-2); border-left: 4px solid var(--accent); font-size: .95rem; }
+.msg b { font-weight: 600; }
+/* código */
+.codebox { background: var(--code-bg); color: var(--code-ink); border-radius: 10px; padding: 10px 0; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.55; }
+.codebox .fname { padding: 0 14px 6px; color: var(--code-dim); font-size: 11.5px; }
+.codebox .ln { display: flex; white-space: pre; padding-right: 14px; border-left: 4px solid transparent; }
+.codebox .ln i { font-style: normal; width: 2.6em; text-align: right; padding-right: 10px; color: var(--code-dim); flex: none; user-select: none; }
+.codebox .ln.on { background: var(--code-hl); border-left-color: var(--code-hl-bar); }
+.codebox .k { color: var(--kw); } .codebox .t { color: var(--ty); } .codebox .n { color: var(--nu); } .codebox .c { color: var(--co); } .codebox .s { color: var(--st); }
+/* leyenda y notas */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .82rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend b { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line); }
+.note { font-size: .88rem; color: var(--muted); margin: 0; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: .88rem; margin: 0; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; font-family: var(--mono); overflow-wrap: anywhere; }
+table.t { border-collapse: collapse; font-size: .88rem; width: 100%; }
+table.t th, table.t td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { color: var(--muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+footer.foot { color: var(--muted); font-size: .82rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.gtools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.gtools .grp { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; max-width: 100%; }
+.gtools .sep { width: 1px; align-self: stretch; background: var(--line); }
+.bar label { max-width: 100%; min-width: 0; }
+.bar select.field, .gtools select.field { max-width: 100%; min-width: 0; }
+svg.gs { touch-action: none; }
+svg.gs .eg path.edge { stroke: var(--muted); stroke-width: 2.2; fill: none; transition: stroke .25s, stroke-width .25s; }
+svg.gs .eg .lab rect { fill: var(--bg); stroke: var(--line); stroke-width: 1; transition: stroke .25s, fill .25s; }
+svg.gs .eg .lab text { font-size: 12.5px; font-weight: 600; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+svg.gs .eg.tree path.edge { stroke: var(--blue); stroke-width: 4; }
+svg.gs .eg.tree .lab rect { stroke: var(--blue); fill: var(--blue-soft); }
+svg.gs .eg.cur path.edge { stroke: var(--accent); stroke-width: 4.5; }
+svg.gs .eg.cur .lab rect { stroke: var(--accent); fill: var(--accent-soft); }
+svg.gs .eg.back path.edge { stroke: var(--red); stroke-width: 3.5; stroke-dasharray: 6 4; }
+svg.gs .eg.back .lab rect { stroke: var(--red); fill: var(--red-soft); }
+svg.gs .eg.new path.edge { stroke: var(--green); stroke-width: 5; }
+svg.gs .eg.new .lab rect { stroke: var(--green); fill: var(--green-soft); }
+svg.gs .eg.dead path.edge { opacity: .35; }
+svg.gs .eg.dead .lab { opacity: .45; }
+svg.gs .node circle { fill: var(--node); stroke: var(--muted); stroke-width: 2.5; transition: fill .25s, stroke .25s; cursor: grab; }
+svg.gs .node.s-vis circle { fill: var(--blue-soft); stroke: var(--blue); }
+svg.gs .node.s-cur circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 4; }
+svg.gs .node.s-done circle { fill: var(--green-soft); stroke: var(--green); }
+svg.gs .node.s-red circle { fill: var(--red-soft); stroke: var(--red); stroke-width: 4; }
+svg.gs .node.s-q circle { fill: var(--purple-soft); stroke: var(--purple); }
+svg.gs .node.sel circle { stroke-dasharray: 5 3; stroke: var(--accent); stroke-width: 4; }
+svg.gs .node text { font-size: 15px; font-weight: 600; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+#gsvg text.tg { font-size: 12.5px; text-anchor: middle; font-weight: 600; pointer-events: none; fill: var(--accent); }
+.adj { display: grid; grid-template-columns: auto 1fr; gap: 5px 8px; font-family: var(--mono); font-size: .88rem; align-items: center; }
+.adj .vn { color: var(--muted); text-align: right; }
+.adj .lst { display: flex; flex-wrap: wrap; gap: 4px; min-height: 26px; align-items: center; padding: 2px 6px; border: 1px dashed var(--line); border-radius: 6px; }
+.adj .lst.hot { border-color: var(--accent); background: var(--accent-soft); }
+.chip { display: inline-block; min-width: 1.8em; text-align: center; padding: 1px 7px; border-radius: 5px; background: var(--panel-2); border: 1px solid var(--line); font-family: var(--mono); font-size: .86rem; }
+.chip.new { background: var(--green-soft); border-color: var(--green); color: var(--green); font-weight: 600; }
+.chip.cur { background: var(--accent-soft); border-color: var(--accent); }
+.chip.ok { background: var(--blue-soft); border-color: var(--blue); }
+.chip.bad { background: var(--red-soft); border-color: var(--red); text-decoration: line-through; }
+.chip.dead { opacity: .5; }
+.vec { display: flex; flex-wrap: wrap; gap: 4px; font-family: var(--mono); font-size: .86rem; }
+.vec .c { display: flex; flex-direction: column; align-items: stretch; text-align: center; min-width: 2.6em; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.vec .c i { font-style: normal; background: var(--panel-2); color: var(--muted); font-size: .72rem; padding: 0 4px; }
+.vec .c b { font-weight: 500; padding: 2px 4px; }
+.vec .c.hot b { background: var(--accent-soft); color: var(--accent); }
+.vec .c.ok b { background: var(--green-soft); }
+.vec .c.bad b { background: var(--red-soft); }
+.listbox { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-family: var(--mono); font-size: .88rem; min-height: 28px; }
+.listbox .lab { color: var(--muted); font-size: .78rem; margin-right: 4px; text-transform: uppercase; letter-spacing: .06em; }
+.cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.cases .panel { box-shadow: none; }
+.cases h3 { margin: 0 0 6px; font-size: .98rem; }
+.cases p { margin: 0 0 6px; font-size: .9rem; color: var(--muted); }
+.cases p:last-child { margin: 0; }
+.toolbtn { min-width: 2.4em; }
+.hint { font-size: .82rem; color: var(--muted); margin: 0; }
+.back { font-size: .9rem; }
+a { color: var(--blue); }
+.colstack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.tabs .btn { border-radius: 8px 8px 0 0; }
+.tabs .btn.on { background: var(--panel); border-bottom-color: var(--panel); }
+.tabpanel { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+[hidden] { display: none !important; }
+
+</style>
+<div class="wrap">
+  <header class="top">
+    <span class="tag">Tema 6</span>
+    <h1>Conjuntos disjuntos, grafos valorados y árbol de recubrimiento mínimo</h1>
+    <p class="lede">Primero una partición que solo sabe juntar conjuntos (cuatro implementaciones, de la más lenta a la del juez); después un grafo no dirigido con valores en las aristas, donde Kruskal y Prim encuentran el árbol de coste mínimo. Todo se ejecuta paso a paso sobre el código real.</p>
+    <a class="back" href="index.html">← Todas las estructuras</a>
+  </header>
+  <nav class="tabs" aria-label="Secciones"><button class="btn on" data-t="lab">① Conjuntos disjuntos</button><button class="btn" data-t="graf">② Grafo valorado · Kruskal y Prim</button></nav>
+  <div class="tabpanel" id="tabLab">
+    <section class="panel">
+      <h2>1 · Elige la implementación</h2>
+      <div class="bar">
+        <label>implementación <select class="field" id="labVar">
+          <option value="qf">Búsqueda rápida (vector id[])</option>
+          <option value="qu">Unión rápida (un árbol por conjunto)</option>
+          <option value="sz">Unión por tamaños</option>
+          <option value="pc" selected>Por tamaños + compresión de caminos (ConjuntosDisjuntos.h)</option>
+        </select></label>
+        <label>elementos <input class="field" id="labN" type="number" min="3" max="16" value="10" style="width:4em"></label>
+        <button class="btn" id="labReset">Reiniciar</button>
+        <button class="btn" id="labAuto" title="unir 9-0, 3-4, 5-8, 7-2, 2-1, 5-7, 0-3, 4-2 sobre 10 elementos">Cargar autoevaluación 6.1</button>
+        <button class="btn" id="labChain" title="unir 0-1, 1-2, 2-3, … en este orden">Peor caso: cadena</button>
+      </div>
+      <p class="hint" id="labHint"></p>
+    </section>
+    <div class="stage">
+      <div class="colstack">
+        <section class="panel">
+          <h2>2 · Opera</h2>
+          <div class="bar" style="margin-bottom:8px">
+            <label>a <input class="field" id="labA" type="number" min="0" value="0" style="width:3.6em"></label>
+            <label>b <input class="field" id="labB" type="number" min="0" value="1" style="width:3.6em"></label>
+            <button class="btn primary" id="labUnir">unir(a, b)</button>
+            <button class="btn" id="labUnidos">unidos(a, b)</button>
+            <button class="btn" id="labBuscar">buscar(a)</button>
+            <button class="btn" id="labCard">cardinal(a)</button>
+          </div>
+          <div class="bar">
+            <label style="flex:1 1 260px">secuencia <input class="field" id="labSeq" type="text" placeholder="0-1 2-3 0-2 ..." style="width:100%;font-family:var(--mono)"></label>
+            <button class="btn" id="labSeqRun">Ejecutar secuencia</button>
+          </div>
+          <div id="labPlayerHost" style="margin-top:10px"></div>
+        </section>
+        <section class="panel">
+          <h2>La estructura</h2>
+          <div class="canvas-scroll"><svg id="labSvg" class="viz gs" viewBox="0 0 640 300" role="img" aria-label="Estructura de partición"></svg></div>
+          <div class="legend" id="labLegend" style="margin-top:10px"></div>
+        </section>
+      </div>
+      <div class="colstack">
+        <section class="panel">
+          <h2>Lo que guarda la clase</h2>
+          <dl class="kv" style="margin-bottom:10px"><dt>ncjtos</dt><dd id="labK1">0</dd><dt>accesos a vectores</dt><dd id="labK2">0</dd></dl>
+          <div id="labVecs" style="display:flex;flex-direction:column;gap:10px"></div>
+        </section>
+        <section class="panel">
+          <h2>Código C++</h2>
+          <div id="labCodeHost" style="max-height:420px;overflow:auto"></div>
+        </section>
+      </div>
+    </div>
+    <section class="panel">
+      <h2>Una aplicación: manchas de petróleo (06-1)</h2>
+      <p class="note" style="margin-bottom:10px">Cada celda es un elemento <code>i·C + j</code>. Al pasar una celda a petróleo se une (<code>unir</code>) con sus vecinas negras de las <b>8 direcciones</b> y la mancha más grande se actualiza con <code>cardinal</code>: justo la solución del ejercicio. Haz clic en celdas del mar para añadir petróleo.</p>
+      <div class="bar" style="margin-bottom:10px">
+        <button class="btn" id="gridEj">Imagen del enunciado (ejemplo 1)</button>
+        <button class="btn" id="gridEj3" title="Añade las celdas (6,8), (2,5) y (6,5) del enunciado">Añadir las 3 celdas del ejemplo</button>
+        <button class="btn" id="gridClear">Vaciar</button>
+      </div>
+      <div class="stage" style="grid-template-columns: minmax(0, 360px) minmax(0, 1fr)">
+        <div class="canvas-scroll"><svg id="gridSvg" class="viz" viewBox="0 0 336 336" role="img" aria-label="Rejilla de celdas" style="max-width:360px"></svg></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="note" id="gridInfo"></div>
+          <div><span class="note">Salida del caso (tamaño de la mayor mancha, inicial y tras cada celda nueva):</span>
+            <div class="listbox" id="gridOut" style="margin-top:4px"></div></div>
+          <div class="note" id="gridLog" style="font-family:var(--mono);font-size:.85rem"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="tabpanel" id="tabGraf">
+  <section class="panel">
+    <h2>1 · Construye el grafo valorado</h2>
+    <div class="gtools">
+      <div class="grp" role="group" aria-label="Herramienta">
+        <button class="btn toolbtn on" id="tMove" title="Arrastra vértices">✥ Mover</button>
+        <button class="btn toolbtn" id="tVert" title="Clic en el lienzo crea un vértice">＋ Vértice</button>
+        <button class="btn toolbtn" id="tEdge" title="Clic en dos vértices para unirlos">⤳ Arista</button>
+      </div>
+      <span class="sep"></span>
+      <div class="grp">
+        <label>valor <input class="field" id="eC" type="number" min="0" value="5" style="width:4em"></label>
+        <label>ponArista(<input class="field" id="eV" type="number" min="0" value="0" style="width:3.6em">, <input class="field" id="eW" type="number" min="0" value="1" style="width:3.6em">)</label>
+        <button class="btn" id="bPon">Añadir</button>
+      </div>
+      <span class="sep"></span>
+      <div class="grp">
+        <select class="field" id="preset" aria-label="Ejemplos"></select>
+        <button class="btn" id="bRand">Aleatorio</button>
+        <button class="btn" id="bClear">Vaciar</button>
+      </div>
+    </div>
+    <p class="hint" id="toolHint"></p>
+  </section>
+
+  <div class="stage">
+    <div class="colstack">
+      <section class="panel">
+        <h2>Grafo valorado (arrastra los vértices)</h2>
+        <div class="canvas-scroll"><svg id="gsvg" class="viz gs" viewBox="0 0 640 420" role="img" aria-label="Grafo valorado (arrastra los vértices)"></svg></div>
+        <div class="legend" id="legend" style="margin-top:10px"></div>
+      </section>
+      <section class="panel">
+        <h2>2 · Ejecuta un algoritmo</h2>
+        <div class="bar" style="margin-bottom:10px">
+          <label>algoritmo <select class="field" id="algo"></select></label>
+          <label id="lblSrc">desde <input class="field" id="src" type="number" min="0" value="0" style="width:3.6em"></label>
+          <label id="lblDst">hasta <input class="field" id="dst" type="number" min="0" value="3" style="width:3.6em"></label>
+          <label id="lblTxt">cargas <input class="field" id="txt" type="text" value="" style="width:11em" placeholder="10 5 15 8"></label>
+          <label id="lblPar">ancho <input class="field" id="par" type="number" min="0" value="15" style="width:4.2em"></label>
+          <button class="btn primary" id="bRun">Ejecutar</button>
+        </div>
+        <div id="playerHost"></div>
+      </section>
+    </div>
+    <div class="colstack">
+      <section class="panel">
+        <h2>Lo que guarda la clase</h2>
+        <dl class="kv" style="margin-bottom:10px"><dt>_V</dt><dd id="kV">0</dd><dt>_A</dt><dd id="kA">0</dd></dl>
+        <div class="adj" id="adj" aria-label="Listas de adyacencia"></div>
+        <p class="note" style="margin-top:8px" id="adjNote"></p>
+      </section>
+      <section class="panel" id="datos">
+        <h2>Vectores y colas del algoritmo</h2>
+        <div id="state" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+      <section class="panel">
+        <h2>Código C++</h2>
+        <div id="codeHost" style="max-height:420px;overflow:auto"></div>
+        <div class="bar" style="margin-top:8px" id="codeTabs"></div>
+      </section>
+    </div>
+  </div>
+  </div>
+
+  <section class="panel">
+    <h2>Para entenderlo</h2>
+    <div class="cases">
+      <div class="panel"><h3>Una partición que solo sabe juntar</h3><p>Los elementos están repartidos en conjuntos disjuntos y la única operación que cambia algo es <code>unir(a, b)</code>. Sirve cuando una relación solo <b>crece</b>: celdas de petróleo que se añaden (06-1), aristas que Kruskal acepta (06-3, 06-4, 06-5).</p></div>
+      <div class="panel"><h3>Búsqueda rápida frente a unión rápida</h3><p>Con el vector <code>id[]</code>, <code>buscar</code> cuesta 1 pero <code>unir</code> cuesta N. Con árboles es al revés: <code>unir</code> cambia un enlace, pero <code>buscar</code> sube por el árbol, que puede ser una <b>cadena</b> de N nodos. Prueba «Peor caso: cadena».</p></div>
+      <div class="panel"><h3>Por tamaños y con compresión</h3><p>Colgar siempre el árbol pequeño del grande mantiene la altura ≤ log₂N. Comprimir caminos deja cada nodo visitado colgando de la raíz. Juntas: M operaciones en O(N + M·lg*N), que en la práctica es lineal. Es <code>ConjuntosDisjuntos.h</code>.</p></div>
+      <div class="panel"><h3>Propiedad del corte</h3><p>Si repartes los vértices en dos grupos, la arista <b>más barata</b> que cruza de un grupo a otro pertenece a algún árbol de recubrimiento mínimo. Kruskal y Prim son dos formas de ir aplicándola.</p></div>
+      <div class="panel"><h3>Kruskal = ordenar + partición</h3><p>Ordena las aristas por valor y recórrelas: si sus extremos ya están unidos cerrarían un <b>ciclo</b> y se descartan; si no, se aceptan y se unen. <code>unidos</code> detecta el ciclo en casi O(1). Coste O(A log A).</p></div>
+      <div class="panel"><h3>Prim = crecer un árbol</h3><p>Parte de un vértice y repite: toma de la cola de prioridad la arista más barata que sale del árbol. Si sus dos extremos ya están dentro, sobra. Mismo coste mínimo que Kruskal (el árbol puede cambiar si hay valores repetidos).</p></div>
+      <div class="panel"><h3>Un mismo bucle, tres preguntas</h3><p><b>06-3</b>: suma de los valores aceptados. <b>06-4</b>: valor de la <i>última</i> arista aceptada (el máximo del ARM). <b>06-5</b>: parar en cuanto <code>unidos(origen, destino)</code>; esa arista es el mejor camino «de cuello de botella».</p></div>
+      <div class="panel"><h3>Cuando no hace falta ARM</h3><p>En 06-2 solo se pregunta si <b>se puede llegar</b> usando aristas con valor ≥ ancho. Basta un DFS que ignora las demás; Kruskal solo compensa si hay muchísimas consultas.</p></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Ejercicios del repositorio que lo usan</h2>
+    <table class="t">
+      <thead><tr><th>Nº</th><th>Problema</th><th>Idea</th></tr></thead>
+      <tbody>
+        <tr><td><code>06-1</code></td><td>Petroleros hundidos</td><td>Conjuntos disjuntos sobre las celdas (8 vecinos): <code>unir</code> y <code>cardinal</code></td></tr>
+        <tr><td><code>06-2</code></td><td>Camiones de reparto</td><td><code>GrafoValorado</code> + DFS por consulta con umbral de anchura</td></tr>
+        <tr><td><code>06-3</code></td><td>Recorriendo el archipiélago en bicicleta</td><td>Kruskal: suma del ARM o «No hay puentes suficientes»</td></tr>
+        <tr><td><code>06-4</code></td><td>La selva de Tarzán</td><td>Kruskal: la última arista aceptada es la cuerda mínima</td></tr>
+        <tr><td><code>06-5</code></td><td>Las minas del emperador Trajano</td><td>Kruskal hasta que origen y destino quedan unidos</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <footer class="foot"><a href="index.html">← Todas las estructuras</a> · Código basado en <code>ConjuntosDisjuntos.h</code> y <code>GrafoValorado.h</code> (A. Verdejo) · el comportamiento de la página sigue exactamente ese código.</footer>
+</div>
+
+<script>
+/* Utilidades comunes: reproductor paso a paso y panel de código. */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function esc(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+/* Panel de código C++ con coloreado sencillo y líneas resaltables (numeradas desde 1). */
+function mountCode(host, fname, lines) {
+  const kws = /^(for|if|else|while|return|const|class|struct|public|private|protected|void|bool|int|auto|true|false|template|typename|using|throw|new|delete|break|continue|static|nullptr)$/;
+  const tys = /^(Link|Set|Grafo|Digrafo|IndexPQ|Par|vector|queue|stack|string|T|std|Adys|Comparator|TreeNode|size_t)$/;
+  const tok = /(\/\/.*$)|("[^"]*")|(\b\d+\b)|(\b[A-Za-z_]\w*\b)|(\s+)|(.)/g;
+  host.classList.add('codebox');
+  host.innerHTML = '<div class="fname">' + esc(fname) + '</div>';
+  const rows = lines.map((src, i) => {
+    let html = '', m; tok.lastIndex = 0;
+    while ((m = tok.exec(src))) {
+      const t = m[0];
+      if (m[1]) html += '<span class="c">' + esc(t) + '</span>';
+      else if (m[2]) html += '<span class="s">' + esc(t) + '</span>';
+      else if (m[3]) html += '<span class="n">' + t + '</span>';
+      else if (m[4] && kws.test(t)) html += '<span class="k">' + t + '</span>';
+      else if (m[4] && tys.test(t)) html += '<span class="t">' + t + '</span>';
+      else html += esc(t);
+    }
+    const d = document.createElement('div');
+    d.className = 'ln'; d.innerHTML = '<i>' + (i + 1) + '</i><span>' + html + '</span>';
+    host.appendChild(d);
+    return d;
+  });
+  return function mark(active) {
+    const set = new Set(active || []);
+    rows.forEach((r, i) => r.classList.toggle('on', set.has(i + 1)));
+    const first = rows.find((r, i) => set.has(i + 1));
+    if (first) {
+      const top = first.offsetTop, h = host.clientHeight;
+      if (top < host.scrollTop + 20 || top > host.scrollTop + h - 40) host.scrollTop = Math.max(0, top - h / 3);
+    }
+  };
+}
+
+/* Reproductor: frames = [{ msg: 'html', lines: [nº de línea de código], ... }]
+   render(frame, prevFrame) lo implementa cada página. */
+class Player {
+  constructor({ render, mark }) {
+    this.render = render; this.mark = mark; this.frames = []; this.i = 0; this.timer = null;
+    this.$prev = $('#pPrev'); this.$next = $('#pNext'); this.$play = $('#pPlay'); this.$first = $('#pFirst'); this.$last = $('#pLast');
+    this.$speed = $('#pSpeed'); this.$count = $('#pCount'); this.$msg = $('#msg'); this.$seek = $('#pSeek');
+    this.$prev.onclick = () => { this.pause(); this.go(this.i - 1); };
+    this.$next.onclick = () => { this.pause(); this.go(this.i + 1); };
+    this.$first.onclick = () => { this.pause(); this.go(0); };
+    this.$last.onclick = () => { this.pause(); this.go(this.frames.length - 1); };
+    this.$play.onclick = () => this.toggle();
+    this.$seek.oninput = () => { this.pause(); this.go(+this.$seek.value); };
+    document.addEventListener('keydown', e => {
+      if (/INPUT|SELECT|TEXTAREA/.test((e.target.tagName || ''))) return;
+      if (e.key === 'ArrowRight') { this.pause(); this.go(this.i + 1); }
+      else if (e.key === 'ArrowLeft') { this.pause(); this.go(this.i - 1); }
+      else if (e.key === ' ') { e.preventDefault(); this.toggle(); }
+    });
+  }
+  delay() { return [1900, 1300, 900, 550, 280][(+this.$speed.value || 3) - 1]; }
+  /* Carga una secuencia nueva. start = frame inicial; play = arrancar solo. */
+  load(frames, { play = true, start = 0 } = {}) {
+    this.pause(); this.frames = frames; this.$seek.max = Math.max(0, frames.length - 1);
+    this.prevFrame = null; this.go(start, true);
+    if (play && frames.length > 1) this.play();
+  }
+  go(i, instant) {
+    if (!this.frames.length) return;
+    i = Math.max(0, Math.min(this.frames.length - 1, i));
+    const f = this.frames[i], prev = this.frames[this.i] || null;
+    this.i = i;
+    this.render(f, prev, !!instant);
+    this.$msg.innerHTML = f.msg || '';
+    if (this.mark) this.mark(f.lines || []);
+    this.$count.textContent = 'paso ' + (i + 1) + ' de ' + this.frames.length;
+    this.$seek.value = i;
+    this.$first.disabled = this.$prev.disabled = i === 0;
+    this.$last.disabled = this.$next.disabled = i === this.frames.length - 1;
+    if (i === this.frames.length - 1) this.pause();
+  }
+  play() {
+    if (this.i >= this.frames.length - 1) this.go(0, true);
+    this.$play.textContent = '⏸ Pausa'; this.$play.classList.add('on');
+    const tick = () => {
+      if (this.i >= this.frames.length - 1) { this.pause(); return; }
+      this.go(this.i + 1);
+      if (this.timer !== null) this.timer = setTimeout(tick, this.delay());
+    };
+    this.timer = setTimeout(tick, this.delay());
+  }
+  pause() { if (this.timer) clearTimeout(this.timer); this.timer = null; this.$play.textContent = '▶ Reproducir'; this.$play.classList.remove('on'); }
+  toggle() { this.timer ? this.pause() : this.play(); }
+}
+const PLAYER_HTML = `
+<div class="player">
+  <div class="msg" id="msg" role="status" aria-live="polite"></div>
+  <div class="row">
+    <button class="btn" id="pFirst" title="Primer paso" aria-label="Primer paso">⏮</button>
+    <button class="btn" id="pPrev" title="Paso anterior (←)" aria-label="Paso anterior">◀</button>
+    <button class="btn primary" id="pPlay">▶ Reproducir</button>
+    <button class="btn" id="pNext" title="Paso siguiente (→)" aria-label="Paso siguiente">▶|</button>
+    <button class="btn" id="pLast" title="Último paso" aria-label="Último paso">⏭</button>
+    <label>velocidad <input type="range" id="pSpeed" min="1" max="5" value="3"></label>
+    <span class="count" id="pCount"></span>
+  </div>
+  <input type="range" id="pSeek" min="0" max="0" value="0" aria-label="Posición en la secuencia" style="width:100%">
+</div>`;
+
+const DIR = false;
+const INF = '∞';
+
+/* ---------- modelo: igual que la clase C++ ---------- */
+const G = { n: 0, A: 0, ady: [], pos: [], edges: [] };
+function gReset() { G.n = 0; G.A = 0; G.ady = []; G.pos = []; G.edges = []; }
+function gAddV(x, y) { G.ady.push([]); G.pos.push([x, y]); G.n++; return G.n - 1; }
+/* arista: { id, v, w, c }; en no dirigido el mismo objeto está en ady[v] y ady[w] */
+function gPon(v, w, c) {
+  if (v < 0 || v >= G.n || w < 0 || w >= G.n) throw new Error('Vertice inexistente');
+  const e = { id: G.edges.length, v, w, c }; G.edges.push(e); G.A++;
+  G.ady[v].push(e); if (!DIR) G.ady[w].push(e);
+  return e;
+}
+const otro = (e, u) => (e.v === u ? e.w : e.v);
+const hasta = e => e.w;
+const sig = (e, u) => (DIR ? e.w : otro(e, u));            /* vértice al que lleva e viniendo de u */
+const gCopia = () => G.ady.map(a => a.slice());
+
+/* ---------- ejemplos ---------- */
+const PRESETS = [{"nombre": "El grafo del vídeo del tema (6 vértices)", "n": 6, "e": [[4, 5, 2], [0, 2, 3], [3, 4, 4], [1, 3, 5], [3, 5, 6], [2, 3, 7], [0, 1, 8], [2, 4, 9], [1, 2, 10]], "algo": "kr_clase", "src": 0, "dst": 5, "pos": [[110, 150], [110, 330], [290, 90], [300, 260], [480, 160], [500, 350]]}, {"nombre": "06-3 · Archipiélago (ejemplo 1: 4 islas, 5 puentes)", "n": 4, "e": [[0, 1, 5], [0, 2, 10], [1, 3, 7], [0, 3, 8], [2, 3, 2]], "algo": "kr_suma", "src": 0, "dst": 3, "pos": [[130, 90], [130, 330], [500, 90], [500, 330]]}, {"nombre": "06-3 · No hay puentes suficientes (ejemplo 2)", "n": 4, "e": [[0, 1, 3], [1, 3, 5], [3, 0, 8]], "algo": "kr_suma", "src": 0, "dst": 3, "pos": [[120, 100], [320, 100], [540, 250], [220, 320]]}, {"nombre": "06-4 · La selva de Tarzán (ejemplo 1)", "n": 4, "e": [[0, 1, 5], [1, 2, 10], [2, 0, 7], [1, 3, 8]], "algo": "kr_ultima", "src": 0, "dst": 3, "pos": [[130, 110], [330, 210], [130, 320], [540, 110]]}, {"nombre": "06-5 · Las minas de Trajano (ejemplo 1: de la cámara 1 a la 4)", "n": 4, "e": [[0, 1, 2], [1, 3, 5], [3, 0, 10], [0, 2, 6]], "algo": "kr_minimax", "src": 0, "dst": 3, "pos": [[130, 210], [320, 90], [320, 340], [520, 210]]}, {"nombre": "06-2 · Camiones de reparto (ejemplo: de la 2 a la 5 con ancho 15)", "n": 5, "e": [[0, 1, 10], [0, 2, 30], [1, 3, 20], [2, 3, 15], [3, 4, 12]], "algo": "dfsancho", "src": 1, "dst": 4, "par": 15, "pos": [[100, 210], [260, 90], [260, 330], [430, 210], [570, 210]]}, {"nombre": "Un grafo con ciclos (Kruskal descarta varias aristas)", "n": 7, "e": [[0, 1, 7], [0, 3, 5], [1, 2, 8], [1, 3, 9], [1, 4, 7], [2, 4, 5], [3, 4, 15], [3, 5, 6], [4, 5, 8], [4, 6, 9], [5, 6, 11]], "algo": "kr_clase", "src": 0, "dst": 6, "pos": [[90, 120], [250, 70], [450, 70], [170, 280], [340, 190], [330, 350], [540, 300]]}];
+function layoutCircle(n, cx = 320, cy = 210, r = 150) { const out = []; for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + 2 * Math.PI * i / n; out.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return out; }
+function loadPreset(p) {
+  gReset();
+  const pts = p.pos || layoutCircle(p.n);
+  for (let i = 0; i < p.n; i++) gAddV(pts[i][0], pts[i][1]);
+  for (const [a, b, c] of p.e) gPon(a, b, c);
+  if (p.src != null) { $('#src').value = p.src; $('#dst').value = p.dst != null ? p.dst : 0; }
+  if (p.par != null) $('#par').value = p.par;
+  if (p.txt != null) $('#txt').value = p.txt;
+  if (p.algo) { $('#algo').value = p.algo; updAlgoUI(); }
+  afterEdit();
+}
+function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+function randomGraph() {
+  const n = rnd(6, 9); gReset(); const pts = layoutCircle(n); for (let i = 0; i < n; i++) gAddV(pts[i][0], pts[i][1]);
+  const usados = new Set(), clave = (a, b) => (DIR ? a + '_' + b : Math.min(a, b) + '_' + Math.max(a, b));
+  const pesos = []; for (let i = 1; i <= 30; i++) pesos.push(i); pesos.sort(() => Math.random() - 0.5);
+  let pi = 0;
+  const poner = (a, b) => { if (a === b || usados.has(clave(a, b))) return false; usados.add(clave(a, b)); gPon(a, b, pesos[pi++]); return true; };
+  for (let v = 1; v < n; v++) { const u = rnd(0, v - 1); DIR && Math.random() < 0.5 ? poner(v, u) : poner(u, v); }   /* conexo (como grafo) */
+  let extra = rnd(3, 6), guard = 0; while (extra > 0 && guard++ < 200) if (poner(rnd(0, n - 1), rnd(0, n - 1))) extra--;
+  afterEdit();
+}
+
+/* ---------- dibujo ---------- */
+const svg = $('#gsvg'); const R = 22;
+let UNDIR = false;                                  /* «calles de doble sentido»: el digrafo lleva las dos aristas y se dibuja sin flechas */
+const arrows = () => DIR && !UNDIR;
+let visual = { sel: -1 };
+function edgeGeom(e, off) {
+  const [x1, y1] = G.pos[e.v], [x2, y2] = G.pos[e.w];
+  const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+  const sx = x1 + ux * R + nx * off * 0.6, sy = y1 + uy * R + ny * off * 0.6;
+  const ex = x2 - ux * (R + (arrows() ? 3 : 0)) + nx * off * 0.6, ey = y2 - uy * (R + (arrows() ? 3 : 0)) + ny * off * 0.6;
+  const cx = (x1 + x2) / 2 + nx * off * 1.6, cy = (y1 + y2) / 2 + ny * off * 1.6;
+  if (!off) return { d: `M${sx} ${sy} L${ex} ${ey}`, mx: (sx + ex) / 2, my: (sy + ey) / 2 };
+  return { d: `M${sx} ${sy} Q${cx} ${cy} ${ex} ${ey}`, mx: 0.25 * sx + 0.5 * cx + 0.25 * ex, my: 0.25 * sy + 0.5 * cy + 0.25 * ey };
+}
+function drawGraph() {
+  svg.innerHTML = '';
+  if (arrows()) {
+    const defs = el('defs', {}, svg);
+    for (const [id, cls] of [['ah', 'var(--muted)'], ['ahT', 'var(--blue)'], ['ahC', 'var(--accent)'], ['ahB', 'var(--red)'], ['ahN', 'var(--green)']]) {
+      const m = el('marker', { id, viewBox: '0 0 10 10', refX: '9', refY: '5', markerWidth: '7', markerHeight: '7', orient: 'auto-start-reverse' }, defs);
+      el('path', { d: 'M0 0 L10 5 L0 10 z', fill: cls }, m);
+    }
+  }
+  const eg = el('g', {}, svg), ng = el('g', {}, svg), tg = el('g', {}, svg);
+  const cnt = {};   /* nº de aristas ya dibujadas en el mismo par (ordenado en dirigido, sin orden en no dirigido) */
+  const hayInversa = e => DIR && G.edges.some(f => f.v === e.w && f.w === e.v);
+  visual.edgeEls = []; visual.nodeEls = []; visual.tag = {};
+  for (const e of G.edges) {
+    const k = DIR ? e.v + '>' + e.w : Math.min(e.v, e.w) + '_' + Math.max(e.v, e.w);
+    const j = cnt[k] = (cnt[k] || 0) + 1;
+    let off;
+    if (DIR) off = (hayInversa(e) ? 18 : 0) + (j - 1) * 20;
+    else { const m = j - 1; off = m === 0 ? 0 : (m % 2 ? 1 : -1) * Math.ceil(m / 2) * 22; if (e.v > e.w) off = -off; }
+    const { d, mx, my } = edgeGeom(e, off);
+    const g = el('g', { class: 'eg', 'data-id': e.id }, eg);
+    const p = el('path', { d, class: 'edge' }, g); if (arrows()) p.setAttribute('marker-end', 'url(#ah)');
+    const lab = el('g', { class: 'lab', transform: `translate(${mx} ${my})` }, g);
+    const w = 9 * String(e.c).length + 10;
+    el('rect', { x: -w / 2, y: -9, width: w, height: 18, rx: 4 }, lab);
+    const t = el('text', {}, lab); t.textContent = e.c;
+    visual.edgeEls.push({ e, g, p });
+  }
+  for (let i = 0; i < G.n; i++) {
+    const g = el('g', { class: 'node', 'data-v': i, transform: `translate(${G.pos[i][0]} ${G.pos[i][1]})` }, ng);
+    el('circle', { r: R }, g); const t = el('text', {}, g); t.textContent = i;
+    visual.nodeEls.push(g);
+    visual.tag[i] = el('text', { class: 'tg', x: G.pos[i][0], y: G.pos[i][1] - R - 7 }, tg);
+  }
+  applyVisual();
+}
+let curFrame = null;
+function applyVisual() {
+  if (!visual.nodeEls) return;
+  const f = curFrame || {};
+  visual.nodeEls.forEach((g, i) => {
+    g.setAttribute('class', 'node' + (f.node && f.node[i] ? ' ' + f.node[i] : '') + (visual.sel === i ? ' sel' : ''));
+    if (visual.tag[i]) visual.tag[i].textContent = (f.tag && f.tag[i] != null) ? f.tag[i] : '';
+  });
+  visual.edgeEls.forEach(({ e, g, p }) => {
+    const c = (f.edge && f.edge[e.id]) || '';
+    g.setAttribute('class', 'eg' + (c ? ' ' + c : ''));
+    if (arrows()) p.setAttribute('marker-end', 'url(#' + ({ tree: 'ahT', cur: 'ahC', back: 'ahB', new: 'ahN' }[c] || 'ah') + ')');
+  });
+}
+/* tabla de adyacencia */
+const chipTxt = (e, v) => (arrows() ? e.w : otro(e, v)) + ' (' + e.c + ')';
+function drawAdj(f) {
+  const host = $('#adj'); host.innerHTML = '';
+  $('#kV').textContent = G.n; $('#kA').textContent = G.A;
+  const adys = (f && f.adys) || (UNDIR ? G.ady.map((_, v) => G.edges.filter(e => e.v === v || e.w === v)) : G.ady);
+  for (let v = 0; v < G.n; v++) {
+    const a = document.createElement('div'); a.className = 'vn'; a.textContent = '_ady[' + v + ']'; host.appendChild(a);
+    const l = document.createElement('div'); l.className = 'lst' + (f && f.hotList === v ? ' hot' : ''); host.appendChild(l);
+    (adys[v] || []).forEach((e, j) => {
+      const c = document.createElement('span'); c.className = 'chip';
+      if (f && f.newChip && f.newChip.v === v && f.newChip.j === j) c.classList.add('new');
+      c.textContent = chipTxt(e, v); l.appendChild(c);
+    });
+    if (!(adys[v] || []).length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '∅'; l.appendChild(e); }
+  }
+  $('#adjNote').innerHTML = UNDIR
+    ? 'Las calles se recorren en <b>los dos sentidos</b>: en el código se llama dos veces a <code>ponArista</code> por calle (<code>v→w</code> y <code>w→v</code>), así que cada calle está en la lista de sus dos extremos (aquí se muestra el otro extremo y el valor).'
+    : DIR
+    ? 'Cada arista <code>v→w</code> (con su valor entre paréntesis) se guarda <b>una vez</b>, en la lista de <code>v</code>: la suma de las longitudes de las listas es <code>_A</code>.'
+    : 'Cada arista <code>v–w</code> es <b>un único objeto</b> <code>Arista</code> compartido: está en la lista de <code>v</code> y en la de <code>w</code> (la lista de <code>v</code> muestra el <i>otro</i> extremo y el valor). <code>_A</code> sube 1 pero la suma de las listas es <code>2·_A</code>; <code>aristas()</code> devuelve cada una solo una vez.';
+}
+
+/* ---------- interacción ---------- */
+let tool = 'move', pendingEdge = -1;
+function setTool(t) {
+  tool = t; pendingEdge = -1; visual.sel = -1;
+  $('#tMove').classList.toggle('on', t === 'move'); $('#tVert').classList.toggle('on', t === 'vert'); $('#tEdge').classList.toggle('on', t === 'edge');
+  $('#toolHint').textContent = { move: 'Arrastra los vértices para colocarlos como quieras.', vert: 'Haz clic en el lienzo para crear un vértice (hasta 14).', edge: DIR ? 'Escribe el valor y haz clic en el vértice origen y luego en el destino: ponArista({v, w, valor}) añade v→w.' : 'Escribe el valor y haz clic en dos vértices: ponArista({v, w, valor}) añade v–w.' }[t];
+  svg.style.cursor = t === 'vert' ? 'copy' : t === 'edge' ? 'pointer' : 'default';
+  applyVisual();
+}
+$('#tMove').onclick = () => setTool('move'); $('#tVert').onclick = () => setTool('vert'); $('#tEdge').onclick = () => setTool('edge');
+function svgPoint(e) { const r = svg.getBoundingClientRect(); const vb = svg.viewBox.baseVal; return [(e.clientX - r.left) * vb.width / r.width, (e.clientY - r.top) * vb.height / r.height]; }
+let drag = null;
+svg.addEventListener('pointerdown', e => {
+  const g = e.target.closest('.node'); const [px, py] = svgPoint(e);
+  if (tool === 'move' && g) { drag = { v: +g.dataset.v, dx: px - G.pos[+g.dataset.v][0], dy: py - G.pos[+g.dataset.v][1] }; svg.setPointerCapture(e.pointerId); }
+  else if (tool === 'vert' && !g) { if (G.n >= 14) { flashHint('Máximo 14 vértices para que se vea bien.'); return; } gAddV(Math.max(R, Math.min(640 - R, px)), Math.max(R + 14, Math.min(420 - R, py))); afterEdit(); }
+  else if (tool === 'edge' && g) {
+    const v = +g.dataset.v;
+    if (pendingEdge < 0) { pendingEdge = v; visual.sel = v; applyVisual(); }
+    else { const a = pendingEdge; pendingEdge = -1; visual.sel = -1; addEdgeAnimated(a, v, +$('#eC').value); }
+  }
+});
+svg.addEventListener('pointermove', e => {
+  if (!drag) return; const [px, py] = svgPoint(e);
+  G.pos[drag.v] = [Math.max(R, Math.min(640 - R, px - drag.dx)), Math.max(R + 14, Math.min(420 - R, py - drag.dy))];
+  const keep = curFrame; drawGraph(); curFrame = keep; applyVisual();
+});
+svg.addEventListener('pointerup', () => { drag = null; });
+function flashHint(t) { const h = $('#toolHint'); const old = h.textContent; h.textContent = t; setTimeout(() => { h.textContent = old; }, 2400); }
+
+function afterEdit() {
+  const n = Math.max(0, G.n - 1);
+  for (const id of ['#eV', '#eW', '#src', '#dst']) { $(id).max = n; if (+$(id).value > n) $(id).value = n; }
+  curFrame = null; drawGraph(); drawAdj(); $('#state').innerHTML = '<p class="note">Elige un algoritmo y pulsa <b>Ejecutar</b>.</p>';
+  if (player) { player.pause(); player.frames = []; $('#msg').innerHTML = 'Grafo modificado. Pulsa <b>Ejecutar</b> para recorrerlo.'; $('#pCount').textContent = ''; }
+}
+/* ponArista animado: se ve el push_back en la lista */
+function addEdgeAnimated(v, w, c) {
+  if (isNaN(v) || isNaN(w) || v < 0 || v >= G.n || w < 0 || w >= G.n) { flashHint('Vertice inexistente (el C++ lanzaría invalid_argument).'); return; }
+  if (v === w) { flashHint('Sin bucles: en estos problemas una arista une dos vértices distintos.'); return; }
+  if (isNaN(c) || c < 0) { flashHint('El valor tiene que ser un número no negativo.'); return; }
+  if (G.n && tabActual() !== 'graf') mostrarTab('graf');
+  const antes = gCopia();
+  const e = gPon(v, w, c);
+  const dest = gCopia();
+  const frames = [];
+  const base = { node: { [v]: 's-cur', [w]: 's-vis' }, edge: {} };
+  frames.push({ msg: `<code>g.ponArista({${v}, ${w}, ${c}})</code>: se crea la arista, se comprueba que ${v} y ${w} existen (si no, <code>invalid_argument</code>) y <code>_A</code> sube a <b>${G.A}</b>.`, lines: [L('clase','if (v < 0'),L('clase','throw'),L('clase','++_A')], ...base, adys: antes, hotList: -1 });
+  const f2 = { msg: `<code>_ady[${v}].push_back(arista)</code>: la arista entra al final de la lista de ${v}${DIR ? ' (con destino ' + w + ' y valor ' + c + ')' : ' (desde ahí se ve el extremo ' + w + ' con valor ' + c + ')'}.`, lines: [L('clase','_ady[v].push_back(arista)')], ...base, adys: DIR ? dest : antes.map((a, i) => i === v ? dest[i] : a), hotList: v, newChip: { v, j: dest[v].length - 1 } };
+  frames.push(f2);
+  if (!DIR) frames.push({ msg: `Como el grafo es <b>no dirigido</b>, también <code>_ady[${w}].push_back(arista)</code>: es <b>el mismo objeto</b> en las dos listas.`, lines: [L('clase','_ady[w].push_back(arista)')], ...base, adys: dest, hotList: w, newChip: { v: w, j: dest[w].length - 1 } });
+  frames.push({ msg: `Listo: <code>_V = ${G.n}</code>, <code>_A = ${G.A}</code>.`, lines: [], node: {}, edge: { [e.id]: 'new' }, adys: dest, hotList: -1 });
+  drawGraph(); showCode('clase'); player.load(frames, { play: true });
+}
+$('#bPon').onclick = () => { addEdgeAnimated(+$('#eV').value, +$('#eW').value, +$('#eC').value); };
+$('#bRand').onclick = randomGraph;
+$('#bClear').onclick = () => { gReset(); afterEdit(); };
+
+/* ---------- ayudas para los algoritmos ---------- */
+const ALGOS = {};
+function L(k, sub, occ = 0) {
+  let c = -1; const ls = CODES[k].lines;
+  for (let i = 0; i < ls.length; i++) if (ls[i].includes(sub)) { c++; if (c === occ) return i + 1; }
+  throw new Error('ancla no encontrada en ' + k + ': ' + sub);
+}
+function ctx() {
+  const f = [], st = { node: {}, edge: {}, tag: {} };
+  return { f, st, snap(msg, lines, vecs, extra) { f.push({ msg, lines, node: { ...st.node }, edge: { ...st.edge }, tag: { ...st.tag }, vecs: vecs || [], ...(extra || {}) }); } };
+}
+const vecOf = (name, arr, hot, okFn) => ({ kind: 'vec', name, vals: arr.map(x => x === null ? '·' : x), hot: hot == null ? -1 : hot, ok: okFn ? arr.map((x, i) => okFn(x) ? i : -1).filter(i => i >= 0) : [] });
+const listOf = (name, arr, hot) => ({ kind: 'list', name, vals: arr.slice(), hot: hot == null ? -1 : hot });
+const chipsOf = (name, items) => ({ kind: 'chips', name, items });   /* items: [{ t, cls }] */
+const textOf = (name, html) => ({ kind: 'text', name, html });
+const eTxt = e => e.v + (DIR ? '→' : '–') + e.w + ' (' + e.c + ')';
+
+/* ---- Conjuntos disjuntos EXACTAMENTE como ConjuntosDisjuntos.h (unión por tamaño + compresión) ---- */
+class DSU {
+  constructor(n) { this.p = [...Array(n).keys()]; this.tam = Array(n).fill(1); this.ncj = n; }
+  buscar(a) { if (this.p[a] === a) return a; return (this.p[a] = this.buscar(this.p[a])); }
+  unir(a, b) {
+    const i = this.buscar(a), j = this.buscar(b);
+    if (i === j) return;
+    if (this.tam[i] > this.tam[j]) { this.tam[i] += this.tam[j]; this.p[j] = i; }
+    else { this.tam[j] += this.tam[i]; this.p[i] = j; }
+    this.ncj--;
+  }
+  unidos(a, b) { return this.buscar(a) === this.buscar(b); }
+  cardinal(a) { return this.tam[this.buscar(a)]; }
+  conjuntos() {
+    const m = new Map();
+    for (let v = 0; v < this.p.length; v++) { const r = this.buscar(v); if (!m.has(r)) m.set(r, []); m.get(r).push(v); }
+    return [...m.values()];
+  }
+}
+const conjTxt = d => d.conjuntos().map(c => '{' + c.join(',') + '}').join(' ');
+
+/* ---- Kruskal y sus tres usos: ARM_Kruskal, 06-3 (suma), 06-4 (última arista), 06-5 (minimax) ---- */
+function kruskal(mode, s, t) {
+  const n = G.n, C = ctx(), S = C.st, d = new DSU(n);
+  const A = {
+    clase: { code: 'kruskal', sort: 'std::sort(aristas.begin(), aristas.end());', cd: 'ConjuntosDisjuntos cjtos(g.V());', loop: 'for (auto const& a : aristas) {', uv: 'int v = a.uno(), w = a.otro(v);', test: 'if (!cjtos.unidos(v, w))', unir: 'cjtos.unir(v, w);', acum: ['_ARM.push_back(a);', 'coste += a.valor();'], brk: 'if (_ARM.size() == (size_t)g.V() - 1) break;', brkAfter: true, fin: 'bool conexo() const' },
+    suma: { code: 'e63', sort: 'sort(puentes.begin(), puentes.end());', cd: 'ConjuntosDisjuntos cd(g.V());', loop: 'for (auto const& p : puentes) {', uv: 'int u = p.uno(), v = p.otro(u);', test: 'if (!cd.unidos(u, v)) {', unir: 'cd.unir(u, v);', acum: ['coste += p.valor();', '++elegidos;'], brk: 'if (elegidos == g.V() - 1) break;', fin: 'if (elegidos == g.V() - 1) cout << coste' },
+    ultima: { code: 'e64', sort: 'sort(saltos.begin(), saltos.end());', cd: 'ConjuntosDisjuntos cd(g.V());', loop: 'for (auto const& s : saltos) {', uv: 'int u = s.uno(), v = s.otro(u);', test: 'if (!cd.unidos(u, v)) {', unir: 'cd.unir(u, v);', acum: ['ultima = s.valor();'], brk: 'if (cd.num_cjtos() == 1) break;', fin: 'if (cd.num_cjtos() == 1) cout << ultima' },
+    minimax: { code: 'e65', sort: 'sort(galerias.begin(), galerias.end());', cd: 'ConjuntosDisjuntos cd(g.V());', loop: 'for (auto const& a : galerias) {', uv: 'int u = a.uno(), v = a.otro(u);', test: 'if (!cd.unidos(u, v)) {', unir: 'cd.unir(u, v);', acum: ['aguante = a.valor();'], brk: 'if (cd.unidos(origen, destino)) break;', fin: 'if (cd.unidos(origen, destino)) cout << aguante' },
+  }[mode];
+  const ln = k => L(A.code, A[k]);
+  const edges = G.edges.slice().sort((a, b) => a.c - b.c || a.id - b.id);
+  const est = {};            /* id -> '' | 'ok' | 'bad' | 'cur' | 'dead' */
+  let total = 0, elegidos = 0, ultima = 0;
+  const fin = () => mode === 'clase' ? elegidos === n - 1 : mode === 'suma' ? elegidos === n - 1 : mode === 'ultima' ? d.ncj === 1 : d.unidos(s, t);
+  const estado = () => mode === 'clase' || mode === 'suma' ? `elegidos = ${elegidos} de V − 1 = ${n - 1} · coste = ${total}` : mode === 'ultima' ? `conjuntos = ${d.ncj} · ultima = ${ultima}` : `¿unidos(${s}, ${t})? ${d.unidos(s, t) ? 'sí' : 'no'} · aguante = ${ultima}`;
+  const V = hotP => [
+    chipsOf('aristas ordenadas por valor', edges.map(e => ({ t: eTxt(e), cls: est[e.id] || '' }))),
+    vecOf('p (padre)', d.p, hotP), vecOf('tam (solo en raíces)', d.tam, -1),
+    textOf('conjuntos', conjTxt(d)), textOf('estado', estado())];
+  const lineasAcum = A.acum.map(x => L(A.code, x));
+  C.snap(`Primero se pide <code>g.aristas()</code> (cada arista <b>una sola vez</b>) y se ordena por valor creciente con <code>sort</code>. Las ${edges.length} aristas quedan así: <code>${edges.map(e => e.v + '–' + e.w + '(' + e.c + ')').join('  ')}</code>. ${edges.some((e, i) => i && edges[i - 1].c === e.c) ? 'Con valores repetidos el orden entre ellos puede variar según el <code>sort</code>; el coste no cambia.' : ''}`, [ln('sort')], V(-1));
+  C.snap(`<code>ConjuntosDisjuntos</code> con los ${n} vértices: al principio cada uno está <b>solo</b> en su conjunto (${d.ncj} conjuntos).`, [ln('cd')], V(-1));
+  let paro = false;
+  const motivoParo = () => mode === 'clase' || mode === 'suma' ? `ya hay V − 1 = ${n - 1} aristas: el árbol está completo` : mode === 'ultima' ? '<code>num_cjtos() == 1</code>: todo está conectado' : `<code>unidos(${s}, ${t})</code>: origen y destino ya están conectados`;
+  for (let k = 0; k < edges.length && !paro; k++) {
+    const e = edges[k], u = e.v, v = e.w;
+    if (!A.brkAfter && fin()) { paro = true; edges.slice(k).forEach(x => { est[x.id] = 'dead'; S.edge[x.id] = 'dead'; }); C.snap(`Al empezar la vuelta ${k + 1} se cumple ${motivoParo()}: <code>break</code>. Las ${edges.length - k} aristas restantes no se miran.`, [ln('brk')], V(-1)); break; }
+    est[e.id] = 'cur'; S.edge[e.id] = 'cur'; S.node[u] = 's-cur'; S.node[v] = 's-cur';
+    const ru = d.buscar(u), rv = d.buscar(v);
+    C.snap(`Arista <b>${u}–${v}</b> de valor <b>${e.c}</b>: <code>unidos(${u}, ${v})</code> compara <code>buscar(${u}) = ${ru}</code> con <code>buscar(${v}) = ${rv}</code>.`, [ln('loop'), ln('uv'), ln('test')], V(-1));
+    if (ru === rv) {
+      est[e.id] = 'bad'; S.edge[e.id] = 'back'; S.node[u] = ''; S.node[v] = '';
+      C.snap(`Mismo conjunto (${ru}): ${u} y ${v} <b>ya estaban conectados</b>. Esta arista cerraría un <b>ciclo</b>: se descarta.`, [ln('test')], V(-1));
+    } else {
+      d.unir(u, v); total += e.c; elegidos++; ultima = e.c;
+      est[e.id] = 'ok'; S.edge[e.id] = 'tree'; S.node[u] = 's-vis'; S.node[v] = 's-vis';
+      C.snap(`Conjuntos distintos (${ru} y ${rv}): <code>unir(${u}, ${v})</code> los junta y la arista <b>se acepta</b>${mode === 'clase' || mode === 'suma' ? `: coste += ${e.c} → <b>${total}</b>` : mode === 'ultima' ? `: <code>ultima = ${e.c}</code>` : `: <code>aguante = ${e.c}</code>`}.`, [ln('unir'), ...lineasAcum], V(-1));
+    }
+    if (A.brkAfter && fin()) { paro = true; edges.slice(k + 1).forEach(x => { est[x.id] = 'dead'; S.edge[x.id] = 'dead'; }); if (k + 1 < edges.length) C.snap(`Se cumple ${motivoParo()}: <code>break</code>. Las ${edges.length - k - 1} aristas restantes no se miran.`, [ln('brk')], V(-1)); }
+  }
+  /* resultado */
+  Object.keys(S.node).forEach(x => { S.node[x] = ''; });
+  edges.forEach(e => { if (est[e.id] === 'ok') S.edge[e.id] = 'new'; });
+  const conexo = d.ncj === 1;
+  let res;
+  if (mode === 'clase') res = conexo ? `<b>Fin.</b> <code>conexo()</code> es true: el ARM tiene ${elegidos} aristas y coste <b>${total}</b>. Las aristas verdes forman el árbol.` : `<b>Fin.</b> Quedan ${d.ncj} conjuntos: el grafo <b>no es conexo</b>, no existe ARM (<code>conexo()</code> es false).`;
+  else if (mode === 'suma') res = elegidos === n - 1 ? `<b>Fin.</b> Se escribe el coste mínimo: <b>${total}</b>${n === 1 ? ' (una sola isla: no hace falta ningún puente)' : ''}.` : `<b>Fin.</b> Solo ${elegidos} puentes elegidos < ${n - 1}: se escribe <b>No hay puentes suficientes</b>.`;
+  else if (mode === 'ultima') res = conexo ? `<b>Fin.</b> Se escribe la última arista aceptada: <b>${ultima}</b>${n === 1 ? ' (un solo árbol: no se necesita cuerda)' : ' (la cuerda más corta que conecta toda la selva)'}.` : `<b>Fin.</b> Quedan ${d.ncj} conjuntos: se escribe <b>Imposible</b>.`;
+  else res = d.unidos(s, t) ? `<b>Fin.</b> ${s} y ${t} quedan unidos: se escribe <b>${ultima}</b>${s === t ? ' (origen = destino: no hay que bucear)' : ' (la galería más larga del mejor camino)'}.` : `<b>Fin.</b> ${s} y ${t} nunca llegan a estar unidos: se escribe <b>IMPOSIBLE</b>.`;
+  C.snap(res, [ln('fin')], V(-1));
+  C.f.res = { total, elegidos, ncj: d.ncj, ultima, unidos: mode === 'minimax' ? d.unidos(s, t) : null };
+  return C.f;
+}
+ALGOS.kr_clase = () => kruskal('clase');
+ALGOS.kr_suma = () => kruskal('suma');
+ALGOS.kr_ultima = () => kruskal('ultima');
+ALGOS.kr_minimax = (s, t) => kruskal('minimax', s, t);
+
+/* ---- Prim: crece un árbol desde el vértice 0 con una cola de prioridad de aristas ---- */
+ALGOS.prim = () => {
+  const n = G.n, C = ctx(), S = C.st, visit = Array(n).fill(false), pq = [], arm = [];
+  let coste = 0, orden = 0;
+  const est = {};
+  const pqChips = hot => pq.slice().sort((a, b) => a.e.c - b.e.c || a.o - b.o).map((x, i) => ({ t: eTxt(x.e), cls: i === hot ? 'cur' : (visit[x.e.v] && visit[x.e.w] ? 'dead' : '') }));
+  const V = hot => [chipsOf('cola de prioridad pq (la menor va primero)', pqChips(hot)), vecOf('visit', visit.map(x => x ? 'T' : 'F'), -1, x => x === 'T'), listOf('ARM (aristas elegidas)', arm.map(eTxt), -1), textOf('estado', `coste = ${coste} · aristas = ${arm.length} de V − 1 = ${n - 1}`)];
+  function visitar(v) {
+    visit[v] = true; S.node[v] = 's-done';
+    const nuevas = [];
+    for (const e of G.ady[v]) if (!visit[otro(e, v)]) { pq.push({ e, o: orden++ }); nuevas.push(e); S.edge[e.id] = S.edge[e.id] === 'tree' ? 'tree' : 'cur'; }
+    C.snap(`<code>visitar(${v})</code>: ${v} entra en el árbol y se meten en <code>pq</code> las aristas que salen de ${v} hacia vértices <b>fuera</b> del árbol: ${nuevas.length ? nuevas.map(eTxt).join(', ') : 'ninguna'}.`, [L('prim', 'visit[v] = true;'), L('prim', 'if (!visit[a.otro(v)]) pq.push(a);')], V(-1));
+    nuevas.forEach(e => { if (S.edge[e.id] === 'cur') S.edge[e.id] = ''; });
+  }
+  C.snap(`<code>ARM_Prim(g)</code>: el árbol empieza vacío. Se parte del <b>vértice 0</b> y se mantiene una cola de prioridad con las aristas que salen del árbol.`, [L('prim', 'visitar(g, 0);')], V(-1));
+  visitar(0);
+  let cur = null;
+  while (pq.length && arm.length < n - 1) {
+    pq.sort((a, b) => a.e.c - b.e.c || a.o - b.o);
+    const x = pq.shift(), e = x.e, v = e.v, w = e.w;
+    S.edge[e.id] = 'cur';
+    C.snap(`<code>pq.top()</code>: la arista más barata es <b>${eTxt(e)}</b>. Se saca con <code>pop()</code>.`, [L('prim', 'while (!pq.empty()'), L('prim', 'auto a = pq.top(); pq.pop();'), L('prim', 'int v = a.uno(), w = a.otro(v);')], V(-1));
+    if (visit[v] && visit[w]) {
+      S.edge[e.id] = 'back';
+      C.snap(`Los dos extremos (${v} y ${w}) <b>ya están en el árbol</b>: la arista sobra (se metió en la cola cuando el otro extremo aún no estaba dentro). <code>continue</code>.`, [L('prim', 'if (visit[v] && visit[w]) continue;')], V(-1));
+      continue;
+    }
+    arm.push(e); coste += e.c; S.edge[e.id] = 'tree'; est[e.id] = 'ok';
+    C.snap(`Un extremo está fuera: la arista <b>se acepta</b>: <code>_ARM.push_back(a)</code>, coste += ${e.c} → <b>${coste}</b>.`, [L('prim', '_ARM.push_back(a);'), L('prim', 'coste += a.valor();')], V(-1));
+    if (!visit[v]) visitar(v);
+    if (!visit[w]) visitar(w);
+  }
+  Object.keys(S.node).forEach(k => { S.node[k] = 's-done'; });
+  arm.forEach(e => { S.edge[e.id] = 'new'; });
+  for (const e of G.edges) if (S.edge[e.id] !== 'new') S.edge[e.id] = 'dead';
+  const conexo = arm.length === n - 1;
+  C.snap(conexo ? `<b>Fin.</b> El árbol tiene ${arm.length} = V − 1 aristas y coste <b>${coste}</b> (es el mismo coste que da Kruskal; el árbol puede ser distinto si hay valores repetidos).` : `<b>Fin.</b> La cola se vació con ${arm.length} aristas < V − 1: desde el vértice 0 <b>no se llega a todos</b>. El grafo no es conexo y no existe ARM.`, [L('prim', 'bool conexo() const')], V(-1));
+  C.f.res = { coste, conexo, n: arm.length };
+  return C.f;
+};
+
+/* ---- DFS que solo cruza aristas con valor >= ancho (06-2 Camiones de reparto) ---- */
+ALGOS.dfsancho = (s, t, ancho) => {
+  const n = G.n, visit = Array(n).fill(false), C = ctx(), S = C.st;
+  const V = hot => [vecOf('visitado', visit.map(x => x ? 'T' : 'F'), hot, x => x === 'T'), textOf('consulta', `origen = ${s} · destino = ${t} · ancho del camión = ${ancho}`)];
+  C.snap(`<b>Consulta</b>: ¿puede un camión de ancho <b>${ancho}</b> ir de ${s} a ${t}? Se crea <code>Alcanzables(g, ${s}, ${ancho})</code>: un DFS desde ${s} que <b>ignora las calles con anchura máxima &lt; ${ancho}</b>. Las aristas que no valen se verán atenuadas.`, [L('e62', 'dfs(g, origen);')], V(-1));
+  function dfs(v) {
+    visit[v] = true; S.node[v] = 's-cur';
+    C.snap(`<code>dfs(${v})</code>: ${v} queda visitado.`, [L('e62', 'void dfs('), L('e62', 'visitado[v] = true;')], V(v));
+    for (const e of G.ady[v]) {
+      const w = otro(e, v), prev = S.edge[e.id];
+      if (e.c < ancho) {
+        S.edge[e.id] = 'dead';
+        C.snap(`Calle ${v}–${w} de anchura máxima <b>${e.c}</b> &lt; ${ancho}: el camión <b>no cabe</b>, no se usa.`, [L('e62', 'for (auto a : g.ady(v))'), L('e62', 'if (a.valor() >= ancho && !visitado[w]) dfs(g, w);')], V(w));
+      } else if (visit[w]) {
+        C.snap(`Calle ${v}–${w} (${e.c} ≥ ${ancho}) cabe, pero ${w} <b>ya está visitado</b>: se salta.`, [L('e62', 'for (auto a : g.ady(v))'), L('e62', 'if (a.valor() >= ancho && !visitado[w]) dfs(g, w);')], V(w));
+        S.edge[e.id] = prev || '';
+      } else {
+        S.edge[e.id] = 'tree'; S.node[v] = 's-vis';
+        C.snap(`Calle ${v}–${w} (${e.c} ≥ ${ancho}): <b>cabe</b> y ${w} no está visitado → <code>dfs(${w})</code>.`, [L('e62', 'int w = a.otro(v);'), L('e62', 'if (a.valor() >= ancho && !visitado[w]) dfs(g, w);')], V(w));
+        dfs(w); S.node[v] = 's-cur';
+      }
+    }
+    S.node[v] = 's-done';
+  }
+  dfs(s);
+  const ok = visit[t];
+  if (ok) S.node[t] = 's-cur'; else S.node[t] = 's-red';
+  C.snap(`<b>Fin del DFS.</b> <code>alcanzable(${t})</code> es <b>${ok ? 'true → SI' : 'false → NO'}</b>: ${ok ? 'hay un camino por calles donde el camión de ancho ' + ancho + ' cabe' : 'todas las rutas hacia ' + t + ' pasan por alguna calle más estrecha que ' + ancho}.`, [L('e62', 'bool alcanzable(int v) const')], V(t));
+  C.f.res = { ok };
+  return C.f;
+};
+
+
+/* ---------- código mostrado ---------- */
+const CODES = {"clase": {"f": "GrafoValorado.h (resumen)", "tab": "GrafoValorado.h", "lines": ["template <typename Valor>", "class GrafoValorado {", "public:", "   ", "   GrafoValorado(int V) : _V(V), _A(0), _ady(_V) { }", "   ", "   // ... constructor desde un flujo de entrada omitido", "", "   int V() const { return _V; }", "   ", "   int A() const { return _A; }", "   ", "   void ponArista(Arista<Valor> arista) {", "      int v = arista.uno(), w = arista.otro(v);", "      if (v < 0 || v >= _V || w < 0 || w >= _V)", "         throw std::invalid_argument(\"Vertice inexistente\");", "      ++_A;", "      _ady[v].push_back(arista);", "      _ady[w].push_back(arista);", "   }", "   ", "   AdysVal<Valor> const& ady(int v) const {", "      if (v < 0 || v >= _V)", "         throw std::invalid_argument(\"Vertice inexistente\");", "      return _ady[v];", "   }", "   ", "   std::vector<Arista<Valor>> aristas() const {", "      std::vector<Arista<Valor>> ars;", "      for (int v = 0; v < V(); ++v)", "         for (auto arista : ady(v))", "            if (v < arista.otro(v))", "               ars.push_back(arista);", "      return ars;", "   }", "   ", "   // ... print() omitido", "   ", "private:", "   int _V;   //número de vértices", "   int _A;   //número de aristas", "   std::vector<AdysVal<Valor>> _ady;   //vector de listas de adyacentes", "};"]}, "arista": {"f": "GrafoValorado.h · Arista", "tab": "Arista", "lines": ["template <typename Valor>", "class Arista {", "public:", "   Arista() : pimpl(nullptr) {}", "   Arista(int v, int w, Valor valor) : pimpl(std::make_shared<Arista_impl>(v, w, valor)) {}", "   ", "   int uno() const { return pimpl->v; }", "", "   int otro(int u) const { return (u == pimpl->v) ? pimpl->w : pimpl->v; }", "", "   Valor valor() const { return pimpl->valor; }", "", "   //Método para depurar", "   // ... print() omitido", "   ", "   bool operator<(Arista<Valor> const& b) const {", "      return valor() < b.valor();", "   }", "", "   bool operator>(Arista<Valor> const& b) const {", "      return b.valor() < valor();", "   }", "", "private:", "   struct Arista_impl {", "      int v, w;", "      Valor valor;", "      Arista_impl(int v, int w, Valor valor) : v(v), w(w), valor(valor) {}", "   };", "   ", "   std::shared_ptr<Arista_impl> pimpl; // puntero a la arista \"de verdad\"", "};"]}, "kruskal": {"f": "GrafoValorado_algoritmos.h · ARM_Kruskal", "tab": "ARM_Kruskal", "lines": ["template <typename Valor>", "class ARM_Kruskal {", "public:", "   ARM_Kruskal(GrafoValorado<Valor> const& g) : coste(0), V(g.V()) {", "      std::vector<Arista<Valor>> aristas = g.aristas();", "      std::sort(aristas.begin(), aristas.end());          // por valor creciente", "      ConjuntosDisjuntos cjtos(g.V());", "      for (auto const& a : aristas) {", "         int v = a.uno(), w = a.otro(v);", "         if (!cjtos.unidos(v, w)) {                       // no cierra ciclo: se acepta", "            cjtos.unir(v, w);", "            _ARM.push_back(a);", "            coste += a.valor();", "            if (_ARM.size() == (size_t)g.V() - 1) break;  // ya hay V - 1 aristas", "         }", "      }", "   }", "   bool conexo() const { return V == 0 || _ARM.size() == (size_t)V - 1; }", "   Valor costeARM() const { return coste; }", "   std::vector<Arista<Valor>> const& ARM() const { return _ARM; }", "private:", "   std::vector<Arista<Valor>> _ARM;", "   Valor coste;", "   int V;", "};"]}, "prim": {"f": "GrafoValorado_algoritmos.h · ARM_Prim", "tab": "ARM_Prim", "lines": ["template <typename Valor>", "class ARM_Prim {", "public:", "   ARM_Prim(GrafoValorado<Valor> const& g) : visit(g.V(), false), coste(0), V(g.V()) {", "      if (V == 0) return;", "      visitar(g, 0);                                      // el árbol empieza en el vértice 0", "      while (!pq.empty() && _ARM.size() < (size_t)V - 1) {", "         auto a = pq.top(); pq.pop();                     // la arista más barata que sale del árbol", "         int v = a.uno(), w = a.otro(v);", "         if (visit[v] && visit[w]) continue;              // las dos puntas ya están dentro: sobra", "         _ARM.push_back(a);", "         coste += a.valor();", "         if (!visit[v]) visitar(g, v);", "         if (!visit[w]) visitar(g, w);", "      }", "   }", "   bool conexo() const { return V == 0 || _ARM.size() == (size_t)V - 1; }", "   Valor costeARM() const { return coste; }", "   std::vector<Arista<Valor>> const& ARM() const { return _ARM; }", "private:", "   std::vector<Arista<Valor>> _ARM;", "   std::priority_queue<Arista<Valor>, std::vector<Arista<Valor>>, std::greater<Arista<Valor>>> pq;", "   std::vector<bool> visit;", "   Valor coste;", "   int V;", "", "   // mete v en el árbol y las aristas que salen de v en la cola", "   void visitar(GrafoValorado<Valor> const& g, int v) {", "      visit[v] = true;", "      for (auto const& a : g.ady(v))", "         if (!visit[a.otro(v)]) pq.push(a);", "   }", "};"]}, "e63": {"f": "EJ_06-3.cpp", "tab": "06-3", "lines": ["void resuelveCaso() {", "    GrafoValorado<int> g(cin, 1);   // I, P y P puentes; islas numeradas desde 1", "", "    vector<Arista<int>> puentes = g.aristas();", "    sort(puentes.begin(), puentes.end());   // por coste creciente (operator< de Arista)", "", "    ConjuntosDisjuntos cd(g.V());", "    long long coste = 0;", "    int elegidos = 0;", "    for (auto const& p : puentes) {", "        if (elegidos == g.V() - 1) break;", "        int u = p.uno(), v = p.otro(u);", "        if (!cd.unidos(u, v)) {", "            cd.unir(u, v);", "            coste += p.valor();", "            ++elegidos;", "        }", "    }", "", "    if (elegidos == g.V() - 1) cout << coste << '\\n';", "    else cout << \"No hay puentes suficientes\\n\";", "}"]}, "e64": {"f": "EJ_06-4.cpp", "tab": "06-4", "lines": ["bool resuelveCaso() {", "    GrafoValorado<int> g(cin, 1);   // N, M y M saltos; arboles numerados desde 1", "    if (!cin) return false;         // fin de la entrada", "", "    vector<Arista<int>> saltos = g.aristas();", "    sort(saltos.begin(), saltos.end());   // por longitud creciente", "", "    ConjuntosDisjuntos cd(g.V());", "    int ultima = 0;", "    for (auto const& s : saltos) {", "        if (cd.num_cjtos() == 1) break;", "        int u = s.uno(), v = s.otro(u);", "        if (!cd.unidos(u, v)) {", "            cd.unir(u, v);", "            ultima = s.valor();", "        }", "    }", "", "    if (cd.num_cjtos() == 1) cout << ultima << '\\n';", "    else cout << \"Imposible\\n\";", "    return true;", "}"]}, "e65": {"f": "EJ_06-5.cpp", "tab": "06-5", "lines": ["void resuelveCaso() {", "    GrafoValorado<int> g(cin, 1);   // N, M y M galerias; camaras numeradas desde 1", "    int origen, destino;", "    cin >> origen >> destino;", "    --origen; --destino;", "", "    vector<Arista<int>> galerias = g.aristas();", "    sort(galerias.begin(), galerias.end());   // por tiempo creciente", "", "    ConjuntosDisjuntos cd(g.V());", "    int aguante = 0;", "    for (auto const& a : galerias) {", "        if (cd.unidos(origen, destino)) break;", "        int u = a.uno(), v = a.otro(u);", "        if (!cd.unidos(u, v)) {", "            cd.unir(u, v);", "            aguante = a.valor();", "        }", "    }", "", "    if (cd.unidos(origen, destino)) cout << aguante << '\\n';", "    else cout << \"IMPOSIBLE\\n\";", "}"]}, "e62": {"f": "EJ_06-2.cpp", "tab": "06-2", "lines": ["class Alcanzables {", "public:", "    // vertices alcanzables desde origen usando solo aristas con valor >= ancho", "    Alcanzables(GrafoValorado<int> const& g, int origen, int ancho)", "        : visitado(g.V(), false), ancho(ancho) {", "        dfs(g, origen);", "    }", "", "    bool alcanzable(int v) const { return visitado[v]; }", "", "private:", "    vector<bool> visitado;", "    int ancho;", "", "    void dfs(GrafoValorado<int> const& g, int v) {", "        visitado[v] = true;", "        for (auto a : g.ady(v)) {", "            int w = a.otro(v);", "            if (a.valor() >= ancho && !visitado[w]) dfs(g, w);", "        }", "    }", "};"]}};
+let markFn = null, curCode = null;
+function showCode(name) {
+  if (curCode === name) return; curCode = name;
+  const c = CODES[name]; markFn = mountCode($('#codeHost'), c.f, c.lines);
+  $$('#codeTabs .btn').forEach(b => b.classList.toggle('on', b.dataset.k === name));
+}
+for (const k in CODES) { const b = document.createElement('button'); b.className = 'btn'; b.dataset.k = k; b.textContent = CODES[k].tab; b.onclick = () => { showCode(k); if (markFn) markFn([]); }; $('#codeTabs').appendChild(b); }
+
+/* ---------- arranque ---------- */
+$('#playerHost').innerHTML = PLAYER_HTML;
+const playerEl = $('#playerHost').firstElementChild;
+let tabCur = 'graf';
+const tabActual = () => tabCur;
+function mostrarTab(t) {
+  tabCur = t;
+  const lab = $('#tabLab'); if (lab) lab.hidden = t !== 'lab';
+  $('#tabGraf').hidden = t !== 'graf';
+  const lh = $('#labPlayerHost'); (t === 'lab' && lh ? lh : $('#playerHost')).appendChild(playerEl);
+  $$('.tabs .btn').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  player.pause(); player.frames = []; $('#pCount').textContent = '';
+  if (t === 'lab' && window.labEnter) window.labEnter(); else { $('#msg').innerHTML = 'Pulsa <b>Ejecutar</b> para ver el algoritmo paso a paso.'; }
+  try { history.replaceState(null, '', '#' + t); } catch (e) { /* sin historial */ }
+}
+$$('.tabs .btn').forEach(b => { b.onclick = () => mostrarTab(b.dataset.t); });
+const player = new Player({
+  render: f => { if (tabCur === 'lab') { window.labRender(f); return; } curFrame = f; applyVisual(); drawAdj(f); drawState(f); },
+  mark: lines => { if (tabCur === 'lab') { window.labMark(lines); return; } if (markFn) markFn(lines); }
+});
+function drawState(f) {
+  const host = $('#state'); host.innerHTML = '';
+  if (!f || !f.vecs || !f.vecs.length) { host.innerHTML = '<p class="note">Aquí aparecen los vectores del algoritmo (<code>dist</code>, <code>p</code>, <code>tam</code>…), la cola de prioridad o la lista de aristas.</p>'; return; }
+  for (const blk of f.vecs) {
+    const d = document.createElement('div');
+    if (blk.kind === 'vec') {
+      d.innerHTML = '<div class="note" style="margin-bottom:3px"><code>' + esc(blk.name) + '</code></div>';
+      const v = document.createElement('div'); v.className = 'vec';
+      blk.vals.forEach((x, i) => { const c = document.createElement('div'); c.className = 'c' + (blk.hot === i ? ' hot' : (blk.ok && blk.ok.includes(i) ? ' ok' : '')); c.innerHTML = '<i>' + i + '</i><b>' + esc(x) + '</b>'; v.appendChild(c); });
+      d.appendChild(v);
+    } else if (blk.kind === 'chips') {
+      d.innerHTML = '<div class="listbox"><span class="lab">' + esc(blk.name) + '</span></div>';
+      const lb = d.firstChild;
+      if (!blk.items.length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '(vacía)'; lb.appendChild(e); }
+      blk.items.forEach(it => { const c = document.createElement('span'); c.className = 'chip ' + (it.cls || ''); c.textContent = it.t; lb.appendChild(c); });
+    } else if (blk.kind === 'text') {
+      d.innerHTML = '<div class="note" style="margin-bottom:3px"><code>' + esc(blk.name) + '</code></div><div style="font-family:var(--mono);font-size:.88rem">' + blk.html + '</div>';
+    } else {
+      d.innerHTML = '<div class="listbox"><span class="lab">' + esc(blk.name) + '</span></div>';
+      const lb = d.firstChild;
+      if (!blk.vals.length) { const e = document.createElement('span'); e.className = 'note'; e.textContent = '(vacía)'; lb.appendChild(e); }
+      blk.vals.forEach((x, i) => { const c = document.createElement('span'); c.className = 'chip' + (blk.hot === i ? ' cur' : ''); c.textContent = x; lb.appendChild(c); });
+    }
+    host.appendChild(d);
+  }
+}
+const ALGO_LIST = [{"id": "kr_clase", "nombre": "Kruskal: árbol de coste mínimo (ARM_Kruskal)", "src": false, "dst": false, "code": "kruskal"}, {"id": "prim", "nombre": "Prim: crecer el árbol desde el vértice 0 (ARM_Prim)", "src": false, "dst": false, "code": "prim"}, {"id": "kr_suma", "nombre": "06-3 Archipiélago: suma del ARM o «No hay puentes suficientes»", "src": false, "dst": false, "code": "e63"}, {"id": "kr_ultima", "nombre": "06-4 Tarzán: última arista aceptada o «Imposible»", "src": false, "dst": false, "code": "e64"}, {"id": "kr_minimax", "nombre": "06-5 Trajano: Kruskal hasta unir origen y destino", "src": true, "dst": true, "code": "e65"}, {"id": "dfsancho", "nombre": "06-2 Camiones: DFS que solo usa aristas con valor ≥ ancho", "src": true, "dst": true, "par": "ancho", "code": "e62"}];
+for (const a of ALGO_LIST) { const o = document.createElement('option'); o.value = a.id; o.textContent = a.nombre; $('#algo').appendChild(o); }
+PRESETS.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.nombre; $('#preset').appendChild(o); });
+$('#preset').onchange = () => loadPreset(PRESETS[+$('#preset').value]);
+function updAlgoUI() {
+  const a = ALGO_LIST.find(x => x.id === $('#algo').value);
+  $('#lblSrc').hidden = !a.src; $('#lblDst').hidden = !a.dst; $('#lblPar').hidden = !a.par; $('#lblTxt').hidden = !a.txt;
+  if (a.txt) $('#lblTxt').firstChild.textContent = a.txt + ' ';
+  const u = !!a.undir; if (u !== UNDIR) { UNDIR = u; curFrame = null; drawGraph(); drawAdj(); }
+  if (a.par) $('#lblPar').firstChild.textContent = a.par + ' ';
+  showCode(a.code); if (markFn) markFn([]);
+}
+$('#algo').onchange = updAlgoUI;
+$('#bRun').onclick = () => {
+  const a = ALGO_LIST.find(x => x.id === $('#algo').value);
+  if (!G.n) { $('#msg').innerHTML = 'El grafo está vacío: crea o carga uno.'; return; }
+  const s = Math.max(0, Math.min(G.n - 1, +$('#src').value || 0)), t = Math.max(0, Math.min(G.n - 1, +$('#dst').value || 0)), par = +$('#par').value || 0;
+  const frames = ALGOS[a.id](s, t, par, $('#txt').value);
+  drawGraph(); showCode(a.code); player.load(frames, { play: true });
+};
+$('#legend').innerHTML = "<span><b style=\"border-color:var(--accent);background:var(--accent-soft)\"></b>arista / vértice actual</span><span><b style=\"border-color:var(--blue);background:var(--blue-soft)\"></b>arista aceptada · vértice en el árbol</span><span><b style=\"border-color:var(--red);background:var(--red-soft)\"></b>arista descartada</span><span><b style=\"border-color:var(--green);background:var(--green-soft)\"></b>resultado final</span><span><b style=\"border-color:var(--line);background:var(--bg);opacity:.5\"></b>no se mira / no vale</span>";
+setTool('move');
+const LAB_CODES = {"qf": {"f": "ConjuntosDisjuntos_variantes.h · BusquedaRapida", "lines": ["class BusquedaRapida {", "public:", "   BusquedaRapida(int N) : ncjtos(N), id(N) {", "      for (int i = 0; i < N; ++i) id[i] = i;", "   }", "   // identificador del conjunto de a: un solo acceso al vector", "   int buscar(int a) const { return id.at(a); }", "", "   // los elementos del conjunto de a pasan a tener el identificador del conjunto de b", "   void unir(int a, int b) {", "      int ia = buscar(a), ib = buscar(b);", "      if (ia == ib) return;", "      for (int k = 0; k < (int)id.size(); ++k)", "         if (id[k] == ia) id[k] = ib;", "      --ncjtos;", "   }", "   bool unidos(int a, int b) const { return buscar(a) == buscar(b); }", "   int num_cjtos() const { return ncjtos; }", "   std::vector<int> const& vector_id() const { return id; }", "private:", "   int ncjtos;", "   std::vector<int> id;     // id[a] = identificador del conjunto de a", "};"]}, "qu": {"f": "ConjuntosDisjuntos_variantes.h · UnionRapida", "lines": ["class UnionRapida {", "public:", "   UnionRapida(int N) : ncjtos(N), p(N) {", "      for (int i = 0; i < N; ++i) p[i] = i;", "   }", "   // sube por los enlaces al padre hasta la raíz", "   int buscar(int a) const {", "      while (p.at(a) != a) a = p[a];", "      return a;", "   }", "   // la raíz de a pasa a ser hija de la raíz de b", "   void unir(int a, int b) {", "      int i = buscar(a), j = buscar(b);", "      if (i == j) return;", "      p[i] = j;", "      --ncjtos;", "   }", "   bool unidos(int a, int b) const { return buscar(a) == buscar(b); }", "   int num_cjtos() const { return ncjtos; }", "   std::vector<int> const& vector_p() const { return p; }", "private:", "   int ncjtos;", "   std::vector<int> p;      // p[a] = padre de a (una raíz es su propio padre)", "};"]}, "sz": {"f": "ConjuntosDisjuntos_variantes.h · UnionPorTamanos", "lines": ["class UnionPorTamanos {", "public:", "   UnionPorTamanos(int N) : ncjtos(N), p(N), tam(N, 1) {", "      for (int i = 0; i < N; ++i) p[i] = i;", "   }", "   int buscar(int a) const {", "      while (p.at(a) != a) a = p[a];", "      return a;", "   }", "   // la raíz del árbol más pequeño cuelga de la del más grande (en empate, la de a de la de b)", "   void unir(int a, int b) {", "      int i = buscar(a), j = buscar(b);", "      if (i == j) return;", "      if (tam[i] > tam[j]) { tam[i] += tam[j]; p[j] = i; }", "      else                 { tam[j] += tam[i]; p[i] = j; }", "      --ncjtos;", "   }", "   bool unidos(int a, int b) const { return buscar(a) == buscar(b); }", "   int cardinal(int a) const { return tam[buscar(a)]; }", "   int num_cjtos() const { return ncjtos; }", "   std::vector<int> const& vector_p() const { return p; }", "   std::vector<int> const& vector_tam() const { return tam; }", "private:", "   int ncjtos;", "   std::vector<int> p;      // enlace al padre", "   std::vector<int> tam;    // tam[r] = tamaño del árbol de raíz r (solo vale en las raíces)", "};"]}, "pc": {"f": "ConjuntosDisjuntos.h (resumen)", "lines": ["class ConjuntosDisjuntos {", "protected:", "   int ncjtos;  // número de conjuntos disjuntos", "   mutable std::vector<int> p;  // enlace al padre. El atributo es mutable incluso en métodos constantes", "   std::vector<int> tam;  // tamaño de los árboles", "public:", "   ", "   // crea una estructura de partición con los elementos 0..N-1,", "   // cada uno en un conjunto, partición unitaria", "   ConjuntosDisjuntos(int N) : ncjtos(N), p(N), tam(N,1) {", "      for (int i = 0; i < N; ++i)", "          p[i] = i;", "   }", "   ", "   //  devuelve el representante del conjunto que contiene a a", "   int buscar(int a) const {", "      if (p.at(a) == a) // es una raíz", "         return a;", "      else", "         return p[a] = buscar(p[a]);", "   }", "   ", "   // unir los conjuntos que contengan a y b", "   void unir(int a, int b) {", "      int i = buscar(a);", "      int j = buscar(b);", "      if (i == j) return;", "      if (tam[i] > tam[j]) { // i es la raíz del árbol más grande", "         tam[i] += tam[j]; p[j] = i;", "      } else {", "         tam[j] += tam[i]; p[i] = j;", "      }", "      --ncjtos;", "   }", "", "   // devuelve si a y b están en el mismo conjunto", "   bool unidos(int a, int b) const {", "      return buscar(a) == buscar(b);", "   }", "   ", "   // devuelve el número de elementos en el conjunto de a", "   int cardinal(int a) const {", "      return tam[buscar(a)];", "   }", "   ", "   // devuelve el número de conjuntos disjuntos", "   int num_cjtos() const { return ncjtos; }", "};"]}};
+
+/* ================== Laboratorio de conjuntos disjuntos (4 implementaciones) ================== */
+const LAB = { v: 'pc', n: 10, p: [], tam: [], id: [], ncj: 10, acc: 0, markFn: null, codeKey: null };
+const labSvg = $('#labSvg');
+function labReinit(n) {
+  LAB.n = n; LAB.p = [...Array(n).keys()]; LAB.tam = Array(n).fill(1); LAB.id = [...Array(n).keys()]; LAB.ncj = n; LAB.acc = 0;
+  for (const i of ['#labA', '#labB']) { $(i).max = n - 1; if (+$(i).value > n - 1) $(i).value = n - 1; }
+}
+const labSnap = () => ({ p: LAB.p.slice(), tam: LAB.tam.slice(), id: LAB.id.slice(), ncj: LAB.ncj, acc: LAB.acc });
+const labHints = {
+  qf: 'Un vector <code>id[]</code>: <code>buscar</code> es <b>un acceso</b>, pero <code>unir</code> recorre <b>todo</b> el vector (N accesos).',
+  qu: 'Un árbol por conjunto con enlaces al padre <code>p[]</code>: <code>unir</code> solo cambia un enlace, pero <code>buscar</code> sube hasta la raíz, y un árbol puede degenerar en una <b>cadena</b> (prueba «Peor caso: cadena»).',
+  sz: 'Igual que la unión rápida, pero cuelga la raíz del árbol <b>más pequeño</b> de la del más grande: la altura nunca pasa de log₂N. (En empate esta cabecera cuelga la raíz de <code>a</code> de la de <code>b</code>; las transparencias lo hacen al revés.)',
+  pc: 'Lo mismo y además <b>compresión de caminos</b>: <code>buscar</code> deja todos los nodos del camino colgando directamente de la raíz. Es <code>ConjuntosDisjuntos.h</code>, el que usa el juez: coste casi constante (lg* N).',
+};
+const labCode = () => LAB_CODES[LAB.v];
+function labShowCode() {
+  const key = LAB.v; if (LAB.codeKey === key) return; LAB.codeKey = key;
+  const c = LAB_CODES[key]; LAB.markFn = mountCode($('#labCodeHost'), c.f, c.lines);
+}
+const LL = (sub, occ = 0) => { let c = -1; const ls = LAB_CODES[LAB.v].lines; for (let i = 0; i < ls.length; i++) if (ls[i].includes(sub)) { c++; if (c === occ) return i + 1; } throw new Error('ancla lab: ' + sub); };
+const LLopt = (sub, occ = 0) => { try { return [LL(sub, occ)]; } catch (e) { return []; } };
+
+/* ---- dibujo ---- */
+function labLayoutForest(p, tam) {
+  const n = p.length, ch = Array.from({ length: n }, () => []);
+  const roots = []; for (let i = 0; i < n; i++) { if (p[i] === i) roots.push(i); else ch[p[i]].push(i); }
+  const w = {}, depth = {};
+  const medir = (v, d) => { depth[v] = d; let s = 0; for (const c of ch[v]) s += medir(c, d + 1); return (w[v] = Math.max(1, s)); };
+  let total = 0; for (const r of roots) total += medir(r, 0);
+  const maxd = Math.max(...Object.values(depth)), unit = Math.min(64, 600 / Math.max(total, 1)), dy = Math.min(62, 210 / Math.max(maxd, 1));
+  const pos = {}; let x0 = 20 + (600 - total * unit) / 2;
+  const colocar = (v, x) => { pos[v] = [x + w[v] * unit / 2, 38 + depth[v] * dy]; let cx = x; for (const c of ch[v]) { colocar(c, cx); cx += w[c] * unit; } };
+  for (const r of roots) { colocar(r, x0); x0 += w[r] * unit; }
+  return { pos, maxd };
+}
+function labDraw(s, f) {
+  labSvg.innerHTML = '';
+  const node = (f && f.node) || {}, edge = (f && f.edge) || {};
+  const eg = el('g', {}, labSvg), ng = el('g', {}, labSvg);
+  const r = Math.min(17, 240 / Math.max(s.p.length, 8));
+  if (LAB.v === 'qf') {
+    /* grupos por identificador */
+    const grupos = new Map(); s.id.forEach((g, i) => { if (!grupos.has(g)) grupos.set(g, []); grupos.get(g).push(i); });
+    let x = 16, y = 18; const rowH = 78;
+    for (const [g, els] of grupos) {
+      const w = els.length * 38 + 14;
+      if (x + w > 628) { x = 16; y += rowH; }
+      el('rect', { x, y, width: w, height: 62, rx: 10, fill: 'var(--panel-2)', stroke: 'var(--line)' }, eg);
+      const t = el('text', { x: x + 7, y: y + 13, 'font-size': 11 }, eg); t.setAttribute('class', 'muted'); t.textContent = 'id = ' + g;
+      els.forEach((e, k) => {
+        const gg = el('g', { class: 'node ' + (node[e] || ''), transform: `translate(${x + 7 + 17 + k * 38} ${y + 38})` }, ng);
+        el('circle', { r: 15 }, gg); const tt = el('text', {}, gg); tt.textContent = e;
+      });
+      x += w + 10;
+    }
+  } else {
+    const { pos } = labLayoutForest(s.p, s.tam);
+    for (let v = 0; v < s.p.length; v++) {
+      if (s.p[v] === v) continue;
+      const [x1, y1] = pos[v], [x2, y2] = pos[s.p[v]];
+      const L = Math.hypot(x2 - x1, y2 - y1) || 1, ux = (x2 - x1) / L, uy = (y2 - y1) / L;
+      const g = el('g', { class: 'eg ' + (edge[v] || '') }, eg);
+      el('path', { class: 'edge', d: `M${x1 + ux * r} ${y1 + uy * r} L${x2 - ux * r} ${y2 - uy * r}` }, g);
+    }
+    for (let v = 0; v < s.p.length; v++) {
+      const gg = el('g', { class: 'node ' + (node[v] || ''), transform: `translate(${pos[v][0]} ${pos[v][1]})` }, ng);
+      el('circle', { r }, gg); const tt = el('text', {}, gg); tt.textContent = v;
+      if ((LAB.v === 'sz' || LAB.v === 'pc') && s.p[v] === v) { const k = el('text', { class: 'tg', x: 0, y: -r - 6, style: 'text-anchor:middle;font-size:11px;font-weight:600;fill:var(--accent)' }, gg); k.textContent = 'tam ' + s.tam[v]; }
+    }
+  }
+  /* vectores */
+  const host = $('#labVecs'); host.innerHTML = '';
+  const blocks = LAB.v === 'qf' ? [vecOf('id', s.id, f && f.hot != null ? f.hot : -1)] : [vecOf('p', s.p, f && f.hot != null ? f.hot : -1)];
+  if (LAB.v === 'sz' || LAB.v === 'pc') blocks.push(vecOf('tam (vale en las raíces)', s.tam, -1));
+  for (const blk of blocks) {
+    const d = document.createElement('div');
+    d.innerHTML = '<div class="note" style="margin-bottom:3px"><code>' + esc(blk.name) + '</code></div>';
+    const v = document.createElement('div'); v.className = 'vec';
+    blk.vals.forEach((x, i) => { const c = document.createElement('div'); c.className = 'c' + (f && f.cells && f.cells.includes(i) ? ' hot' : ''); c.innerHTML = '<i>' + i + '</i><b>' + esc(x) + '</b>'; v.appendChild(c); });
+    d.appendChild(v); host.appendChild(d);
+  }
+  $('#labK1').textContent = s.ncj; $('#labK2').textContent = s.acc;
+}
+window.labRender = f => labDraw(f.snap, f);
+window.labMark = lines => { if (LAB.markFn) LAB.markFn(lines); };
+window.labEnter = () => { labShowCode(); labDraw(labSnap(), null); $('#msg').innerHTML = 'Prueba <b>unir</b>, <b>unidos</b>, <b>buscar</b> o <b>cardinal</b>, o carga la <b>autoevaluación 6.1</b>.'; $('#labHint').innerHTML = labHints[LAB.v]; LAB.markFn && LAB.markFn([]); };
+
+/* ---- operaciones: cada una devuelve frames y deja LAB en el estado final ---- */
+function labFrames() {
+  const f = [];
+  return { f, push(msg, lines, extra) { f.push({ msg, lines, snap: labSnap(), ...(extra || {}) }); } };
+}
+/* sube desde a hasta la raíz; devuelve camino */
+function camino(a) { const c = [a]; while (LAB.p[c[c.length - 1]] !== c[c.length - 1]) c.push(LAB.p[c[c.length - 1]]); return c; }
+function nodesOf(path, root) { const o = {}; path.forEach(x => { o[x] = 's-vis'; }); o[path[0]] = 's-cur'; o[root] = 's-done'; return o; }
+function edgesOf(path) { const o = {}; for (let i = 0; i + 1 < path.length; i++) o[path[i]] = 'tree'; return o; }
+
+/* buscar(a) en las variantes con árboles; con compresión rehace los enlaces. Devuelve la raíz. */
+function labBuscar(a, F, quien) {
+  if (LAB.v === 'qf') {
+    LAB.acc += 1;
+    F.push(`<code>${quien}</code>: en búsqueda rápida es <b>un solo acceso</b>: <code>id[${a}] = ${LAB.id[a]}</code>.`, LLopt('int buscar(int a) const'), { node: { [a]: 's-cur' }, cells: [a], hot: a });
+    return LAB.id[a];
+  }
+  const path = camino(a), root = path[path.length - 1], pasos = path.length - 1;
+  LAB.acc += path.length;
+  const pas = pasos === 0 ? `${a} ya es una raíz (<code>p[${a}] = ${a}</code>): 1 acceso.` : `se sube por los enlaces <code>p[]</code>: ${path.join(' → ')}; la raíz es <b>${root}</b> (${pasos} paso${pasos === 1 ? '' : 's'}).`;
+  if (LAB.v === 'pc') {
+    F.push(`<code>${quien}</code>: ${pas}`, [...LLopt('if (p.at(a) == a)'), ...(pasos ? LLopt('return p[a] = buscar(p[a]);') : LLopt('return a;'))], { node: nodesOf(path, root), edge: edgesOf(path), cells: path });
+    const cambia = path.filter(x => x !== root && LAB.p[x] !== root);
+    if (cambia.length) {
+      cambia.forEach(x => { LAB.p[x] = root; });
+      F.push(`<b>Compresión de caminos</b>: al volver de la recursión, <code>p[x] = buscar(p[x])</code> deja ${cambia.join(', ')} colgando <b>directamente de la raíz ${root}</b>. La próxima vez, buscar costará un paso.`, LLopt('return p[a] = buscar(p[a]);'), { node: nodesOf([path[0]], root), edge: Object.fromEntries(cambia.map(x => [x, 'new'])), cells: cambia });
+    }
+  } else {
+    F.push(`<code>${quien}</code>: ${pas}`, LLopt('while (p.at(a) != a) a = p[a];'), { node: nodesOf(path, root), edge: edgesOf(path), cells: path });
+  }
+  return root;
+}
+
+function labUnir(a, b) {
+  const F = labFrames(), v = LAB.v, N = LAB.n;
+  F.push(`<code>unir(${a}, ${b})</code> con ${v === 'qf' ? 'búsqueda rápida' : v === 'qu' ? 'unión rápida' : v === 'sz' ? 'unión por tamaños' : 'unión por tamaños + compresión'}.`, [], { node: { [a]: 's-cur', [b]: 's-cur' } });
+  if (v === 'qf') {
+    const ia = labBuscar(a, F, `int ia = buscar(${a})`), ib = labBuscar(b, F, `int ib = buscar(${b})`);
+    if (ia === ib) { F.push(`<code>ia == ib</code> (${ia}): ya estaban en el mismo conjunto, no hay nada que hacer.`, LL('if (ia == ib) return;') ? [LL('if (ia == ib) return;')] : [], { node: { [a]: 's-done', [b]: 's-done' } }); return F.f; }
+    const cambian = []; LAB.id.forEach((x, k) => { if (x === ia) cambian.push(k); });
+    LAB.acc += N;
+    F.push(`Hay que <b>recorrer todo el vector</b> (${N} accesos) y cambiar cada <code>id[k] == ${ia}</code> por <code>${ib}</code>: cambian ${cambian.join(', ')}.`, [LL('for (int k = 0; k < (int)id.size(); ++k)'), LL('if (id[k] == ia) id[k] = ib;')], { node: Object.fromEntries(cambian.map(k => [k, 's-cur'])), cells: cambian });
+    cambian.forEach(k => { LAB.id[k] = ib; }); LAB.ncj--;
+    F.push(`Listo: ${LAB.id.filter(x => x === ib).length} elementos con <code>id = ${ib}</code>. <code>--ncjtos</code> → ${LAB.ncj} conjuntos. Coste de esta unión: O(N).`, [LL('--ncjtos;')], { node: Object.fromEntries(cambian.map(k => [k, 's-done'])), cells: cambian });
+    return F.f;
+  }
+  const i = labBuscar(a, F, `int i = buscar(${a})`), j = labBuscar(b, F, `int j = buscar(${b})`);
+  if (i === j) { F.push(`<code>i == j</code> (${i}): ${a} y ${b} <b>ya están en el mismo conjunto</b>; <code>unir</code> no hace nada.`, LLopt('if (i == j) return;'), { node: { [i]: 's-done' } }); return F.f; }
+  if (v === 'qu') {
+    LAB.p[i] = j; LAB.ncj--;
+    F.push(`Raíces distintas (${i} y ${j}): <code>p[${i}] = ${j}</code>. <b>La raíz de a cuelga de la de b</b>, aunque su árbol sea mucho más grande. Un solo enlace cambia.`, [...LLopt('p[i] = j;'), ...LLopt('--ncjtos;')], { node: { [i]: 's-cur', [j]: 's-done' }, edge: { [i]: 'new' }, cells: [i] });
+    return F.f;
+  }
+  const ti = LAB.tam[i], tj = LAB.tam[j];
+  if (ti > tj) {
+    LAB.tam[i] += tj; LAB.p[j] = i; LAB.ncj--;
+    F.push(`<code>tam[${i}] = ${ti} &gt; tam[${j}] = ${tj}</code>: el árbol de ${i} es el mayor. <b>${j} cuelga de ${i}</b> y <code>tam[${i}] = ${LAB.tam[i]}</code>.`, [...LLopt('if (tam[i] > tam[j])'), ...LLopt('tam[i] += tam[j]; p[j] = i;'), ...LLopt('--ncjtos;')], { node: { [j]: 's-cur', [i]: 's-done' }, edge: { [j]: 'new' }, cells: [j, i] });
+  } else {
+    LAB.tam[j] += ti; LAB.p[i] = j; LAB.ncj--;
+    F.push(`<code>tam[${i}] = ${ti} ${ti === tj ? '=' : '&lt;'} tam[${j}] = ${tj}</code>: ${ti === tj ? 'empate; esta cabecera hace el <code>else</code>' : 'el árbol de ' + j + ' es el mayor'}. <b>${i} cuelga de ${j}</b> y <code>tam[${j}] = ${LAB.tam[j]}</code>.`, [...LLopt('if (tam[i] > tam[j])'), ...LLopt('tam[j] += tam[i]; p[i] = j;'), ...LLopt('--ncjtos;')], { node: { [i]: 's-cur', [j]: 's-done' }, edge: { [i]: 'new' }, cells: [i, j] });
+  }
+  return F.f;
+}
+function labUnidos(a, b) {
+  const F = labFrames();
+  F.push(`<code>unidos(${a}, ${b})</code> = <code>buscar(${a}) == buscar(${b})</code>.`, LLopt('bool unidos(int a, int b) const'), { node: { [a]: 's-cur', [b]: 's-cur' } });
+  const ra = labBuscar(a, F, `buscar(${a})`), rb = labBuscar(b, F, `buscar(${b})`);
+  F.push(`${ra} ${ra === rb ? '=' : '≠'} ${rb}: <b>${ra === rb ? 'true, están en el mismo conjunto' : 'false, conjuntos distintos'}</b>.`, LLopt('bool unidos(int a, int b) const'), { node: { [a]: ra === rb ? 's-done' : 's-red', [b]: ra === rb ? 's-done' : 's-red' } });
+  return F.f;
+}
+function labBusca(a) {
+  const F = labFrames();
+  const r = labBuscar(a, F, `buscar(${a})`);
+  F.push(`<code>buscar(${a})</code> devuelve <b>${r}</b>: el representante del conjunto de ${a}.`, [], { node: { [a]: 's-cur', [r]: 's-done' } });
+  return F.f;
+}
+function labCardinal(a) {
+  const F = labFrames();
+  if (LAB.v === 'qf' || LAB.v === 'qu') { F.push(`Esta implementación <b>no guarda tamaños</b>: no tiene <code>cardinal()</code>. Habría que contar todos los elementos del conjunto (O(N)). Por eso la versión por tamaños añade el vector <code>tam[]</code>.`, [], { node: { [a]: 's-cur' } }); return F.f; }
+  F.push(`<code>cardinal(${a})</code> = <code>tam[buscar(${a})]</code>.`, LLopt('int cardinal(int a) const'), { node: { [a]: 's-cur' } });
+  const r = labBuscar(a, F, `buscar(${a})`);
+  F.push(`<code>tam[${r}]</code> = <b>${LAB.tam[r]}</b> elementos en el conjunto de ${a}.`, LLopt('int cardinal(int a) const'), { node: { [a]: 's-cur', [r]: 's-done' }, cells: [r] });
+  return F.f;
+}
+function labRun(frames) { labShowCode(); player.load(frames, { play: true }); }
+function labInt(id) { const n = +$(id).value; return Math.max(0, Math.min(LAB.n - 1, Number.isFinite(n) ? n : 0)); }
+$('#labUnir').onclick = () => labRun(labUnir(labInt('#labA'), labInt('#labB')));
+$('#labUnidos').onclick = () => labRun(labUnidos(labInt('#labA'), labInt('#labB')));
+$('#labBuscar').onclick = () => labRun(labBusca(labInt('#labA')));
+$('#labCard').onclick = () => labRun(labCardinal(labInt('#labA')));
+function labSecuencia(pares) {
+  const all = [];
+  for (const [a, b] of pares) { const fr = labUnir(a, b); all.push(...fr); }
+  return all;
+}
+$('#labSeqRun').onclick = () => {
+  const pares = [...$('#labSeq').value.matchAll(/(\d+)\s*[-,–]\s*(\d+)/g)].map(m => [+m[1], +m[2]]).filter(([a, b]) => a < LAB.n && b < LAB.n);
+  if (!pares.length) { $('#msg').innerHTML = 'Escribe pares como <code>0-1 2-3 0-2</code> (elementos entre 0 y ' + (LAB.n - 1) + ').'; return; }
+  labRun(labSecuencia(pares));
+};
+function labReset() { labReinit(Math.max(3, Math.min(16, +$('#labN').value || 10))); LAB.codeKey = null; labShowCode(); labDraw(labSnap(), null); player.pause(); player.frames = []; $('#pCount').textContent = ''; $('#msg').innerHTML = 'Estructura reiniciada: ' + LAB.n + ' conjuntos de un elemento.'; $('#labHint').innerHTML = labHints[LAB.v]; LAB.markFn && LAB.markFn([]); }
+$('#labReset').onclick = labReset; $('#labN').onchange = labReset;
+$('#labVar').onchange = () => { LAB.v = $('#labVar').value; labReset(); };
+$('#labAuto').onclick = () => { $('#labN').value = 10; labReinit(10); const pares = [[9, 0], [3, 4], [5, 8], [7, 2], [2, 1], [5, 7], [0, 3], [4, 2]]; $('#labSeq').value = pares.map(p => p.join('-')).join(' '); labRun(labSecuencia(pares)); };
+$('#labChain').onclick = () => { const n = Math.max(3, Math.min(16, +$('#labN').value || 10)); labReinit(n); const pares = []; for (let i = 0; i + 1 < n; i++) pares.push([i, i + 1]); $('#labSeq').value = pares.map(p => p.join('-')).join(' '); labRun(labSecuencia(pares)); };
+$('#labLegend').innerHTML = '<span><b style="border-color:var(--accent);background:var(--accent-soft)"></b>elemento de la operación</span><span><b style="border-color:var(--blue);background:var(--blue-soft)"></b>camino hacia la raíz</span><span><b style="border-color:var(--green);background:var(--green-soft)"></b>raíz / resultado</span><span><b style="border-color:var(--red);background:var(--red-soft)"></b>conjuntos distintos</span>';
+
+/* ================== Aplicación: manchas de petróleo (06-1) ================== */
+const GF = 8, GC = 8, CELL = 42;
+const GPAL = ['#f5a623', '#58b2f2', '#4fd1a0', '#ff7468', '#a58cf2', '#ff9f5a', '#4fd1d1', '#f08cc8', '#aac85a', '#8a96ff'];
+const Grid = { oil: [], dsu: null, out: [], log: [] };
+function gridReset() { Grid.oil = Array(GF * GC).fill(false); Grid.dsu = new DSU(GF * GC); Grid.mayor = 0; Grid.out = [0]; Grid.log = []; }
+function gridAdd(i, j, silent) {
+  const c = i * GC + j; if (Grid.oil[c]) return;
+  Grid.oil[c] = true; const unidos = [];
+  for (let di = -1; di <= 1; di++) for (let dj = -1; dj <= 1; dj++) {
+    if (!di && !dj) continue; const a = i + di, b = j + dj;
+    if (a < 0 || a >= GF || b < 0 || b >= GC || !Grid.oil[a * GC + b]) continue;
+    Grid.dsu.unir(c, a * GC + b); unidos.push(a * GC + b);
+  }
+  Grid.mayor = Math.max(Grid.mayor, Grid.dsu.cardinal(c));
+  if (!silent) { Grid.out.push(Grid.mayor); Grid.log.unshift(`celda (${i + 1},${j + 1}) = nº ${c}: ${unidos.length ? 'unir con ' + unidos.join(', ') : 'sin vecinas negras'} → cardinal = ${Grid.dsu.cardinal(c)}, mayor = ${Grid.mayor}`); Grid.log = Grid.log.slice(0, 5); }
+}
+function gridDraw() {
+  const g = $('#gridSvg'); g.innerHTML = '';
+  const raiz = c => Grid.dsu.buscar(c), col = new Map();
+  for (let i = 0; i < GF; i++) for (let j = 0; j < GC; j++) {
+    const c = i * GC + j; const oil = Grid.oil[c];
+    let fill = 'var(--panel-2)';
+    if (oil) { const r = raiz(c); if (!col.has(r)) col.set(r, GPAL[col.size % GPAL.length]); fill = col.get(r); }
+    const r = el('rect', { x: j * CELL, y: i * CELL, width: CELL - 2, height: CELL - 2, rx: 5, fill, stroke: 'var(--line)', 'data-c': c, style: 'cursor:pointer' }, g);
+    if (oil && Grid.dsu.cardinal(c) === Grid.mayor) r.setAttribute('stroke', 'var(--ink)'), r.setAttribute('stroke-width', '2');
+    if (oil) { const t = el('text', { x: j * CELL + CELL / 2 - 1, y: i * CELL + CELL / 2, 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': 11, fill: '#111', 'pointer-events': 'none' }, g); t.textContent = c; }
+  }
+  const tams = [...col.keys()].map(r => Grid.dsu.tam[r]).sort((a, b) => b - a);
+  $('#gridInfo').innerHTML = `Celdas de petróleo: <b>${Grid.oil.filter(Boolean).length}</b> · manchas: <b>${tams.length}</b> ${tams.length ? '(tamaños ' + tams.join(', ') + ')' : ''} · mancha más grande: <b>${Grid.mayor}</b> (borde oscuro).`;
+  const o = $('#gridOut'); o.innerHTML = ''; Grid.out.forEach(x => { const c = document.createElement('span'); c.className = 'chip'; c.textContent = x; o.appendChild(c); });
+  $('#gridLog').innerHTML = Grid.log.map(esc).join('<br>');
+}
+$('#gridSvg').addEventListener('click', e => { const r = e.target.closest('rect'); if (!r) return; const c = +r.dataset.c; gridAdd(Math.floor(c / GC), c % GC); gridDraw(); });
+const GRID_EJ = ['-#-#---#', '-###--##', '-----###', '-#------', '-#-#----', '-###-##-', '###--##-', '--#-----'];
+$('#gridEj').onclick = () => { gridReset(); GRID_EJ.forEach((row, i) => [...row].forEach((ch, j) => { if (ch === '#') gridAdd(i, j, true); })); Grid.out = [Grid.mayor]; Grid.log = ['imagen inicial: cada celda negra se une con sus vecinas negras']; gridDraw(); };
+$('#gridEj3').onclick = () => { if (Grid.out.length === 1 && Grid.mayor === 0) $('#gridEj').onclick(); [[6, 8], [2, 5], [6, 5]].forEach(([f, c]) => gridAdd(f - 1, c - 1)); gridDraw(); };
+$('#gridClear').onclick = () => { gridReset(); gridDraw(); };
+gridReset(); gridDraw();
+
+labReinit(10);
+
+updAlgoUI();
+loadPreset(PRESETS[0]);
+player.load([{ msg: 'Carga un ejemplo, construye tu propio grafo valorado y elige un algoritmo. Con <b>Añadir</b> verás cómo <code>ponArista</code> rellena las listas de adyacencia.', lines: [] }], { play: false });
+mostrarTab(location.hash === '#graf' ? 'graf' : 'lab');
+window.__DA = { G, ALGOS, gPon, gAddV, gReset, loadPreset, PRESETS, DSU, LAB, labUnir, Grid, gridAdd, kruskal };
+</script>
+
+</body>
+</html>

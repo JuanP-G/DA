@@ -1,9 +1,11 @@
 # EJ 06-3 · Recorriendo el archipiélago en bicicleta
 
-📄 [Enunciado](<../Enunciados/prob-Recorriendo el archipiélago en bicicleta.pdf>) · 💻 Solución en código: *pendiente* (esta carpeta solo trae la explicación, `GrafoValorado.h` y `ConjuntosDisjuntos.h`)
+📄 [Enunciado](<../Enunciados/prob-Recorriendo el archipiélago en bicicleta.pdf>) · 💻 [Solución](EJ_06-3.cpp)
 
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#645 · Recorriendo el archipiélago en bicicleta](https://aceptaelreto.com/problem/statement.php?id=645) — *casi el mismo problema*. Misma historia, pero allí los límites son menores (hasta 1.000 islas y 10.000 puentes; aquí 10.000 y 100.000) y no hay número de casos: se lee hasta el final del fichero.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-645_archipielago_en_bicicleta.cpp`](<../../Acepta el Reto/ACR-645_archipielago_en_bicicleta.cpp>)
 <!-- acr:fin -->
 
 ## Qué piden

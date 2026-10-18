@@ -1,6 +1,6 @@
 """Vídeo 06-0 · Tema 6: conjuntos disjuntos, grafos valorados y árbol de recubrimiento de coste mínimo.
 
-Las trazas salen de simular los algoritmos aquí mismo (los ejercicios del juez aún no tienen .cpp).
+Las trazas salen de simular los algoritmos aquí mismo (cuando se hizo este vídeo los ejercicios aún no tenían .cpp).
 El código que sale en pantalla es el de las cabeceras reales de la asignatura:
 Estructuras de datos/ConjuntosDisjuntos.h y GrafoValorado.h.
 """

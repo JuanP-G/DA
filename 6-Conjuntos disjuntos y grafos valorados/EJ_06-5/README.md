@@ -1,6 +1,6 @@
 # EJ 06-5 · Las minas del emperador Trajano
 
-📄 [Enunciado](<../Enunciados/prob-Las minas del emperador Trajano.pdf>) · 💻 Solución en código: *pendiente* (esta carpeta solo trae la explicación, `GrafoValorado.h` y `ConjuntosDisjuntos.h`)
+📄 [Enunciado](<../Enunciados/prob-Las minas del emperador Trajano.pdf>) · 💻 [Solución](EJ_06-5.cpp)
 
 ## Qué piden
 Una mina con N cámaras y M galerías (de doble sentido) que hay que recorrer buceando; cada galería tarda un número de segundos. En las cámaras se puede descansar. Desde la cámara de entrada hasta la del tesoro, hay que elegir el camino que **minimice el tiempo máximo que se aguanta la respiración de una vez**, es decir, la galería **más larga** del camino. Escribir ese tiempo, `0` si entrada y tesoro son la misma cámara, o `IMPOSIBLE` si no hay camino.

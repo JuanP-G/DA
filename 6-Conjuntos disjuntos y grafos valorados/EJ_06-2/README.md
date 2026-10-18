@@ -1,9 +1,11 @@
 # EJ 06-2 · Camiones de reparto
 
-📄 [Enunciado](<../Enunciados/prob-Camiones de reparto.pdf>) · 💻 Solución en código: *pendiente* (esta carpeta solo trae la explicación y `GrafoValorado.h`)
+📄 [Enunciado](<../Enunciados/prob-Camiones de reparto.pdf>) · 💻 [Solución](EJ_06-2.cpp)
 
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#646 · Camiones de reparto](https://aceptaelreto.com/problem/statement.php?id=646) — *mismo problema*. Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero.
+
+📥 **Versión lista para enviar** (un solo fichero, con las cabeceras dentro y el formato de entrada/salida de allí): [`ACR-646_camiones_de_reparto.cpp`](<../../Acepta el Reto/ACR-646_camiones_de_reparto.cpp>)
 <!-- acr:fin -->
 
 ## Qué piden

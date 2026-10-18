@@ -1,0 +1,72 @@
+  <div class="tabpanel" id="tabLab">
+    <section class="panel">
+      <h2>1 · Elige la implementación</h2>
+      <div class="bar">
+        <label>implementación <select class="field" id="labVar">
+          <option value="qf">Búsqueda rápida (vector id[])</option>
+          <option value="qu">Unión rápida (un árbol por conjunto)</option>
+          <option value="sz">Unión por tamaños</option>
+          <option value="pc" selected>Por tamaños + compresión de caminos (ConjuntosDisjuntos.h)</option>
+        </select></label>
+        <label>elementos <input class="field" id="labN" type="number" min="3" max="16" value="10" style="width:4em"></label>
+        <button class="btn" id="labReset">Reiniciar</button>
+        <button class="btn" id="labAuto" title="unir 9-0, 3-4, 5-8, 7-2, 2-1, 5-7, 0-3, 4-2 sobre 10 elementos">Cargar autoevaluación 6.1</button>
+        <button class="btn" id="labChain" title="unir 0-1, 1-2, 2-3, … en este orden">Peor caso: cadena</button>
+      </div>
+      <p class="hint" id="labHint"></p>
+    </section>
+    <div class="stage">
+      <div class="colstack">
+        <section class="panel">
+          <h2>2 · Opera</h2>
+          <div class="bar" style="margin-bottom:8px">
+            <label>a <input class="field" id="labA" type="number" min="0" value="0" style="width:3.6em"></label>
+            <label>b <input class="field" id="labB" type="number" min="0" value="1" style="width:3.6em"></label>
+            <button class="btn primary" id="labUnir">unir(a, b)</button>
+            <button class="btn" id="labUnidos">unidos(a, b)</button>
+            <button class="btn" id="labBuscar">buscar(a)</button>
+            <button class="btn" id="labCard">cardinal(a)</button>
+          </div>
+          <div class="bar">
+            <label style="flex:1 1 260px">secuencia <input class="field" id="labSeq" type="text" placeholder="0-1 2-3 0-2 ..." style="width:100%;font-family:var(--mono)"></label>
+            <button class="btn" id="labSeqRun">Ejecutar secuencia</button>
+          </div>
+          <div id="labPlayerHost" style="margin-top:10px"></div>
+        </section>
+        <section class="panel">
+          <h2>La estructura</h2>
+          <div class="canvas-scroll"><svg id="labSvg" class="viz gs" viewBox="0 0 640 300" role="img" aria-label="Estructura de partición"></svg></div>
+          <div class="legend" id="labLegend" style="margin-top:10px"></div>
+        </section>
+      </div>
+      <div class="colstack">
+        <section class="panel">
+          <h2>Lo que guarda la clase</h2>
+          <dl class="kv" style="margin-bottom:10px"><dt>ncjtos</dt><dd id="labK1">0</dd><dt>accesos a vectores</dt><dd id="labK2">0</dd></dl>
+          <div id="labVecs" style="display:flex;flex-direction:column;gap:10px"></div>
+        </section>
+        <section class="panel">
+          <h2>Código C++</h2>
+          <div id="labCodeHost" style="max-height:420px;overflow:auto"></div>
+        </section>
+      </div>
+    </div>
+    <section class="panel">
+      <h2>Una aplicación: manchas de petróleo (06-1)</h2>
+      <p class="note" style="margin-bottom:10px">Cada celda es un elemento <code>i·C + j</code>. Al pasar una celda a petróleo se une (<code>unir</code>) con sus vecinas negras de las <b>8 direcciones</b> y la mancha más grande se actualiza con <code>cardinal</code>: justo la solución del ejercicio. Haz clic en celdas del mar para añadir petróleo.</p>
+      <div class="bar" style="margin-bottom:10px">
+        <button class="btn" id="gridEj">Imagen del enunciado (ejemplo 1)</button>
+        <button class="btn" id="gridEj3" title="Añade las celdas (6,8), (2,5) y (6,5) del enunciado">Añadir las 3 celdas del ejemplo</button>
+        <button class="btn" id="gridClear">Vaciar</button>
+      </div>
+      <div class="stage" style="grid-template-columns: minmax(0, 360px) minmax(0, 1fr)">
+        <div class="canvas-scroll"><svg id="gridSvg" class="viz" viewBox="0 0 336 336" role="img" aria-label="Rejilla de celdas" style="max-width:360px"></svg></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="note" id="gridInfo"></div>
+          <div><span class="note">Salida del caso (tamaño de la mayor mancha, inicial y tras cada celda nueva):</span>
+            <div class="listbox" id="gridOut" style="margin-top:4px"></div></div>
+          <div class="note" id="gridLog" style="font-family:var(--mono);font-size:.85rem"></div>
+        </div>
+      </div>
+    </section>
+  </div>

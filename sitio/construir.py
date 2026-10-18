@@ -34,6 +34,7 @@ TEMAS = {
     4: dict(nombre="Grafos no dirigidos", resumen="Listas de adyacencia, DFS para componentes y colores, BFS para distancias mínimas.", herr="tema4-grafo.html", cab=["Grafo.h"]),
     5: dict(nombre="Grafos dirigidos", resumen="Digrafos: BFS dirigido, orden topológico (postorden inverso) y detección de ciclos.", herr="tema5-digrafo.html", cab=["Digrafo.h"]),
     6: dict(nombre="Conjuntos disjuntos y grafos valorados", resumen="Particiones que solo se unen, grafos con valores en las aristas y árbol de recubrimiento de coste mínimo (Kruskal y Prim).", herr="tema6-kruskal.html", cab=["ConjuntosDisjuntos.h", "GrafoValorado.h"]),
+    7: dict(nombre="Dígrafos valorados y caminos mínimos", resumen="Dígrafos con costes en las aristas y el algoritmo de Dijkstra: distancias mínimas, contar caminos y reconstruir rutas.", herr="tema7-dijkstra.html", cab=["DigrafoValorado.h", "IndexPQ.h"]),
 }
 HERRAMIENTAS = [
     ("tema1-avl.html", "Tema 1", "Árbol AVL", "Inserta, borra y pide el k-ésimo; mira el factor de equilibrio y cada rotación."),
@@ -41,6 +42,8 @@ HERRAMIENTAS = [
     ("tema3-indexpq.html", "Tema 3", "IndexPQ", "Montículo con tabla de posiciones y update paso a paso."),
     ("tema4-grafo.html", "Tema 4", "Grafo", "Construye un grafo y ejecuta DFS, BFS y bipartito sobre el código real."),
     ("tema5-digrafo.html", "Tema 5", "Digrafo", "BFS, orden topológico con ciclos e inverso() paso a paso."),
+    ("tema6-kruskal.html", "Tema 6", "Conjuntos disjuntos y ARM", "Las cuatro implementaciones de conjuntos disjuntos y Kruskal / Prim paso a paso."),
+    ("tema7-dijkstra.html", "Tema 7", "Dijkstra", "Relajación de aristas, Dijkstra con cola y con vector, ulti[] y contar caminos mínimos."),
 ]
 COPIAR = set()   # rutas relativas (posix) de ficheros del repo que hay que copiar a _site
 

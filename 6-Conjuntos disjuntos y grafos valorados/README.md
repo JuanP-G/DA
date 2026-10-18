@@ -1,6 +1,6 @@
 # Tema 6 · Conjuntos disjuntos, grafos valorados y árboles de recubrimiento de coste mínimo
 
-Resumen del tema (semana 6 del campus) con la respuesta al ejercicio de autoevaluación 6.1. Los ejercicios del juez están en las carpetas `EJ_06-1` … `EJ_06-5`; en cada una hay una explicación del planteamiento (sin código de la solución).
+Resumen del tema (semana 6 del campus) con la respuesta al ejercicio de autoevaluación 6.1. Los ejercicios del juez están en las carpetas `EJ_06-1` … `EJ_06-5`; en cada una hay la solución en C++ (`EJ_06-N.cpp`) y una explicación del planteamiento.
 
 | Nº | Problema | Técnica |
 |:--:|---|---|
