@@ -244,9 +244,11 @@ Todos en [`Videos/`](Videos), con subtítulos en castellano (y capítulos el de 
 |---|---|
 | [`05-0_grafos_dirigidos_teoria.mp4`](Videos/05-0_grafos_dirigidos_teoria.mp4) | **Teoría completa del tema 5** (23 min, 10 capítulos) |
 | [`06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4`](Videos/06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4) | **Teoría completa del tema 6**: conjuntos disjuntos, grafos valorados, Kruskal y Prim, y cómo se aplican a 06-1 … 06-5 (con capítulos) |
+| [`07-0_digrafos_valorados_caminos_minimos_teoria.mp4`](Videos/07-0_digrafos_valorados_caminos_minimos_teoria.mp4) | **Teoría completa del tema 7**: dígrafos valorados, relajación, Dijkstra paso a paso (con código, corrección y coste), Dijkstra con vector, caminos mínimos vs ARM, y los ejercicios 07-1 … 07-3 (con capítulos) |
 | `03-4`, `03-5`, `03-L` | Ejercicios del tema 3 |
 | `04-1` … `04-7`, `04-L` | Ejercicios del tema 4 |
 | `05-1`, `05-2`, `05-3`, `05-6` | Ejercicios del tema 5 |
+| `07-1`, `07-2`, `07-3` | Ejercicios del tema 7 |
 
 Se generan con los scripts de [`Videos/generador/`](Videos/generador) (diapositivas con Pillow, voz Kokoro y ffmpeg); las trazas salen del mismo algoritmo que el `.cpp` y el código en pantalla se lee del fichero real.
 
