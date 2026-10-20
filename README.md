@@ -258,6 +258,8 @@ Se generan con los scripts de [`Videos/generador/`](Videos/generador) (diapositi
 
 Las carpetas de cada tema coinciden con las carpetas de la solución de Visual Studio:
 
+> 💡 **¿No ves los ejercicios nuevos en Visual Studio?** El `.sln` y los `.vcxproj` están en el `.gitignore` (son de cada uno), así que `git pull` trae las carpetas y el código pero no los proyectos. Con Visual Studio cerrado, ejecuta una vez desde la carpeta del repo `powershell -ExecutionPolicy Bypass -File herramientas\anadir_ejercicios_vs.ps1`: crea el `.vcxproj` de cada ejercicio que no lo tenga y lo añade a tu `.sln` dentro de la carpeta de su tema (guarda antes una copia `.sln.bak-ejercicios`; se puede repetir sin problema).
+
 ```text
 .
 ├── 1-Arboles AVL/
