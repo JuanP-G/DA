@@ -19,7 +19,7 @@ using namespace std;
 
 /*
     PLANTEAMIENTO
-    Las celdas solo SE ANADEN, nunca se quitan: las manchas solo pueden crecer o
+    Las celdas solo se añaden, nunca se quitan: las manchas solo pueden crecer o
     fundirse, jamas partirse. Eso es exactamente lo que sabe hacer una particion
     de CONJUNTOS DISJUNTOS (solo sabe unir).
 
@@ -34,8 +34,8 @@ using namespace std;
     nunca baja: no hace falta recorrer todos los conjuntos.
 
     La imagen inicial se procesa con la misma operacion: celda negra a celda negra.
-    (Al llegar a una celda, las vecinas posteriores aun no estan marcadas, pero
-    cuando se procesen ellas se uniran con esta: el resultado final es el mismo.)
+    Al llegar a una celda, las vecinas posteriores aun no estan marcadas, pero
+    cuando se procesen ellas se uniran con esta: el resultado final es el mismo.
 
     La rejilla es el grafo: no se construye ninguna lista de adyacencia.
 
@@ -51,11 +51,15 @@ public:
     void anade(int i, int j) {
         int celda = i * C + j;
         petroleo[celda] = true;
+
         for (int di = -1; di <= 1; ++di)
             for (int dj = -1; dj <= 1; ++dj) {
+				//Si es la misma celda, no hace falta unirla consigo misma
                 if (di == 0 && dj == 0) continue;
+				//Si la celda vecina está fuera de los límites, no hace falta unirla
                 int a = i + di, b = j + dj;
                 if (a < 0 || a >= F || b < 0 || b >= C) continue;
+				//Si la celda vecina es petroleo, unirla con la celda actual
                 if (petroleo[a * C + b]) cd.unir(celda, a * C + b);
             }
         mayor = max(mayor, cd.cardinal(celda));
@@ -73,13 +77,12 @@ private:
 void resuelveCaso() {
     int F, C;
     cin >> F >> C;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     Manchas m(F, C);
     string fila;
     for (int i = 0; i < F; ++i) {
-        getline(cin, fila);
-        for (int j = 0; j < C && j < (int)fila.size(); ++j)
+        cin >> fila;
+        for (int j = 0; j < C; ++j)
             if (fila[j] == '#') m.anade(i, j);
     }
 
