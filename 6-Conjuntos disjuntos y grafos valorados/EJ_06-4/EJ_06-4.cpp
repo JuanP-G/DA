@@ -41,13 +41,16 @@ bool resuelveCaso() {
     GrafoValorado<int> g(cin, 1);   // N, M y M saltos; arboles numerados desde 1
     if (!cin) return false;         // fin de la entrada
 
-    vector<Arista<int>> saltos = g.aristas();
+    auto saltos = g.aristas();
     sort(saltos.begin(), saltos.end());   // por longitud creciente
 
     ConjuntosDisjuntos cd(g.V());
     int ultima = 0;
     for (auto const& s : saltos) {
+		// Si ya hay un solo conjunto, hemos terminado
         if (cd.num_cjtos() == 1) break;
+
+		// Si los arboles del salto s ya están unidos, no lo elegimos
         int u = s.uno(), v = s.otro(u);
         if (!cd.unidos(u, v)) {
             cd.unir(u, v);

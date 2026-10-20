@@ -40,13 +40,16 @@ void resuelveCaso() {
     cin >> origen >> destino;
     --origen; --destino;
 
-    vector<Arista<int>> galerias = g.aristas();
+    auto galerias = g.aristas();
     sort(galerias.begin(), galerias.end());   // por tiempo creciente
 
     ConjuntosDisjuntos cd(g.V());
     int aguante = 0;
     for (auto const& a : galerias) {
+		// Si origen y destino ya estan unidos, hemos terminado
         if (cd.unidos(origen, destino)) break;
+
+		// Si las camaras de la galeria a ya estan unidas, no la elegimos
         int u = a.uno(), v = a.otro(u);
         if (!cd.unidos(u, v)) {
             cd.unir(u, v);

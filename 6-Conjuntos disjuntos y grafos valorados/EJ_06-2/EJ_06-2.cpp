@@ -14,13 +14,13 @@ using namespace std;
 
 /*
     PLANTEAMIENTO
-    Grafo valorado NO dirigido: intersecciones = vertices, calles = aristas,
+    Grafo valorado no dirigido: intersecciones = vertices, calles = aristas,
     anchura maxima = valor de la arista.
 
     Cada consulta es una pregunta de alcanzabilidad CON FILTRO:
         hay un camino origen --> destino que use solo aristas con valor >= anchura?
 
-    Un recorrido (DFS) desde el origen que IGNORA las aristas demasiado estrechas lo
+    Un recorrido (DFS) desde el origen que ignora las aristas demasiado estrechas lo
     responde. La comparacion es >= : un camion de anchura 15 cabe justo por una calle
     de anchura maxima 15 (el fragmento de las transparencias usa <, que es otra cosa).
 
@@ -54,12 +54,15 @@ private:
 };
 
 void resuelveCaso() {
+	// lee el grafo
     GrafoValorado<int> g(cin, 1);   // V, E y E calles; intersecciones numeradas desde 1
 
     int k; cin >> k;
     while (k--) {
         int origen, destino, ancho;
         cin >> origen >> destino >> ancho;
+
+		// vertices alcanzables desde origen usando solo aristas con valor >= ancho
         Alcanzables a(g, origen - 1, ancho);
         cout << (a.alcanzable(destino - 1) ? "SI" : "NO") << '\n';
     }
