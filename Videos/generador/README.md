@@ -70,3 +70,8 @@ export KOKORO_MODEL=/ruta/kokoro-v1.0.onnx KOKORO_VOICES=/ruta/voices-v1.0.bin K
 python v07_teoria.py --preview   # solo las imágenes (carpeta preview/)
 python v07_teoria.py             # genera el mp4
 ```
+
+
+## Vídeos de ejercicios del tema 5
+
+`v05_1.py`, `v05_2.py`, `v05_3.py`, `v05_4.py` (sumidero), `v05_5.py` (serpientes y escaleras, con el BFS sobre el tablero), `v05_6.py` y `v05_L.py` (El Necronomicón: programa → digrafo y un DFS desde la instrucción 1). Las trazas salen de repetir el mismo algoritmo que el `.cpp`, y el código en pantalla se lee del fichero real.

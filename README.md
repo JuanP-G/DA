@@ -90,9 +90,10 @@ Carpeta [`5-Grafos dirigidos/`](5-Grafos%20dirigidos). Todos usan [`Digrafo.h`](
 | 05-1 | La máquina calculadora | [📄 PDF](5-Grafos%20dirigidos/Enunciados/prob-La%20m%C3%A1quina%20calculadora.pdf) | [💻 Solución](5-Grafos%20dirigidos/EJ_05-1/EJ_05-1.cpp) · [📘 Explicación](5-Grafos%20dirigidos/EJ_05-1/README.md) | [🎬 Vídeo](Videos/05-1_maquina_calculadora.mp4) | BFS en un `Digrafo` con los 10.000 números del marcador (+1, ×2, ÷3) |
 | 05-2 | Juego de Transformación Modular | [📄 PDF](5-Grafos%20dirigidos/Enunciados/prob-Juego%20de%20Transformaci%C3%B3n%20Modular.pdf) | [💻 Solución](5-Grafos%20dirigidos/EJ_05-2/EJ_05-2.cpp) · [📘 Explicación](5-Grafos%20dirigidos/EJ_05-2/README.md) | [🎬 Vídeo](Videos/05-2_transformacion_modular.mp4) | BFS en un `Digrafo` construido con x → (a·x+b) mod M |
 | 05-3 | Ordenando tareas | [📄 PDF](5-Grafos%20dirigidos/Enunciados/prob-Ordenando%20tareas.pdf) | [💻 Solución](5-Grafos%20dirigidos/EJ_05-3/EJ_05-3.cpp) · [📘 Explicación](5-Grafos%20dirigidos/EJ_05-3/README.md) | [🎬 Vídeo](Videos/05-3_ordenando_tareas.mp4) | Orden topológico: postorden inverso del DFS (+ ciclos) |
-| 05-4 | Sumidero en un grafo dirigido | [📄 PDF](5-Grafos%20dirigidos/Enunciados/prob-Sumidero%20en%20un%20grafo%20dirigido.pdf) | [💻 Solución](5-Grafos%20dirigidos/EJ_05-4/EJ_05-4.cpp) · [📘 Explicación](5-Grafos%20dirigidos/EJ_05-4/README.md) | — | Grados: salida 0 (`ady(v)` vacío) y entrada V − 1 (contando en las listas) |
-| 05-5 | Haciendo trampas en Serpientes y Escaleras | [📄 PDF](5-Grafos%20dirigidos/Enunciados/prob-Haciendo%20trampas%20en%20Serpientes%20y%20Escaleras.pdf) | [💻 Solución](5-Grafos%20dirigidos/EJ_05-5/EJ_05-5.cpp) · [📘 Explicación](5-Grafos%20dirigidos/EJ_05-5/README.md) | — | BFS: casilla v → destino(v + d), d = 1…K; serpiente/escalera = salto obligatorio |
+| 05-4 | Sumidero en un grafo dirigido | [📄 PDF](5-Grafos%20dirigidos/Enunciados/prob-Sumidero%20en%20un%20grafo%20dirigido.pdf) | [💻 Solución](5-Grafos%20dirigidos/EJ_05-4/EJ_05-4.cpp) · [📘 Explicación](5-Grafos%20dirigidos/EJ_05-4/README.md) | [🎬 Vídeo](Videos/05-4_sumidero.mp4) | Grados: salida 0 (`ady(v)` vacío) y entrada V − 1 (contando en las listas) |
+| 05-5 | Haciendo trampas en Serpientes y Escaleras | [📄 PDF](5-Grafos%20dirigidos/Enunciados/prob-Haciendo%20trampas%20en%20Serpientes%20y%20Escaleras.pdf) | [💻 Solución](5-Grafos%20dirigidos/EJ_05-5/EJ_05-5.cpp) · [📘 Explicación](5-Grafos%20dirigidos/EJ_05-5/README.md) | [🎬 Vídeo](Videos/05-5_serpientes_y_escaleras.mp4) | BFS: casilla v → destino(v + d), d = 1…K; serpiente/escalera = salto obligatorio |
 | 05-6 | Sistema de inecuaciones | [📄 PDF](5-Grafos%20dirigidos/Enunciados/prob-Sistema%20de%20inecuaciones.pdf) | [💻 Solución](5-Grafos%20dirigidos/EJ_05-6/EJ_05-6.cpp) · [📘 Explicación](5-Grafos%20dirigidos/EJ_05-6/README.md) | [🎬 Vídeo](Videos/05-6_sistema_inecuaciones.mp4) | xi < xj = arista i → j; ciclo ⇒ NO; si no, valor = posición en el orden topológico |
+| 05-L | El Necronomicón de la informática | [📄 PDF](5-Grafos%20dirigidos/Enunciados/prob-El%20Necronomic%C3%B3n%20de%20la%20inform%C3%A1tica.pdf) | [💻 Solución](5-Grafos%20dirigidos/EJ_05-L/EJ_05-L.cpp) · [📘 Explicación](5-Grafos%20dirigidos/EJ_05-L/README.md) | [🎬 Vídeo](Videos/05-L_necronomicon.mp4) | Instrucciones = vértices; `J` y `C` = aristas; un DFS desde la 1: final inalcanzable ⇒ NUNCA, sin ciclo alcanzable ⇒ SIEMPRE, si no A VECES |
 
 **Qué algoritmo usar**
 
@@ -101,6 +102,7 @@ Carpeta [`5-Grafos dirigidos/`](5-Grafos%20dirigidos). Todos usan [`Digrafo.h`](
 | Mínimo número de pasos / jugadas / tiradas | **BFS** (camino con menos aristas) | 05-1, 05-2, 05-5 |
 | Estados con reglas de movimiento (el grafo sale de una fórmula) | Construir el `Digrafo` con `ponArista`, o grafo **implícito** con los sucesores al vuelo | 05-1, 05-2, 05-5 |
 | Ordenar con precedencias («A antes que B», xi < xj) | **Orden topológico**: postorden inverso del DFS; vecino en la pila ⇒ ciclo ⇒ imposible | 05-3, 05-6 |
+| ¿Se puede terminar? ¿se puede no terminar nunca? (programa con saltos) | **DFS desde el inicio**: ¿se alcanza el final? ¿hay un ciclo **alcanzable**? | 05-L |
 | Grados de los vértices (p. ej. sumidero) | Salida = `ady(v).size()`; entrada = contar en todas las listas | 05-4 |
 | La entrada es «V, A y A pares» | Leer con el constructor `Digrafo g(cin, primer)` | 05-4, 05-6 |
 
@@ -189,7 +191,7 @@ Muchos enunciados de la asignatura salen de [Acepta el Reto](https://aceptaelret
 | 07-2 | Camino al cole | [#358](https://aceptaelreto.com/problem/statement.php?id=358) | casi el mismo problema | [📥 ACR-358](<Acepta el Reto/ACR-358_camino_al_cole.cpp>) | Misma historia, pero allí los límites son distintos (hasta 10.000 intersecciones y 100.000 calles de hasta 100.000 de longitud; aquí 100.000, 200.000 y 10.000) y no hay número de casos: se lee hasta el final del fichero. |
 | 07-3 | RapidEats | [#813](https://aceptaelreto.com/problem/statement.php?id=813) | casi el mismo problema | [📥 ACR-813](<Acepta el Reto/ACR-813_rapideats.cpp>) | Allí solo se pide el **tiempo mínimo** de cada pedido (sin la ruta: `30` en vez de `30: 1 -> 3`) y no hay número de casos (se lee hasta el final del fichero); el resto es igual. |
 
-**Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6, 06-4, 06-5. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
+**Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6, 05-L, 06-4, 06-5. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
 
 Para añadir o corregir un enlace: edita `herramientas/acepta_el_reto.json` y ejecuta `python3 herramientas/enlaces_acepta.py`.
 <!-- acr-seccion:fin -->
@@ -247,7 +249,7 @@ Todos en [`Videos/`](Videos), con subtítulos en castellano (y capítulos el de 
 | [`07-0_digrafos_valorados_caminos_minimos_teoria.mp4`](Videos/07-0_digrafos_valorados_caminos_minimos_teoria.mp4) | **Teoría completa del tema 7**: dígrafos valorados, relajación, Dijkstra paso a paso (con código, corrección y coste), Dijkstra con vector, caminos mínimos vs ARM, y los ejercicios 07-1 … 07-3 (con capítulos) |
 | `03-4`, `03-5`, `03-L` | Ejercicios del tema 3 |
 | `04-1` … `04-7`, `04-L` | Ejercicios del tema 4 |
-| `05-1`, `05-2`, `05-3`, `05-6` | Ejercicios del tema 5 |
+| `05-1` … `05-6`, `05-L` | Ejercicios del tema 5 |
 | `07-1`, `07-2`, `07-3` | Ejercicios del tema 7 |
 
 Se generan con los scripts de [`Videos/generador/`](Videos/generador) (diapositivas con Pillow, voz Kokoro y ffmpeg); las trazas salen del mismo algoritmo que el `.cpp` y el código en pantalla se lee del fichero real.
