@@ -95,6 +95,7 @@ def tema6():
         "e63": {"f": "EJ_06-3.cpp", "tab": "06-3", "lines": funcion(f"{TEMA6}/EJ_06-3/EJ_06-3.cpp", "void resuelveCaso()")},
         "e64": {"f": "EJ_06-4.cpp", "tab": "06-4", "lines": funcion(f"{TEMA6}/EJ_06-4/EJ_06-4.cpp", "bool resuelveCaso()")},
         "e65": {"f": "EJ_06-5.cpp", "tab": "06-5", "lines": funcion(f"{TEMA6}/EJ_06-5/EJ_06-5.cpp", "void resuelveCaso()")},
+        "e6L": {"f": "EJ_06-L.cpp", "tab": "06-L", "lines": funcion(f"{TEMA6}/EJ_06-L/EJ_06-L.cpp", "void resuelveCaso()")},
         "e62": {"f": "EJ_06-2.cpp", "tab": "06-2", "lines": clase_tpl(f"{TEMA6}/EJ_06-2/EJ_06-2.cpp", "Alcanzables")},
     }
     algo_list = [
@@ -103,6 +104,7 @@ def tema6():
         {"id": "kr_suma", "nombre": "06-3 Archipiélago: suma del ARM o «No hay puentes suficientes»", "src": False, "dst": False, "code": "e63"},
         {"id": "kr_ultima", "nombre": "06-4 Tarzán: última arista aceptada o «Imposible»", "src": False, "dst": False, "code": "e64"},
         {"id": "kr_minimax", "nombre": "06-5 Trajano: Kruskal hasta unir origen y destino", "src": True, "dst": True, "code": "e65"},
+        {"id": "kr_aero", "nombre": "06-L Aeropuertos: Kruskal solo con carreteras C < A, un aeropuerto por grupo", "src": False, "dst": False, "par": "A", "code": "e6L"},
         {"id": "dfsancho", "nombre": "06-2 Camiones: DFS que solo usa aristas con valor ≥ ancho", "src": True, "dst": True, "par": "ancho", "code": "e62"},
     ]
     p = lambda n, nombre, e, **kw: dict(nombre=nombre, n=n, e=e, **kw)
@@ -117,6 +119,10 @@ def tema6():
           algo="kr_ultima", src=0, dst=3, pos=[[130, 110], [330, 210], [130, 320], [540, 110]]),
         p(4, "06-5 · Las minas de Trajano (ejemplo 1: de la cámara 1 a la 4)", [[0, 1, 2], [1, 3, 5], [3, 0, 10], [0, 2, 6]],
           algo="kr_minimax", src=0, dst=3, pos=[[130, 210], [320, 90], [320, 340], [520, 210]]),
+        p(4, "06-L · Aeropuertos (ejemplo 1: A = 100)", [[0, 1, 10], [1, 2, 30], [3, 0, 40], [3, 2, 20]],
+          algo="kr_aero", src=0, dst=3, par=100, pos=[[130, 100], [500, 100], [500, 330], [130, 330]]),
+        p(3, "06-L · Aeropuertos (ejemplo 3: C = A no se construye)", [[0, 1, 20], [1, 2, 50], [0, 2, 80]],
+          algo="kr_aero", src=0, dst=2, par=50, pos=[[130, 210], [330, 90], [530, 210]]),
         p(5, "06-2 · Camiones de reparto (ejemplo: de la 2 a la 5 con ancho 15)", [[0, 1, 10], [0, 2, 30], [1, 3, 20], [2, 3, 15], [3, 4, 12]],
           algo="dfsancho", src=1, dst=4, par=15, pos=[[100, 210], [260, 90], [260, 330], [430, 210], [570, 210]]),
         p(7, "Un grafo con ciclos (Kruskal descarta varias aristas)", [[0, 1, 7], [0, 3, 5], [1, 2, 8], [1, 3, 9], [1, 4, 7], [2, 4, 5], [3, 4, 15], [3, 5, 6], [4, 5, 8], [4, 6, 9], [5, 6, 11]],

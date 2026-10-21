@@ -118,6 +118,7 @@ Carpeta [`6-Conjuntos disjuntos y grafos valorados/`](6-Conjuntos%20disjuntos%20
 | 06-3 | Recorriendo el archipiélago en bicicleta | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Recorriendo%20el%20archipi%C3%A9lago%20en%20bicicleta.pdf) | [💻 Solución](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-3/EJ_06-3.cpp) · [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-3/README.md) | — | Kruskal: suma del árbol de recubrimiento de coste mínimo (o «No hay puentes suficientes») |
 | 06-4 | La selva de Tarzán | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-La%20selva%20de%20Tarz%C3%A1n.pdf) | [💻 Solución](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-4/EJ_06-4.cpp) · [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-4/README.md) | — | Kruskal: la última arista aceptada (máximo del ARM) es la cuerda mínima |
 | 06-5 | Las minas del emperador Trajano | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-Las%20minas%20del%20emperador%20Trajano.pdf) | [💻 Solución](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-5/EJ_06-5.cpp) · [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-5/README.md) | — | Kruskal hasta que `origen` y `destino` quedan unidos: esa arista es el camino minimax |
+| 06-L | ¿Dónde construimos los aeropuertos? | [📄 PDF](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/Enunciados/prob-%C2%BFD%C3%B3nde%20construimos%20los%20aeropuertos_.pdf) | [💻 Solución](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-L/EJ_06-L.cpp) · [📘 Explicación](6-Conjuntos%20disjuntos%20y%20grafos%20valorados/EJ_06-L/README.md) | [🎬 Vídeo](Videos/06-L_aeropuertos.mp4) | Kruskal que solo construye carreteras con C < A (si C = A, más aeropuertos); aeropuertos = grupos que quedan |
 
 **Qué técnica usar**
 
@@ -128,6 +129,7 @@ Carpeta [`6-Conjuntos disjuntos y grafos valorados/`](6-Conjuntos%20disjuntos%20
 | Conectarlo todo al menor coste total | **Kruskal** (ordenar aristas + conjuntos disjuntos para evitar ciclos) o Prim; suma de valores | 06-3 |
 | El mayor «salto» mínimo necesario para conectar todo | Kruskal: valor de la **última** arista aceptada | 06-4 |
 | Mejor camino entre **dos** vértices cuando cuenta la arista más mala (no la suma) | Kruskal con parada en cuanto `origen` y `destino` están unidos | 06-5 |
+| Conectar **solo si compensa** frente a un coste fijo por grupo (aeropuerto, central…) | Kruskal que **para** en la primera arista con coste ≥ ese coste; un coste fijo por grupo que queda | 06-L |
 
 ---
 
@@ -191,7 +193,7 @@ Muchos enunciados de la asignatura salen de [Acepta el Reto](https://aceptaelret
 | 07-2 | Camino al cole | [#358](https://aceptaelreto.com/problem/statement.php?id=358) | casi el mismo problema | [📥 ACR-358](<Acepta el Reto/ACR-358_camino_al_cole.cpp>) | Misma historia, pero allí los límites son distintos (hasta 10.000 intersecciones y 100.000 calles de hasta 100.000 de longitud; aquí 100.000, 200.000 y 10.000) y no hay número de casos: se lee hasta el final del fichero. |
 | 07-3 | RapidEats | [#813](https://aceptaelreto.com/problem/statement.php?id=813) | casi el mismo problema | [📥 ACR-813](<Acepta el Reto/ACR-813_rapideats.cpp>) | Allí solo se pide el **tiempo mínimo** de cada pedido (sin la ruta: `30` en vez de `30: 1 -> 3`) y no hay número de casos (se lee hasta el final del fichero); el resto es igual. |
 
-**Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6, 05-L, 06-4, 06-5. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
+**Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6, 05-L, 06-4, 06-5, 06-L. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
 
 Para añadir o corregir un enlace: edita `herramientas/acepta_el_reto.json` y ejecuta `python3 herramientas/enlaces_acepta.py`.
 <!-- acr-seccion:fin -->
@@ -250,6 +252,7 @@ Todos en [`Videos/`](Videos), con subtítulos en castellano (y capítulos el de 
 | `03-4`, `03-5`, `03-L` | Ejercicios del tema 3 |
 | `04-1` … `04-7`, `04-L` | Ejercicios del tema 4 |
 | `05-1` … `05-6`, `05-L` | Ejercicios del tema 5 |
+| `06-L` | Ejercicio de laboratorio del tema 6 |
 | `07-1`, `07-2`, `07-3` | Ejercicios del tema 7 |
 
 Se generan con los scripts de [`Videos/generador/`](Videos/generador) (diapositivas con Pillow, voz Kokoro y ffmpeg); las trazas salen del mismo algoritmo que el `.cpp` y el código en pantalla se lee del fichero real.
@@ -261,6 +264,8 @@ Se generan con los scripts de [`Videos/generador/`](Videos/generador) (diapositi
 Las carpetas de cada tema coinciden con las carpetas de la solución de Visual Studio:
 
 > 💡 **¿No ves los ejercicios nuevos en Visual Studio?** El `.sln` y los `.vcxproj` están en el `.gitignore` (son de cada uno), así que `git pull` trae las carpetas y el código pero no los proyectos. Con Visual Studio cerrado, ejecuta una vez desde la carpeta del repo `powershell -ExecutionPolicy Bypass -File herramientas\anadir_ejercicios_vs.ps1`: crea el `.vcxproj` de cada ejercicio que no lo tenga y lo añade a tu `.sln` dentro de la carpeta de su tema (guarda antes una copia `.sln.bak-ejercicios`; se puede repetir sin problema).
+>
+> 🔁 **Para que se meta solo:** ejecuta **una vez** `powershell -ExecutionPolicy Bypass -File herramientas\instalar_auto_vs.ps1`. Instala un hook local de git (`.git/hooks/post-merge`, no se sube al repo) que, tras cada `git pull`, lanza el script anterior en modo `-Auto`: añade a tu `.sln` los ejercicios nuevos sin que hagas nada. Si Visual Studio está abierto durante el pull no toca nada y te avisa; ejecuta entonces el script cuando lo cierres. Para quitarlo, borra `.git\hooks\post-merge`.
 
 ```text
 .

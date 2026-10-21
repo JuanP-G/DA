@@ -299,14 +299,18 @@ using namespace std;
 void resuelveCaso() {
     GrafoValorado<int> g(cin, 1);   // I, P y P puentes; islas numeradas desde 1
 
-    vector<Arista<int>> puentes = g.aristas();
+    auto puentes = g.aristas();
     sort(puentes.begin(), puentes.end());   // por coste creciente (operator< de Arista)
 
     ConjuntosDisjuntos cd(g.V());
     long long coste = 0;
     int elegidos = 0;
+	//recorremos los puentes de menor a mayor coste, eligiendo los que unen islas distintas
     for (auto const& p : puentes) {
+		// Si ya tenemos I - 1 puentes, hemos terminado
         if (elegidos == g.V() - 1) break;
+
+		// Si las islas del puente p ya estan unidas, no lo elegimos
         int u = p.uno(), v = p.otro(u);
         if (!cd.unidos(u, v)) {
             cd.unir(u, v);

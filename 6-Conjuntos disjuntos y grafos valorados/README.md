@@ -1,6 +1,6 @@
 # Tema 6 · Conjuntos disjuntos, grafos valorados y árboles de recubrimiento de coste mínimo
 
-Resumen del tema (semana 6 del campus) con la respuesta al ejercicio de autoevaluación 6.1. Los ejercicios del juez están en las carpetas `EJ_06-1` … `EJ_06-5`; en cada una hay la solución en C++ (`EJ_06-N.cpp`) y una explicación del planteamiento.
+Resumen del tema (semana 6 del campus) con la respuesta al ejercicio de autoevaluación 6.1. Los ejercicios del juez están en las carpetas `EJ_06-1` … `EJ_06-5` y `EJ_06-L` (laboratorio); en cada una hay la solución en C++ (`EJ_06-N.cpp`) y una explicación del planteamiento.
 
 | Nº | Problema | Técnica |
 |:--:|---|---|
@@ -9,6 +9,7 @@ Resumen del tema (semana 6 del campus) con la respuesta al ejercicio de autoeval
 | [06-3](EJ_06-3/README.md) | Recorriendo el archipiélago en bicicleta | Kruskal: **suma** del árbol de recubrimiento de coste mínimo |
 | [06-4](EJ_06-4/README.md) | La selva de Tarzán | Kruskal: **última** arista aceptada (el máximo del ARM) |
 | [06-5](EJ_06-5/README.md) | Las minas del emperador Trajano | Kruskal con parada: arista que conecta **dos** vértices (camino minimax) |
+| [06-L](EJ_06-L/README.md) | ¿Dónde construimos los aeropuertos? | Kruskal que solo construye carreteras con **C < A**; un aeropuerto por grupo que queda |
 
 ---
 
