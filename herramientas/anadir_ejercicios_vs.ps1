@@ -16,6 +16,10 @@
 #      (si no existe, la crea), con las mismas configuraciones (Debug/Release, x86/x64) que el resto.
 # Antes de tocar el .sln guarda una copia .bak-ejercicios al lado.
 # Se puede ejecutar varias veces: lo que ya esta en el .sln no se toca.
+#
+# -Auto: modo silencioso para el hook de git (ver instalar_auto_vs.ps1). Si Visual Studio esta abierto
+# o no hay .sln, no hace nada y no falla (para no estropear el git pull); avisa de que lo ejecutes a mano.
+param([switch]$Auto)
 
 $ErrorActionPreference = 'Stop'
 $raiz = Split-Path -Parent $PSScriptRoot
@@ -24,12 +28,17 @@ $tipoCarpeta = '2150E333-8FDC-42A3-9474-1A3956D46DE8'
 $utf8bom = New-Object Text.UTF8Encoding $true
 
 if (Get-Process devenv -ErrorAction SilentlyContinue) {
+    if ($Auto) {
+        Write-Host "[ejercicios] Visual Studio esta abierto: no toco el .sln. Cuando lo cierres ejecuta herramientas\anadir_ejercicios_vs.ps1" -ForegroundColor Yellow
+        exit 0
+    }
     Write-Host "Cierra Visual Studio antes de ejecutar el script." -ForegroundColor Red
     exit 1
 }
 
 $slns = @(Get-ChildItem -LiteralPath $raiz -Filter *.sln -File)
 if ($slns.Count -eq 0) {
+    if ($Auto) { exit 0 }
     Write-Host "No encuentro ningun .sln en $raiz (la carpeta del repositorio). No he cambiado nada." -ForegroundColor Red
     exit 1
 }

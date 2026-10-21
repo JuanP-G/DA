@@ -47,6 +47,8 @@ python v05_teoria.py             # genera el mp4 (tarda unos minutos)
 
 ## Vídeo de teoría del tema 6
 
+`v06_L.py` genera `../06-L_aeropuertos.mp4` (¿Dónde construimos los aeropuertos?: Kruskal con C < A, el empate C = A y la traza de los ejemplos 1 y 3; la simulación repite el algoritmo del `.cpp`).
+
 `v06_teoria.py` genera `../06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4` (con capítulos y subtítulos): relaciones de equivalencia dinámicas, búsqueda rápida, unión rápida, unión por tamaños y compresión de caminos, la autoevaluación 6.1 paso a paso, los ejercicios 06-1 a 06-5, `GrafoValorado.h`, la propiedad del corte, y Kruskal y Prim sobre un grafo de 6 vértices.
 
 - Cuando se hizo el vídeo los ejercicios del tema 6 aún no tenían `.cpp`, así que las trazas salen de **simular los algoritmos en el propio guion** (los resultados coinciden con los ejemplos de los enunciados). El código que se ve en pantalla es el de `Estructuras de datos/ConjuntosDisjuntos.h` y `GrafoValorado.h`.

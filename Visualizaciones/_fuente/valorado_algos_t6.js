@@ -21,12 +21,13 @@ class DSU {
 const conjTxt = d => d.conjuntos().map(c => '{' + c.join(',') + '}').join(' ');
 
 /* ---- Kruskal y sus tres usos: ARM_Kruskal, 06-3 (suma), 06-4 (última arista), 06-5 (minimax) ---- */
-function kruskal(mode, s, t) {
+function kruskal(mode, s, t, par) {
   const n = G.n, C = ctx(), S = C.st, d = new DSU(n);
   const A = {
     clase: { code: 'kruskal', sort: 'std::sort(aristas.begin(), aristas.end());', cd: 'ConjuntosDisjuntos cjtos(g.V());', loop: 'for (auto const& a : aristas) {', uv: 'int v = a.uno(), w = a.otro(v);', test: 'if (!cjtos.unidos(v, w))', unir: 'cjtos.unir(v, w);', acum: ['_ARM.push_back(a);', 'coste += a.valor();'], brk: 'if (_ARM.size() == (size_t)g.V() - 1) break;', brkAfter: true, fin: 'bool conexo() const' },
     suma: { code: 'e63', sort: 'sort(puentes.begin(), puentes.end());', cd: 'ConjuntosDisjuntos cd(g.V());', loop: 'for (auto const& p : puentes) {', uv: 'int u = p.uno(), v = p.otro(u);', test: 'if (!cd.unidos(u, v)) {', unir: 'cd.unir(u, v);', acum: ['coste += p.valor();', '++elegidos;'], brk: 'if (elegidos == g.V() - 1) break;', fin: 'if (elegidos == g.V() - 1) cout << coste' },
     ultima: { code: 'e64', sort: 'sort(saltos.begin(), saltos.end());', cd: 'ConjuntosDisjuntos cd(g.V());', loop: 'for (auto const& s : saltos) {', uv: 'int u = s.uno(), v = s.otro(u);', test: 'if (!cd.unidos(u, v)) {', unir: 'cd.unir(u, v);', acum: ['ultima = s.valor();'], brk: 'if (cd.num_cjtos() == 1) break;', fin: 'if (cd.num_cjtos() == 1) cout << ultima' },
+    aero: { code: 'e6L', sort: 'sort(carreteras.begin(), carreteras.end());', cd: 'ConjuntosDisjuntos cd(N);', loop: 'for (auto const& c : carreteras) {', uv: 'int u = c.uno(), v = c.otro(u);', test: 'if (!cd.unidos(u, v)) {', unir: 'cd.unir(u, v);', acum: ['coste += c.valor();'], brk: 'if (c.valor() >= A) break;', fin: 'coste += (long long)aeropuertos * A;' },
     minimax: { code: 'e65', sort: 'sort(galerias.begin(), galerias.end());', cd: 'ConjuntosDisjuntos cd(g.V());', loop: 'for (auto const& a : galerias) {', uv: 'int u = a.uno(), v = a.otro(u);', test: 'if (!cd.unidos(u, v)) {', unir: 'cd.unir(u, v);', acum: ['aguante = a.valor();'], brk: 'if (cd.unidos(origen, destino)) break;', fin: 'if (cd.unidos(origen, destino)) cout << aguante' },
   }[mode];
   const ln = k => L(A.code, A[k]);
@@ -34,7 +35,7 @@ function kruskal(mode, s, t) {
   const est = {};            /* id -> '' | 'ok' | 'bad' | 'cur' | 'dead' */
   let total = 0, elegidos = 0, ultima = 0;
   const fin = () => mode === 'clase' ? elegidos === n - 1 : mode === 'suma' ? elegidos === n - 1 : mode === 'ultima' ? d.ncj === 1 : d.unidos(s, t);
-  const estado = () => mode === 'clase' || mode === 'suma' ? `elegidos = ${elegidos} de V − 1 = ${n - 1} · coste = ${total}` : mode === 'ultima' ? `conjuntos = ${d.ncj} · ultima = ${ultima}` : `¿unidos(${s}, ${t})? ${d.unidos(s, t) ? 'sí' : 'no'} · aguante = ${ultima}`;
+  const estado = () => mode === 'aero' ? `carreteras construidas = ${total} · grupos (aeropuertos) = ${d.ncj} · A = ${par}` : mode === 'clase' || mode === 'suma' ? `elegidos = ${elegidos} de V − 1 = ${n - 1} · coste = ${total}` : mode === 'ultima' ? `conjuntos = ${d.ncj} · ultima = ${ultima}` : `¿unidos(${s}, ${t})? ${d.unidos(s, t) ? 'sí' : 'no'} · aguante = ${ultima}`;
   const V = hotP => [
     chipsOf('aristas ordenadas por valor', edges.map(e => ({ t: eTxt(e), cls: est[e.id] || '' }))),
     vecOf('p (padre)', d.p, hotP), vecOf('tam (solo en raíces)', d.tam, -1),
@@ -43,10 +44,10 @@ function kruskal(mode, s, t) {
   C.snap(`Primero se pide <code>g.aristas()</code> (cada arista <b>una sola vez</b>) y se ordena por valor creciente con <code>sort</code>. Las ${edges.length} aristas quedan así: <code>${edges.map(e => e.v + '–' + e.w + '(' + e.c + ')').join('  ')}</code>. ${edges.some((e, i) => i && edges[i - 1].c === e.c) ? 'Con valores repetidos el orden entre ellos puede variar según el <code>sort</code>; el coste no cambia.' : ''}`, [ln('sort')], V(-1));
   C.snap(`<code>ConjuntosDisjuntos</code> con los ${n} vértices: al principio cada uno está <b>solo</b> en su conjunto (${d.ncj} conjuntos).`, [ln('cd')], V(-1));
   let paro = false;
-  const motivoParo = () => mode === 'clase' || mode === 'suma' ? `ya hay V − 1 = ${n - 1} aristas: el árbol está completo` : mode === 'ultima' ? '<code>num_cjtos() == 1</code>: todo está conectado' : `<code>unidos(${s}, ${t})</code>: origen y destino ya están conectados`;
+  const motivoParo = e => mode === 'aero' ? `<code>valor() ≥ A</code>: la carretera ${e.v}–${e.w} cuesta ${e.c} ≥ A = ${par} y, al ir ordenadas, las siguientes también; ya no compensa construir más` : mode === 'clase' || mode === 'suma' ? `ya hay V − 1 = ${n - 1} aristas: el árbol está completo` : mode === 'ultima' ? '<code>num_cjtos() == 1</code>: todo está conectado' : `<code>unidos(${s}, ${t})</code>: origen y destino ya están conectados`;
   for (let k = 0; k < edges.length && !paro; k++) {
     const e = edges[k], u = e.v, v = e.w;
-    if (!A.brkAfter && fin()) { paro = true; edges.slice(k).forEach(x => { est[x.id] = 'dead'; S.edge[x.id] = 'dead'; }); C.snap(`Al empezar la vuelta ${k + 1} se cumple ${motivoParo()}: <code>break</code>. Las ${edges.length - k} aristas restantes no se miran.`, [ln('brk')], V(-1)); break; }
+    if (!A.brkAfter && (mode === 'aero' ? e.c >= par : fin())) { paro = true; edges.slice(k).forEach(x => { est[x.id] = 'dead'; S.edge[x.id] = 'dead'; }); C.snap(`Al empezar la vuelta ${k + 1} se cumple ${motivoParo(e)}: <code>break</code>. Las ${edges.length - k} aristas restantes no se miran.`, [ln('brk')], V(-1)); break; }
     est[e.id] = 'cur'; S.edge[e.id] = 'cur'; S.node[u] = 's-cur'; S.node[v] = 's-cur';
     const ru = d.buscar(u), rv = d.buscar(v);
     C.snap(`Arista <b>${u}–${v}</b> de valor <b>${e.c}</b>: <code>unidos(${u}, ${v})</code> compara <code>buscar(${u}) = ${ru}</code> con <code>buscar(${v}) = ${rv}</code>.`, [ln('loop'), ln('uv'), ln('test')], V(-1));
@@ -56,7 +57,7 @@ function kruskal(mode, s, t) {
     } else {
       d.unir(u, v); total += e.c; elegidos++; ultima = e.c;
       est[e.id] = 'ok'; S.edge[e.id] = 'tree'; S.node[u] = 's-vis'; S.node[v] = 's-vis';
-      C.snap(`Conjuntos distintos (${ru} y ${rv}): <code>unir(${u}, ${v})</code> los junta y la arista <b>se acepta</b>${mode === 'clase' || mode === 'suma' ? `: coste += ${e.c} → <b>${total}</b>` : mode === 'ultima' ? `: <code>ultima = ${e.c}</code>` : `: <code>aguante = ${e.c}</code>`}.`, [ln('unir'), ...lineasAcum], V(-1));
+      C.snap(`Conjuntos distintos (${ru} y ${rv}): <code>unir(${u}, ${v})</code> los junta y la arista <b>se acepta</b>${mode === 'clase' || mode === 'suma' ? `: coste += ${e.c} → <b>${total}</b>` : mode === 'aero' ? `: carretera construida (${e.c} < A = ${par}), coste += ${e.c} → <b>${total}</b>` : mode === 'ultima' ? `: <code>ultima = ${e.c}</code>` : `: <code>aguante = ${e.c}</code>`}.`, [ln('unir'), ...lineasAcum], V(-1));
     }
     if (A.brkAfter && fin()) { paro = true; edges.slice(k + 1).forEach(x => { est[x.id] = 'dead'; S.edge[x.id] = 'dead'; }); if (k + 1 < edges.length) C.snap(`Se cumple ${motivoParo()}: <code>break</code>. Las ${edges.length - k - 1} aristas restantes no se miran.`, [ln('brk')], V(-1)); }
   }
@@ -66,17 +67,19 @@ function kruskal(mode, s, t) {
   const conexo = d.ncj === 1;
   let res;
   if (mode === 'clase') res = conexo ? `<b>Fin.</b> <code>conexo()</code> es true: el ARM tiene ${elegidos} aristas y coste <b>${total}</b>. Las aristas verdes forman el árbol.` : `<b>Fin.</b> Quedan ${d.ncj} conjuntos: el grafo <b>no es conexo</b>, no existe ARM (<code>conexo()</code> es false).`;
+  else if (mode === 'aero') res = `<b>Fin.</b> Quedan <b>${d.ncj}</b> grupos ⇒ ${d.ncj} aeropuerto(s): coste = ${total} + ${d.ncj} · ${par} = <b>${total + d.ncj * par}</b>. Se escribe «${total + d.ncj * par} ${d.ncj}». (Una carretera con C = A no se construye: se prefieren más aeropuertos.)`;
   else if (mode === 'suma') res = elegidos === n - 1 ? `<b>Fin.</b> Se escribe el coste mínimo: <b>${total}</b>${n === 1 ? ' (una sola isla: no hace falta ningún puente)' : ''}.` : `<b>Fin.</b> Solo ${elegidos} puentes elegidos < ${n - 1}: se escribe <b>No hay puentes suficientes</b>.`;
   else if (mode === 'ultima') res = conexo ? `<b>Fin.</b> Se escribe la última arista aceptada: <b>${ultima}</b>${n === 1 ? ' (un solo árbol: no se necesita cuerda)' : ' (la cuerda más corta que conecta toda la selva)'}.` : `<b>Fin.</b> Quedan ${d.ncj} conjuntos: se escribe <b>Imposible</b>.`;
   else res = d.unidos(s, t) ? `<b>Fin.</b> ${s} y ${t} quedan unidos: se escribe <b>${ultima}</b>${s === t ? ' (origen = destino: no hay que bucear)' : ' (la galería más larga del mejor camino)'}.` : `<b>Fin.</b> ${s} y ${t} nunca llegan a estar unidos: se escribe <b>IMPOSIBLE</b>.`;
   C.snap(res, [ln('fin')], V(-1));
-  C.f.res = { total, elegidos, ncj: d.ncj, ultima, unidos: mode === 'minimax' ? d.unidos(s, t) : null };
+  C.f.res = { total: mode === 'aero' ? total + d.ncj * par : total, elegidos, ncj: d.ncj, ultima, unidos: mode === 'minimax' ? d.unidos(s, t) : null };
   return C.f;
 }
 ALGOS.kr_clase = () => kruskal('clase');
 ALGOS.kr_suma = () => kruskal('suma');
 ALGOS.kr_ultima = () => kruskal('ultima');
 ALGOS.kr_minimax = (s, t) => kruskal('minimax', s, t);
+ALGOS.kr_aero = (s, t, par) => kruskal('aero', s, t, par);
 
 /* ---- Prim: crece un árbol desde el vértice 0 con una cola de prioridad de aristas ---- */
 ALGOS.prim = () => {

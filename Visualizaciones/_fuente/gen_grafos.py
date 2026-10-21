@@ -14,7 +14,11 @@ TPL = (AQUI / "grafo.tpl.html").read_text(encoding="utf-8")
 
 
 def leer(ruta):
-    return (RAIZ / ruta).read_text(encoding="utf-8").splitlines()
+    b = (RAIZ / ruta).read_bytes()
+    try:
+        return b.decode("utf-8").splitlines()
+    except UnicodeDecodeError:  # ficheros guardados por Visual Studio en ANSI
+        return b.decode("cp1252").splitlines()
 
 
 def bloque_clase(lineas, nombre):
