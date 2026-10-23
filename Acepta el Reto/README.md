@@ -30,5 +30,7 @@ Acepta el Reto ([aceptaelreto.com](https://aceptaelreto.com)) es un juez públic
 | 07-1 | [#318 · Navegando sin teclado](https://aceptaelreto.com/problem/statement.php?id=318) | [`ACR-318_navegando_sin_teclado.cpp`](ACR-318_navegando_sin_teclado.cpp) | no hay número de casos: se lee hasta el final del fichero |
 | 07-2 | [#358 · Camino al cole](https://aceptaelreto.com/problem/statement.php?id=358) | [`ACR-358_camino_al_cole.cpp`](ACR-358_camino_al_cole.cpp) | no hay número de casos: se lee hasta el final del fichero |
 | 07-3 | [#813 · RapidEats](https://aceptaelreto.com/problem/statement.php?id=813) | [`ACR-813_rapideats.cpp`](ACR-813_rapideats.cpp) | no hay número de casos: se lee hasta el final del fichero; allí solo se pide el tiempo mínimo de cada pedido (sin la ruta): se escribe `30` en vez de `30: 1 -> 3` |
+| 07-5 | [#504 · ¿Cuál es el mejor camino?](https://aceptaelreto.com/problem/statement.php?id=504) | [`ACR-504_cual_es_el_mejor_camino.cpp`](ACR-504_cual_es_el_mejor_camino.cpp) | el separador de cada caso es `----` (cuatro guiones) |
+| 07-7 | [#601 · Ratones en un laberinto](https://aceptaelreto.com/problem/statement.php?id=601) | [`ACR-601_ratones_en_un_laberinto.cpp`](ACR-601_ratones_en_un_laberinto.cpp) | no hay número de casos: se lee hasta el final del fichero |
 
 Las versiones de `pruebas/` son los ejemplos de los enunciados (los de Acepta el Reto y los de la asignatura, en el formato de Acepta el Reto).
