@@ -1,12 +1,16 @@
 # Tema 7 · Dígrafos valorados y caminos de coste mínimo
 
-Resumen del tema (semana 7 del campus) con la respuesta a las dos reflexiones: «Caminos mínimos vs ARM» y «Dijkstra con vector». Los ejercicios del juez están en las carpetas `EJ_07-1` … `EJ_07-3`; en cada una hay la solución en C++ (`EJ_07-N.cpp`) y una explicación del planteamiento. El código de Dijkstra de las transparencias está en [`DigrafoValorado_algoritmos.h`](../Estructuras%20de%20datos/DigrafoValorado_algoritmos.h) (con su [demo](../Estructuras%20de%20datos/DigrafoValorado_demo.cpp)) y se puede ver paso a paso en la [herramienta interactiva](../Visualizaciones/tema7-dijkstra.html).
+Resumen del tema (semana 7 del campus) con la respuesta a las dos reflexiones: «Caminos mínimos vs ARM» y «Dijkstra con vector». Los ejercicios del juez están en las carpetas `EJ_07-1` … `EJ_07-7`; en cada una hay la solución en C++ (`EJ_07-N.cpp`) y una explicación del planteamiento. El código de Dijkstra de las transparencias está en [`DigrafoValorado_algoritmos.h`](../Estructuras%20de%20datos/DigrafoValorado_algoritmos.h) (con su [demo](../Estructuras%20de%20datos/DigrafoValorado_demo.cpp)) y se puede ver paso a paso en la [herramienta interactiva](../Visualizaciones/tema7-dijkstra.html).
 
 | Nº | Problema | Técnica |
 |:--:|---|---|
 | [07-1](EJ_07-1/README.md) | Navegando sin teclado | Dijkstra con **dos tipos de coste** (carga de la página + enlace): la carga se suma a la arista que entra |
 | [07-2](EJ_07-2/README.md) | Camino al cole | Dijkstra que **cuenta** cuántos caminos mínimos hay (grafo no dirigido) |
 | [07-3](EJ_07-3/README.md) | RapidEats con ruta | Dijkstra directo + **reconstruir el camino** con `ulti[]` |
+| [07-4](EJ_07-4/README.md) | La conferencia de paz | Dijkstra con **varios orígenes** (un bando entero), dos veces |
+| [07-5](EJ_07-5/README.md) | ¿Cuál es el mejor camino? | Dijkstra con prioridad `(distancia, calles)` + anchura: ¿el camino más corto es también el de menos calles? |
+| [07-6](EJ_07-6/README.md) | Repartiendo paquetes | Ida y vuelta con **grafo inverso**: dos Dijkstra desde la oficina |
+| [07-7](EJ_07-7/README.md) | Ratones en un laberinto | Distancias **hacia** la salida: Dijkstra desde S en el **grafo inverso** |
 
 ---
 
@@ -97,6 +101,9 @@ Camino<Valor> camino(int v) const {
 - **07-1 — dos tipos de coste.** El coste de un vértice (carga de una página) se carga en la arista que **entra** en él: `coste(v → w) = enlace + carga[w]`, y `dist[origen] = carga[origen]`. El grafo resultante tiene un único tipo de coste.
 - **07-2 — contar caminos mínimos.** Segundo vector `formas[]`: si se mejora `dist[w]` → `formas[w] = formas[v]`; si se empata → `formas[w] += formas[v]`.
 - **07-3 — dar el camino.** Dijkstra normal y, al final, retroceder por `ulti[]`.
+- **07-4 — varios orígenes.** Dijkstra con todas las aldeas de un bando en la cola a distancia 0; dos veces (galos y romanos).
+- **07-5 — dos criterios.** Dijkstra con prioridad `(distancia, calles)` y un recorrido en anchura para el mínimo de calles; se comparan.
+- **07-6 y 07-7 — distancias hacia un punto.** Un Dijkstra desde ese punto en el **grafo inverso** (`g.inverso()`) da el coste de llegar *a* él desde cada vértice.
 
 ---
 
@@ -144,9 +151,12 @@ Está implementado como `DijkstraVector` en [`DigrafoValorado_algoritmos.h`](../
 
 | Lo que pide el problema | Herramienta | Ejercicios |
 |---|---|---|
-| Camino de **menor coste total** con costes ≥ 0 | **Dijkstra** (`IndexPQ`) | 07-1, 07-2, 07-3 |
+| Camino de **menor coste total** con costes ≥ 0 | **Dijkstra** (`IndexPQ`) | 07-1 … 07-7 |
 | Coste en los **vértices** además de en las aristas | Sumar el coste del vértice a la arista que entra (y el del origen a `dist[origen]`) | 07-1 |
 | **Cuántos** caminos mínimos hay | Dijkstra + vector `formas[]` (sustituir si mejora, sumar si empata) | 07-2 |
 | Escribir **el camino** | `ulti[]` y retroceder desde el destino | 07-3 |
+| Varios **orígenes** a la vez | Todos en la cola con distancia 0 | 07-4 |
+| Distancia **hacia** un destino / ida y vuelta | Dijkstra desde él en el **grafo inverso** | 07-6, 07-7 |
+| **Dos criterios** (distancia y luego calles) | Prioridad `pair` en orden lexicográfico | 07-5 |
 | Grafo **no dirigido** | Añadir cada arista en los dos sentidos al `DigrafoValorado` | 07-2, 07-3 |
 | Mínimo número de aristas (sin valores) | BFS (tema 4/5), no Dijkstra | — |

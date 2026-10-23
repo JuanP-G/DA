@@ -143,15 +143,22 @@ Carpeta [`7-Digrafos valorados y caminos minimos/`](7-Digrafos%20valorados%20y%2
 | 07-1 | Navegando sin teclado | [📄 PDF](7-Digrafos%20valorados%20y%20caminos%20minimos/Enunciados/prob-Navegando%20sin%20teclado.pdf) | [💻 Solución](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-1/EJ_07-1.cpp) · [📘 Explicación](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-1/README.md) | [🎬 Vídeo](Videos/07-1_navegando_sin_teclado.mp4) | Dijkstra con coste en vértices y aristas: la carga de la página se suma a la arista que entra |
 | 07-2 | Camino al cole | [📄 PDF](7-Digrafos%20valorados%20y%20caminos%20minimos/Enunciados/prob-Camino%20al%20cole.pdf) | [💻 Solución](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-2/EJ_07-2.cpp) · [📘 Explicación](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-2/README.md) | [🎬 Vídeo](Videos/07-2_camino_al_cole.mp4) | Dijkstra que cuenta caminos mínimos: sustituir si mejora, sumar si empata |
 | 07-3 | RapidEats con ruta | [📄 PDF](7-Digrafos%20valorados%20y%20caminos%20minimos/Enunciados/prob-RapidEats.pdf) | [💻 Solución](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-3/EJ_07-3.cpp) · [📘 Explicación](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-3/README.md) | [🎬 Vídeo](Videos/07-3_rapideats.mp4) | Dijkstra por pedido y reconstrucción de la ruta retrocediendo por `ulti[]` |
+| 07-4 | La conferencia de paz | [📄 PDF](7-Digrafos%20valorados%20y%20caminos%20minimos/Enunciados/prob-La%20conferencia%20de%20paz.pdf) | [💻 Solución](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-4/EJ_07-4.cpp) · [📘 Explicación](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-4/README.md) | — | Dijkstra con **varios orígenes** (un bando entero a distancia 0), dos veces; se elige la aldea neutral de menor diferencia |
+| 07-5 | ¿Cuál es el mejor camino? | [📄 PDF](7-Digrafos%20valorados%20y%20caminos%20minimos/Enunciados/prob-%C2%BFCu%C3%A1l%20es%20el%20mejor%20camino_.pdf) | [💻 Solución](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-5/EJ_07-5.cpp) · [📘 Explicación](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-5/README.md) | — | Dijkstra con prioridad `(distancia, calles)` + anchura para el mínimo de calles; se comparan |
+| 07-6 | Repartiendo paquetes | [📄 PDF](7-Digrafos%20valorados%20y%20caminos%20minimos/Enunciados/prob-Repartiendo%20paquetes.pdf) | [💻 Solución](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-6/EJ_07-6.cpp) · [📘 Explicación](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-6/README.md) | — | Ida y vuelta: Dijkstra desde la oficina en el grafo y en el **inverso**; se suman las dos distancias de cada paquete |
+| 07-7 | Ratones en un laberinto | [📄 PDF](7-Digrafos%20valorados%20y%20caminos%20minimos/Enunciados/prob-Ratones%20en%20un%20laberinto.pdf) | [💻 Solución](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-7/EJ_07-7.cpp) · [📘 Explicación](7-Digrafos%20valorados%20y%20caminos%20minimos/EJ_07-7/README.md) | — | Distancias **hacia** la salida = Dijkstra desde la salida en el **grafo inverso**; se cuentan las que llegan en ≤ T |
 
 **Qué técnica usar**
 
 | Lo que pide el problema | Herramienta | Ejercicios |
 |---|---|---|
-| Camino de **menor coste total** con costes ≥ 0 | **Dijkstra** con `IndexPQ` (O(A log V)) | 07-1, 07-2, 07-3 |
+| Camino de **menor coste total** con costes ≥ 0 | **Dijkstra** con `IndexPQ` (O(A log V)) | 07-1 … 07-7 |
 | Coste también en los **vértices** (cargas, esperas) | Sumar el coste del vértice a la arista que **entra** en él y el del origen a `dist[origen]` | 07-1 |
 | **Cuántos** caminos mínimos hay | Dijkstra + `formas[]`: sustituir al mejorar, sumar al empatar | 07-2 |
 | Escribir **el camino** | `ulti[]`: retroceder desde el destino | 07-3 |
+| Varios **orígenes** a la vez (todo un bando, todas las sedes…) | Meter **todos** en la cola con distancia 0 antes de empezar | 07-4 |
+| Distancia **hacia** un destino (o ida **y vuelta**) | Dijkstra desde ese punto en el **grafo inverso** (`g.inverso()`) | 07-6, 07-7 |
+| **Dos criterios** a la vez (distancia y luego número de calles) | Prioridad `pair` comparada en orden lexicográfico (más un recorrido en anchura si hace falta) | 07-5 |
 | Grafo **no dirigido** | Añadir cada arista en los dos sentidos al `DigrafoValorado` | 07-2, 07-3 |
 
 ---
@@ -192,8 +199,11 @@ Muchos enunciados de la asignatura salen de [Acepta el Reto](https://aceptaelret
 | 07-1 | Navegando sin teclado | [#318](https://aceptaelreto.com/problem/statement.php?id=318) | casi el mismo problema | [📥 ACR-318](<Acepta el Reto/ACR-318_navegando_sin_teclado.cpp>) | Misma historia, pero allí los límites son menores (hasta 1.000 páginas; aquí 3.000 páginas y 30.000 enlaces) y no hay número de casos: se lee hasta el final del fichero. |
 | 07-2 | Camino al cole | [#358](https://aceptaelreto.com/problem/statement.php?id=358) | casi el mismo problema | [📥 ACR-358](<Acepta el Reto/ACR-358_camino_al_cole.cpp>) | Misma historia, pero allí los límites son distintos (hasta 10.000 intersecciones y 100.000 calles de hasta 100.000 de longitud; aquí 100.000, 200.000 y 10.000) y no hay número de casos: se lee hasta el final del fichero. |
 | 07-3 | RapidEats | [#813](https://aceptaelreto.com/problem/statement.php?id=813) | casi el mismo problema | [📥 ACR-813](<Acepta el Reto/ACR-813_rapideats.cpp>) | Allí solo se pide el **tiempo mínimo** de cada pedido (sin la ruta: `30` en vez de `30: 1 -> 3`) y no hay número de casos (se lee hasta el final del fichero); el resto es igual. |
+| 07-5 | ¿Cuál es el mejor camino? | [#504](https://aceptaelreto.com/problem/statement.php?id=504) | casi el mismo problema | [📥 ACR-504](<Acepta el Reto/ACR-504_cual_es_el_mejor_camino.cpp>) | Mismo enunciado; solo cambia que allí el separador tras cada caso es `----` (cuatro guiones) en vez de `---`. |
+| 07-6 | Repartiendo paquetes | [#292](https://aceptaelreto.com/problem/statement.php?id=292) | problema relacionado | — | No he podido leer la página de allí desde aquí: comprueba el formato de entrada y de salida (y los límites) antes de enviar. |
+| 07-7 | Ratones en un laberinto | [#601](https://aceptaelreto.com/problem/statement.php?id=601) | casi el mismo problema | [📥 ACR-601](<Acepta el Reto/ACR-601_ratones_en_un_laberinto.cpp>) | Allí los límites son menores (hasta 10.000 celdas y 100.000 pasadizos; aquí 100.000 y 200.000) y no hay número de casos: se lee hasta el final del fichero. |
 
-**Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6, 05-L, 06-4, 06-5, 06-L. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
+**Sin equivalente que haya encontrado:** 01-2, 02-4, 02-6, 02-L, 03-2, 03-5, 03-L, 04-4, 04-5, 04-6, 04-L, 05-4, 05-6, 05-L, 06-4, 06-5, 06-L, 07-4. Son enunciados propios de la asignatura (o no aparecen en el buscador de Acepta el Reto).
 
 Para añadir o corregir un enlace: edita `herramientas/acepta_el_reto.json` y ejecuta `python3 herramientas/enlaces_acepta.py`.
 <!-- acr-seccion:fin -->
