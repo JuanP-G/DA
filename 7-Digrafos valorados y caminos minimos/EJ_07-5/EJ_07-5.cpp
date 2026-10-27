@@ -43,9 +43,9 @@ using namespace std;
 
 using Par = pair<int, int>;                   // (distancia, calles)
 
-void resuelveCaso(int N) {
-    int C;
-    cin >> C;
+void resuelveCaso() {
+    int N, C;
+    cin >> N >> C;
     DigrafoValorado<int> g(N);
     for (int i = 0; i < C; ++i) {
         int u, v, d;
@@ -67,7 +67,7 @@ void resuelveCaso(int N) {
         IndexPQ<Par> pq(N);
         mejor[origen] = {0, 0};
         pq.push(origen, mejor[origen]);
-        while (!pq.empty()) {
+        while (!pq.empty() && pq.top().elem != destino) {
             int v = pq.top().elem; pq.pop();
             for (auto a : g.ady(v)) {
                 int w = a.hasta();
@@ -105,8 +105,8 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int N;
-    while (cin >> N) resuelveCaso(N);         // la entrada acaba con el fichero
-
+    int casos;
+    cin >> casos;
+    while (casos--) resuelveCaso();
     return 0;
 }
