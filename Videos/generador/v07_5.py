@@ -20,6 +20,7 @@ L_FOR = find_line(CPP, "for (auto a : g.ady(v)) {")
 L_NUEVO = find_line(CPP, "Par nuevo = {mejor[v].first + a.valor(), mejor[v].second + 1};")
 L_IF = find_line(CPP, "if (nuevo < mejor[w]) {")
 L_SET = [find_line(CPP, "mejor[w] = nuevo;"), find_line(CPP, "pq.update(w, nuevo);")]
+L_WHILE = find_line(CPP, "while (!pq.empty() && pq.top().elem != destino)")
 L_BFS = find_line(CPP, "calles[origen] = 0;")
 L_BFSW = find_line(CPP, "if (calles[w] == -1) {")
 L_RES = find_line(CPP, "cout << mejor[destino].first <<")
@@ -54,9 +55,9 @@ def main(preview=False):
         "K ≤ 10 consultas por caso: origen y destino distintos.",
         "Para cada una: la distancia mínima y",
         ("SI si algún camino de esa distancia usa el MENOR número de calles posible; NO si no; SIN CAMINO si no se llega.", "gold"),
-        ("Tras cada caso, una línea ---.  La entrada termina con el fichero.", "muted"),
+        ("Tras cada caso, una línea ---.  La entrada empieza con el número de casos.", "muted"),
     ]), "Tenemos una ciudad con intersecciones y calles de doble sentido. Para cada consulta, con un origen y un destino, hay que escribir la distancia mínima, "
-        "y sí, si algún camino de esa distancia usa además el menor número de calles posible entre los dos puntos; no, si no; o sin camino. Después de cada caso, una línea de guiones.", 0))
+        "y sí, si algún camino de esa distancia usa además el menor número de calles posible entre los dos puntos; no, si no; o sin camino. Después de cada caso, una línea de guiones. La primera línea de la entrada es el número de casos.", 0))
 
     s = Slide("Cómo se plantea")
     s.bullets(70, 110, 1140, [
@@ -71,15 +72,17 @@ def main(preview=False):
                     "Si las calles del mejor camino en distancia coinciden con el mínimo de calles, respondemos sí. Si son más, no.", 0))
 
     s = Slide("El código: Dijkstra con pareja", "EJ_07-5.cpp")
-    s.code(24, 84, 700, 520, CODE_D, hl={L_NUEVO, L_IF} | set(L_SET), title="Dijkstra con (distancia, calles)")
+    s.code(24, 84, 700, 520, CODE_D, hl={L_WHILE, L_NUEVO, L_IF} | set(L_SET), title="Dijkstra con (distancia, calles)")
     s.box(744, 84, 512, 520, "qué hace")
     s.bullets(764, 130, 470, ["mejor[v] = (distancia, calles).",
                               "Al recorrer una calle se suma (valor, 1).",
                               "pair compara primero la distancia y, si empatan, las calles: justo lo que queremos.",
-                              "Sumar lo mismo a dos parejas conserva el orden: Dijkstra sigue siendo correcto."], size=20, gap=16)
+                              "Sumar lo mismo a dos parejas conserva el orden: Dijkstra sigue siendo correcto.",
+                              ("El bucle para en cuanto el destino está en la cabeza de la cola: ya es definitivo.", "gold")], size=20, gap=16)
     segs.append((s, "En el código, mejor de v es una pareja de distancia y calles. Al recorrer una calle sumamos su valor y una calle más. "
                     "La comparación de parejas mira primero la distancia y, si empatan, las calles, que es justo lo que queremos. "
-                    "Y como sumar lo mismo a dos parejas no cambia cuál es la menor, Dijkstra sigue siendo correcto.", 0))
+                    "Y como sumar lo mismo a dos parejas no cambia cuál es la menor, Dijkstra sigue siendo correcto. "
+                    "Además, el bucle se para en cuanto el destino llega a la cabeza de la cola: como las calles miden al menos uno, ya no puede mejorar.", 0))
 
     s = Slide("El ejemplo 1: consulta 1 → 5", TEMA)
     s.box(40, 100, 700, 440, "7 intersecciones y 8 calles")
@@ -96,6 +99,10 @@ def main(preview=False):
     # Dijkstra: solo los pasos que cambian algo
     pasos = traza(7, ARCS, [0], und=True, add=ADD, zero=(0, 0), inf=(INF, INF))
     pasos = [p for p in pasos if p["tipo"] in ("ini", "saca", "mejora")]
+    # el .cpp para cuando el destino (la intersección 5) llega a la cabeza de la cola, sin sacarlo
+    cut = next(i for i, p in enumerate(pasos) if p["tipo"] == "saca" and p["v"] == 4)
+    para = dict(pasos[cut - 1], tipo="para", v=None, w=None, k=None)
+    pasos = pasos[:cut] + [para]
     N = len(pasos)
     for k, p in enumerate(pasos, 1):
         t, v = p["tipo"], p.get("v")
@@ -106,6 +113,9 @@ def main(preview=False):
             d = p["dist"][v]
             hl, cap = {L_POP}, f"Sale la {v + 1}: distancia {d[0]} con {d[1]} calles"
             nar = f"Sacamos la intersección {v + 1}: distancia {d[0]}, con {d[1]} calles."
+        elif t == "para":
+            hl, cap = {L_WHILE}, "El destino, la 5, está en la cabeza de la cola: se para"
+            nar = f"La intersección cinco, el destino, ya está en la cabeza de la cola, con distancia {p['dist'][4][0]} y {p['dist'][4][1]} calles. No puede mejorar: paramos."
         else:
             w = p["w"]
             hl = {L_FOR, L_NUEVO, L_IF} | set(L_SET)
@@ -160,11 +170,12 @@ def main(preview=False):
     segs.append((ideas("Coste y detalles", [
         "Coste: O(K · C log N) por caso: un Dijkstra y una anchura por consulta.",
         "Sumar (c, 1) conserva el orden lexicográfico: Dijkstra con pareja es correcto.",
+        "Se para en cuanto el destino está en la cabeza de la cola: ya es definitivo.",
         "Entre caminos de igual distancia, pasos[v] es el que menos calles usa.",
         "SIN CAMINO va solo, sin distancia.   --- tras cada caso, aunque todo sea SIN CAMINO.",
         ("Intersecciones desde 1: restar 1 al leer.", "muted"),
     ]), "El coste es K por C por logaritmo de N, porque hacemos un Dijkstra y una anchura por consulta. Sumar valor y una calle conserva el orden, así que Dijkstra con pareja es correcto. "
-        "Sin camino se escribe solo, sin distancia, y los guiones van después de cada caso.", 0))
+        "Se para en cuanto el destino está arriba de la cola. Sin camino se escribe solo, sin distancia, y los guiones van después de cada caso.", 0))
 
     segs.append((cierre(NOMBRE, [
         "Anchura  ⇒  mínimo de calles posible (sin mirar longitud).",

@@ -16,7 +16,7 @@ using namespace std;
     longitud 1..5.000, de doble sentido. Para cada una de K <= 10 consultas (origen y
     destino distintos) escribir la distancia minima y SI si algun camino de esa distancia
     usa ademas el MENOR NUMERO DE CALLES posible entre los dos puntos (NO si no), o
-    SIN CAMINO. Tras cada caso, una linea con ---. La entrada termina al acabarse el fichero.
+    SIN CAMINO. Tras cada caso, una linea con ---. La entrada empieza con el numero de casos.
 */
 
 /*
@@ -36,6 +36,8 @@ using namespace std;
     - Con la pareja, al sumar una calle (c, 1) el orden lexicografico se conserva, asi que
       Dijkstra sigue siendo correcto.
     - Doble sentido: dos aristas dirigidas por calle.
+    - El Dijkstra se para en cuanto el destino esta en la cabeza de la cola: su (distancia, calles)
+      ya es definitivo (las calles miden >= 1, asi que nada que salga despues puede mejorarlo).
     - Hasta 10 consultas con origenes distintos: se repiten los dos recorridos por consulta.
 
     Coste: O(K * C log N) por caso.
