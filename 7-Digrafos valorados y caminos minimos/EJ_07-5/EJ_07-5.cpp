@@ -81,23 +81,22 @@ void resuelveCaso(int N) {
 
         if (mejor[destino].first == INF) {
             cout << "SIN CAMINO\n";
-            continue;
-        }
-
-        // Anchura: menor numero de calles posible, sin mirar la longitud
-        vector<int> calles(N, -1);
-        queue<int> cola;
-        calles[origen] = 0;
-        cola.push(origen);
-        while (!cola.empty() && calles[destino] == -1) {
-            int v = cola.front(); cola.pop();
-            for (auto a : g.ady(v)) {
-                int w = a.hasta();
-                if (calles[w] == -1) { calles[w] = calles[v] + 1; cola.push(w); }
+        }else{
+            // Anchura: menor numero de calles posible, sin mirar la longitud
+            vector<int> calles(N, -1);
+            queue<int> cola;
+            calles[origen] = 0;
+            cola.push(origen);
+            while (!cola.empty() && calles[destino] == -1) {
+                int v = cola.front(); cola.pop();
+                for (auto a : g.ady(v)) {
+                    int w = a.hasta();
+                    if (calles[w] == -1) { calles[w] = calles[v] + 1; cola.push(w); }
+                }
             }
-        }
 
-        cout << mejor[destino].first << (mejor[destino].second == calles[destino] ? " SI\n" : " NO\n");
+            cout << mejor[destino].first << (mejor[destino].second == calles[destino] ? " SI\n" : " NO\n");
+        }
     }
     cout << "---\n";
 }
