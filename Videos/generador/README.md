@@ -65,6 +65,7 @@ python v06_teoria.py             # genera el mp4 (varios minutos: sintetiza la v
 
 - `v07_teoria.py` genera `../07-0_digrafos_valorados_caminos_minimos_teoria.mp4` (con capítulos y subtítulos): `AristaDirigida`/`DigrafoValorado`, caminos mínimos (`dist`, `ulti`, árbol), relajación, condiciones de optimalidad, **Dijkstra paso a paso** sobre el dígrafo de las transparencias (25 pasos), su código, corrección y coste O(A log V), recuperación del camino, Dijkstra con vector O(V² + A), caminos mínimos vs ARM (el triángulo) y un resumen de 07-1 … 07-3.
 - `v07_1.py`, `v07_2.py` y `v07_3.py` generan los vídeos de los ejercicios (`../07-1_navegando_sin_teclado.mp4`, `../07-2_camino_al_cole.mp4`, `../07-3_rapideats.mp4`).
+- `v07_4.py` … `v07_7.py` generan los de 07-4 a 07-7 (`../07-4_conferencia_de_paz.mp4`, `../07-5_mejor_camino.mp4`, `../07-6_repartiendo_paquetes.mp4`, `../07-7_ratones_laberinto.mp4`) con las piezas comunes de `v07b_comun.py` (Dijkstra con traza: varios orígenes, prioridad `(distancia, calles)`, grafo inverso y corte por tiempo).
 - `v07_comun.py` contiene el simulador de Dijkstra (`traza`, con el mismo criterio que el código), el dibujo de dígrafos y la tabla `dist/ulti`, compartidos por los cuatro guiones.
 
 ```bash
