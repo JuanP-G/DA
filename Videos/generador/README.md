@@ -47,6 +47,8 @@ python v05_teoria.py             # genera el mp4 (tarda unos minutos)
 
 ## Vídeo de teoría del tema 6
 
+`v06_1.py` … `v06_5.py` generan los vídeos de los ejercicios 06-1 a 06-5 (`../06-1_petroleros_hundidos.mp4`, `../06-2_camiones_de_reparto.mp4`, `../06-3_archipielago_en_bicicleta.mp4`, `../06-4_selva_de_tarzan.mp4`, `../06-5_minas_de_trajano.mp4`): conjuntos disjuntos sobre la rejilla, DFS con filtro `valor >= ancho` y los tres Kruskal (suma, última arista, parar al unir origen y destino), con la traza de los ejemplos del README de cada ejercicio. Los tres últimos comparten las piezas de `v06e_comun.py` (simulador de Kruskal con parada, dibujo del grafo coloreado por grupos y diapositiva paso a paso).
+
 `v06_L.py` genera `../06-L_aeropuertos.mp4` (¿Dónde construimos los aeropuertos?: Kruskal con C < A, el empate C = A y la traza de los ejemplos 1 y 3; la simulación repite el algoritmo del `.cpp`).
 
 `v06_teoria.py` genera `../06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4` (con capítulos y subtítulos): relaciones de equivalencia dinámicas, búsqueda rápida, unión rápida, unión por tamaños y compresión de caminos, la autoevaluación 6.1 paso a paso, los ejercicios 06-1 a 06-5, `GrafoValorado.h`, la propiedad del corte, y Kruskal y Prim sobre un grafo de 6 vértices.

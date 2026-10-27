@@ -299,12 +299,20 @@ class Slide:
             cx += w + 6
 
 
+def _lee(path):
+    b = Path(path).read_bytes()
+    try:
+        return b.decode("utf-8").splitlines()
+    except UnicodeDecodeError:
+        return b.decode("cp1252", errors="replace").splitlines()
+
+
 def code_lines(cpp_path, first, last, maxc=60, skip=()):
     """
     Devuelve [(número de línea, texto)] del .cpp real, para que el vídeo enseñe el código de verdad.
     Si una línea no cabe en el panel se le quita el comentario final y, si aun así no cabe, se recorta.
     """
-    src = Path(cpp_path).read_text(encoding="utf-8").splitlines()
+    src = _lee(cpp_path)
     out = []
     for i in range(first, last + 1):
         if any(a <= i <= b for a, b in skip):
@@ -319,7 +327,7 @@ def code_lines(cpp_path, first, last, maxc=60, skip=()):
 
 
 def find_line(cpp_path, needle, start=1):
-    src = Path(cpp_path).read_text(encoding="utf-8").splitlines()
+    src = _lee(cpp_path)
     for i in range(start, len(src) + 1):
         if needle in src[i - 1]:
             return i
