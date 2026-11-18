@@ -398,3 +398,9 @@ pip install markdown
 python3 sitio/construir.py                      # genera sitio/_site/
 python3 -m http.server -d sitio/_site 8000
 ```
+
+### Progreso personal y estilo
+
+La web guarda en el navegador (localStorage, sin cuentas) los ejercicios que marcas como hechos y enseña el avance por tema y por bloque. El estilo viene de `sitio/estilo/` (hoja compartida con el resto de asignaturas: paleta Dark premium y estilo glossy). Si cambias esos ficheros en el portal, cópialos aquí.
+
+Con `PORTAL_URL=https://tu-portal python3 sitio/construir.py` el enlace «Asignaturas» de la barra apunta al portal (por defecto, `https://studia-one-flax.vercel.app`).

@@ -58,3 +58,10 @@ table.t th, table.t td { text-align: left; padding: 5px 8px; border-bottom: 1px 
 table.t th { color: var(--muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
 footer.foot { color: var(--muted); font-size: .82rem; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* tipografía y fondo del sistema de StudIA */
+body { --sans: "Inter", system-ui, sans-serif; font-family: var(--sans); }
+h1 { font-weight: 800; letter-spacing: -.03em; }
+/* nodos y fondos de las herramientas con la paleta premium (oscura por defecto) */
+:root[data-paleta="premium"]:not([data-theme="light"]) { --node: #1f2a45; }
+:root[data-paleta="premium"][data-theme="light"] { --node: #ffffff; }

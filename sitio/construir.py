@@ -58,7 +58,21 @@ SPRITE = (ESTILO / "iconos.html").read_text(encoding="utf-8")
 ICON_RE = re.compile(r"@@i:(\w+)@@")
 GLIFOS = {"📄": "pdf", "💻": "code", "🧩": "tool", "🔗": "link", "📥": "download", "🎬": "video", "📘": "book", "⚠": "warn", "⬇": "download", "↗": "external"}
 GLIFO_RE = re.compile("(" + "|".join(GLIFOS) + ")\ufe0f?")
-PORTAL_URL = os.environ.get("PORTAL_URL", "")   # URL del portal; si está vacía no se enseña el enlace «Portal»
+PALETAS = (ESTILO / "paletas.css").read_text(encoding="utf-8")
+GLOSSY = (ESTILO / "glossy.css").read_text(encoding="utf-8")
+DA_CSS = (ESTILO / "da.css").read_text(encoding="utf-8")
+PROGRESO_JS = (ESTILO / "progreso.js").read_text(encoding="utf-8")
+PORTAL_URL = os.environ.get("PORTAL_URL", "https://studia-one-flax.vercel.app")   # URL del portal; si está vacía no se enseña el enlace
+BLOQUES = [("Estructuras de datos", [1, 2, 3], "var(--s1)"), ("Grafos", [4, 5, 6, 7], "var(--s2)"), ("Algoritmos voraces", [8, 9], "var(--s3)"),
+           ("Programación dinámica", [10, 11], "var(--s4)"), ("Evaluación", [12], "var(--muted)")]
+DECO = ('<div class="deco" aria-hidden="true"><svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"><defs>'
+        '<linearGradient id="dg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff" stop-opacity=".55"/><stop offset="1" stop-color="#4f6bff" stop-opacity="0"/></linearGradient>'
+        '<linearGradient id="dg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d5cff" stop-opacity=".5"/><stop offset="1" stop-color="#2a3cff" stop-opacity="0"/></linearGradient>'
+        '<radialGradient id="dg3" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#3b6bff" stop-opacity=".28"/><stop offset="1" stop-color="#3b6bff" stop-opacity="0"/></radialGradient></defs>'
+        '<path d="M0 0H470C360 130 190 150 0 380Z" fill="url(#dg1)"/><path d="M1440 0V760C1330 540 1220 300 1010 0Z" fill="url(#dg2)"/>'
+        '<ellipse cx="260" cy="860" rx="520" ry="260" fill="url(#dg3)"/>'
+        '<path d="M0 560C260 520 420 640 640 900" fill="none" stroke="#9a8cff" stroke-opacity=".09" stroke-width="2"/>'
+        '<path d="M820 0C980 180 1200 220 1440 300" fill="none" stroke="#9a8cff" stroke-opacity=".08" stroke-width="2"/></svg></div>')
 COPIAR = set()   # rutas relativas (posix) de ficheros del repo que hay que copiar a _site
 
 
@@ -141,7 +155,7 @@ def descubrir(ej):
 
 
 # ---------------------------------------------------------------- páginas
-CSS = ESTILO_BASE + """
+CSS_VIEJO = """
 body{font-size:15px;line-height:1.55}
 .tag{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:4px;display:inline-block}
 .hero .tag,.ejhead .tag{align-self:flex-start}
@@ -200,7 +214,8 @@ a.vcard{display:flex;flex-direction:column;gap:4px;background:var(--panel);borde
 a.vcard:hover{border-color:var(--green)}a.vcard .n{font-family:var(--mono);font-size:.75rem;color:var(--green)}a.vcard .d{font-size:.84rem;color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none}.toast.on{opacity:1}
 """
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">'
+CSS = ESTILO_BASE + PALETAS + GLOSSY + CSS_VIEJO + DA_CSS
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap">'
 
 HIGHLIGHT_JS = r"""
 const KW=/^(for|if|else|while|return|const|class|struct|public|private|protected|void|bool|int|long|double|char|auto|true|false|template|typename|using|namespace|throw|new|delete|break|continue|static|nullptr|include|define|ifndef|endif|inline|unsigned|operator|switch|case|default|do)$/;
@@ -267,13 +282,15 @@ JSZIP = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.
 
 
 def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head=""):
-    portal = f'<a href="{esc(PORTAL_URL)}">← Portal</a>' if PORTAL_URL else ""
-    nav = (f'<header class="nav"><div class="wrap nav-in"><a class="brand" href="{prefijo}index.html"><span class="logo" aria-hidden="true">DA</span><b>Diseño de Algoritmos</b></a>'
-           f'<nav aria-label="Principal">{portal}<a href="{prefijo}index.html#herramientas">Herramientas</a><a class="keep" href="{prefijo}index.html#temas">Temas</a>'
+    portal = f'<a href="{esc(PORTAL_URL)}/#asignaturas">Asignaturas</a>' if PORTAL_URL else ""
+    nav = (f'<header class="nav"><div class="nav-pill"><a class="brand" href="{prefijo}index.html" aria-label="Diseño de Algoritmos, inicio"><img src="{prefijo}estilo/marca/mark.png" alt="" width="201" height="242"><b>StudIA</b><span class="subj">DA</span></a>'
+           f'<nav aria-label="Principal">{portal}<a class="keep" href="{prefijo}index.html#temas">Temas</a><a href="{prefijo}index.html#herramientas">Herramientas</a>'
            f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a class="keep" href="{prefijo}videos.html">Vídeos</a></nav>'
            f'<button id="tema" class="icon-btn" type="button" aria-label="Cambiar tema claro/oscuro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></div></header>')
-    pag = (f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{FONTS}<script>{TEMA_INI}</script><style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{SPRITE}{nav}{cuerpo}<div class="toast" id="toast"></div><script>{TEMA_JS}{COMUN_JS}{extra_js}</script></body></html>')
+    iconos = (f'<link rel="icon" href="{prefijo}estilo/marca/favicon.ico" sizes="any"><link rel="icon" href="{prefijo}estilo/marca/favicon-32.png" type="image/png" sizes="32x32">'
+              f'<link rel="apple-touch-icon" href="{prefijo}estilo/marca/apple-touch-icon.png"><meta name="theme-color" content="#080a1c">')
+    pag = (f'<!doctype html><html lang="es" data-paleta="premium" data-estilo="glossy"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{iconos}{FONTS}<script>{TEMA_INI}</script><style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{DECO}{SPRITE}{nav}{cuerpo}<div class="toast" id="toast"></div><script>{TEMA_JS}{COMUN_JS}{PROGRESO_JS}{extra_js}</script></body></html>')
     pag = GLIFO_RE.sub(lambda m: f'@@i:{GLIFOS[m.group(1)]}@@', pag)
     return ICON_RE.sub(_icono, pag)
 
@@ -496,7 +513,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     botones = "".join(f'<button class="btn{"" if hay else " off"}{" pref" if i == pref else ""}" data-tab="{i}">{t}</button>' for i, t, hay, _ in tabs)
     panes = "".join(f'<div class="pane" id="p-{i}">{c}</div>' for i, _, _, c in tabs)
 
-    acc = []
+    acc = [f'<button class="btn okb-ej" data-ok="{slug}" aria-pressed="false">@@i:check@@ <span class="lab">Marcar como hecho</span></button>']
     if ficheros_zip:
         total = 0
         for url, _ in ficheros_zip:
@@ -510,8 +527,8 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
 
     pager = '<div class="pager">' + (f'<a class="btn" href="{ant[0]}.html">← {esc(ant[1])}</a>' if ant else "<span></span>") + \
             (f'<a class="btn" href="{sig[0]}.html">{esc(sig[1])} →</a>' if sig else "<span></span>") + "</div>"
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#tema{tema}" data-back>← Volver</a>'
-              f'<a href="../index.html">Inicio</a>›<a href="../index.html#tema{tema}">Tema {tema}</a>›<span>{esc(e["id"])}</span></div>'
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../tema/{tema}.html" data-back>← Volver</a>'
+              f'<a href="../index.html">Inicio</a>›<a href="../tema/{tema}.html">Tema {tema}</a>›<span>{esc(e["id"])}</span></div>'
               f'<div class="ejhead"><span class="tag">Tema {tema} · {esc(TEMAS[tema]["nombre"])}</span>'
               f'<h1>{esc(e["id"])} · {esc(e["titulo"])}</h1><p class="lede">{md_inline(e["idea"])}</p>'
               f'<div class="acc">{"".join(acc)}</div>'
@@ -554,13 +571,91 @@ VOLVER_HERR = ('<a href="../index.html#herramientas" onclick="try{if(document.re
                'padding:8px 12px;border-radius:9px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.25)">← Volver a la web</a>')
 
 
-def chips(e, slug):
+def chips(e, slug, pre=""):
     c = []
-    if e["pdf"]: c.append(f'<a class="chip p" href="ej/{slug}.html#enunciado">Enunciado</a>')
-    if e["sols"]: c.append(f'<a class="chip" href="ej/{slug}.html#codigo">Código</a>')
-    if e["readme"]: c.append(f'<a class="chip" href="ej/{slug}.html#explicacion">Explicación</a>')
-    if e["video"]: c.append(f'<a class="chip v" href="ej/{slug}.html#video">Vídeo</a>')
+    if e["pdf"]: c.append(f'<a class="chip p" href="{pre}ej/{slug}.html#enunciado">Enunciado</a>')
+    if e["sols"]: c.append(f'<a class="chip" href="{pre}ej/{slug}.html#codigo">Código</a>')
+    if e["readme"]: c.append(f'<a class="chip" href="{pre}ej/{slug}.html#explicacion">Explicación</a>')
+    if e["video"]: c.append(f'<a class="chip v" href="{pre}ej/{slug}.html#video">Vídeo</a>')
     return "".join(c)
+
+
+def color_de(t):
+    for _, ts, col in BLOQUES:
+        if t in ts:
+            return col
+    return "var(--muted)"
+
+
+def plural(n, uno, varios):
+    return f"{n} {uno if n == 1 else varios}"
+
+
+def tarjeta_tema(t, info, lista, slugs, hay_herr):
+    """Tarjeta de la portada: soluciones disponibles, progreso personal (lo pinta progreso.js) y tests."""
+    n = len(lista)
+    n_sol = sum(1 for _, e in lista if e["sols"]); n_vid = sum(1 for _, e in lista if e["video"])
+    ids = ",".join(slugs[i] for i, _ in lista)
+    pct_sol = round(n_sol / n * 100) if n else 0
+    herr = '<span class="chip">@@i:tool@@ Herramienta</span>' if hay_herr else ""
+    vid = f'<span class="chip v">@@i:video@@ {plural(n_vid, "vídeo", "vídeos")}</span>' if n_vid else ""
+    return (f'<a class="tcard" href="tema/{t}.html" data-ids="{ids}" data-tema="{t}" style="--b:{color_de(t)}">'
+            f'<div class="th"><div><span class="n">{t:02d}</span><b>{esc(info["nombre"])}</b></div><span class="est" data-est>Sin empezar</span></div>'
+            f'<div class="met"><div class="sol"><div class="l"><span>Con solución</span><b>{n_sol}/{n}</b></div><div class="prog"><i style="width:{pct_sol}%"></i></div></div>'
+            f'<div><div class="l"><span>Tu progreso</span><b data-txt>0/{n} · 0%</b></div><div class="prog"><i data-bar></i></div></div></div>'
+            f'<div class="tcf"><span class="chip">@@i:code@@ {plural(n, "ejercicio", "ejercicios")}</span>{herr}{vid}<span class="chip mute">@@i:check@@ Tests pronto</span></div></a>')
+
+
+FILTRO_JS = r"""
+(function(){var f={f:'todos',v:false};
+function hechos(){try{return JSON.parse(localStorage.getItem('studia-da-hechos')||'{}')}catch(e){return{}}}
+function ap(){var h=hechos(),filas=document.querySelectorAll('#p-ejercicios .exr'),vis=0;
+ filas.forEach(function(r){var k=r.querySelector('[data-ok]').dataset.ok,d=!!h[k];var ok=(f.f==='todos'||(f.f==='hechos'?d:!d))&&(!f.v||r.dataset.v==='1');r.style.display=ok?'':'none';if(ok)vis++});
+ var n=document.getElementById('sin');if(n)n.style.display=vis?'none':'block'}
+document.querySelectorAll('[data-f]').forEach(function(b){b.onclick=function(){f.f=b.dataset.f;document.querySelectorAll('[data-f]').forEach(function(x){x.classList.toggle('on',x===b)});ap()}});
+var fv=document.querySelector('[data-fv]');if(fv)fv.onclick=function(){f.v=!f.v;fv.classList.toggle('on',f.v);ap()};
+document.addEventListener('click',function(){setTimeout(ap,0)});window.addEventListener('storage',ap);window.addEventListener('pageshow',ap);ap()})();
+"""
+
+
+def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
+    color = color_de(t)
+    n = len(lista)
+    n_sol = sum(1 for _, e in lista if e["sols"])
+    ids = ",".join(slugs[i] for i, _ in lista)
+    filas = []
+    for i, e in lista:
+        s_ = slugs[i]
+        filas.append(f'<div class="exr" data-v="{1 if e["video"] else 0}" style="--c:{color}"><button class="okb" data-ok="{s_}" aria-label="Marcar {esc(e["id"])} como hecho" aria-pressed="false">@@i:check@@</button>'
+                     f'<span class="id">{esc(e["id"])}</span><span class="t"><a href="../ej/{s_}.html">{esc(e["titulo"])}</a></span>'
+                     f'<span class="idea">{md_inline(e["idea"])}</span><span class="chips">{chips(e, s_, "../")}</span></div>')
+    acc = []
+    if herr_ok:
+        acc.append(f'<a class="btn" href="../herramientas/{info["herr"]}">@@i:tool@@ Herramienta interactiva</a>')
+    for c in info["cab"]:
+        if c in cabs:
+            acc.append(f'<a class="btn" href="../estructuras/{quote(c)}.html">@@i:code@@ {esc(c)}</a>')
+    bloque = next((b[0] for b in BLOQUES if t in b[1]), "")
+    prev_t = t - 1 if t - 1 in nombres_temas else None
+    next_t = t + 1 if t + 1 in nombres_temas else None
+    pager = ('<div class="pager">' + (f'<a class="btn" href="{prev_t}.html">← Tema {prev_t} · {esc(nombres_temas[prev_t])}</a>' if prev_t else "<span></span>")
+             + (f'<a class="btn" href="{next_t}.html">Tema {next_t} · {esc(nombres_temas[next_t])} →</a>' if next_t else "<span></span>") + "</div>")
+    sin_tests = lambda tipo: (f'<div class="nada"><b>Aún no hay {tipo} en este tema</b>Aquí irán los {tipo}. Cuando se publiquen verás cuántos has hecho y tu mejor nota.</div>')
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas" data-back>← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>Tema {t}</span></div>'
+              f'<div class="thead" data-ids="{ids}"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="tag">{esc(bloque)}</span><span class="est" data-est>Sin empezar</span></div>'
+              f'<h1>Tema {t} · {esc(info["nombre"])}</h1><p class="lede">{esc(info["resumen"])}</p><div class="acc">{"".join(acc)}</div></div>'
+              f'<div class="sm" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))"><div class="box hi" data-ids="{ids}" style="background:linear-gradient(135deg,color-mix(in srgb,{color} 60%,#0a0b1c),color-mix(in srgb,{color} 25%,#0a0b1c));border-color:color-mix(in srgb,{color} 55%,transparent)"><small>Tu progreso</small><b data-pct>0%</b><span data-hechos>0 de {n} hechos</span><div class="prog"><i data-bar></i></div></div>'
+              f'<div class="box"><small>Con solución</small><b>{round(n_sol / n * 100) if n else 0}%</b><span>{n_sol} de {n} ejercicios</span></div>'
+              f'<div class="box"><small>Tests</small><b>0</b><span>del profe y propios · próximamente</span></div></div>'
+              f'<div class="tabs"><button class="btn" data-tab="ejercicios">@@i:code@@ Ejercicios <span class="cnt">{n}</span></button>'
+              f'<button class="btn" data-tab="tp">@@i:check@@ Tests del profe <span class="cnt">0</span></button><button class="btn" data-tab="tn">@@i:check@@ Tests propios <span class="cnt">0</span></button></div>'
+              f'<div class="pane" id="p-ejercicios"><div class="filters"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="pend">Pendientes</button><button class="chip" data-f="hechos">Hechos</button><button class="chip" data-fv>@@i:video@@ Con vídeo</button></div>'
+              f'{"".join(filas)}<p class="vacio" id="sin">Ningún ejercicio coincide con el filtro.</p></div>'
+              f'<div class="pane" id="p-tp">{sin_tests("tests del profe")}</div><div class="pane" id="p-tn">{sin_tests("tests propios")}</div>{pager}</div>')
+    titulo = f'Tema {t} · {info["nombre"]} | Diseño de Algoritmos UCM'
+    desc = f'{info["resumen"]} Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++ con explicación.'
+    return pagina(titulo, cuerpo, "../", TABS_JS + FILTRO_JS, desc)
+
 
 
 def commit_info():
@@ -607,39 +702,69 @@ def main():
             h = re.sub(r"(<body[^>]*>)", lambda m: m.group(1) + VOLVER_HERR, h, count=1)
             (OUT / "herramientas" / p.name).write_text(h, encoding="utf-8")
 
+    # páginas de tema
+    (OUT / "tema").mkdir()
+    herr_nombres = {x[0] for x in herr}
+    nombres_temas = {t: info["nombre"] for t, info in TEMAS.items()}
+    por_tema = {t: [(i, e) for i, e in enumerate(ej) if e["tema"] == t] for t in TEMAS}
+    for t, info in TEMAS.items():
+        if por_tema[t]:
+            (OUT / "tema" / f"{t}.html").write_text(pagina_tema(t, info, por_tema[t], slugs, cabs, info["herr"] in herr_nombres, nombres_temas), encoding="utf-8")
+    shutil.copytree(ESTILO / "marca", OUT / "estilo" / "marca")
+
     # portada
     n_pdf = sum(1 for e in ej if e["pdf"]); n_vid = sum(1 for e in ej if e["video"]); n_sol = sum(1 for e in ej if e["sols"])
-    tema_html = []
-    for t, info in TEMAS.items():
-        filas = []
-        for i, e in enumerate(ej):
-            if e["tema"] != t: continue
-            busq = esc(f'{e["id"]} {e["titulo"]} {e["idea"]}'.lower())
-            filas.append(f'<div class="fila" data-q="{busq}"><span class="id">{esc(e["id"])}</span><span class="t"><a href="ej/{slugs[i]}.html">{esc(e["titulo"])}</a></span>'
-                         f'<span class="i">{md_inline(e["idea"])}</span><span class="chips">{chips(e, slugs[i])}</span></div>')
-        if not filas: continue
-        h = (f'<a class="chip" href="herramientas/{info["herr"]}">@@i:tool@@ Herramienta interactiva</a>' if info["herr"] in [x[0] for x in herr] else "")
-        tema_html.append(f'<section class="tema" id="tema{t}"><header><h2>Tema {t} · {esc(info["nombre"])}</h2>{h}<p>{esc(info["resumen"])}</p></header><div class="lista">{"".join(filas)}</div></section>')
+    todos_ids = ",".join(slugs[i] for i in range(len(ej)))
+    bloques_html = []
+    for nombre_b, temas_b, col in BLOQUES:
+        tarjetas, ids_b = [], []
+        for t in temas_b:
+            if not por_tema.get(t):
+                continue
+            tarjetas.append(tarjeta_tema(t, TEMAS[t], por_tema[t], slugs, TEMAS[t]["herr"] in herr_nombres))
+            ids_b += [slugs[i] for i, _ in por_tema[t]]
+        if tarjetas:
+            bloques_html.append(f'<section class="blk"><div class="bh" data-ids="{",".join(ids_b)}" style="--c:{col}"><h2><i></i>{esc(nombre_b)}</h2><span class="m" data-txt>0/{len(ids_b)} hechos · 0%</span><div class="prog"><i data-bar></i></div></div><div class="grid">{"".join(tarjetas)}</div></section>')
     tools_html = "".join(f'<a class="tool" href="herramientas/{f}"><span class="n">{esc(a)}</span><b>{esc(b)}</b><span class="d">{esc(c)}</span></a>' for f, a, b, c in herr)
     est_html = "".join(f'<a class="chip" href="estructuras/{quote(c)}.html">{esc(c)}</a>' for c in cabs)
     sha = commit_info()
     ahora = datetime.now(timezone.utc).strftime("%d/%m/%Y %H:%M UTC")
+    n_temas = sum(1 for t in TEMAS if por_tema.get(t))
     cuerpo = f"""<div class="wrap">
-<div class="hero"><span class="tag">Universidad Complutense · Ingeniería Informática</span>
-<h1>Diseño de Algoritmos: ejercicios, soluciones y herramientas</h1>
+<div class="hero"><p class="eyebrow">FDI UCM · Informática · Computadores · Software</p>
+<h1>Diseño de Algoritmos: ejercicios resueltos, vídeos y herramientas</h1>
 <p class="lede">Todos los problemas del juez con su enunciado, la solución en C++, la explicación del planteamiento, un vídeo paso a paso y herramientas interactivas para entender cada estructura de datos.</p>
-<div class="stats"><span><b>{len(ej)}</b> ejercicios</span><span><b>{n_sol}</b> con solución</span><span><b>{n_pdf}</b> enunciados</span><span><b>{n_vid}</b> vídeos</span><span><b>{len(herr)}</b> herramientas</span></div>
-<input class="search" id="q" type="search" placeholder="Buscar ejercicio (nombre, número, técnica…)" aria-label="Buscar ejercicio"></div>
+<label class="search">@@i:arrow@@<input id="q" type="search" placeholder="Buscar ejercicio (nombre, número, técnica…)" aria-label="Buscar ejercicio"><kbd>/</kbd></label></div>
+<div class="sm" data-resumen>
+<div class="box hi"><small>Tu progreso</small><b data-r="pct">0%</b><span data-r="txt"></span><div class="prog"><i data-r="bar"></i></div></div>
+<div class="box"><small>Temas completados</small><b><u data-r="comp">0</u><em> / {n_temas}</em></b><span data-r="curso">0 en curso</span></div>
+<div class="box"><small>Con solución</small><b>{round(n_sol / len(ej) * 100)}%</b><span>{n_sol} de {len(ej)} ejercicios</span></div>
+<div class="box"><small>Tests</small><b>0</b><span>del profe y propios · pronto</span></div></div>
+<section id="resultados" hidden><h2 id="res-t" style="margin-bottom:12px"></h2><div id="res-l"></div><p class="vacio" id="vacio">Ningún ejercicio coincide con la búsqueda.</p></section>
+<div id="temas">{"".join(bloques_html)}</div>
 <section class="bloque" id="herramientas"><h2>Herramientas interactivas</h2><p class="lede">Ejecutan la misma lógica que el C++ de la asignatura y resaltan el código línea a línea.</p><div class="tools">{tools_html}</div></section>
-<div id="temas">{"".join(tema_html)}<p class="vacio" id="vacio">Ningún ejercicio coincide con la búsqueda.</p></div>
 <section class="bloque" id="estructuras"><h2>Estructuras de datos</h2><p class="lede">Las cabeceras que da la asignatura, con visor de código, copiar y descargar.</p><div class="cabs">{est_html}</div></section>
 <section class="bloque" id="videos"><h2>Vídeos</h2><p class="lede">{n_vid} vídeos explicativos que se ven aquí mismo, con subtítulos. <a href="videos.html">Ver todos los vídeos →</a></p></section>
-<footer>Web generada automáticamente desde el repositorio{" · commit <code>" + esc(sha) + "</code>" if sha else ""} · {ahora}</footer></div>"""
-    js = """const q=document.getElementById('q');function filtra(){const v=q.value.trim().toLowerCase();let any=0;
-document.querySelectorAll('.tema').forEach(s=>{let vis=0;s.querySelectorAll('.fila').forEach(f=>{const ok=!v||f.dataset.q.includes(v);f.style.display=ok?'':'none';if(ok)vis++});s.style.display=vis?'':'none';any+=vis});
-document.getElementById('vacio').style.display=any?'none':'block';try{sessionStorage.setItem('q',q.value)}catch(e){}}
-q.oninput=filtra;window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');if(g&&!q.value){q.value=g}}catch(e){}if(q.value)filtra()});"""
-    (OUT / "index.html").write_text(pagina("DA · Diseño de Algoritmos", cuerpo, "", js, "Ejercicios, soluciones, vídeos y herramientas interactivas de Diseño de Algoritmos"), encoding="utf-8")
+<footer>Material de estudio independiente, no afiliado a la UCM{" · commit <code>" + esc(sha) + "</code>" if sha else ""} · actualizado {ahora}</footer></div>"""
+    datos = json.dumps([{"s": slugs[i], "i": e["id"], "t": e["titulo"], "d": re.sub(r"`", "", e["idea"]), "k": color_de(e["tema"]),
+                         "v": 1 if e["video"] else 0, "c": 1 if e["sols"] else 0, "e": 1 if e["readme"] else 0, "p": 1 if e["pdf"] else 0} for i, e in enumerate(ej)], ensure_ascii=False)
+    js = ("const EJ=" + datos.replace("</", "<\\/") + r""";
+const q=document.getElementById('q');
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function fila(x){const ch=[];if(x.p)ch.push('<a class="chip p" href="ej/'+x.s+'.html#enunciado">Enunciado</a>');if(x.c)ch.push('<a class="chip" href="ej/'+x.s+'.html#codigo">Código</a>');if(x.e)ch.push('<a class="chip" href="ej/'+x.s+'.html#explicacion">Explicación</a>');if(x.v)ch.push('<a class="chip v" href="ej/'+x.s+'.html#video">Vídeo</a>');
+ return '<div class="exr" style="--c:'+x.k+'"><button class="okb" data-ok="'+x.s+'" aria-label="Marcar '+esc(x.i)+' como hecho" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></button><span class="id">'+esc(x.i)+'</span><span class="t"><a href="ej/'+x.s+'.html">'+esc(x.t)+'</a></span><span class="idea">'+esc(x.d)+'</span><span class="chips">'+ch.join('')+'</span></div>'}
+function filtra(){const v=q.value.trim().toLowerCase(),r=document.getElementById('resultados'),t=document.getElementById('temas');
+ try{sessionStorage.setItem('q',q.value)}catch(e){}
+ if(!v){r.hidden=true;t.hidden=false;return}
+ const l=EJ.filter(x=>(x.i+' '+x.t+' '+x.d).toLowerCase().includes(v));
+ document.getElementById('res-t').textContent=l.length+(l.length==1?' resultado':' resultados')+' para «'+q.value.trim()+'»';
+ document.getElementById('res-l').innerHTML=l.map(fila).join('');document.getElementById('vacio').style.display=l.length?'none':'block';
+ r.hidden=false;t.hidden=true;if(window.pintarProgreso)window.pintarProgreso()}
+q.oninput=filtra;
+document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus()}});
+window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');if(g&&!q.value){q.value=g}}catch(e){}if(q.value)filtra()});""")
+    (OUT / "index.html").write_text(pagina("Diseño de Algoritmos UCM: ejercicios resueltos, vídeos y herramientas | StudIA", cuerpo, "", js,
+                                           "Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++, con explicación, vídeos paso a paso y visualizadores de AVL, grafos y Dijkstra."), encoding="utf-8")
     (OUT / ".nojekyll").write_text("")
 
     # copiar ficheros referenciados + código de cada ejercicio
