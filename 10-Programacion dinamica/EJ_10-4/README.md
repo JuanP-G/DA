@@ -5,6 +5,36 @@
 ## Qué piden
 Un tablero N × N (3 ≤ N ≤ 1.000) con números 1..10.000. Se empieza en una casilla de la **última fila** y se sube hasta la **primera**. En cada paso se va a una de las tres casillas de la fila de encima (vertical o diagonal) sin salirse. Hay que escribir la **suma máxima** y la **columna** de la última fila por la que empezar; si hay empate, la de más a la izquierda.
 
+## Recurrencia (formato de examen)
+
+Tablero $t(i, j)$ con filas y columnas numeradas $1..N$:
+
+$$
+\text{mejor}(i, j) = \text{máxima suma de un recorrido que empieza en } (i, j) \text{ y sube hasta la fila } 1
+$$
+
+**Caso base**
+
+$$
+\text{mejor}(1, j) = t(1, j) \qquad 1 \le j \le N
+$$
+
+**Recurrencia** ($2 \le i \le N$, $1 \le j \le N$)
+
+$$
+\text{mejor}(i, j) = t(i, j) + \max_{\substack{k \in \{j-1,\ j,\ j+1\} \\ 1 \le k \le N}} \text{mejor}(i-1, k)
+$$
+
+**Llamada inicial / respuesta:**
+
+$$
+\text{suma} = \max_{1 \le j \le N} \text{mejor}(N, j) \qquad \text{columna} = \min\{\, j \mid \text{mejor}(N, j) = \text{suma} \,\}
+$$
+
+(la columna más a la izquierda entre las que dan el máximo).
+
+**Implementación:** fila a fila de $1$ a $N$ guardando solo la anterior. Coste $O(N^2)$ en tiempo y $O(N)$ en espacio.
+
 ## Cómo se plantea
 ```text
 mejor(i, j) = suma máxima de un recorrido que empieza en (i, j) y sube hasta la fila 1

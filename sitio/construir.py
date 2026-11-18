@@ -257,6 +257,12 @@ if(zb)zb.onclick=async()=>{const lista=JSON.parse(zb.dataset.files),nombre=zb.da
  catch(e){toast('No se ha podido generar el zip')}finally{zb.disabled=false;zb.textContent=txt}};
 """
 
+KATEX = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">'
+         '<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>'
+         '<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js" '
+         'onload="renderMathInElement(document.body,{delimiters:[{left:\'\\\\[\',right:\'\\\\]\',display:true},'
+         '{left:\'\\\\(\',right:\'\\\\)\',display:false}]})"></script>'
+         '<style>.math{overflow-x:auto;overflow-y:hidden;padding:.2em 0}</style>')
 JSZIP = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>'
 
 
@@ -266,13 +272,27 @@ def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head=""):
            + "".join(f'<a href="{prefijo}index.html#tema{t}">Tema {t}</a>' for t in TEMAS)
            + f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a href="{prefijo}videos.html">Vídeos</a></div></nav>')
     return (f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{FONTS}<style>{CSS}</style>{head}</head><body>{nav}{cuerpo}<div class="toast" id="toast"></div><script>{COMUN_JS}{extra_js}</script></body></html>')
+            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{FONTS}<style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{nav}{cuerpo}<div class="toast" id="toast"></div><script>{COMUN_JS}{extra_js}</script></body></html>')
 
 
 def render_md(ruta_rel):
     base = posixpath.dirname(ruta_rel)
     txt = (RAIZ / ruta_rel).read_text(encoding="utf-8")
+    # fórmulas: $$...$$ (bloque) y $...$ (en línea) se apartan antes de markdown y las pinta KaTeX
+    formulas = []
+
+    def guarda(m, bloque):
+        formulas.append((bloque, m.group(1)))
+        return f"@@FORMULA{len(formulas) - 1}@@"
+    txt = re.sub(r"\$\$(.+?)\$\$", lambda m: guarda(m, True), txt, flags=re.S)
+    txt = re.sub(r"(?<![\\$])\$([^$\n]+?)\$", lambda m: guarda(m, False), txt)
     h = markdown.markdown(txt, extensions=["tables", "fenced_code"])
+
+    def pon(m):
+        bloque, f = formulas[int(m.group(1))]
+        return (f'<div class="math">\\[{esc(f)}\\]</div>' if bloque else f'<span class="math">\\({esc(f)}\\)</span>')
+    h = re.sub(r"<p>@@FORMULA(\d+)@@</p>", pon, h)
+    h = re.sub(r"@@FORMULA(\d+)@@", pon, h)
 
     def fix(m):
         attr, val = m.group(1), m.group(2)

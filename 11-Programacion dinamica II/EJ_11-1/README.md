@@ -5,6 +5,38 @@
 ## Qué piden
 Una botella de T segundos de aire (1..10.000) y N cofres (1..100), cada uno con su profundidad p (1..500) y su oro (1..10.000). Bajar a p cuesta p segundos y subir cuesta 2p, y en cada inmersión se sube **un solo cofre**. Hay que escribir el **máximo oro**, cuántos cofres hay que coger y **cuáles** (profundidad y oro como en la entrada), y después `---`. Vale cualquier solución óptima, con los cofres en cualquier orden.
 
+## Recurrencia (formato de examen)
+
+Cofres numerados $1..N$ con profundidad $p_i$ y oro $o_i$; recoger el cofre $i$ cuesta $3 p_i$ segundos ($p_i$ bajando y $2 p_i$ subiendo). Para $0 \le i \le N$ y $0 \le j \le T$:
+
+$$
+\text{oro}(i, j) = \text{máximo oro que se puede recuperar con los cofres } 1..i \text{ y } j \text{ segundos de aire}
+$$
+
+**Casos base**
+
+$$
+\text{oro}(0, j) = 0 \qquad \forall\, j \ge 0
+$$
+
+**Recurrencia** ($1 \le i \le N$, $0 \le j \le T$)
+
+$$
+\text{oro}(i, j) =
+\begin{cases}
+\text{oro}(i-1, j) & \text{si } 3 p_i > j \\
+\max\big(\text{oro}(i-1, j),\ \text{oro}(i-1,\ j - 3 p_i) + o_i\big) & \text{si } 3 p_i \le j
+\end{cases}
+$$
+
+O **no se coge** el cofre $i$, o **se coge** (gasta $3 p_i$ segundos, suma $o_i$) y los anteriores se reparten el aire que queda.
+
+**Llamada inicial / respuesta:** $\text{oro}(N, T)$.
+
+**Reconstrucción** desde $(i, j) = (N, T)$ con $i$ de $N$ a $1$: si $\text{oro}(i, j) \ne \text{oro}(i-1, j)$ el cofre $i$ se ha cogido y $j \leftarrow j - 3 p_i$; si no, no se ha cogido.
+
+**Coste:** $O(N \cdot T)$ en tiempo y en espacio (la tabla entera, para reconstruir).
+
 ## Cómo se plantea
 Es la **mochila 0/1**: cada cofre es un objeto de **peso 3p** (segundos) y **valor** su oro, con capacidad T.
 

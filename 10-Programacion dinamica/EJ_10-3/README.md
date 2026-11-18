@@ -5,6 +5,40 @@
 ## Qué piden
 Una ciudad de N calles este-oeste y M calles norte-sur (1 ≤ N, M ≤ 50). Cada cruce es `.` (libre) o `X` (obras). Hay que contar los **caminos más cortos** de la esquina noroeste a la sureste que **no pasan por obras** (siempre < 10⁹).
 
+## Recurrencia (formato de examen)
+
+Cruces $(i, j)$ con $0 \le i < N$ (calle este-oeste) y $0 \le j < M$ (calle norte-sur):
+
+$$
+\text{caminos}(i, j) = \text{número de caminos mínimos de } (0, 0) \text{ a } (i, j) \text{ que no pasan por obras}
+$$
+
+**Casos base**
+
+$$
+\text{caminos}(0, 0) = 1
+$$
+
+$$
+\text{caminos}(i, j) = 0 \qquad \text{si } i < 0 \text{ o } j < 0 \ (\text{fuera de la ciudad})
+$$
+
+**Recurrencia** ($(i, j) \ne (0, 0)$)
+
+$$
+\text{caminos}(i, j) =
+\begin{cases}
+0 & \text{si } (i, j) \text{ tiene obras} \\
+\text{caminos}(i-1, j) + \text{caminos}(i, j-1) & \text{en otro caso}
+\end{cases}
+$$
+
+A un cruce solo se llega **desde el norte** $(i-1, j)$ o **desde el oeste** $(i, j-1)$: un camino mínimo nunca retrocede.
+
+**Llamada inicial / respuesta:** $\text{caminos}(N-1, M-1)$.
+
+**Implementación:** por filas con un solo vector ($\text{caminos}[j]$ guarda la fila de arriba hasta que se sobrescribe). Coste $O(N \cdot M)$ en tiempo y $O(M)$ en espacio.
+
 ## Cómo se plantea
 Un camino de longitud mínima **solo avanza hacia el sur o hacia el este**. Por eso a un cruce `(i, j)` solo se llega desde el de arriba o desde el de la izquierda:
 
