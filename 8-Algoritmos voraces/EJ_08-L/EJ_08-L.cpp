@@ -1,38 +1,51 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
 #include <algorithm>
 #include <functional>
-
 using namespace std;
 
-/*
-    Planificacion de conferencias
+/*@ <answer>
 
-    N conferencias (1 <= N <= 250.000), cada una con su hora de comienzo y de fin (enteros
-    0..10^9, comienzo < fin). Dos conferencias que se solapan no pueden ir en la misma sala;
-    una que empieza justo cuando acaba otra NO se solapa con ella. Escribir el minimo numero R
-    de salas y una asignacion valida: la sala (1..R) de cada conferencia en el orden de entrada.
-*/
+ Planificacion de conferencias
+ 
+ N conferencias (1 <= N <= 250.000), cada una con su hora de comienzo y de fin (enteros
+ 0..10^9, comienzo < fin). Dos conferencias que se solapan no pueden ir en la misma sala;
+ una que empieza justo cuando acaba otra NO se solapa con ella. Escribir el minimo numero R
+ de salas y una asignacion valida: la sala (1..R) de cada conferencia en el orden de entrada.
 
-/*
-    PLANTEAMIENTO (voraz)
-    Se recorren las conferencias por hora de COMIENZO. Para cada una:
-      - si alguna sala ya esta libre (su ultima conferencia acabo como muy tarde cuando empieza
-        esta), se reutiliza;
-      - si no, se abre una sala nueva.
-    Para saber rapido si hay alguna sala libre basta mirar la que queda libre ANTES: una cola
-    de prioridad de minimos con (hora en que queda libre, numero de sala).
+ PLANTEAMIENTO (voraz)
+ Se recorren las conferencias por hora de COMIENZO. Para cada una:
+   - si alguna sala ya esta libre (su ultima conferencia acabo como muy tarde cuando empieza
+     esta), se reutiliza;
+   - si no, se abre una sala nueva.
+ Para saber rapido si hay alguna sala libre basta mirar la que queda libre ANTES: una cola
+ de prioridad de minimos con (hora en que queda libre, numero de sala).
+ 
+ Por que es optimo: solo se abre una sala nueva cuando todas las abiertas estan ocupadas en
+ el instante en que empieza la conferencia. En ese instante hay tantas conferencias a la vez
+ como salas abiertas mas una, asi que ninguna planificacion puede usar menos.
+ 
+ Las conferencias se ordenan por indices para poder escribir la sala de cada una en el orden
+ de la entrada.
+ 
+ Coste: O(N log N) por caso.
 
-    Por que es optimo: solo se abre una sala nueva cuando todas las abiertas estan ocupadas en
-    el instante en que empieza la conferencia. En ese instante hay tantas conferencias a la vez
-    como salas abiertas mas una, asi que ninguna planificacion puede usar menos.
+ @ </answer> */
 
-    Las conferencias se ordenan por indices para poder escribir la sala de cada una en el orden
-    de la entrada.
 
-    Coste: O(N log N) por caso.
-*/
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     int N;
@@ -62,12 +75,25 @@ void resuelveCaso() {
     for (int i = 0; i < N; ++i) cout << sala[i] << (i + 1 < N ? ' ' : '\n');
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    int casos;
-    cin >> casos;
-    while (casos--) resuelveCaso();
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

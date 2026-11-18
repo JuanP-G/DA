@@ -1,38 +1,52 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
 #include <limits>
-#include "GrafoValorado.h"
-#include "IndexPQ.h"
-
 using namespace std;
 
-/*
-    Necesitamos agua
+#include "GrafoValorado.h"  // estructuras de datos de clase
+#include "IndexPQ.h"  // estructuras de datos de clase
 
-    Isla con N puntos (N par, 2..200.000): la desalinizadora norte es el 1, la sur es el N y los
-    N - 2 restantes son pueblos. M carreteras de doble sentido con coste 1..100.000 (el grafo es
-    conexo). Cada pueblo recibe un camion que sale de una planta, va al pueblo y VUELVE. La mitad
-    de los pueblos se sirven desde el norte y la otra mitad desde el sur. Escribir el coste
-    minimo total.
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO (Dijkstra + voraz)
-    El camion de un pueblo v hace el camino minimo de ida y el de vuelta:
-        coste(v) = 2 * dN[v]  si lo sirve el norte,   2 * dS[v]  si lo sirve el sur
-    con dN y dS las distancias minimas desde 1 y desde N (dos Dijkstra).
+ Necesitamos agua
+ 
+ Isla con N puntos (N par, 2..200.000): la desalinizadora norte es el 1, la sur es el N y los
+ N - 2 restantes son pueblos. M carreteras de doble sentido con coste 1..100.000 (el grafo es
+ conexo). Cada pueblo recibe un camion que sale de una planta, va al pueblo y VUELVE. La mitad
+ de los pueblos se sirven desde el norte y la otra mitad desde el sur. Escribir el coste
+ minimo total.
 
-    Si todos fueran al sur costaria  2 * suma(dS). Pasar el pueblo v al norte cambia el coste en
-        2 * (dN[v] - dS[v])
-    Hay que pasar exactamente (N - 2) / 2 pueblos al norte, asi que lo mejor es pasar los de
-    MENOR diferencia dN[v] - dS[v] (los que mas ahorran yendo al norte, o los que menos pierden).
-    Se ordenan las diferencias y se cogen las (N - 2) / 2 primeras.
+ PLANTEAMIENTO (Dijkstra + voraz)
+ El camion de un pueblo v hace el camino minimo de ida y el de vuelta:
+     coste(v) = 2 * dN[v]  si lo sirve el norte,   2 * dS[v]  si lo sirve el sur
+ con dN y dS las distancias minimas desde 1 y desde N (dos Dijkstra).
+ 
+ Si todos fueran al sur costaria  2 * suma(dS). Pasar el pueblo v al norte cambia el coste en
+     2 * (dN[v] - dS[v])
+ Hay que pasar exactamente (N - 2) / 2 pueblos al norte, asi que lo mejor es pasar los de
+ MENOR diferencia dN[v] - dS[v] (los que mas ahorran yendo al norte, o los que menos pierden).
+ Se ordenan las diferencias y se cogen las (N - 2) / 2 primeras.
+ 
+ long long: una distancia puede llegar a 100.000 * 200.000.
+ 
+ Coste: O(M log N) por caso (los Dijkstra) + O(N log N) (ordenar las diferencias).
 
-    long long: una distancia puede llegar a 100.000 * 200.000.
+ @ </answer> */
 
-    Coste: O(M log N) por caso (los Dijkstra) + O(N log N) (ordenar las diferencias).
-*/
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 vector<long long> dijkstra(GrafoValorado<int> const& g, int origen) {
     const long long INF = numeric_limits<long long>::max();
@@ -77,12 +91,25 @@ void resuelveCaso() {
     cout << 2 * total << '\n';
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    int casos;
-    cin >> casos;
-    while (casos--) resuelveCaso();
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

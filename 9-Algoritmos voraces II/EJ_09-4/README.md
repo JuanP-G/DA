@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej09-4`) · 💻 [Solución](EJ_09-4.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Sillas de dos plazas que soportan un peso máximo P y N usuarios (1 ≤ N ≤ 500.000) con pesos entre 1 y P. Hay que escribir el **mínimo número de viajes** (sillas) para subir a todos.
 

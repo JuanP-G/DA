@@ -1,36 +1,50 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
 #include <functional>
-#include "Digrafo.h"
-
 using namespace std;
 
-/*
-    MasterHash
+#include "Digrafo.h"  // estructuras de datos de clase
 
-    N elaboraciones (1..100.000) y A anotaciones (0..200.000) "X Y": la elaboracion X hace
-    falta para la Y. La elaboracion S se ha quemado y P es el plato que se quiere hacer.
-    El plato se puede hacer si no necesita S (ni directa ni indirectamente, y P != S) y las
-    anotaciones de lo que necesita no tienen ciclos. Escribir NO, o SI seguido de un orden
-    valido de las elaboraciones necesarias que acabe en P.
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO (digrafos: alcanzabilidad en el inverso + orden topologico)
-    1. Lo que hace falta para P son los vertices desde los que se llega a P. En el grafo
-       INVERSO son los alcanzables desde P: un recorrido (BFS o DFS) desde P en g.inverso().
-    2. Si S esta entre ellos (incluido S == P), el plato no se puede hacer: NO.
-    3. Orden topologico SOLO de esos vertices (algoritmo de Kahn): se cuentan sus aristas de
-       entrada dentro del conjunto y se van sacando los que no tienen ninguna pendiente. Si no
-       salen todos, hay un ciclo entre las elaboraciones necesarias: NO.
-       Un ciclo en elaboraciones que P no necesita no importa.
-    Como todos los vertices del conjunto llegan a P, P sale el ultimo. Se usa una cola de
-    prioridad de minimos para que, entre las disponibles, salga siempre la de menor numero
-    (asi el orden es el del ejemplo: SI 2 3 4 5).
+ MasterHash
+ 
+ N elaboraciones (1..100.000) y A anotaciones (0..200.000) "X Y": la elaboracion X hace
+ falta para la Y. La elaboracion S se ha quemado y P es el plato que se quiere hacer.
+ El plato se puede hacer si no necesita S (ni directa ni indirectamente, y P != S) y las
+ anotaciones de lo que necesita no tienen ciclos. Escribir NO, o SI seguido de un orden
+ valido de las elaboraciones necesarias que acabe en P.
 
-    Coste: O(N + A log N) por caso.
-*/
+ PLANTEAMIENTO (digrafos: alcanzabilidad en el inverso + orden topologico)
+ 1. Lo que hace falta para P son los vertices desde los que se llega a P. En el grafo
+    INVERSO son los alcanzables desde P: un recorrido (BFS o DFS) desde P en g.inverso().
+ 2. Si S esta entre ellos (incluido S == P), el plato no se puede hacer: NO.
+ 3. Orden topologico SOLO de esos vertices (algoritmo de Kahn): se cuentan sus aristas de
+    entrada dentro del conjunto y se van sacando los que no tienen ninguna pendiente. Si no
+    salen todos, hay un ciclo entre las elaboraciones necesarias: NO.
+    Un ciclo en elaboraciones que P no necesita no importa.
+ Como todos los vertices del conjunto llegan a P, P sale el ultimo. Se usa una cola de
+ prioridad de minimos para que, entre las disponibles, salga siempre la de menor numero
+ (asi el orden es el del ejemplo: SI 2 3 4 5).
+ 
+ Coste: O(N + A log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     int N, A, S, P;
@@ -84,12 +98,25 @@ void resuelveCaso() {
     cout << '\n';
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    int casos;
-    cin >> casos;
-    while (casos--) resuelveCaso();
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

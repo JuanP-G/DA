@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej08-3`) · 💻 [Solución](EJ_08-3.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 N jugadores y M equipaciones (1 ≤ N, M ≤ 100.000), cada uno con una talla entre 1 y 100. Un jugador puede usar una equipación **de su talla o de una talla más**. Hay que escribir el **mínimo número de equipaciones que comprar** para que jueguen todos.
 

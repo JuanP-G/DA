@@ -1,30 +1,43 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
-
 using namespace std;
 
-/*
-    Maraton de cine de terror
+/*@ <answer>
 
-    N peliculas (1 <= N <= 500.000), cada una con el dia D (1..100.000), la hora de comienzo
-    HH:MM y la duracion en minutos (1..1.000.000). Entre pelicula y pelicula hacen falta 10
-    minutos libres. Escribir el maximo numero de peliculas que se pueden ver enteras.
-*/
+ Maraton de cine de terror
+ 
+ N peliculas (1 <= N <= 500.000), cada una con el dia D (1..100.000), la hora de comienzo
+ HH:MM y la duracion en minutos (1..1.000.000). Entre pelicula y pelicula hacen falta 10
+ minutos libres. Escribir el maximo numero de peliculas que se pueden ver enteras.
 
-/*
-    PLANTEAMIENTO (voraz: seleccion de actividades)
-    Cada pelicula es un intervalo de tiempo en minutos absolutos:
-        inicio = (D * 24 + HH) * 60 + MM,   fin = inicio + duracion
-    Los 10 minutos de descanso se suman al final: una pelicula se puede ver despues de otra si
-        inicio >= finAnterior + 10
+ PLANTEAMIENTO (voraz: seleccion de actividades)
+ Cada pelicula es un intervalo de tiempo en minutos absolutos:
+     inicio = (D * 24 + HH) * 60 + MM,   fin = inicio + duracion
+ Los 10 minutos de descanso se suman al final: una pelicula se puede ver despues de otra si
+     inicio >= finAnterior + 10
+ 
+ Se ordenan las peliculas por hora de FIN y se va cogiendo cada una que sea compatible con
+ la ultima elegida. Elegir la que acaba antes deja el maximo tiempo libre para las demas:
+ cualquier solucion optima se puede cambiar para que empiece por ella sin perder peliculas.
+ 
+ Coste: O(N log N) por caso.
 
-    Se ordenan las peliculas por hora de FIN y se va cogiendo cada una que sea compatible con
-    la ultima elegida. Elegir la que acaba antes deja el maximo tiempo libre para las demas:
-    cualquier solucion optima se puede cambiar para que empiece por ella sin perder peliculas.
+ @ </answer> */
 
-    Coste: O(N log N) por caso.
-*/
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 struct Peli {
     long long inicio, fin;
@@ -55,12 +68,25 @@ void resuelveCaso() {
     cout << vistas << '\n';
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    int casos;
-    cin >> casos;
-    while (casos--) resuelveCaso();
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

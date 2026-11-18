@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej09-3`) · 💻 [Solución](EJ_09-3.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 N pilas (1 ≤ N ≤ 300.000) con su voltaje (0..10⁶) y un voltaje mínimo V. Cada coche necesita **dos pilas cuyos voltajes sumen al menos V**. Hay que escribir el **máximo número de coches** que pueden funcionar a la vez.
 

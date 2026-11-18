@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej08-4`) · 💻 [Solución](EJ_08-4.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 N películas (1 ≤ N ≤ 500.000), cada una con el día D (1..100.000), la hora de comienzo `HH:MM` y la duración en minutos (1..1.000.000). Entre película y película hacen falta **10 minutos libres**. Hay que escribir el **máximo número de películas** que se pueden ver enteras.
 

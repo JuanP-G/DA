@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej08-1`) · 💻 [Solución](EJ_08-1.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Una manguera con N agujeros (1 ≤ N ≤ 100.000) en posiciones 1..10⁹, dadas **en orden no decreciente** (puede haber varios en la misma posición), y parches de longitud L. Un parche tapa todos los agujeros que estén a distancia ≤ L entre sí, y los parches se pueden solapar. Hay que escribir el **mínimo número de parches**.
 
@@ -32,4 +34,4 @@ agujeros: 3 8 8 9 20 45 55 90
 
 ## Ojo con
 - Agujeros repetidos en la misma posición: los tapa el mismo parche, no cuentan dos veces.
-- La suma de N de todos los casos llega a 1.000.000: lectura rápida (`ios::sync_with_stdio(false)`).
+- La suma de N de todos los casos llega a 1.000.000: con el `cin` de la plantilla tarda unas décimas, suficiente.
