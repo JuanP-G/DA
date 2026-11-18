@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-La ley D'Hondt.pdf>) · 💻 [Solución](EJ_02-4.cpp)
 
+🧩 Plantilla: [**centinela**](../../Plantillas/2.Centinela.cpp) — un caso especial marca el final; `bool resuelveCaso()` devuelve `false` al leerlo.
+
 ## Qué piden
 Repartir N escaños entre C candidaturas con el **método D'Hondt** y escribir los escaños de cada una en el orden de la entrada.
 

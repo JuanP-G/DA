@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Volando drones.pdf>) · 💻 [Solución](EJ_03-1.cpp)
 
+🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato (fin del fichero).
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#505 · Volando drones](https://aceptaelreto.com/problem/statement.php?id=505) — *mismo problema*. Mismo problema; los ejemplos del enunciado son algo distintos.
 

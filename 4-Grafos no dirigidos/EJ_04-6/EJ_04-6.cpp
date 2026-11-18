@@ -1,38 +1,52 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
-#include "Grafo.h"
-
 using namespace std;
 
-/*
-    Un nodo muy muy lejano
+#include "Grafo.h"  // estructuras de datos de clase
 
-    Nodos      --> 1 <= N <= 10.000   (numerados de 1 a N)
-    Conexiones --> 0 <= C <= 50.000   (sin repetidas ni lazos)
-    Consultas  --> 1 <= K <= 10
-    TTL        --> 0 <= TTL <= 20.000
-    Entrada: N C y las C aristas --> Grafo(cin, 1) (vertices 0..N-1)
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Cada vez que el mensaje salta de un nodo a un vecino gasta 1 de TTL.
-    Por tanto, un nodo w recibe el mensaje si y solo si se puede llegar
-    a el desde el origen con COMO MUCHO TTL saltos:
-        alcanzable(w)  <=>  distancia(origen, w) <= TTL
-    (en el ejemplo, desde 6 con TTL 2 llegan los que estan a 1 o 2 aristas)
+ Un nodo muy muy lejano
 
-    Distancia en numero de aristas en un grafo sin pesos --> BFS
-    (recorrido en ANCHURA): visita los vertices por orden de distancia,
-    asi que la primera vez que llega a un vertice lo hace por el camino
-    mas corto. Un dfs NO sirve: puede llegar primero por un camino largo.
+ Nodos      --> 1 <= N <= 10.000   (numerados de 1 a N)
+ Conexiones --> 0 <= C <= 50.000   (sin repetidas ni lazos)
+ Consultas  --> 1 <= K <= 10
+ TTL        --> 0 <= TTL <= 20.000
+ Entrada: N C y las C aristas --> Grafo(cin, 1) (vertices 0..N-1)
 
-    Ademas el BFS se puede cortar: un vertice a distancia TTL ya no reenvia.
-    Respuesta = N - (vertices alcanzados).
+ PLANTEAMIENTO
+ Cada vez que el mensaje salta de un nodo a un vecino gasta 1 de TTL.
+ Por tanto, un nodo w recibe el mensaje si y solo si se puede llegar
+ a el desde el origen con COMO MUCHO TTL saltos:
+     alcanzable(w)  <=>  distancia(origen, w) <= TTL
+ (en el ejemplo, desde 6 con TTL 2 llegan los que estan a 1 o 2 aristas)
 
-    Coste: O(N + C) por consulta, como mucho 10 consultas por red.
-*/
+ Distancia en numero de aristas en un grafo sin pesos --> BFS
+ (recorrido en ANCHURA): visita los vertices por orden de distancia,
+ asi que la primera vez que llega a un vertice lo hace por el camino
+ mas corto. Un dfs NO sirve: puede llegar primero por un camino largo.
+
+ Ademas el BFS se puede cortar: un vertice a distancia TTL ya no reenvia.
+ Respuesta = N - (vertices alcanzados).
+
+ Coste: O(N + C) por consulta, como mucho 10 consultas por red.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class NodosAlcanzables {
 public:
@@ -80,12 +94,25 @@ void resuelveCaso() {
     cout << "---\n";
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

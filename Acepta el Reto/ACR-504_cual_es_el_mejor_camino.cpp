@@ -11,12 +11,21 @@
 //  - el separador de cada caso es `----` (cuatro guiones)
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
 #include <limits>
 #include <utility>
 #include <functional>
+using namespace std;
+
 // ---------- DigrafoValorado.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos dirigidos valorados
@@ -329,41 +338,45 @@ private:
 #endif /* INDEXPQ_H_ */
 // ---------- fin de IndexPQ.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    Cual es el mejor camino?
+ Cual es el mejor camino?
 
-    Ciudad con N intersecciones (2 <= N <= 20.000) y C calles (0 <= C <= 100.000) de
-    longitud 1..5.000, de doble sentido. Para cada una de K <= 10 consultas (origen y
-    destino distintos) escribir la distancia minima y SI si algun camino de esa distancia
-    usa ademas el MENOR NUMERO DE CALLES posible entre los dos puntos (NO si no), o
-    SIN CAMINO. Tras cada caso, una linea con ---. La entrada empieza con el numero de casos.
-*/
+ Ciudad con N intersecciones (2 <= N <= 20.000) y C calles (0 <= C <= 100.000) de
+ longitud 1..5.000, de doble sentido. Para cada una de K <= 10 consultas (origen y
+ destino distintos) escribir la distancia minima y SI si algun camino de esa distancia
+ usa ademas el MENOR NUMERO DE CALLES posible entre los dos puntos (NO si no), o
+ SIN CAMINO. Tras cada caso, una linea con ---. La entrada empieza con el numero de casos.
 
-/*
-    PLANTEAMIENTO
-    Dos cosas distintas desde el origen:
+ PLANTEAMIENTO
+ Dos cosas distintas desde el origen:
 
-      1. Menor numero de calles posible (sin mirar la longitud): un recorrido en anchura.
-            calles[v] = menor numero de calles de origen a v
-      2. Distancia minima, y entre los caminos de esa distancia, el de MENOS calles:
-         Dijkstra donde la prioridad es una pareja (distancia, calles) comparada en ese orden.
-            dist[v]   = distancia minima
-            pasos[v]  = menos calles entre los caminos de distancia dist[v]
+   1. Menor numero de calles posible (sin mirar la longitud): un recorrido en anchura.
+         calles[v] = menor numero de calles de origen a v
+   2. Distancia minima, y entre los caminos de esa distancia, el de MENOS calles:
+      Dijkstra donde la prioridad es una pareja (distancia, calles) comparada en ese orden.
+         dist[v]   = distancia minima
+         pasos[v]  = menos calles entre los caminos de distancia dist[v]
 
-    Respuesta de la consulta: distancia dist[destino] y SI si pasos[destino] == calles[destino]
-    (el mejor camino en distancia tambien es de los de menos calles), NO si pasos > calles.
+ Respuesta de la consulta: distancia dist[destino] y SI si pasos[destino] == calles[destino]
+ (el mejor camino en distancia tambien es de los de menos calles), NO si pasos > calles.
 
-    - Con la pareja, al sumar una calle (c, 1) el orden lexicografico se conserva, asi que
-      Dijkstra sigue siendo correcto.
-    - Doble sentido: dos aristas dirigidas por calle.
-    - El Dijkstra se para en cuanto el destino esta en la cabeza de la cola: su (distancia, calles)
-      ya es definitivo (las calles miden >= 1, asi que nada que salga despues puede mejorarlo).
-    - Hasta 10 consultas con origenes distintos: se repiten los dos recorridos por consulta.
+ - Con la pareja, al sumar una calle (c, 1) el orden lexicografico se conserva, asi que
+   Dijkstra sigue siendo correcto.
+ - Doble sentido: dos aristas dirigidas por calle.
+ - El Dijkstra se para en cuanto el destino esta en la cabeza de la cola: su (distancia, calles)
+   ya es definitivo (las calles miden >= 1, asi que nada que salga despues puede mejorarlo).
+ - Hasta 10 consultas con origenes distintos: se repiten los dos recorridos por consulta.
 
-    Coste: O(K * C log N) por caso.
-*/
+ Coste: O(K * C log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 using Par = pair<int, int>;                   // (distancia, calles)
 
@@ -425,10 +438,10 @@ void resuelveCaso() {
     cout << "----\n";
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
 
+int main() {
     while (cin >> ws && cin.peek() != EOF) resuelveCaso();
     return 0;
 }

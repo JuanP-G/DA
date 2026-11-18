@@ -1,11 +1,41 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
+#include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <cstdlib>
-#include <iostream>
 #include <string>
-
-#include "bintree.h"
-
 using namespace std;
+
+#include "bintree.h"  // estructuras de datos de clase
+
+/*@ <answer>
+
+ ¿Es un árbol AVL? (versión genérica)
+
+ Cada caso es una letra (N = enteros, P = palabras) y un árbol en el formato de bintree.h.
+ Decidir si es AVL. La entrada acaba con el fichero.
+
+ PLANTEAMIENTO
+ Se lee el árbol con read_tree<T> y se recorre en postorden: analizar devuelve, para cada
+ subárbol, si es AVL, su altura y su mínimo y máximo. Un nodo es AVL si sus hijos lo son, la
+ diferencia de alturas es <= 1 y todo el izquierdo es menor y todo el derecho mayor que él.
+ Con plantillas (template) sirve igual para int y para string.
+
+ Coste: O(n) por árbol, con n el número de nodos.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 // Información que necesito de cada subárbol para poder decidir sobre el nodo padre.
 template <class T>
@@ -49,26 +79,38 @@ Info<T> analizar(const BinTree<T>& arbol) {
 
 // Lee un árbol del tipo pedido y escribe la respuesta.
 template <class T>
-void resolverCaso() {
+void resuelveArbol() {
     BinTree<T> arbol = read_tree<T>(cin);
     cout << (analizar(arbol).esAVL ? "SI" : "NO") << '\n';
 }
 
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    // No hay número de casos: se lee hasta agotar la entrada. La letra
-    // dice de qué tipo es el árbol de la línea siguiente.
+bool resuelveCaso() {
+    // la letra dice de qué tipo es el árbol de la línea siguiente
     char tipo;
-    while (cin >> tipo) {
-        if (tipo == 'N') {
-            resolverCaso<int>();
-        }
-        else {
-            resolverCaso<string>();
-        }
-    }
+    cin >> tipo;
+    if (!cin)  // fin de la entrada
+        return false;
+    if (tipo == 'N') resuelveArbol<int>();
+    else resuelveArbol<string>();
+    return true;
+}
 
-    return 0;
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

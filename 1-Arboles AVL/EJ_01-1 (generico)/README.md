@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-¿Es un árbol AVL_ (1).pdf>) · 💻 [Solución](<EJ 01-1 (GENERICO BIEN).cpp>)
 
+🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato (fin del fichero).
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#303 · ¿Es un árbol AVL?](https://aceptaelreto.com/problem/statement.php?id=303) — *casi el mismo problema*. Mismo problema, pero en Acepta el Reto solo hay enteros y el árbol viene en preorden (aquí llega con paréntesis y puede ser de palabras). Sirve para probar la lógica del AVL cambiando la lectura.
 <!-- acr:fin -->
@@ -10,8 +12,8 @@
 Lo mismo que en [EJ 01-1](<../EJ_01-1/README.md>), pero el árbol puede ser de enteros (`N`) o de palabras (`P`) y viene en formato `(izq raíz der)`, con `.` como vacío. Se lee hasta fin de entrada.
 
 ## Cómo se plantea
-1. `main` lee la letra y llama a `resolverCaso<int>()` o `resolverCaso<string>()`.
-2. `resolverCaso<T>` construye el árbol con `read_tree<T>(cin)` (de `bintree.h`, que ya entiende ese formato) y escribe `SI`/`NO`.
+1. `resuelveCaso()` lee la letra (si `cin` falla, se ha acabado la entrada y devuelve `false`) y llama a `resuelveArbol<int>()` o `resuelveArbol<string>()`.
+2. `resuelveArbol<T>` construye el árbol con `read_tree<T>(cin)` (de `bintree.h`, que ya entiende ese formato) y escribe `SI`/`NO`.
 3. `analizar(arbol)` recorre el `BinTree<T>` en **postorden** y devuelve un `Info<T>`:
 
 | Campo | Vacío | Nodo `elem` |

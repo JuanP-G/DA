@@ -1,7 +1,36 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <queue>
 #include <vector>
 using namespace std;
+
+/*@ <answer>
+
+ Lo que cuesta sumar
+
+ Sumar N números con el mínimo esfuerzo total, sabiendo que sumar a + b cuesta a + b.
+ La entrada acaba con un caso con N = 0.
+
+ PLANTEAMIENTO (voraz, como Huffman)
+ Cola de prioridad de mínimos con los N números. Mientras quede más de uno, se sacan los dos
+ menores, se suma su suma al esfuerzo y se mete el resultado. long long: el esfuerzo crece mucho.
+
+ Coste: O(N log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 bool resuelveCaso() {
     int N;
@@ -27,10 +56,22 @@ bool resuelveCaso() {
     return true;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    while (resuelveCaso());
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

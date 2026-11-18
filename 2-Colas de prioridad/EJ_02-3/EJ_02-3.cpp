@@ -1,15 +1,43 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <queue>
 #include <vector>
 #include <utility>
 using namespace std;
 
-/*
-Cajas --> 1 ≤ 𝘕 ≤ 𝟤𝟧𝟢.𝟢𝟢0
-Clientes --> 1 ≤ C ≤ 𝟤𝟧𝟢.𝟢𝟢0
-Tiempo de atencion --> 1 ≤ T ≤ 1𝟢0
-Instante maximo: 500.000 * 100 = 50.000.000 --> cabe en int
-*/
+/*@ <answer>
+
+ Reina del súper
+
+ N cajas y una fila única de C clientes con su tiempo de atención. Decir en qué caja acabará
+ Ismael, que va detrás del último. La entrada acaba con un caso con 0 cajas.
+
+ PLANTEAMIENTO
+ Cola de mínimos de pares (instante en que la caja queda libre, número de caja): el pair se compara
+ primero por instante y luego por caja, que es justo el desempate del enunciado. Cada cliente saca
+ la cima, le suma su tiempo y la vuelve a meter. Al final, la cima es la caja de Ismael.
+
+ Coste: O(N + C log N) por caso.
+
+ Cajas --> 1 ≤ 𝘕 ≤ 𝟤𝟧𝟢.𝟢𝟢0
+ Clientes --> 1 ≤ C ≤ 𝟤𝟧𝟢.𝟢𝟢0
+ Tiempo de atencion --> 1 ≤ T ≤ 1𝟢0
+ Instante maximo: 500.000 * 100 = 50.000.000 --> cabe en int
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 bool resuelveCaso() {
     int cajas;
@@ -38,11 +66,22 @@ bool resuelveCaso() {
 	return true;
 }
 
-int main()
-{
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    while (resuelveCaso());
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

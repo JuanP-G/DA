@@ -1,8 +1,36 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
-
 using namespace std;
+
+/*@ <answer>
+
+ La ley D'Hondt
+
+ Repartir N escaños entre C candidaturas por el método D'Hondt y escribir los escaños de cada una
+ en el orden de la entrada. La entrada acaba con un caso 0 0.
+
+ PLANTEAMIENTO
+ Cola de máximos de candidaturas ordenada por coeficiente votos / (1 + escaños), después por votos
+ y después por orden de entrada. N veces: se saca la cima, se le suma un escaño y vuelve a entrar.
+
+ Coste: O(C + N log C) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 struct Candidatura {
     long long votos;
@@ -57,11 +85,22 @@ bool resuelveCaso() {
     return true;
 }   
 
-int main()
-{
-    ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    while (resuelveCaso());
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

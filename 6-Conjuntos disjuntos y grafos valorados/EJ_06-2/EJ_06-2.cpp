@@ -1,34 +1,48 @@
-#include <iostream>
-#include <vector>
-#include "GrafoValorado.h"
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
+#include <iostream>
+#include <fstream>
+#include <vector>
 using namespace std;
 
-/*
-    Camiones de reparto
+#include "GrafoValorado.h"  // estructuras de datos de clase
 
-    V intersecciones (2 <= V <= 10.000) y E calles de doble sentido (0 <= E <= 100.000),
-    cada una con la anchura MAXIMA que puede tener un camion para pasar por ella.
-    K <= 10 consultas (origen, destino, anchura del camion): SI/NO segun pueda ir.
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Grafo valorado no dirigido: intersecciones = vertices, calles = aristas,
-    anchura maxima = valor de la arista.
+ Camiones de reparto
 
-    Cada consulta es una pregunta de alcanzabilidad CON FILTRO:
-        hay un camino origen --> destino que use solo aristas con valor >= anchura?
+ V intersecciones (2 <= V <= 10.000) y E calles de doble sentido (0 <= E <= 100.000),
+ cada una con la anchura MAXIMA que puede tener un camion para pasar por ella.
+ K <= 10 consultas (origen, destino, anchura del camion): SI/NO segun pueda ir.
 
-    Un recorrido (DFS) desde el origen que ignora las aristas demasiado estrechas lo
-    responde. La comparacion es >= : un camion de anchura 15 cabe justo por una calle
-    de anchura maxima 15 (el fragmento de las transparencias usa <, que es otra cosa).
+ PLANTEAMIENTO
+ Grafo valorado no dirigido: intersecciones = vertices, calles = aristas,
+ anchura maxima = valor de la arista.
 
-    Se repite para cada consulta (el filtro cambia con la anchura), con un vector
-    de visitados nuevo cada vez.
+ Cada consulta es una pregunta de alcanzabilidad CON FILTRO:
+     hay un camino origen --> destino que use solo aristas con valor >= anchura?
 
-    Coste: O(K * (V + E)). La recursion baja como mucho V = 10.000 niveles.
-*/
+ Un recorrido (DFS) desde el origen que ignora las aristas demasiado estrechas lo
+ responde. La comparacion es >= : un camion de anchura 15 cabe justo por una calle
+ de anchura maxima 15 (el fragmento de las transparencias usa <, que es otra cosa).
+
+ Se repite para cada consulta (el filtro cambia con la anchura), con un vector
+ de visitados nuevo cada vez.
+
+ Coste: O(K * (V + E)). La recursion baja como mucho V = 10.000 niveles.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class Alcanzables {
 public:
@@ -68,12 +82,25 @@ void resuelveCaso() {
     }
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Pájaros en vuelo.pdf>) · 💻 [Solución](EJ_03-4.cpp) · 🎬 [Vídeo](../../Videos/03-4_pajaros_en_vuelo.mp4)
 
+🧩 Plantilla: [**centinela**](../../Plantillas/2.Centinela.cpp) — un caso especial marca el final; `bool resuelveCaso()` devuelve `false` al leerlo.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#271 · Pájaros en vuelo](https://aceptaelreto.com/problem/statement.php?id=271) — *mismo problema*. Mismo enunciado (la entrada termina con «0 0»).
 

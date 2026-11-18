@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Unidad Curiosa de Monitorización.pdf>) · 💻 [Solución](EJ_02-2.cpp)
 
+🧩 Plantilla: [**centinela**](../../Plantillas/2.Centinela.cpp) — un caso especial marca el final; `bool resuelveCaso()` devuelve `false` al leerlo.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#351 · Unidad Curiosa de Monitorización](https://aceptaelreto.com/problem/statement.php?id=351) — *casi el mismo problema*. Misma historia, pero allí los límites son menores (hasta 2.500 usuarios y 10.000 envíos; aquí 25.000 y 100.000) y el separador de cada caso es `----` (cuatro guiones).
 

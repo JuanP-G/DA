@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Ordenando tareas.pdf>) · 💻 [Solución](EJ_05-3.cpp) · 🎬 [Vídeo](../../Videos/05-3_ordenando_tareas.mp4)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Para practicar lo mismo en Acepta el Reto:** [#654 · Despegando pósits](https://aceptaelreto.com/problem/statement.php?id=654) — *problema relacionado*. No es el mismo problema, pero es un orden topológico por capas (con detección de ciclos: «IMPOSIBLE»).
 <!-- acr:fin -->

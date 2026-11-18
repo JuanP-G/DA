@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Sumidero en un grafo dirigido.pdf>) · 💻 [Solución](EJ_05-4.cpp)
 
+🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato (fin del fichero).
+
 ## Qué piden
 Si el digrafo tiene un **sumidero** (grado de salida 0 y grado de entrada V − 1) y cuál es.
 

@@ -11,7 +11,17 @@
 //  - los instantes llegan hasta 10^9: `long long`
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
+
+using namespace std;
+
 // ---------- IndexPQ.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /**
  * Implementacion de colas con prioridad mediante monticulos.
@@ -168,13 +178,32 @@ private:
 #endif /* INDEXPQ_H_ */
 // ---------- fin de IndexPQ.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-	N --> tareas unicas
-	M --> tareasperiodicas
-	T --> minutos donde saber si hay conflictos
-*/
+ Multitarea
+
+ N tareas unicas [c, f) y M periodicas (se repiten cada p minutos). Decir si dos se solapan dentro
+ de [0, T): SI o NO.
+
+ PLANTEAMIENTO (barrido por comienzo)
+ IndexPQ<pair<int,int>> de minimos: indice = tarea, prioridad = (ini, fin) de su proxima aparicion.
+ Se van sacando por orden de comienzo guardando el fin de la ultima: si una empieza antes, hay
+ conflicto. Una periodica no se saca: update a su siguiente aparicion (ini + p, fin + p).
+
+ Coste: O(k log (N + M)), con k el numero de apariciones antes de T o del primer conflicto.
+
+ N --> tareas unicas
+ M --> tareasperiodicas
+ T --> minutos donde saber si hay conflictos
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
+
 void resuelveCaso() {
 	int N, M, T;
 	cin >> N >> M >> T;
@@ -217,12 +246,10 @@ void resuelveCaso() {
 	cout << (hayConflictos ? "SI" : "NO") << "\n";
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-
-	while (cin >> ws && cin.peek() != EOF) resuelveCaso();
-
-	return 0;
+    while (cin >> ws && cin.peek() != EOF) resuelveCaso();
+    return 0;
 }

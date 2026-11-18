@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Juego de Transformación Modular.pdf>) · 💻 [Solución](EJ_05-2.cpp) · 🎬 [Vídeo](../../Videos/05-2_transformacion_modular.mp4)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Para practicar lo mismo en Acepta el Reto:** [#319 · La máquina calculadora](https://aceptaelreto.com/problem/statement.php?id=319) — *problema relacionado*. No es el mismo problema, pero es el caso particular de la transformación modular: BFS sobre estados con 3 operaciones y módulo 10.000.
 <!-- acr:fin -->

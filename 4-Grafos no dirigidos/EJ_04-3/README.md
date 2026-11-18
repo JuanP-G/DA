@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Detección de manchas negras.pdf>) · 💻 [Solución](EJ_04-3.cpp) · 🎬 [Vídeo](../../Videos/04-3_manchas_negras.mp4)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Para practicar lo mismo en Acepta el Reto:** [#412 · Ovejas negras](https://aceptaelreto.com/problem/statement.php?id=412) — *problema relacionado*. No es el mismo problema, pero practica la misma técnica: recorrer una cuadrícula de píxeles por sus componentes conexas.
 <!-- acr:fin -->

@@ -7,13 +7,42 @@
 // (no la edites a mano: se vuelve a generar).
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <queue>
 #include <vector>
 #include <functional>
 using namespace std;
 
-bool resolverCaso() {
+/*@ <answer>
+
+ Pajaros en vuelo
+
+ Una bandada empieza con un pajaro y se le unen parejas. Tras cada pareja escribir la mediana de
+ las edades. La entrada acaba con un caso 0 0.
+
+ PLANTEAMIENTO (mediana con dos monticulos)
+ lider = mediana; menores = cola de maximos con los mas jovenes; mayores = cola de minimos con los
+ mas viejos, siempre del mismo tamano. Cada pajaro nuevo va a su lado; si un lado queda con dos
+ mas, el lider pasa al lado pequeno y la cima del grande es el nuevo lider.
+
+ Coste: O(log P) por pareja.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
+
+bool resuelveCaso() {
     int primero, parejas;
     cin >> primero >> parejas;
 
@@ -43,10 +72,10 @@ bool resolverCaso() {
     return true;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
 
-    while (resolverCaso());
+int main() {
+    while (resuelveCaso());
     return 0;
 }

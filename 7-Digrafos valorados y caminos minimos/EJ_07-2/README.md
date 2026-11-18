@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Camino al cole.pdf>) · 💻 [Solución](EJ_07-2.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#358 · Camino al cole](https://aceptaelreto.com/problem/statement.php?id=358) — *casi el mismo problema*. Misma historia, pero allí los límites son distintos (hasta 10.000 intersecciones y 100.000 calles de hasta 100.000 de longitud; aquí 100.000, 200.000 y 10.000) y no hay número de casos: se lee hasta el final del fichero.
 

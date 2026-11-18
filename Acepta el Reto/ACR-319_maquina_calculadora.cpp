@@ -10,9 +10,18 @@
 //  - no hay numero de casos: se lee hasta el final del fichero
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
+using namespace std;
+
 // ---------- Digrafo.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos dirigidos (digrafos).
@@ -129,40 +138,44 @@ inline std::ostream& operator<<(std::ostream& o, Digrafo const& g) {
 #endif /* DIGRAFO_H_ */
 // ---------- fin de Digrafo.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    La maquina calculadora
+ La maquina calculadora
 
-    Marcador de 4 digitos --> numeros 0..9.999
-    Botones: +1, *2 y /3, todo modulo 10.000 y la division es entera
-    Casos de prueba --> como mucho 2.000, cada uno con (inicial, final)
-*/
+ Marcador de 4 digitos --> numeros 0..9.999
+ Botones: +1, *2 y /3, todo modulo 10.000 y la division es entera
+ Casos de prueba --> como mucho 2.000, cada uno con (inicial, final)
 
-/*
-    PLANTEAMIENTO
-    Grafo DIRIGIDO (clase Digrafo) con 10.000 vertices (lo que muestra el marcador):
-        x --> (x + 1) mod 10000
-        x --> (x * 2) mod 10000
-        x --> x / 3                  (division entera)
-    Minimo de pulsaciones = camino mas corto de inicial a final --> BFS.
+ PLANTEAMIENTO
+ Grafo DIRIGIDO (clase Digrafo) con 10.000 vertices (lo que muestra el marcador):
+     x --> (x + 1) mod 10000
+     x --> (x * 2) mod 10000
+     x --> x / 3                  (division entera)
+ Minimo de pulsaciones = camino mas corto de inicial a final --> BFS.
 
-    El grafo NO depende del caso (siempre es el mismo marcador): se construye
-    UNA sola vez en main y se reutiliza en los 2.000 casos.
+ El grafo NO depende del caso (siempre es el mismo marcador): se construye
+ UNA sola vez en main y se reutiliza en los 2.000 casos.
 
-    Se ve que es dirigido: de 5.000 se llega a 0 con *2, pero de 0 no se llega
-    a 5.000 con ningun boton directo.
+ Se ve que es dirigido: de 5.000 se llega a 0 con *2, pero de 0 no se llega
+ a 5.000 con ningun boton directo.
 
-    * En el 0, *2 y /3 dan 0: aristas que son lazos. No pasa nada, 0 ya
-      esta visitado cuando se miran.
-    * inicial == final --> 0 pulsaciones (dist[inicial] = 0).
-    * Se corta el BFS al sacar el vertice final (el BFS ya le ha dado su
-      distancia minima).
-    * Siempre hay camino: con +1 se llega a cualquier numero.
+ * En el 0, *2 y /3 dan 0: aristas que son lazos. No pasa nada, 0 ya
+   esta visitado cuando se miran.
+ * inicial == final --> 0 pulsaciones (dist[inicial] = 0).
+ * Se corta el BFS al sacar el vertice final (el BFS ya le ha dado su
+   distancia minima).
+ * Siempre hay camino: con +1 se llega a cualquier numero.
 
-    Coste: construir el grafo O(10.000) una vez; despues O(10.000 + 30.000)
-    por caso, unas 8*10^7 operaciones como mucho con los 2.000 casos.
-*/
+ Coste: construir el grafo O(10.000) una vez; despues O(10.000 + 30.000)
+ por caso, unas 8*10^7 operaciones como mucho con los 2.000 casos.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 const int MARCADOR = 10000;
 
@@ -208,7 +221,8 @@ Digrafo construyeMaquina() {
     return g;
 }
 
-void resuelveCaso(Digrafo const& g) {
+void resuelveCaso() {
+    static const Digrafo g = construyeMaquina();   // se construye una sola vez, en la primera llamada
     int inicial, final_;
     cin >> inicial >> final_;
 
@@ -216,13 +230,10 @@ void resuelveCaso(Digrafo const& g) {
     cout << mc.minimoPulsaciones() << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    Digrafo g = construyeMaquina();   // una sola vez para todos los casos
-
-    while (cin >> ws && cin.peek() != EOF) resuelveCaso(g);
-
+    while (cin >> ws && cin.peek() != EOF) resuelveCaso();
     return 0;
 }

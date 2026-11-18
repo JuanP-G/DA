@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Petroleros hundidos.pdf>) · 💻 [Solución](EJ_06-1.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#288 · Petroleros hundidos](https://aceptaelreto.com/problem/statement.php?id=288) — *casi el mismo problema*. Mismo problema, pero allí no hay número de casos (se lee hasta el final del fichero) y, según el ejemplo de la página, el mar va como espacio en blanco en vez de `-`: lee cada fila con `getline` y comprueba que la longitud es C.
 

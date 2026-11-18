@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Ratones en un laberinto.pdf>) · 💻 [Solución](EJ_07-7.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#601 · Ratones en un laberinto](https://aceptaelreto.com/problem/statement.php?id=601) — *casi el mismo problema*. Allí los límites son menores (hasta 10.000 celdas y 100.000 pasadizos; aquí 100.000 y 200.000) y no hay número de casos: se lee hasta el final del fichero.
 

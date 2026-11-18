@@ -1,35 +1,49 @@
-#include <iostream>
-#include <vector>
-#include "Grafo.h"
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
+#include <iostream>
+#include <fstream>
+#include <vector>
 using namespace std;
 
-/*
-    Arboles libres
+#include "Grafo.h"  // estructuras de datos de clase
 
-    Vertices --> 1 <= V <= 10.000
-    Aristas  --> 0 <= A <= 100.000
-    Vertices numerados de 0 a V-1, sin lazos ni aristas repetidas
-    Entrada: V en una linea y A en la siguiente --> justo lo que lee Grafo(cin)
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Arbol libre = grafo ACICLICO y CONEXO.
+ Arboles libres
 
-    Propiedad clave de los arboles: un grafo con V vertices es un arbol
-    si cumple DOS de estas tres cosas (y entonces cumple la tercera):
-        - es conexo
-        - es aciclico
-        - tiene exactamente V-1 aristas
-    Asi que no hace falta buscar ciclos: basta con mirar que A == V-1
-    y que un recorrido (DFS) desde cualquier vertice llega a los V.
+ Vertices --> 1 <= V <= 10.000
+ Aristas  --> 0 <= A <= 100.000
+ Vertices numerados de 0 a V-1, sin lazos ni aristas repetidas
+ Entrada: V en una linea y A en la siguiente --> justo lo que lee Grafo(cin)
 
-    Coste: O(V + A) por caso (el DFS visita cada vertice y arista una vez).
+ PLANTEAMIENTO
+ Arbol libre = grafo ACICLICO y CONEXO.
 
-    Nota: el dfs recursivo puede llegar a profundidad V (hasta 10.000).
-    Un caso enorme podria desbordar la pila.
-*/
+ Propiedad clave de los arboles: un grafo con V vertices es un arbol
+ si cumple DOS de estas tres cosas (y entonces cumple la tercera):
+     - es conexo
+     - es aciclico
+     - tiene exactamente V-1 aristas
+ Asi que no hace falta buscar ciclos: basta con mirar que A == V-1
+ y que un recorrido (DFS) desde cualquier vertice llega a los V.
+
+ Coste: O(V + A) por caso (el DFS visita cada vertice y arista una vez).
+
+ Nota: el dfs recursivo puede llegar a profundidad V (hasta 10.000).
+ Un caso enorme podria desbordar la pila.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class ArbolLibre {
 public:
@@ -65,12 +79,25 @@ void resuelveCaso() {
     cout << (al.esArbol() ? "SI" : "NO") << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

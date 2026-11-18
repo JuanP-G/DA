@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Los números de Bacon.pdf>) · 💻 [Solución](EJ_04-4.cpp) · 🎬 [Vídeo](../../Videos/04-4_numeros_de_bacon.mp4)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Para varios actores, la **cadena más corta de películas** que los une con Kevin Bacon, o `INF` si no la hay.
 

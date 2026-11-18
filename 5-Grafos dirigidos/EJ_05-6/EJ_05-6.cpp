@@ -1,38 +1,52 @@
-#include <iostream>
-#include <vector>
-#include "Digrafo.h"
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
+#include <iostream>
+#include <fstream>
+#include <vector>
 using namespace std;
 
-/*
-    Sistema de inecuaciones
+#include "Digrafo.h"  // estructuras de datos de clase
 
-    Variables    --> 1 <= N <= 10.000 (x1 .. xN)
-    Inecuaciones --> 0 <= M <= 100.000, de la forma xi < xj (pueden repetirse)
-    Salida: "SI v1 ... vN" con valores que cumplen todas, o "NO"
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Grafo DIRIGIDO: un vertice por variable y una arista i --> j por cada
-    inecuacion xi < xj ("xi tiene que ir antes, con un valor menor, que xj").
+ Sistema de inecuaciones
 
-    - Si hay un CICLO  x1 < x2 < ... < x1  es imposible  --> NO.
-    - Si no hay ciclos (DAG), hay un ORDEN TOPOLOGICO: todas las aristas van
-      de un vertice a otro posterior. Dando a cada variable su POSICION en ese
-      orden (1, 2, ..., N), toda arista i --> j cumple pos(i) < pos(j). --> SI.
+ Variables    --> 1 <= N <= 10.000 (x1 .. xN)
+ Inecuaciones --> 0 <= M <= 100.000, de la forma xi < xj (pueden repetirse)
+ Salida: "SI v1 ... vN" con valores que cumplen todas, o "NO"
 
-    Orden topologico y ciclos en el mismo DFS (como en 05-3), con 3 estados:
-        0 = sin visitar,  1 = en la pila,  2 = terminado
-    Vecino en estado 1 --> ciclo. Orden topologico = postorden inverso.
+ PLANTEAMIENTO
+ Grafo DIRIGIDO: un vertice por variable y una arista i --> j por cada
+ inecuacion xi < xj ("xi tiene que ir antes, con un valor menor, que xj").
 
-    * Cualquier asignacion valida vale (el ejemplo da otra distinta).
-    * Las variables sueltas tambien tienen posicion, asi que reciben valor.
-    * Inecuaciones repetidas: aristas repetidas, no molestan.
-    * Profundidad de la recursion <= N = 10.000.
+ - Si hay un CICLO  x1 < x2 < ... < x1  es imposible  --> NO.
+ - Si no hay ciclos (DAG), hay un ORDEN TOPOLOGICO: todas las aristas van
+   de un vertice a otro posterior. Dando a cada variable su POSICION en ese
+   orden (1, 2, ..., N), toda arista i --> j cumple pos(i) < pos(j). --> SI.
 
-    Coste: O(N + M) por caso.
-*/
+ Orden topologico y ciclos en el mismo DFS (como en 05-3), con 3 estados:
+     0 = sin visitar,  1 = en la pila,  2 = terminado
+ Vecino en estado 1 --> ciclo. Orden topologico = postorden inverso.
+
+ * Cualquier asignacion valida vale (el ejemplo da otra distinta).
+ * Las variables sueltas tambien tienen posicion, asi que reciben valor.
+ * Inecuaciones repetidas: aristas repetidas, no molestan.
+ * Profundidad de la recursion <= N = 10.000.
+
+ Coste: O(N + M) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class Inecuaciones {
 public:
@@ -81,12 +95,25 @@ void resuelveCaso() {
     }
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

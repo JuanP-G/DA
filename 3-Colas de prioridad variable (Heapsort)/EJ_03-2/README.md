@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-12 points go to….pdf>) · 💻 [Solución](EJ_03-2.cpp)
 
+🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato (fin del fichero).
+
 ## Qué piden
 Procesar sumas y restas de puntos a países y, en cada `?`, decir qué país va primero y con cuántos puntos (empate ⇒ nombre menor).
 

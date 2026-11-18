@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Grafo bipartito.pdf>) · 💻 [Solución](EJ_04-7.cpp) · 🎬 [Vídeo](../../Videos/04-7_grafo_bipartito.mp4)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#279 · Grafo bipartito](https://aceptaelreto.com/problem/statement.php?id=279) — *mismo problema*. Mismo enunciado, pero allí no hay número de casos: se lee hasta el final del fichero.
 

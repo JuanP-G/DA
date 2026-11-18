@@ -1,33 +1,47 @@
-#include <iostream>
-#include <vector>
-#include "Grafo.h"
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
+#include <iostream>
+#include <fstream>
+#include <vector>
 using namespace std;
 
-/*
-    Grafo bipartito
+#include "Grafo.h"  // estructuras de datos de clase
 
-    Vertices --> 1 <= V <= 100
-    Aristas  --> A (vertices de 0 a V-1, sin lazos ni repetidas)
-    Entrada: V en una linea y A en la siguiente --> justo lo que lee Grafo(cin)
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Bipartito = se puede colorear con 2 colores sin que una arista
-    una dos vertices del mismo color.
+ Grafo bipartito
 
-    Idea: el color de un vertice OBLIGA el color de sus vecinos (el contrario).
-    Asi que hago un dfs coloreando: al vertice de partida le doy un color
-    cualquiera y a cada vecino nuevo el color contrario al de su padre.
-    Si encuentro una arista v-w con w ya visitado y del MISMO color que v,
-    hay conflicto --> no es bipartito (hay un ciclo de longitud impar).
+ Vertices --> 1 <= V <= 100
+ Aristas  --> A (vertices de 0 a V-1, sin lazos ni repetidas)
+ Entrada: V en una linea y A en la siguiente --> justo lo que lee Grafo(cin)
 
-    OJO: el grafo puede no ser conexo, asi que hay que lanzar el dfs desde
-    cada vertice no visitado (cada componente se colorea por separado).
+ PLANTEAMIENTO
+ Bipartito = se puede colorear con 2 colores sin que una arista
+ una dos vertices del mismo color.
 
-    Coste: O(V + A) por caso.
-*/
+ Idea: el color de un vertice OBLIGA el color de sus vecinos (el contrario).
+ Asi que hago un dfs coloreando: al vertice de partida le doy un color
+ cualquiera y a cada vecino nuevo el color contrario al de su padre.
+ Si encuentro una arista v-w con w ya visitado y del MISMO color que v,
+ hay conflicto --> no es bipartito (hay un ciclo de longitud impar).
+
+ OJO: el grafo puede no ser conexo, asi que hay que lanzar el dfs desde
+ cada vertice no visitado (cada componente se colorea por separado).
+
+ Coste: O(V + A) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class Bipartito {
 public:
@@ -67,12 +81,25 @@ void resuelveCaso() {
     cout << (b.esBipartito() ? "SI" : "NO") << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

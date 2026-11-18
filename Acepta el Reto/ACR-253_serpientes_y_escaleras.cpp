@@ -10,9 +10,18 @@
 //  - la entrada termina con la linea `0 0 0 0`
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
+using namespace std;
+
 // ---------- Digrafo.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos dirigidos (digrafos).
@@ -129,37 +138,41 @@ inline std::ostream& operator<<(std::ostream& o, Digrafo const& g) {
 #endif /* DIGRAFO_H_ */
 // ---------- fin de Digrafo.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    Haciendo trampas en Serpientes y Escaleras
+ Haciendo trampas en Serpientes y Escaleras
 
-    Tablero  --> N x N casillas (2 <= N <= 100), numeradas de 1 a N*N
-    Dado     --> caras de 1 a K (K <= N), y podemos ELEGIR la cara
-    S serpientes y E escaleras: "origen destino"
-    Salida: minimo numero de tiradas para llegar de la casilla 1 a la N*N
-*/
+ Tablero  --> N x N casillas (2 <= N <= 100), numeradas de 1 a N*N
+ Dado     --> caras de 1 a K (K <= N), y podemos ELEGIR la cara
+ S serpientes y E escaleras: "origen destino"
+ Salida: minimo numero de tiradas para llegar de la casilla 1 a la N*N
 
-/*
-    PLANTEAMIENTO
-    Grafo DIRIGIDO: un vertice por casilla (casilla c --> vertice c - 1).
-    Desde la casilla v, una tirada d (1..K) lleva a v + d, y si ahi empieza
-    una serpiente o una escalera, la ficha acaba en su otro extremo:
+ PLANTEAMIENTO
+ Grafo DIRIGIDO: un vertice por casilla (casilla c --> vertice c - 1).
+ Desde la casilla v, una tirada d (1..K) lleva a v + d, y si ahi empieza
+ una serpiente o una escalera, la ficha acaba en su otro extremo:
 
-        v --> destino(v + d)      para d = 1..K,  v + d <= N*N
+     v --> destino(v + d)      para d = 1..K,  v + d <= N*N
 
-    destino[c] = c, salvo en el origen de una serpiente o escalera.
-    Cada arista es UNA tirada, asi que el minimo de tiradas es el camino
-    mas corto (en aristas) de 0 a N*N - 1 --> BFS.
+ destino[c] = c, salvo en el origen de una serpiente o escalera.
+ Cada arista es UNA tirada, asi que el minimo de tiradas es el camino
+ mas corto (en aristas) de 0 a N*N - 1 --> BFS.
 
-    * Da igual que la numeracion del tablero vaya en zigzag: solo importa
-      el numero de cada casilla.
-    * Las serpientes y las escaleras se tratan igual (un salto obligatorio).
-    * El enunciado garantiza que la ultima casilla es alcanzable.
-    * BFS parando al sacar la ultima casilla.
+ * Da igual que la numeracion del tablero vaya en zigzag: solo importa
+   el numero de cada casilla.
+ * Las serpientes y las escaleras se tratan igual (un salto obligatorio).
+ * El enunciado garantiza que la ultima casilla es alcanzable.
+ * BFS parando al sacar la ultima casilla.
 
-    Coste: O(N^2 * K) por caso (N^2 vertices, K aristas cada uno).
-*/
+ Coste: O(N^2 * K) por caso (N^2 vertices, K aristas cada uno).
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 class Tiradas {
 public:
@@ -217,11 +230,10 @@ bool resuelveCaso() {
     return true;
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     while (resuelveCaso());
-
     return 0;
 }

@@ -10,9 +10,18 @@
 //  - no hay numero de casos: se lee hasta el final del fichero
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <limits>
+using namespace std;
+
 // ---------- DigrafoValorado.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos dirigidos valorados
@@ -325,43 +334,47 @@ private:
 #endif /* INDEXPQ_H_ */
 // ---------- fin de IndexPQ.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    Camino al cole
+ Camino al cole
 
-    Pueblo con N intersecciones (1 <= N <= 100.000) y C calles (0 <= C <= 200.000) con
-    longitud 1..10.000. Las calles se pueden recorrer en AMBOS sentidos. Lucas va de la
-    interseccion 1 a la N: de cuantas formas distintas puede ir recorriendo la distancia
-    minima? (0 si no hay camino; el resultado es < 2^31.)
-*/
+ Pueblo con N intersecciones (1 <= N <= 100.000) y C calles (0 <= C <= 200.000) con
+ longitud 1..10.000. Las calles se pueden recorrer en AMBOS sentidos. Lucas va de la
+ interseccion 1 a la N: de cuantas formas distintas puede ir recorriendo la distancia
+ minima? (0 si no hay camino; el resultado es < 2^31.)
 
-/*
-    PLANTEAMIENTO
-    Dijkstra desde la interseccion 1 con un vector mas que cuenta caminos minimos:
+ PLANTEAMIENTO
+ Dijkstra desde la interseccion 1 con un vector mas que cuenta caminos minimos:
 
-        formas[v] = numero de caminos de longitud minima de 1 a v
+     formas[v] = numero de caminos de longitud minima de 1 a v
 
-    Al relajar la arista v -> w con valor c (v ya tiene dist y formas DEFINITIVAS):
-      - dist[v] + c <  dist[w]  : hemos encontrado algo mas corto, TODOS los caminos
-                                  anteriores a w dejan de valer       formas[w] = formas[v]
-      - dist[v] + c == dist[w]  : otra manera, igual de buena, de llegar a w
-                                                                      formas[w] += formas[v]
-      - dist[v] + c >  dist[w]  : no sirve, no se hace nada.
+ Al relajar la arista v -> w con valor c (v ya tiene dist y formas DEFINITIVAS):
+   - dist[v] + c <  dist[w]  : hemos encontrado algo mas corto, TODOS los caminos
+                               anteriores a w dejan de valer       formas[w] = formas[v]
+   - dist[v] + c == dist[w]  : otra manera, igual de buena, de llegar a w
+                                                                   formas[w] += formas[v]
+   - dist[v] + c >  dist[w]  : no sirve, no se hace nada.
 
-    Por que formas[v] ya es definitivo cuando se saca v de la cola: todos los caminos
-    minimos a v llegan por un vecino u con dist[u] < dist[v] (las calles miden >= 1), y
-    esos u se sacaron antes y ya sumaron su aportacion.
+ Por que formas[v] ya es definitivo cuando se saca v de la cola: todos los caminos
+ minimos a v llegan por un vecino u con dist[u] < dist[v] (las calles miden >= 1), y
+ esos u se sacaron antes y ya sumaron su aportacion.
 
-    - Calles de doble sentido: cada calle se anade en las dos direcciones al DigrafoValorado.
-    - N = 1: la casa es el colegio, hay una unica forma (no moverse): formas[0] = 1 al inicio.
-    - Sin camino: formas[N-1] se queda en 0.
-    - Se usa unsigned long long: el resultado final es < 2^31, pero el numero de caminos de
-      OTROS vertices puede ser enorme. Con unsigned el desbordamiento esta definido (modulo
-      2^64) y no estropea la respuesta, que sigue siendo exacta porque es pequena.
+ - Calles de doble sentido: cada calle se anade en las dos direcciones al DigrafoValorado.
+ - N = 1: la casa es el colegio, hay una unica forma (no moverse): formas[0] = 1 al inicio.
+ - Sin camino: formas[N-1] se queda en 0.
+ - Se usa unsigned long long: el resultado final es < 2^31, pero el numero de caminos de
+   OTROS vertices puede ser enorme. Con unsigned el desbordamiento esta definido (modulo
+   2^64) y no estropea la respuesta, que sigue siendo exacta porque es pequena.
 
-    Coste: O(C log N) por caso.
-*/
+ Coste: O(C log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     int N, C;
@@ -401,11 +414,10 @@ void resuelveCaso() {
     cout << formas[N - 1] << '\n';   // 0 si no se llega
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     while (cin >> ws && cin.peek() != EOF) resuelveCaso();
-
     return 0;
 }

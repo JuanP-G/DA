@@ -1,45 +1,88 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
-#include "bintree.h"
-#include "TreeSet_AVL_plantilla.h"
+#include <fstream>
 
 using namespace std;
 
+#include "bintree.h"  // estructuras de datos de clase
+#include "TreeSet_AVL_plantilla.h"  // estructuras de datos de clase
+
+/*@ <answer>
+
+ Encontrar el k-ésimo elemento en un árbol AVL
+
+ Se insertan N valores en un Set (árbol AVL) y para cada consulta k se escribe el k-ésimo menor,
+ o ?? si no existe. Tras cada caso, ---. La entrada acaba con un caso con N = 0.
+
+ PLANTEAMIENTO
+ Cada nodo guarda tami = tamaño de su hijo izquierdo + 1 (la posición de la raíz en su subárbol),
+ mantenido en inserta y en las rotaciones (ver TreeSet_AVL_plantilla.h). kesimo(k) baja desde la raíz:
+ k == tami -> la raíz; k < tami -> izquierdo con el mismo k; k > tami -> derecho con k - tami.
+ Si se llega a un hueco lanza out_of_range y se escribe ??.
+
+ Coste: O(log N) por inserción y por consulta: O((N + Q) log N) por caso.
+
+ @ </answer> */
 
 
-int main(){
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
+bool resuelveCaso() {
+    int nValores;
+    cin >> nValores;
+    if (!cin || nValores == 0)  // caso especial: 0 marca el final
+        return false;
 
-	int nValores;
+    // entrada de los valores del arbol
+    Set<int> arbol;
+    for (int i = 0; i < nValores; ++i) {
+        int valor;
+        cin >> valor;
+        arbol.insert(valor);
+    }
 
-	//Mientras siga habiendo casos 
-	while (cin >> nValores && nValores != 0)	{
+    // consultas
+    int nConsultas;
+    cin >> nConsultas;
+    for (int i = 0; i < nConsultas; ++i) {
+        int posValor;
+        cin >> posValor;
+        try {
+            cout << arbol.kesimo(posValor) << '\n';
+        }
+        catch (out_of_range&) {
+            cout << "??\n";
+        }
+    }
+    cout << "---\n";  // separador entre casos
+    return true;
+}
 
-		//entrada de los valores del arbol
-		Set<int> arbol;
-		for (int i = 0; i < nValores; ++i) {
-			int valor;
-			cin >> valor;
-			//Agregar valor al arbol
-			arbol.insert(valor);
-		}
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-		//numero de numeros que queremos consultar
-		int nConsultas;
-		cin >> nConsultas;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-		//Consulta de los numeros que queremos consultar
-		for (int i = 0; i < nConsultas; ++i) {
-			int	posValor;
-			cin >> posValor;
-			try {
-				cout << arbol.kesimo(posValor) << '\n';
-			}
-			catch (out_of_range&) {
-				cout << "??\n";
-			}
-		}
-		cout << "---\n"; //Separador entre casos
-	}
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }
