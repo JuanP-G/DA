@@ -54,8 +54,16 @@ ESTILO = AQUI / "estilo"
 ESTILO_BASE = (ESTILO / "apuntes.css").read_text(encoding="utf-8")
 TEMA_INI = (ESTILO / "tema-inicial.js").read_text(encoding="utf-8")
 TEMA_JS = (ESTILO / "apuntes.js").read_text(encoding="utf-8")
+SPRITE = (ESTILO / "iconos.html").read_text(encoding="utf-8")
+ICON_RE = re.compile(r"@@i:(\w+)@@")
+GLIFOS = {"📄": "pdf", "💻": "code", "🧩": "tool", "🔗": "link", "📥": "download", "🎬": "video", "📘": "book", "⚠": "warn", "⬇": "download", "↗": "external"}
+GLIFO_RE = re.compile("(" + "|".join(GLIFOS) + ")\ufe0f?")
 PORTAL_URL = os.environ.get("PORTAL_URL", "")   # URL del portal; si está vacía no se enseña el enlace «Portal»
 COPIAR = set()   # rutas relativas (posix) de ficheros del repo que hay que copiar a _site
+
+
+def _icono(m):
+    return f'<svg class="i" aria-hidden="true"><use href="#i-{m.group(1)}"/></svg>'
 
 
 def esc(s):
@@ -213,7 +221,7 @@ document.querySelectorAll('pre[data-code]').forEach(pre=>{
 
 COMUN_JS = r"""
 function toast(t){const e=document.getElementById('toast');if(!e)return;e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1600)}
-function copiar(txt,btn){const ok=()=>{toast('Copiado al portapapeles');if(btn){const o=btn.textContent;btn.textContent='¡Copiado!';setTimeout(()=>btn.textContent=o,1400)}};
+function copiar(txt,btn){const ok=()=>{toast('Copiado al portapapeles');if(btn){const o=btn.innerHTML;btn.textContent='¡Copiado!';setTimeout(()=>btn.innerHTML=o,1400)}};
  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(ok).catch(()=>viejo())}else viejo();
  function viejo(){const t=document.createElement('textarea');t.value=txt;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok()}catch(e){toast('No se ha podido copiar')}t.remove()}}
 // «Volver»: si se llegó desde esta misma web, vuelve exactamente a donde estabas; si no, a la página indicada
@@ -264,8 +272,10 @@ def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head=""):
            f'<nav aria-label="Principal">{portal}<a href="{prefijo}index.html#herramientas">Herramientas</a><a class="keep" href="{prefijo}index.html#temas">Temas</a>'
            f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a class="keep" href="{prefijo}videos.html">Vídeos</a></nav>'
            f'<button id="tema" class="icon-btn" type="button" aria-label="Cambiar tema claro/oscuro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></div></header>')
-    return (f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{FONTS}<script>{TEMA_INI}</script><style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{nav}{cuerpo}<div class="toast" id="toast"></div><script>{TEMA_JS}{COMUN_JS}{extra_js}</script></body></html>')
+    pag = (f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{FONTS}<script>{TEMA_INI}</script><style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{SPRITE}{nav}{cuerpo}<div class="toast" id="toast"></div><script>{TEMA_JS}{COMUN_JS}{extra_js}</script></body></html>')
+    pag = GLIFO_RE.sub(lambda m: f'@@i:{GLIFOS[m.group(1)]}@@', pag)
+    return ICON_RE.sub(_icono, pag)
 
 
 def render_md(ruta_rel):
@@ -393,11 +403,11 @@ def acepta_caja(x, fichero=None):
     envio = ""
     if fichero:
         txt = leer_texto(fichero)
-        envio = (f'<div class="bar" style="margin:8px 0 0"><button class="btn prim" data-copy="acr-src">⧉ Copiar código para Acepta el Reto</button>'
-                 f'{descargar(fichero, "⬇ Descargar " + esc(posixpath.basename(fichero)))}'
+        envio = (f'<div class="bar" style="margin:8px 0 0"><button class="btn prim" data-copy="acr-src">@@i:copy@@ Copiar código para Acepta el Reto</button>'
+                 f'{descargar(fichero, "@@i:download@@ Descargar " + esc(posixpath.basename(fichero)))}'
                  f'<span class="hint">un solo fichero, con las cabeceras dentro y su formato de entrada · {txt.count(chr(10)) + 1} líneas</span></div>'
                  f'<script type="text/plain" id="acr-src">{esc(txt)}</script>')
-    return (f'<div class="acr{" rel" if x["tipo"] == "relacionado" else ""}"><b>🔗 {cab}</b>'
+    return (f'<div class="acr{" rel" if x["tipo"] == "relacionado" else ""}"><b>@@i:link@@ {cab}</b>'
             f'<a href="{acepta_url(x)}" target="_blank" rel="noopener">#{x["num"]} · {esc(x["problema"])} ↗</a> · {ACR_ETQ[x["tipo"]]}. {esc(x.get("nota", ""))}{envio}</div>')
 
 
@@ -429,7 +439,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     # 1 · Enunciado
     if e["pdf"]:
         pdf = href_sitio(e["pdf"], True)
-        p_enun = (f'<div class="bar">{descargar(e["pdf"], "⬇ Descargar PDF")}<a class="btn" href="{pdf}" target="_blank" rel="noopener">↗ Abrir en otra pestaña</a>'
+        p_enun = (f'<div class="bar">{descargar(e["pdf"], "@@i:download@@ Descargar PDF")}<a class="btn" href="{pdf}" target="_blank" rel="noopener">@@i:external@@ Abrir en otra pestaña</a>'
                   f'<span class="hint">{tam_legible((RAIZ / e["pdf"]).stat().st_size)}</span></div>'
                   f'<iframe class="pdf" src="{pdf}" title="Enunciado {esc(e["id"])}"></iframe>'
                   f'<p class="hint" style="color:var(--muted);font-size:.85rem">¿No se ve? En el móvil los PDF no se muestran dentro de la página: usa «Abrir en otra pestaña» o «Descargar PDF».</p>')
@@ -451,8 +461,8 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
             txt = leer_texto(r)
             nombre = posixpath.basename(r)
             tipo = "solución" if r.endswith(".cpp") else "estructura de datos"
-            cods.append(f'<div data-subpane="c{i}" style="display:{"block" if i == 0 else "none"}"><div class="bar"><button class="btn" data-copy="src{i}">⧉ Copiar código</button>'
-                        f'{descargar(r, "⬇ Descargar " + esc(nombre))}<span class="hint">{tipo} · {txt.count(chr(10)) + 1} líneas</span></div>'
+            cods.append(f'<div data-subpane="c{i}" style="display:{"block" if i == 0 else "none"}"><div class="bar"><button class="btn" data-copy="src{i}">@@i:copy@@ Copiar código</button>'
+                        f'{descargar(r, "@@i:download@@ Descargar " + esc(nombre))}<span class="hint">{tipo} · {txt.count(chr(10)) + 1} líneas</span></div>'
                         f'<pre data-code="{esc(nombre)}" id="src{i}">{esc(txt)}</pre></div>')
             ficheros_zip.append((href_sitio(r, True), ("codigo/" if r.endswith(".cpp") else "estructuras/") + nombre))
         p_cod = f'<div class="sub">{subs if len(codigos) > 1 else ""}</div>{"".join(cods)}'
@@ -462,7 +472,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     # 3 · Explicación
     if e["readme"]:
         crudo = (RAIZ / e["readme"]).read_text(encoding="utf-8")
-        p_exp = (f'<div class="bar"><button class="btn" data-copy="md-src">⧉ Copiar (Markdown)</button>{descargar(e["readme"], "⬇ Descargar .md", "")}</div>'
+        p_exp = (f'<div class="bar"><button class="btn" data-copy="md-src">@@i:copy@@ Copiar (Markdown)</button>{descargar(e["readme"], "@@i:download@@ Descargar .md", "")}</div>'
                  f'<div class="md">{render_md(e["readme"])}</div><script type="text/plain" id="md-src">{esc(crudo)}</script>')
         ficheros_zip.append((href_sitio(e["readme"], True), "explicacion.md"))
     else:
@@ -474,14 +484,14 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
         vtt, caps = media_video(e["video"])
         track = f'<track kind="subtitles" srclang="es" label="Español" src="../{quote(vtt)}" default>' if vtt else ""
         lista_caps = ("<div class='caps'><b>Capítulos</b>" + "".join(f'<button data-t="{t:.2f}"><span>{mmss(t)}</span>{esc(ti)}</button>' for t, ti in caps) + "</div>") if caps else ""
-        p_vid = (f'<div class="bar">{descargar(e["video"], "⬇ Descargar vídeo")}<span class="hint">{tam_legible((RAIZ / e["video"]).stat().st_size)} · subtítulos con el botón CC del reproductor</span></div>'
+        p_vid = (f'<div class="bar">{descargar(e["video"], "@@i:download@@ Descargar vídeo")}<span class="hint">{tam_legible((RAIZ / e["video"]).stat().st_size)} · subtítulos con el botón CC del reproductor</span></div>'
                  f'<div class="{"vid" if caps else ""}"><video controls preload="metadata" playsinline src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div>')
         ficheros_zip.append((vurl, "video.mp4"))
     else:
         p_vid = '<div class="nada">Este ejercicio todavía no tiene vídeo.</div>'
 
-    tabs = [("enunciado", "📄 Enunciado", bool(e["pdf"]), p_enun), ("codigo", "💻 Código", bool(codigos), p_cod),
-            ("explicacion", "📘 Explicación", bool(e["readme"]), p_exp), ("video", "🎬 Vídeo", bool(e["video"]), p_vid)]
+    tabs = [("enunciado", "@@i:pdf@@ Enunciado", bool(e["pdf"]), p_enun), ("codigo", "@@i:code@@ Código", bool(codigos), p_cod),
+            ("explicacion", "@@i:book@@ Explicación", bool(e["readme"]), p_exp), ("video", "@@i:video@@ Vídeo", bool(e["video"]), p_vid)]
     pref = "explicacion" if e["readme"] else ("codigo" if codigos else "enunciado")
     botones = "".join(f'<button class="btn{"" if hay else " off"}{" pref" if i == pref else ""}" data-tab="{i}">{t}</button>' for i, t, hay, _ in tabs)
     panes = "".join(f'<div class="pane" id="p-{i}">{c}</div>' for i, _, _, c in tabs)
@@ -491,11 +501,11 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
         total = 0
         for url, _ in ficheros_zip:
             pass
-        acc.append(f'<button class="btn prim" id="zip" data-name="{esc(e["id"] + " " + e["titulo"])}" data-files="{esc(json.dumps(ficheros_zip, ensure_ascii=False))}">⬇ Descargar todo (.zip)</button>')
+        acc.append(f'<button class="btn prim" id="zip" data-name="{esc(e["id"] + " " + e["titulo"])}" data-files="{esc(json.dumps(ficheros_zip, ensure_ascii=False))}">@@i:download@@ Descargar todo (.zip)</button>')
     if acr:
-        acc.append(f'<a class="btn" href="{acepta_url(acr)}" target="_blank" rel="noopener">🔗 Probar en Acepta el Reto #{acr["num"]}</a>')
+        acc.append(f'<a class="btn" href="{acepta_url(acr)}" target="_blank" rel="noopener">@@i:link@@ Probar en Acepta el Reto #{acr["num"]}</a>')
     if herr and (RAIZ / "Visualizaciones" / herr).exists():
-        acc.append(f'<a class="btn" href="../herramientas/{herr}">🧩 Herramienta interactiva del tema</a>')
+        acc.append(f'<a class="btn" href="../herramientas/{herr}">@@i:tool@@ Herramienta interactiva del tema</a>')
     contenido_zip = ", ".join(x for x, ok in (("enunciado", e["pdf"]), ("código", codigos), ("explicación", e["readme"]), ("vídeo", e["video"]), ("versión para Acepta el Reto", acr_fich)) if ok)
 
     pager = '<div class="pager">' + (f'<a class="btn" href="{ant[0]}.html">← {esc(ant[1])}</a>' if ant else "<span></span>") + \
@@ -513,12 +523,12 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
 def pagina_cabecera(nombre):
     rel = f"Estructuras de datos/{nombre}"
     herr = next((TEMAS[t]["herr"] for t in TEMAS if nombre in TEMAS[t]["cab"]), None)
-    extra = f'<a class="btn" href="../herramientas/{herr}">🧩 Herramienta interactiva</a>' if herr and (RAIZ / "Visualizaciones" / herr).exists() else ""
+    extra = f'<a class="btn" href="../herramientas/{herr}">@@i:tool@@ Herramienta interactiva</a>' if herr and (RAIZ / "Visualizaciones" / herr).exists() else ""
     txt = leer_texto(rel)
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#estructuras" data-back>← Volver</a>'
               f'<a href="../index.html">Inicio</a>›<a href="../index.html#estructuras">Estructuras</a>›<span>{esc(nombre)}</span></div>'
               f'<div class="ejhead"><span class="tag">Estructura de datos</span><h1>{esc(nombre)}</h1>'
-              f'<div class="acc"><button class="btn" data-copy="src0">⧉ Copiar código</button>{descargar(rel, "⬇ Descargar " + esc(nombre))}{extra}</div></div>'
+              f'<div class="acc"><button class="btn" data-copy="src0">@@i:copy@@ Copiar código</button>{descargar(rel, "@@i:download@@ Descargar " + esc(nombre))}{extra}</div></div>'
               f'<pre data-code="{esc(nombre)}" id="src0">{esc(txt)}</pre></div>')
     return pagina(nombre, cuerpo, "../", HIGHLIGHT_JS)
 
@@ -608,7 +618,7 @@ def main():
             filas.append(f'<div class="fila" data-q="{busq}"><span class="id">{esc(e["id"])}</span><span class="t"><a href="ej/{slugs[i]}.html">{esc(e["titulo"])}</a></span>'
                          f'<span class="i">{md_inline(e["idea"])}</span><span class="chips">{chips(e, slugs[i])}</span></div>')
         if not filas: continue
-        h = (f'<a class="chip" href="herramientas/{info["herr"]}">🧩 Herramienta interactiva</a>' if info["herr"] in [x[0] for x in herr] else "")
+        h = (f'<a class="chip" href="herramientas/{info["herr"]}">@@i:tool@@ Herramienta interactiva</a>' if info["herr"] in [x[0] for x in herr] else "")
         tema_html.append(f'<section class="tema" id="tema{t}"><header><h2>Tema {t} · {esc(info["nombre"])}</h2>{h}<p>{esc(info["resumen"])}</p></header><div class="lista">{"".join(filas)}</div></section>')
     tools_html = "".join(f'<a class="tool" href="herramientas/{f}"><span class="n">{esc(a)}</span><b>{esc(b)}</b><span class="d">{esc(c)}</span></a>' for f, a, b, c in herr)
     est_html = "".join(f'<a class="chip" href="estructuras/{quote(c)}.html">{esc(c)}</a>' for c in cabs)

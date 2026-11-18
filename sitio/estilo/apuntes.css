@@ -1,4 +1,4 @@
-/* Apuntes de 3º · hoja de estilo compartida
+/* Apuntes · hoja de estilo compartida
    La usan el portal y todas las webs de asignatura. Aquí vive lo común:
    colores, tipografía, modo oscuro, barra superior, botones, etiquetas y pie.
    Cada web añade encima solo lo suyo (listas de ejercicios, visores, etc.). */
@@ -44,7 +44,7 @@ code{font-family:var(--mono);font-size:.9em;background:var(--panel2);padding:1px
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 
 /* ---- Barra superior ---- */
-.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
 .nav-in{display:flex;align-items:center;gap:20px;height:60px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);margin-right:auto;font:700 1.05rem var(--head)}
 .logo{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font:700 .85rem var(--mono)}
@@ -55,8 +55,8 @@ code{font-family:var(--mono);font-size:.9em;background:var(--panel2);padding:1px
 .icon-btn:hover{border-color:var(--accent)}
 
 /* ---- Botones y etiquetas ---- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--ink);text-decoration:none;font:600 .95rem var(--sans);cursor:pointer;transition:border-color .15s,transform .15s}
-.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--ink);text-decoration:none;font:600 .95rem var(--sans);cursor:pointer;transition:border-color .15s}
+.btn:hover{border-color:var(--accent)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .btn.block{width:100%}
 .btn.enlace{border:0;background:none;font-size:.85rem;color:var(--muted);font-weight:500;padding:4px}
@@ -70,6 +70,13 @@ code{font-family:var(--mono);font-size:.9em;background:var(--panel2);padding:1px
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:22px;min-width:0}
 .section{padding:44px 0}
 .section h2{font-size:1.7rem;letter-spacing:-.01em}
+
+/* ---- Iconos (sprite en estilo/iconos.html) ---- */
+.i{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
+.btn .i{width:1.1em;height:1.1em}
+.logo .i{width:19px;height:19px}
+.tile{display:grid;place-items:center;width:52px;height:52px;border-radius:12px;background:var(--accent-soft);color:var(--accent);flex:none}
+.tile .i{width:32px;height:32px;vertical-align:0}
 
 /* ---- Pie ---- */
 .foot{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;padding:26px 0 40px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
