@@ -5,6 +5,56 @@
 ## Qué piden
 N cordeles (1..1.000), cada uno con su longitud y su coste (1..1.000), y una longitud L (1..1.000). Cada cordel se usa **como mucho una vez** y el orden de unión no importa. Si se puede formar exactamente L, hay que escribir `SI` y tres respuestas por separado: el **número de formas**, el **mínimo número de cordeles** y el **mínimo coste**. Si no se puede, `NO`.
 
+## Recurrencias (formato de examen)
+
+Cordeles numerados $1..N$, con longitud $l_i$ y coste $c_i$. Para $0 \le i \le N$ y $0 \le j \le L$ se definen tres funciones sobre «los cordeles $1..i$ y la longitud $j$»:
+
+- $\text{formas}(i, j)$: número de formas de sumar exactamente $j$ con los cordeles $1..i$.
+- $\text{cordeles}(i, j)$: mínimo número de cordeles para sumar exactamente $j$ con los cordeles $1..i$.
+- $\text{coste}(i, j)$: mínimo coste para sumar exactamente $j$ con los cordeles $1..i$.
+
+**Casos base**
+
+$$
+\text{formas}(i, 0) = 1 \qquad \text{cordeles}(i, 0) = 0 \qquad \text{coste}(i, 0) = 0 \qquad \forall\, i \ge 0
+$$
+
+$$
+\text{formas}(0, j) = 0 \qquad \text{cordeles}(0, j) = +\infty \qquad \text{coste}(0, j) = +\infty \qquad \forall\, j > 0
+$$
+
+**Recurrencias** ($1 \le i \le N$, $1 \le j \le L$)
+
+$$
+\text{formas}(i, j) =
+\begin{cases}
+\text{formas}(i-1, j) & \text{si } l_i > j \\
+\text{formas}(i-1, j) + \text{formas}(i-1,\ j - l_i) & \text{si } l_i \le j
+\end{cases}
+$$
+
+$$
+\text{cordeles}(i, j) =
+\begin{cases}
+\text{cordeles}(i-1, j) & \text{si } l_i > j \\
+\min\big(\text{cordeles}(i-1, j),\ \text{cordeles}(i-1,\ j - l_i) + 1\big) & \text{si } l_i \le j
+\end{cases}
+$$
+
+$$
+\text{coste}(i, j) =
+\begin{cases}
+\text{coste}(i-1, j) & \text{si } l_i > j \\
+\min\big(\text{coste}(i-1, j),\ \text{coste}(i-1,\ j - l_i) + c_i\big) & \text{si } l_i \le j
+\end{cases}
+$$
+
+En cada caso: o **no se usa** el cordel $i$ (fila $i-1$, misma longitud), o **se usa** y queda por sumar $j - l_i$ con los anteriores (fila $i-1$: cada cordel solo una vez).
+
+**Llamada inicial / respuesta:** si $\text{formas}(N, L) = 0$ se escribe `NO`; si no, `SI` $\text{formas}(N, L)$ $\text{cordeles}(N, L)$ $\text{coste}(N, L)$.
+
+**Implementación:** la fila $i$ solo depende de la $i-1$, así que basta un vector por función recorriendo $j$ **de $L$ hacia abajo** (así $j - l_i$ aún tiene el valor de la fila $i-1$). Coste $O(N \cdot L)$ en tiempo y $O(L)$ en espacio.
+
 ## Cómo se plantea
 Programación dinámica tipo **mochila 0/1 con suma exacta**: tres tablas sobre las longitudes `j = 0..L`, añadiendo los cordeles uno a uno.
 

@@ -5,6 +5,40 @@
 ## Qué piden
 Una palabra de 1 a 1.000 letras minúsculas. Hay que escribir el **mínimo número de letras que añadir** (en cualquier posición) para convertirla en un palíndromo, y **uno de esos palíndromos**. Vale cualquiera de los que tengan el mínimo.
 
+## Recurrencia (formato de examen)
+
+Palabra $s = s_1 s_2 \dots s_n$. Para $1 \le i, j \le n$:
+
+$$
+\text{faltan}(i, j) = \text{mínimo número de letras a añadir para que } s_i \dots s_j \text{ sea un palíndromo}
+$$
+
+**Casos base**
+
+$$
+\text{faltan}(i, j) = 0 \qquad \text{si } i \ge j \quad (\text{vacía o una sola letra})
+$$
+
+**Recurrencia** ($i < j$)
+
+$$
+\text{faltan}(i, j) =
+\begin{cases}
+\text{faltan}(i+1,\ j-1) & \text{si } s_i = s_j \\
+1 + \min\big(\text{faltan}(i+1, j),\ \text{faltan}(i,\ j-1)\big) & \text{si } s_i \ne s_j
+\end{cases}
+$$
+
+Si los extremos coinciden, se emparejan entre sí. Si no, se añade una copia de $s_i$ al final (queda $s_{i+1..j}$) o una copia de $s_j$ al principio (queda $s_{i..j-1}$).
+
+**Llamada inicial / respuesta:** $\text{faltan}(1, n)$.
+
+**Orden de cálculo:** $\text{faltan}(i, j)$ depende de intervalos **más cortos**, así que se rellena por longitudes $d = j - i$ crecientes ($d = 1, 2, \dots, n-1$).
+
+**Reconstrucción** desde $(1, n)$: si $s_i = s_j$ se pone $s_i$ a la izquierda y $s_j$ a la derecha y se pasa a $(i+1, j-1)$; si $\text{faltan}(i+1, j) \le \text{faltan}(i, j-1)$ se pone $s_i$ en los dos lados y se pasa a $(i+1, j)$; si no, $s_j$ en los dos lados y a $(i, j-1)$; si $i = j$, $s_i$ va una vez en el centro.
+
+**Coste:** $O(n^2)$ en tiempo y en espacio.
+
 ## Cómo se plantea
 Programación dinámica **sobre intervalos** de la palabra:
 

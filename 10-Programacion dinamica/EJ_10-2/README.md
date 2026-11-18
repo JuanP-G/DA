@@ -5,6 +5,42 @@
 ## Qué piden
 Un valor V (1..50.000) y una diana con S sectores (1..100) de puntuaciones distintas en orden creciente (1..1.000). Cada sector se puede usar **las veces que haga falta**. Hay que escribir el **mínimo número de dardos** para sumar V y las puntuaciones usadas (`4: 25 25 25 25`), o `Imposible`. Vale cualquier solución óptima. **La entrada acaba con el fichero.**
 
+## Recurrencia (formato de examen)
+
+Sectores numerados $1..S$ con puntuaciones $p_1 < p_2 < \dots < p_S$. Para $0 \le i \le S$ y $0 \le j \le V$:
+
+$$
+\text{dardos}(i, j) = \text{mínimo número de dardos para sumar exactamente } j \text{ usando los sectores } 1..i
+$$
+
+**Casos base**
+
+$$
+\text{dardos}(i, 0) = 0 \qquad \forall\, i \ge 0
+$$
+
+$$
+\text{dardos}(0, j) = +\infty \qquad \forall\, j > 0
+$$
+
+**Recurrencia** ($1 \le i \le S$, $1 \le j \le V$)
+
+$$
+\text{dardos}(i, j) =
+\begin{cases}
+\text{dardos}(i-1, j) & \text{si } p_i > j \\
+\min\big(\text{dardos}(i-1, j),\ \text{dardos}(i,\ j - p_i) + 1\big) & \text{si } p_i \le j
+\end{cases}
+$$
+
+O **no se usa** el sector $i$ (fila $i-1$), o se tira **un dardo más** a él y se sigue en la **fila $i$**, porque se puede volver a usar.
+
+**Llamada inicial / respuesta:** $\text{dardos}(S, V)$; si vale $+\infty$, `Imposible`.
+
+**Reconstrucción** desde $(i, j) = (S, V)$ mientras $j > 0$: si $\text{dardos}(i, j) = \text{dardos}(i-1, j)$ se pasa a $(i-1, j)$; si no, se apunta $p_i$ y se pasa a $(i, j - p_i)$.
+
+**Coste:** $O(S \cdot V)$ en tiempo y en espacio (la tabla entera, para reconstruir).
+
 ## Cómo se plantea
 Es el **problema del cambio** con monedas ilimitadas:
 
