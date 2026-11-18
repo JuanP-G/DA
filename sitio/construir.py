@@ -50,6 +50,11 @@ HERRAMIENTAS = [
     ("tema6-kruskal.html", "Tema 6", "Conjuntos disjuntos y ARM", "Las cuatro implementaciones de conjuntos disjuntos y Kruskal / Prim paso a paso."),
     ("tema7-dijkstra.html", "Tema 7", "Dijkstra", "Relajación de aristas, Dijkstra con cola y con vector, ulti[] y contar caminos mínimos."),
 ]
+ESTILO = AQUI / "estilo"
+ESTILO_BASE = (ESTILO / "apuntes.css").read_text(encoding="utf-8")
+TEMA_INI = (ESTILO / "tema-inicial.js").read_text(encoding="utf-8")
+TEMA_JS = (ESTILO / "apuntes.js").read_text(encoding="utf-8")
+PORTAL_URL = os.environ.get("PORTAL_URL", "")   # URL del portal; si está vacía no se enseña el enlace «Portal»
 COPIAR = set()   # rutas relativas (posix) de ficheros del repo que hay que copiar a _site
 
 
@@ -128,23 +133,12 @@ def descubrir(ej):
 
 
 # ---------------------------------------------------------------- páginas
-CSS = """
-:root{--bg:#f3f4f8;--panel:#fff;--panel2:#eceef4;--ink:#1a2133;--muted:#5d667b;--line:#d9deea;--accent:#b86e00;--accent-soft:#fbeccd;--blue:#1f6fb8;--blue-soft:#d9eafa;--green:#1e7f57;--green-soft:#d6f1e4;--code-bg:#121a2b;--code-ink:#dce4f5;--code-dim:#6f7b95;--kw:#ff79c6;--ty:#8be9fd;--nu:#bd93f9;--co:#7e8aa8;--st:#f1fa8c;
---sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1424;--panel:#151d31;--panel2:#1c2640;--ink:#e7ecf7;--muted:#94a0ba;--line:#2a3556;--accent:#f5a623;--accent-soft:#3a2c0c;--blue:#58b2f2;--blue-soft:#14304a;--green:#4fd1a0;--green-soft:#123a2c;--code-bg:#0a0f1c;color-scheme:dark}}
-:root[data-theme=dark]{--bg:#0e1424;--panel:#151d31;--panel2:#1c2640;--ink:#e7ecf7;--muted:#94a0ba;--line:#2a3556;--accent:#f5a623;--accent-soft:#3a2c0c;--blue:#58b2f2;--blue-soft:#14304a;--green:#4fd1a0;--green-soft:#123a2c;--code-bg:#0a0f1c;color-scheme:dark}
-*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:70px}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
-a{color:var(--blue)}code{font-family:var(--mono);font-size:.9em;background:var(--panel2);padding:1px 5px;border-radius:4px}
-.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
-.nav{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
-.nav .wrap{display:flex;gap:6px 14px;align-items:center;flex-wrap:wrap;padding-block:9px}
-.nav b{font-family:var(--mono);font-size:.82rem;letter-spacing:.06em;margin-right:auto;white-space:nowrap}
-.nav a{font-size:.88rem;text-decoration:none;color:var(--muted);padding:3px 8px;border-radius:6px}.nav a:hover{background:var(--panel2);color:var(--ink)}
+CSS = ESTILO_BASE + """
+body{font-size:15px;line-height:1.55}
 .tag{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:4px;display:inline-block}
 .hero .tag,.ejhead .tag{align-self:flex-start}
 .hero{padding-block:34px 18px;display:flex;flex-direction:column;gap:10px}
-h1{font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.15;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1{font-size:clamp(1.7rem,4vw,2.5rem);letter-spacing:-.02em}
 h2{font-size:1.45rem;margin:0 0 4px;letter-spacing:-.01em}.lede{color:var(--muted);max-width:68ch;margin:0}
 .stats{display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--mono);font-size:.85rem;color:var(--muted)}.stats b{color:var(--ink);font-size:1.15rem}
 .search{font:inherit;width:100%;max-width:420px;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink)}
@@ -168,8 +162,7 @@ footer{color:var(--muted);font-size:.82rem;padding-block:30px 40px}
 /* página de ejercicio */
 .ejhead{padding-block:22px 8px;display:flex;flex-direction:column;gap:8px}.ejhead .acc{display:flex;flex-wrap:wrap;gap:8px}
 .btn{font:inherit;font-size:.9rem;font-weight:500;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 13px;text-decoration:none;cursor:pointer;display:inline-block}
-.btn:hover{border-color:var(--blue)}.btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
-:root[data-theme=dark] .btn.on{color:#1b1400}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .btn.on{color:#1b1400}}
+.btn:hover{border-color:var(--blue)}.btn.on,.btn.prim{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 12px}.pane{display:none}.pane.on{display:block}
 .md{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 20px 16px;overflow-x:auto}.md h1{font-size:1.5rem;margin-top:16px}.md h2{font-size:1.2rem;margin-top:20px}
 .md pre{background:var(--code-bg);color:var(--code-ink);padding:12px 14px;border-radius:10px;overflow-x:auto;font-size:12.5px;line-height:1.5}.md pre code{background:none;padding:0;color:inherit}
@@ -186,7 +179,6 @@ video{width:100%;max-width:960px;border-radius:10px;background:#000}iframe.pdf{w
 .tabs .btn .cnt{font-size:.75rem;color:var(--muted);margin-left:4px}.tabs .btn.off{opacity:.55}
 .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}.bar .grow{flex:1}
 .bar .hint{font-size:.85rem;color:var(--muted)}
-.btn.prim{background:var(--accent);border-color:var(--accent);color:#fff}:root[data-theme=dark] .btn.prim{color:#1b1400}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .btn.prim{color:#1b1400}}
 .acr{background:var(--green-soft);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:10px;padding:10px 14px;margin:0 0 12px;font-size:.92rem;line-height:1.5}.acr.rel{background:var(--blue-soft);border-left-color:var(--blue)}.acr b{display:block;margin-bottom:2px}.acr a{font-weight:600}
 .nada{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:26px;color:var(--muted);text-align:center}
 .vid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px;align-items:start}@media(max-width:860px){.vid{grid-template-columns:minmax(0,1fr)}}
@@ -200,7 +192,7 @@ a.vcard{display:flex;flex-direction:column;gap:4px;background:var(--panel);borde
 a.vcard:hover{border-color:var(--green)}a.vcard .n{font-family:var(--mono);font-size:.75rem;color:var(--green)}a.vcard .d{font-size:.84rem;color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none}.toast.on{opacity:1}
 """
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">'
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">'
 
 HIGHLIGHT_JS = r"""
 const KW=/^(for|if|else|while|return|const|class|struct|public|private|protected|void|bool|int|long|double|char|auto|true|false|template|typename|using|namespace|throw|new|delete|break|continue|static|nullptr|include|define|ifndef|endif|inline|unsigned|operator|switch|case|default|do)$/;
@@ -267,12 +259,13 @@ JSZIP = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.
 
 
 def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head=""):
-    nav = (f'<nav class="nav"><div class="wrap"><b>DA · DISEÑO DE ALGORITMOS</b>'
-           f'<a href="{prefijo}index.html">Inicio</a><a href="{prefijo}index.html#herramientas">Herramientas</a>'
-           + "".join(f'<a href="{prefijo}index.html#tema{t}">Tema {t}</a>' for t in TEMAS)
-           + f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a href="{prefijo}videos.html">Vídeos</a></div></nav>')
+    portal = f'<a href="{esc(PORTAL_URL)}">← Portal</a>' if PORTAL_URL else ""
+    nav = (f'<header class="nav"><div class="wrap nav-in"><a class="brand" href="{prefijo}index.html"><span class="logo" aria-hidden="true">DA</span><b>Diseño de Algoritmos</b></a>'
+           f'<nav aria-label="Principal">{portal}<a href="{prefijo}index.html#herramientas">Herramientas</a><a class="keep" href="{prefijo}index.html#temas">Temas</a>'
+           f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a class="keep" href="{prefijo}videos.html">Vídeos</a></nav>'
+           f'<button id="tema" class="icon-btn" type="button" aria-label="Cambiar tema claro/oscuro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></div></header>')
     return (f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{FONTS}<style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{nav}{cuerpo}<div class="toast" id="toast"></div><script>{COMUN_JS}{extra_js}</script></body></html>')
+            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{FONTS}<script>{TEMA_INI}</script><style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{nav}{cuerpo}<div class="toast" id="toast"></div><script>{TEMA_JS}{COMUN_JS}{extra_js}</script></body></html>')
 
 
 def render_md(ruta_rel):

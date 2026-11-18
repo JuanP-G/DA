@@ -1,50 +1,8 @@
-/* Sistema visual común de las visualizaciones de DA (cuaderno de laboratorio de algoritmos).
-   Cada página añade su CSS propio DESPUÉS de este bloque. */
-:root {
-  --bg: #f3f4f8;
-  --panel: #ffffff;
-  --panel-2: #eceef4;
-  --ink: #1a2133;
-  --muted: #5d667b;
-  --line: #d9deea;
-  --accent: #b86e00;        /* nodo activo / raíz / resultado */
-  --accent-soft: #fbeccd;
-  --blue: #1f6fb8;          /* comparando / visitando */
-  --blue-soft: #d9eafa;
-  --red: #c4372d;           /* intercambio / rotación / ciclo */
-  --red-soft: #fbdcd8;
-  --green: #1e7f57;         /* terminado / correcto */
-  --green-soft: #d6f1e4;
-  --purple: #6c4bc1;
-  --purple-soft: #e6dffa;
-  --node: #ffffff;
-  --code-bg: #121a2b;
-  --code-ink: #dce4f5;
-  --code-dim: #6f7b95;
-  --code-hl: #3a3010;
-  --code-hl-bar: #f5a623;
-  --kw: #ff79c6; --ty: #8be9fd; --nu: #bd93f9; --co: #7e8aa8; --st: #f1fa8c;
-  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
-    --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
-    --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
-    --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
-    --code-bg: #0a0f1c; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
-  --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
-  --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
-  --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
-  --code-bg: #0a0f1c; color-scheme: dark;
-}
-* { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; margin: 0; }
+/* Tokens, base y modo oscuro: sitio/estilo/apuntes.css (se antepone al construir). Aquí solo lo propio de las visualizaciones. */
+:root { --node: #ffffff; --code-hl: #3a3010; --code-hl-bar: #f5a623; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --node: #1f2a45; } }
+:root[data-theme="dark"] { --node: #1f2a45; }
+body { font-size: 15px; line-height: 1.5; }
 .wrap { max-width: 1120px; margin: 0 auto; padding: 22px 16px 56px; display: flex; flex-direction: column; gap: 16px; }
 .wrap > * { min-width: 0; }
 header.top { display: flex; flex-direction: column; gap: 6px; }
@@ -62,9 +20,7 @@ h1 { font-size: clamp(1.45rem, 3.2vw, 2rem); line-height: 1.2; margin: 0; font-w
   border-radius: 8px; padding: 7px 12px; cursor: pointer; }
 .btn:hover { border-color: var(--blue); }
 .btn:focus-visible, .field:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-:root[data-theme="dark"] .btn.primary { color: #1b1400; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #1b1400; } }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .btn.on { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
 .btn:disabled { opacity: .45; cursor: default; }
 .field { font: inherit; font-family: var(--mono); font-size: .9rem; width: 5.2em; color: var(--ink); background: var(--bg);

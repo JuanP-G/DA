@@ -11,9 +11,9 @@ marcador /*SHARED_JS*/ donde se inserta shared.js. El marcador /*SHARED_CSS*/ de
 import pathlib, re, sys
 
 AQUI = pathlib.Path(__file__).parent
-CSS = (AQUI / "shared.css").read_text(encoding="utf-8")
+CSS = ((AQUI.parent.parent / "sitio" / "estilo" / "apuntes.css").read_text(encoding="utf-8") + "\n" + (AQUI / "shared.css").read_text(encoding="utf-8"))
 JS = (AQUI / "shared.js").read_text(encoding="utf-8")
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">'
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">'
 
 def main():
     out_art = AQUI / "_artifact"
