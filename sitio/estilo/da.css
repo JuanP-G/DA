@@ -127,3 +127,19 @@ body{padding-bottom:56px}
 
 h1,h2,h3{overflow-wrap:anywhere}
 .btn.mini{padding:5px 14px;font-size:.85rem;margin-left:8px}
+
+/* Teoría en PDF: tarjetas en el tema + panel lateral */
+.teoria-bloque{margin:6px 0 22px}.teoria-bloque h2{font-size:1.15rem;margin:0 0 10px}
+.pcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.pcard{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;align-items:center;padding:14px 16px;border-radius:20px;border:1px solid var(--glass-b,var(--line));background:var(--glass,var(--panel))}
+.pcard .pic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.pcard b{display:block;overflow-wrap:anywhere}.pcard small{color:var(--muted)}
+.pcard .acc{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 0}
+.teo-fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:40;box-shadow:0 12px 30px -10px rgba(0,0,0,.6)}
+.teo-panel{position:fixed;top:0;right:0;bottom:0;width:min(46vw,640px);min-width:360px;z-index:60;display:flex;flex-direction:column;background:var(--panel);border-left:1px solid var(--line);box-shadow:-24px 0 50px -24px rgba(0,0,0,.6)}
+.teo-panel[hidden]{display:none}
+.teo-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line)}
+.teo-bar select{flex:1;min-width:0;max-width:100%;font:inherit;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+.teo-panel iframe{flex:1;width:100%;border:0;background:#fff}
+@media(min-width:1100px){body.teo-on{padding-right:min(46vw,640px)}body.teo-on .teo-fab{right:calc(min(46vw,640px) + 16px)}}
+@media(max-width:700px){.teo-panel{width:100%;min-width:0}}

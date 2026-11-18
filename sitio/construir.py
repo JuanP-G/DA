@@ -550,8 +550,8 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
               f'<h1>{esc(e["id"])} · {esc(e["titulo"])}</h1><p class="lede">{md_inline(e["idea"])}</p>'
               f'<div class="acc">{"".join(acc)}</div>'
               + (f'<p class="hint" style="margin:0;color:var(--muted);font-size:.85rem">El zip incluye: {contenido_zip}.</p>' if ficheros_zip else "")
-              + f'</div><div class="tabs">{botones}</div>{panes}{pager}</div>')
-    return pagina(f'{e["id"]} {e["titulo"]} | Diseño de Algoritmos UCM', cuerpo, "../", HIGHLIGHT_JS + TABS_JS, e["idea"], JSZIP, ruta=f"ej/{slug}.html")
+              + f'</div><div class="tabs">{botones}</div>{panes}{pager}</div>{teoria_panel(tema, "../")}')
+    return pagina(f'{e["id"]} {e["titulo"]} | Diseño de Algoritmos UCM', cuerpo, "../", HIGHLIGHT_JS + TABS_JS + (TEORIA_JS if TEORIA.get(tema) else ""), e["idea"], JSZIP, ruta=f"ej/{slug}.html")
 
 
 def pagina_cabecera(nombre):
@@ -638,6 +638,68 @@ document.addEventListener('click',function(){setTimeout(ap,0)});window.addEventL
 """
 
 
+
+# ---------- Teoría en PDF (carpeta Teoria/ del repo) ----------
+def teoria_pdfs():
+    """{tema: [(ruta_relativa, nombre_legible, bytes)]}. El tema sale del primer número
+    de la ruta (Teoria/tema6/Kruskal.pdf, Teoria/6/..., Teoria/Tema6_Kruskal.pdf)."""
+    res = {}
+    base = RAIZ / "Teoria"
+    if not base.is_dir():
+        return res
+    for f in sorted(base.rglob("*.pdf")):
+        rel = f.relative_to(base)
+        m = re.search(r"(\d+)", "/".join(rel.parts[:-1])) or re.search(r"(\d+)", rel.name)
+        if not m:
+            continue
+        nombre = re.sub(r"^(tema\s*\d+\s*[-_.:]*\s*)", "", f.stem, flags=re.I).replace("_", " ").strip() or f.stem
+        res.setdefault(int(m.group(1)), []).append((f.relative_to(RAIZ).as_posix(), nombre, f.stat().st_size))
+    return res
+
+TEORIA = {}
+
+def url_teoria(t, rel, prefijo):
+    return f'{prefijo}teoria/{t}/{quote(posixpath.basename(rel))}'
+
+def teoria_cards(t, prefijo):
+    docs = TEORIA.get(t)
+    if not docs:
+        return ""
+    cards = "".join(
+        f'<div class="pcard"><span class="pic">@@i:pdf@@</span><div><b>{esc(n)}</b><small>PDF · {tam_legible(b)}</small></div>'
+        f'<div class="acc"><button class="btn primary" type="button" data-teo="{i}">@@i:book@@ Abrir aquí</button>'
+        f'<a class="btn" href="{url_teoria(t, r, prefijo)}" download>@@i:download@@ Descargar</a></div></div>'
+        for i, (r, n, b) in enumerate(docs))
+    return f'<section class="teoria-bloque" aria-label="Teoría del tema"><h2>Teoría del tema</h2><div class="pcards">{cards}</div></section>'
+
+def teoria_panel(t, prefijo):
+    """Botón flotante + panel lateral con visor PDF; disponible en el tema y en cada ejercicio."""
+    docs = TEORIA.get(t)
+    if not docs:
+        return ""
+    opts = "".join(f'<option value="{esc(url_teoria(t, r, prefijo))}">{esc(n)}</option>' for r, n, b in docs)
+    return (f'<button class="btn primary teo-fab" type="button" id="teoAbrir" aria-controls="teoPanel" aria-expanded="false">@@i:book@@ Teoría</button>'
+            f'<aside class="teo-panel" id="teoPanel" aria-label="Teoría del tema {t}" hidden><div class="teo-bar"><b>Teoría · Tema {t}</b>'
+            f'<select id="teoSel" aria-label="Documento">{opts}</select>'
+            f'<a class="btn mini" id="teoTab" target="_blank" rel="noopener" href="#">Abrir en pestaña</a>'
+            f'<button class="btn mini" type="button" id="teoCerrar">Cerrar</button></div>'
+            f'<iframe id="teoFrame" title="Visor de PDF" loading="lazy"></iframe></aside>')
+
+TEORIA_JS = r"""
+(function(){var b=document.getElementById('teoAbrir');if(!b)return;
+var P=document.getElementById('teoPanel'),S=document.getElementById('teoSel'),F=document.getElementById('teoFrame'),T=document.getElementById('teoTab');
+function key(){return 'studia-da-teoria-'+location.pathname.replace(/[^0-9]/g,'').slice(0,0)+(document.title.match(/Tema (\d+)/)||[0,''])[1]}
+function cargar(){F.src=S.value+'#view=FitH';T.href=S.value}
+function abrir(i){if(typeof i==='number')S.selectedIndex=i;P.hidden=false;document.body.classList.add('teo-on');b.setAttribute('aria-expanded','true');cargar();try{localStorage.setItem('studia-da-teo-open','1')}catch(e){}}
+function cerrar(){P.hidden=true;document.body.classList.remove('teo-on');b.setAttribute('aria-expanded','false');F.removeAttribute('src');try{localStorage.removeItem('studia-da-teo-open')}catch(e){}}
+b.onclick=function(){P.hidden?abrir():cerrar()};
+document.getElementById('teoCerrar').onclick=cerrar;S.onchange=cargar;
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!P.hidden)cerrar()});
+document.querySelectorAll('[data-teo]').forEach(function(x){x.onclick=function(){abrir(+x.dataset.teo)}});
+})();
+"""
+
+
 def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     color = color_de(t)
     teo = [x for x in lista if es_teoria(x[1])]
@@ -673,14 +735,15 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
               f'<div class="sm" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))"><div class="box hi" data-ids="{ids}" style="background:linear-gradient(135deg,color-mix(in srgb,{color} 60%,#0a0b1c),color-mix(in srgb,{color} 25%,#0a0b1c));border-color:color-mix(in srgb,{color} 55%,transparent)"><small>Tu progreso</small><b data-pct>0%</b><span data-hechos>0 de {n} hechos</span><div class="prog"><i data-bar></i></div></div>'
               f'<div class="box"><small>Con solución</small><b>{round(n_sol / n * 100) if n else 0}%</b><span>{n_sol} de {n} ejercicios</span></div>'
               f'<div class="box"><small>Tests</small><b>0</b><span>del profe y propios · próximamente</span></div></div>'
+              f'{teoria_cards(t, "../")}'
               f'<div class="tabs"><button class="btn" data-tab="ejercicios">@@i:code@@ Ejercicios <span class="cnt">{n}</span></button>'
               f'<button class="btn" data-tab="tp">@@i:check@@ Tests del profe <span class="cnt">0</span></button><button class="btn" data-tab="tn">@@i:check@@ Tests propios <span class="cnt">0</span></button></div>'
               f'<div class="pane" id="p-ejercicios"><div class="filters"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="pend">Pendientes</button><button class="chip" data-f="hechos">Hechos</button><button class="chip" data-fv>@@i:video@@ Con vídeo</button></div>'
               f'{"".join(filas)}<p class="vacio" id="sin">Ningún ejercicio coincide con el filtro.</p></div>'
-              f'<div class="pane" id="p-tp">{sin_tests("tests del profe")}</div><div class="pane" id="p-tn">{sin_tests("tests propios")}</div>{pager}</div>')
+              f'<div class="pane" id="p-tp">{sin_tests("tests del profe")}</div><div class="pane" id="p-tn">{sin_tests("tests propios")}</div>{pager}</div>{teoria_panel(t, "../")}')
     titulo = f'Tema {t} · {info["nombre"]} | Diseño de Algoritmos UCM'
     desc = f'{info["resumen"]} Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++ con explicación.'
-    return pagina(titulo, cuerpo, "../", TABS_JS + FILTRO_JS, desc, ruta=f"tema/{t}.html")
+    return pagina(titulo, cuerpo, "../", TABS_JS + FILTRO_JS + (TEORIA_JS if TEORIA.get(t) else ""), desc, ruta=f"tema/{t}.html")
 
 
 
@@ -695,6 +758,8 @@ def commit_info():
 
 
 def main():
+    global TEORIA
+    TEORIA = teoria_pdfs()
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / "ej").mkdir(parents=True); (OUT / "estructuras").mkdir()
@@ -810,6 +875,9 @@ window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');
                     COPIAR.add(p.relative_to(RAIZ).as_posix())
     for c in cabs:
         COPIAR.add(f"Estructuras de datos/{c}")
+    for t_, docs in TEORIA.items():
+        for r_, _n, _b in docs:
+            d = OUT / 'teoria' / str(t_) / posixpath.basename(r_); d.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(RAIZ / r_, d)
     for rel in sorted(COPIAR):
         if existe(rel):
             d = OUT / rel; d.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(RAIZ / rel, d)
