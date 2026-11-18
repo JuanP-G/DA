@@ -89,6 +89,7 @@ python v07_teoria.py             # genera el mp4
 - `v01_1.py`, `v01_2.py`, `v02_1.py` … `v02_6.py`, `v02_L.py`, `v03_1.py` … `v03_3.py` → ejercicios de los temas 1, 2 y 3
 - `pq_comun.py` (montículo con índices y su dibujo animado) y `pq_traza.py` (escenas de traza, código por secciones y listas)
 - `v08_2.py`, `v08_3.py`, `v08_4.py`, `v08_L.py`, `v09_1.py` … `v09_4.py`, `v09_L.py`, `vEval_1.py` → ejercicios de voraces y Eval-1
+- `v01_teoria.py`, `v02_teoria.py`, `v03_teoria.py`, `v04_teoria.py` → teorías animadas de los temas 1 a 4 (`../0N-0_…_teoria.mp4`)
 - `v08_teoria.py` → `../08-0_algoritmos_voraces_teoria.mp4` (teoría de los temas 8 y 9)
 - `vor_comun.py`: piezas comunes (cajas, mover, pasos, ✓/✗, etiquetas sobre fondo oscuro)
 - `v10_1.py` → `../10-1_la_cuerda_de_la_cometa.mp4`
