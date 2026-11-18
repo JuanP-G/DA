@@ -34,7 +34,7 @@
       var H=cuenta(todos,h),T=todos.length;
       var q=function(s){return res.querySelector(s)};
       q('[data-r=pct]').textContent=pct(H,T)+'%';q('[data-r=bar]').style.width=pct(H,T)+'%';
-      q('[data-r=txt]').innerHTML=H+' de '+T+' ejercicios hechos'+(sig?' · <a href="'+sig.getAttribute('href')+'">sigue en el tema '+sig.dataset.tema+'</a>':'');
+      q('[data-r=txt]').innerHTML=H+' de '+T+' ejercicios hechos'+(sig?' <a class="btn mini" href="'+sig.getAttribute('href')+'">Seguir en el tema '+sig.dataset.tema+' →</a>':'');
       q('[data-r=comp]').textContent=comp;q('[data-r=curso]').textContent=curso+' en curso';
     }
   }

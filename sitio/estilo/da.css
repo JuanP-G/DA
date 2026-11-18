@@ -124,3 +124,6 @@ body{padding-bottom:56px}
 .exr.teoria{background:linear-gradient(135deg,color-mix(in srgb,var(--c) 22%,transparent),color-mix(in srgb,var(--c) 6%,transparent));border-color:color-mix(in srgb,var(--c) 45%,transparent);margin-bottom:14px}
 .okb.th0{border-color:transparent;color:var(--c);cursor:default}.okb.th0:hover{border-color:transparent}.okb.th0 .i{width:18px;height:18px}
 .exr.teoria .id{font-family:var(--sans);font-weight:800;color:var(--c)}
+
+h1,h2,h3{overflow-wrap:anywhere}
+.btn.mini{padding:5px 14px;font-size:.85rem;margin-left:8px}

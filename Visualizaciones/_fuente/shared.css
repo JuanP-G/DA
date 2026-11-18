@@ -27,7 +27,7 @@ h1 { font-size: clamp(1.45rem, 3.2vw, 2rem); line-height: 1.2; margin: 0; font-w
   border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
 select.field { width: auto; font-family: var(--sans); }
 .stage { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
-@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr) !important; } }
 .canvas-scroll { overflow-x: auto; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); }
 svg.viz { display: block; width: 100%; height: auto; }
 svg.viz text { font-family: var(--mono); fill: var(--ink); }
@@ -79,3 +79,24 @@ h1 { font-weight: 800; letter-spacing: -.03em; }
 select.field { border-radius: 999px; padding-inline: 14px; }
 .field { border-radius: 12px; }
 .wrap { padding-bottom: 72px; }
+
+/* pie: texto corrido, con el primer enlace como botón */
+footer.foot { display: block; padding-block: 22px 12px; line-height: 2; }
+footer.foot > a:first-child { display: inline-flex; align-items: center; gap: 6px; padding: 7px 15px; margin: 0 12px 0 0; border-radius: 999px; font-weight: 600; font-size: .88rem; line-height: 1.4;
+  text-decoration: none; color: var(--ink); background: color-mix(in srgb, var(--panel-2) 75%, transparent); border: 1px solid var(--glass-b, var(--line)); box-shadow: inset 0 1px 0 var(--hi, transparent); }
+footer.foot > a:first-child:hover { border-color: var(--accent); }
+/* barras de controles: que envuelvan en pantallas estrechas */
+.bar, .bar .grp, .player .row { flex-wrap: wrap; }
+.panel { min-width: 0; }
+
+/* controles que no deben salirse del panel en móvil */
+label { flex-wrap: wrap; max-width: 100%; }
+select.field, input.field { max-width: 100%; min-width: 0; }
+.stage > *, .panel > *, .wrap > * { min-width: 0; }
+.note { overflow-wrap: anywhere; }
+span.note { display: block; }
+.listbox{flex-wrap:wrap;max-width:100%}
+.vec{max-width:100%;overflow-x:auto}
+.canvas-scroll { max-width: 100%; min-width: 0; }
+.stage, .stage > * > * { min-width: 0; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr) !important; } }
