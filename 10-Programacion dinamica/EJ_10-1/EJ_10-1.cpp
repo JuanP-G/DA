@@ -1,0 +1,68 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+
+/*
+    La cuerda de la cometa
+
+    N cordeles (1..1.000), cada uno con su longitud y su coste (1..1.000), y una longitud L
+    (1..1.000). Cada cordel se usa como mucho una vez y el orden no importa. Si se puede formar
+    exactamente L, escribir SI, el numero de formas, el minimo numero de cordeles y el minimo
+    coste (cada pregunta por separado). Si no, NO.
+*/
+
+/*
+    PLANTEAMIENTO (programacion dinamica: mochila 0/1 con suma exacta)
+    Tres tablas sobre las longitudes j = 0..L, considerando los cordeles uno a uno:
+        formas[j]  = numero de subconjuntos de los cordeles vistos que suman j
+        cordeles[j]= minimo numero de cordeles para sumar j      (INF si no se puede)
+        coste[j]   = minimo coste para sumar j                   (INF si no se puede)
+    Casos base: formas[0] = 1, cordeles[0] = coste[0] = 0.
+
+    Al anadir el cordel (l, c), para j de L hacia abajo hasta l:
+        formas[j]   += formas[j - l]
+        cordeles[j]  = min(cordeles[j], cordeles[j - l] + 1)
+        coste[j]     = min(coste[j],    coste[j - l] + c)
+    Se recorre j DE MAYOR A MENOR para que cada cordel se use como mucho una vez (j - l todavia
+    tiene el valor de antes de anadir este cordel).
+
+    El enunciado garantiza que ninguna longitud se consigue de mas de 10^18 formas: long long.
+
+    Coste: O(N * L) en tiempo y O(L) en espacio por caso.
+*/
+
+void resuelveCaso() {
+    int N, L;
+    cin >> N >> L;
+    const int INF = INT_MAX;
+    vector<long long> formas(L + 1, 0);
+    vector<int> cordeles(L + 1, INF), coste(L + 1, INF);
+    formas[0] = 1; cordeles[0] = 0; coste[0] = 0;
+
+    for (int k = 0; k < N; ++k) {
+        int l, c;
+        cin >> l >> c;
+        for (int j = L; j >= l; --j) {
+            if (formas[j - l] == 0) continue;            // j - l no se puede formar
+            formas[j] += formas[j - l];
+            cordeles[j] = min(cordeles[j], cordeles[j - l] + 1);
+            coste[j] = min(coste[j], coste[j - l] + c);
+        }
+    }
+
+    if (formas[L] == 0) cout << "NO\n";
+    else cout << "SI " << formas[L] << ' ' << cordeles[L] << ' ' << coste[L] << '\n';
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int casos;
+    cin >> casos;
+    while (casos--) resuelveCaso();
+    return 0;
+}

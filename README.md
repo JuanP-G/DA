@@ -13,6 +13,11 @@ Ejercicios del juez de **Diseño de Algoritmos** resueltos en C++, cada uno con 
 | [5 · Grafos dirigidos](#tema-5--grafos-dirigidos) | `Digrafo` | 6 + teoría | 5 | [`tema5-digrafo.html`](Visualizaciones/tema5-digrafo.html) |
 | [6 · Conjuntos disjuntos y grafos valorados](#tema-6--conjuntos-disjuntos-y-grafos-valorados) | `ConjuntosDisjuntos`, `GrafoValorado` | 5 + teoría | 1 | [`tema6-kruskal.html`](Visualizaciones/tema6-kruskal.html) |
 | [7 · Dígrafos valorados y caminos mínimos](#tema-7--dígrafos-valorados-y-caminos-mínimos) | `DigrafoValorado`, Dijkstra | 3 + teoría | 4 | [`tema7-dijkstra.html`](Visualizaciones/tema7-dijkstra.html) |
+| [8 · Algoritmos voraces](#tema-8--algoritmos-voraces) | `sort`, `priority_queue` | 5 | — | — |
+| [9 · Algoritmos voraces II](#tema-9--algoritmos-voraces-ii) | `sort`, Dijkstra | 5 | — | — |
+| [10 · Programación dinámica](#tema-10--programación-dinámica) | tablas | 4 | — | — |
+| [11 · Programación dinámica II](#tema-11--programación-dinámica-ii) | tablas + reconstrucción | 2 | — | — |
+| [12 · Problemas de evaluación](#tema-12--problemas-de-evaluación) | `Digrafo` | 1 | — | — |
 
 **Más abajo:** [Visualizaciones](#visualizaciones-interactivas) · [Estructuras de datos](#estructuras-de-datos) · [Vídeos](#vídeos) · [Organización](#organización-del-repositorio) · [Añadir un ejercicio](#añadir-un-ejercicio-nuevo) · [Compilar](#compilar-y-probar) · [Web](#web-del-repositorio)
 
@@ -163,6 +168,60 @@ Carpeta [`7-Digrafos valorados y caminos minimos/`](7-Digrafos%20valorados%20y%2
 
 ---
 
+## Tema 8 · Algoritmos voraces
+
+Carpeta [`8-Algoritmos voraces/`](8-Algoritmos%20voraces). No usan ninguna estructura de datos del curso: basta con ordenar (`sort`) y, en 08-L, una `priority_queue`. Cada explicación incluye **por qué la elección voraz es óptima** (argumento de intercambio). Los enunciados están en el juez de la asignatura.
+
+| Nº | Problema | Enunciado | Solución | Vídeo | Idea |
+|:--:|---|:--:|---|:--:|---|
+| 08-1 | Agujeros en la manguera | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-1/EJ_08-1.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-1/README.md) | — | Cada parche empieza en el primer agujero sin tapar y llega hasta `p + L` |
+| 08-2 | ¡Nos invaden! | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-2/EJ_08-2.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-2/README.md) | — | Ordenar ciudades y equipos; a cada ciudad, el equipo más pequeño que la gana (dos índices) |
+| 08-3 | Comienza la temporada | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-3/EJ_08-3.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-3/README.md) | — | Contar por tallas; de menor a mayor, primero su talla y luego una más |
+| 08-4 | Maratón de cine de terror | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-4/EJ_08-4.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-4/README.md) | — | Selección de actividades: ordenar por fin y coger si `inicio ≥ fin anterior + 10` |
+| 08-L | Planificación de conferencias | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-L/EJ_08-L.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-L/README.md) | — | Por hora de comienzo, reutilizar la sala que queda libre antes (`priority_queue`) o abrir una nueva |
+
+## Tema 9 · Algoritmos voraces II
+
+Carpeta [`9-Algoritmos voraces II/`](9-Algoritmos%20voraces%20II). Más voraces sobre intervalos y emparejamientos. 09-L combina un voraz con dos Dijkstra ([`GrafoValorado.h`](Estructuras%20de%20datos/GrafoValorado.h) e [`IndexPQ.h`](Estructuras%20de%20datos/IndexPQ.h)). Los enunciados están en el juez de la asignatura.
+
+| Nº | Problema | Enunciado | Solución | Vídeo | Idea |
+|:--:|---|:--:|---|:--:|---|
+| 09-1 | ¡En primera línea de playa! | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-1/EJ_09-1.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-1/README.md) | — | Pinchar intervalos: ordenar por extremo oriental y poner el pasadizo en `[E − 1, E]` |
+| 09-2 | El alienígena infiltrado | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-2/EJ_09-2.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-2/README.md) | — | Cubrir `[C, F)`: entre los que empiezan antes de lo cubierto, el que llega más lejos |
+| 09-3 | Carreras de coches | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-3/EJ_09-3.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-3/README.md) | — | Emparejar extremos: si la más débil y la más fuerte llegan a V, coche; si no, se descarta la débil |
+| 09-4 | El telesilla | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-4/EJ_09-4.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-4/README.md) | — | Emparejar extremos: el más pesado sube con el más ligero si caben, si no solo |
+| 09-L | Necesitamos agua | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-L/EJ_09-L.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-L/README.md) | — | Dijkstra desde las dos plantas; todos al sur y se pasan al norte los de menor `dN − dS` |
+
+## Tema 10 · Programación dinámica
+
+Carpeta [`10-Programacion dinamica/`](10-Programacion%20dinamica). Recurrencias rellenadas en tablas, casi siempre guardando solo una fila. Los enunciados están en el juez de la asignatura.
+
+| Nº | Problema | Enunciado | Solución | Vídeo | Idea |
+|:--:|---|:--:|---|:--:|---|
+| 10-1 | La cuerda de la cometa | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-1/EJ_10-1.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-1/README.md) | — | Mochila 0/1 de suma exacta con tres tablas a la vez: formas, mínimo de cordeles y mínimo coste |
+| 10-2 | Construyendo dianas | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-2/EJ_10-2.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-2/README.md) | — | Cambio de monedas ilimitadas con la tabla entera para reconstruir los dardos |
+| 10-3 | Esquivando las obras en los cruces | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-3/EJ_10-3.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-3/README.md) | — | Contar caminos sur/este: `caminos(i, j) = arriba + izquierda`, 0 en las obras |
+| 10-4 | ¿Por dónde hay que subir? | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-4/EJ_10-4.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-4/README.md) | — | `mejor(i, j) = t(i, j) + máx` de las tres de encima; el máximo de la última fila, el de más a la izquierda |
+
+## Tema 11 · Programación dinámica II
+
+Carpeta [`11-Programacion dinamica II/`](11-Programacion%20dinamica%20II). Programación dinámica **con reconstrucción** de la solución. Los enunciados están en el juez de la asignatura.
+
+| Nº | Problema | Enunciado | Solución | Vídeo | Idea |
+|:--:|---|:--:|---|:--:|---|
+| 11-1 | El cazatesoros | juez | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-1/EJ_11-1.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-1/README.md) | — | Mochila 0/1 (peso 3p, capacidad T) y reconstrucción de los cofres desde `(N, T)` |
+| 11-2 | Aibofobia | juez | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-2/EJ_11-2.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-2/README.md) | — | `faltan(i, j)` sobre intervalos y reconstrucción del palíndromo por los dos extremos |
+
+## Tema 12 · Problemas de evaluación
+
+Carpeta [`12-Evaluacion/`](12-Evaluacion). Problemas de evaluación del juez. MasterHash es de **grafos dirigidos** (tema 5) y usa [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h). Los enunciados están en el juez de la asignatura.
+
+| Nº | Problema | Enunciado | Solución | Vídeo | Idea |
+|:--:|---|:--:|---|:--:|---|
+| Eval-1 | MasterHash | juez | [💻 Solución](12-Evaluacion/EJ_Eval-1/EJ_Eval-1.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-1/README.md) | — | Lo que necesita P = alcanzables desde P en el **inverso**; NO si incluye S o hay ciclo (Kahn); si no, orden topológico |
+
+---
+
 <!-- acr-seccion:inicio -->
 ## Probar sin el juez: Acepta el Reto
 
@@ -292,6 +351,9 @@ Las carpetas de cada tema coinciden con las carpetas de la solución de Visual S
 │   └── …
 ├── 6-Conjuntos disjuntos y grafos valorados/   ejercicios (código + explicación) y resumen del tema
 ├── 7-Digrafos valorados y caminos minimos/    ejercicios (código + explicación) y resumen del tema
+├── 8-Algoritmos voraces/  ·  9-Algoritmos voraces II/        ejercicios (código + explicación)
+├── 10-Programacion dinamica/  ·  11-Programacion dinamica II/  ejercicios (código + explicación)
+├── 12-Evaluacion/                problemas de evaluación (EJ_Eval-1, …)
 ├── Acepta el Reto/              versiones de las soluciones listas para enviar a aceptaelreto.com (un solo fichero)
 ├── Estructuras de datos/        cabeceras de la asignatura (+ algoritmos de los temas 4 a 7)
 ├── Videos/                      vídeos explicativos
