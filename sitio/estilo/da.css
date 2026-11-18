@@ -115,3 +115,12 @@ a.vcard:hover{border-color:var(--green)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 .box b u{text-decoration:none}.box b em{font-style:normal;font-size:1rem;font-weight:600;opacity:.7}
+
+/* márgenes inferiores y botones que faltaban */
+body{padding-bottom:56px}
+.pager{margin-bottom:12px}
+.crumbs .back{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--glass-b,var(--line));border-radius:999px;background:color-mix(in srgb,var(--panel2) 75%,transparent);color:var(--ink);font-weight:600;font-size:.86rem;margin-right:8px;box-shadow:inset 0 1px 0 var(--hi,transparent)}
+.crumbs .back:hover{border-color:var(--accent);color:var(--ink)}
+.exr.teoria{background:linear-gradient(135deg,color-mix(in srgb,var(--c) 22%,transparent),color-mix(in srgb,var(--c) 6%,transparent));border-color:color-mix(in srgb,var(--c) 45%,transparent);margin-bottom:14px}
+.okb.th0{border-color:transparent;color:var(--c);cursor:default}.okb.th0:hover{border-color:transparent}.okb.th0 .i{width:18px;height:18px}
+.exr.teoria .id{font-family:var(--sans);font-weight:800;color:var(--c)}

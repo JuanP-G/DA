@@ -264,6 +264,20 @@ h1 { font-weight: 800; letter-spacing: -.03em; }
 :root[data-paleta="premium"]:not([data-theme="light"]) { --node: #1f2a45; }
 :root[data-paleta="premium"][data-theme="light"] { --node: #ffffff; }
 
+/* botones y paneles al estilo de StudIA (cristal, píldoras) */
+.btn { display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 7px 15px; font-weight: 600; text-decoration: none;
+  background: color-mix(in srgb, var(--panel-2) 75%, transparent); border: 1px solid var(--glass-b, var(--line)); box-shadow: inset 0 1px 0 var(--hi, transparent); transition: border-color .15s, box-shadow .15s; }
+.btn:hover { border-color: var(--accent); box-shadow: inset 0 1px 0 var(--hi, transparent), 0 10px 22px -12px var(--accent); }
+.btn.primary { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 82%, #fff), var(--accent)); border-color: color-mix(in srgb, var(--accent) 60%, #fff); color: var(--accent-ink); }
+.btn.on { background: color-mix(in srgb, var(--accent) 22%, transparent); border-color: var(--accent); color: var(--ink); }
+.back { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; padding: 7px 15px; border-radius: 999px; font-weight: 600; font-size: .88rem; text-decoration: none; color: var(--ink);
+  background: color-mix(in srgb, var(--panel-2) 75%, transparent); border: 1px solid var(--glass-b, var(--line)); box-shadow: inset 0 1px 0 var(--hi, transparent); }
+.back:hover { border-color: var(--accent); }
+.panel { background: var(--glass, var(--panel)); border-color: var(--glass-b, var(--line)); border-radius: 20px; box-shadow: inset 0 1px 0 var(--hi, transparent); }
+select.field { border-radius: 999px; padding-inline: 14px; }
+.field { border-radius: 12px; }
+.wrap { padding-bottom: 72px; }
+
 .gtools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .gtools .grp { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; max-width: 100%; }
 .gtools .sep { width: 1px; align-self: stretch; background: var(--line); }

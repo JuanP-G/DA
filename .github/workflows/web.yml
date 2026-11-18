@@ -27,6 +27,10 @@ jobs:
       # ffmpeg/ffprobe: subtítulos (.vtt) y capítulos de los vídeos para el reproductor de la web
       - run: which ffmpeg ffprobe || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
       - run: python3 sitio/construir.py
+        env:
+          # La web se muestra también dentro de StudIA (/da/); los vídeos se sirven desde aquí para no pasar por el proxy.
+          MEDIA_BASE: https://juanp-g.github.io/DA/
+          SITE_URL: https://studia-one-flax.vercel.app
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

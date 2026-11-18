@@ -73,11 +73,19 @@ DECO = ('<div class="deco" aria-hidden="true"><svg viewBox="0 0 1440 900" preser
         '<ellipse cx="260" cy="860" rx="520" ry="260" fill="url(#dg3)"/>'
         '<path d="M0 560C260 520 420 640 640 900" fill="none" stroke="#9a8cff" stroke-opacity=".09" stroke-width="2"/>'
         '<path d="M820 0C980 180 1200 220 1440 300" fill="none" stroke="#9a8cff" stroke-opacity=".08" stroke-width="2"/></svg></div>')
+SITE_URL = os.environ.get("SITE_URL", "https://studia-one-flax.vercel.app").rstrip("/")   # dominio donde vive la web (StudIA); DA cuelga de «/da/»
+BASE_DA = SITE_URL + "/da/"
+MEDIA_BASE = os.environ.get("MEDIA_BASE", "")   # si se indica (p. ej. https://juanp-g.github.io/DA/), los vídeos se sirven desde ahí en vez de pasar por el proxy
+PAGINAS = []   # rutas de todas las páginas, para el sitemap
 COPIAR = set()   # rutas relativas (posix) de ficheros del repo que hay que copiar a _site
 
 
 def _icono(m):
     return f'<svg class="i" aria-hidden="true"><use href="#i-{m.group(1)}"/></svg>'
+
+
+def es_teoria(e):
+    return re.search(r"-0$", e["id"]) is not None
 
 
 def esc(s):
@@ -281,7 +289,7 @@ KATEX = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Ka
 JSZIP = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>'
 
 
-def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head=""):
+def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head="", ruta=None):
     portal = f'<a href="{esc(PORTAL_URL)}/#asignaturas">Asignaturas</a>' if PORTAL_URL else ""
     nav = (f'<header class="nav"><div class="nav-pill"><a class="brand" href="{prefijo}index.html" aria-label="Diseño de Algoritmos, inicio"><img src="{prefijo}estilo/marca/mark.png" alt="" width="201" height="242"><b>StudIA</b><span class="subj">DA</span></a>'
            f'<nav aria-label="Principal">{portal}<a class="keep" href="{prefijo}index.html#temas">Temas</a><a href="{prefijo}index.html#herramientas">Herramientas</a>'
@@ -289,8 +297,15 @@ def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head=""):
            f'<button id="tema" class="icon-btn" type="button" aria-label="Cambiar tema claro/oscuro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></div></header>')
     iconos = (f'<link rel="icon" href="{prefijo}estilo/marca/favicon.ico" sizes="any"><link rel="icon" href="{prefijo}estilo/marca/favicon-32.png" type="image/png" sizes="32x32">'
               f'<link rel="apple-touch-icon" href="{prefijo}estilo/marca/apple-touch-icon.png"><meta name="theme-color" content="#080a1c">')
+    seo = ""
+    if ruta is not None:
+        PAGINAS.append(ruta)
+        canon = BASE_DA + quote(ruta)
+        seo = (f'<link rel="canonical" href="{esc(canon)}"><meta property="og:type" content="website"><meta property="og:site_name" content="StudIA"><meta property="og:locale" content="es_ES">'
+               f'<meta property="og:title" content="{esc(titulo)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{esc(canon)}">'
+               f'<meta property="og:image" content="{SITE_URL}/assets/marca/og.png"><meta name="twitter:card" content="summary_large_image">')
     pag = (f'<!doctype html><html lang="es" data-paleta="premium" data-estilo="glossy"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{iconos}{FONTS}<script>{TEMA_INI}</script><style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{DECO}{SPRITE}{nav}{cuerpo}<div class="toast" id="toast"></div><script>{TEMA_JS}{COMUN_JS}{PROGRESO_JS}{extra_js}</script></body></html>')
+            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{iconos}{seo}{FONTS}<script>{TEMA_INI}</script><style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{DECO}{SPRITE}{nav}{cuerpo}<div class="toast" id="toast"></div><script>{TEMA_JS}{COMUN_JS}{PROGRESO_JS}{extra_js}</script></body></html>')
     pag = GLIFO_RE.sub(lambda m: f'@@i:{GLIFOS[m.group(1)]}@@', pag)
     return ICON_RE.sub(_icono, pag)
 
@@ -498,11 +513,13 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     # 4 · Vídeo
     if e["video"]:
         vurl = href_sitio(e["video"], True)
+        if MEDIA_BASE:
+            vurl = MEDIA_BASE + quote(e["video"])
         vtt, caps = media_video(e["video"])
-        track = f'<track kind="subtitles" srclang="es" label="Español" src="../{quote(vtt)}" default>' if vtt else ""
+        track = f'<track kind="subtitles" srclang="es" label="Español" src="{(MEDIA_BASE + quote(vtt)) if MEDIA_BASE else "../" + quote(vtt)}" default>' if vtt else ""
         lista_caps = ("<div class='caps'><b>Capítulos</b>" + "".join(f'<button data-t="{t:.2f}"><span>{mmss(t)}</span>{esc(ti)}</button>' for t, ti in caps) + "</div>") if caps else ""
         p_vid = (f'<div class="bar">{descargar(e["video"], "@@i:download@@ Descargar vídeo")}<span class="hint">{tam_legible((RAIZ / e["video"]).stat().st_size)} · subtítulos con el botón CC del reproductor</span></div>'
-                 f'<div class="{"vid" if caps else ""}"><video controls preload="metadata" playsinline src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div>')
+                 f'<div class="{"vid" if caps else ""}"><video controls preload="metadata" playsinline{" crossorigin=anonymous" if MEDIA_BASE else ""} src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div>')
         ficheros_zip.append((vurl, "video.mp4"))
     else:
         p_vid = '<div class="nada">Este ejercicio todavía no tiene vídeo.</div>'
@@ -534,7 +551,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
               f'<div class="acc">{"".join(acc)}</div>'
               + (f'<p class="hint" style="margin:0;color:var(--muted);font-size:.85rem">El zip incluye: {contenido_zip}.</p>' if ficheros_zip else "")
               + f'</div><div class="tabs">{botones}</div>{panes}{pager}</div>')
-    return pagina(f'{e["id"]} {e["titulo"]}', cuerpo, "../", HIGHLIGHT_JS + TABS_JS, e["idea"], JSZIP)
+    return pagina(f'{e["id"]} {e["titulo"]} | Diseño de Algoritmos UCM', cuerpo, "../", HIGHLIGHT_JS + TABS_JS, e["idea"], JSZIP, ruta=f"ej/{slug}.html")
 
 
 def pagina_cabecera(nombre):
@@ -547,7 +564,7 @@ def pagina_cabecera(nombre):
               f'<div class="ejhead"><span class="tag">Estructura de datos</span><h1>{esc(nombre)}</h1>'
               f'<div class="acc"><button class="btn" data-copy="src0">@@i:copy@@ Copiar código</button>{descargar(rel, "@@i:download@@ Descargar " + esc(nombre))}{extra}</div></div>'
               f'<pre data-code="{esc(nombre)}" id="src0">{esc(txt)}</pre></div>')
-    return pagina(nombre, cuerpo, "../", HIGHLIGHT_JS)
+    return pagina(f"{nombre} | Estructuras de datos de DA", cuerpo, "../", HIGHLIGHT_JS, f"Código de {nombre}, la cabecera de la asignatura de Diseño de Algoritmos, con visor, copiar y descargar.", ruta=f"estructuras/{nombre}.html")
 
 
 def pagina_videos(ej, slugs):
@@ -563,12 +580,12 @@ def pagina_videos(ej, slugs):
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="index.html" data-back>← Volver</a><a href="index.html">Inicio</a>›<span>Vídeos</span></div>'
               f'<div class="hero"><span class="tag">Vídeos</span><h1>Vídeos explicativos</h1><p class="lede">Se ven aquí mismo, con subtítulos y, en los largos, capítulos. Cada uno abre la página de su ejercicio, donde también se puede descargar.</p></div>'
               f'{"".join(bloques)}</div>')
-    return pagina("Vídeos · DA", cuerpo, "", "")
+    return pagina("Vídeos de Diseño de Algoritmos UCM | StudIA", cuerpo, "", "", "Vídeos paso a paso de todos los ejercicios de Diseño de Algoritmos de la FDI UCM, con subtítulos.", ruta="videos.html")
 
 
 VOLVER_HERR = ('<a href="../index.html#herramientas" onclick="try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){history.back();return false}}catch(e){}" '
                'style="position:fixed;left:12px;bottom:12px;z-index:99;font:600 14px system-ui,sans-serif;background:#151d31;color:#e7ecf7;border:1px solid #2a3556;'
-               'padding:8px 12px;border-radius:9px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.25)">← Volver a la web</a>')
+               'padding:9px 16px;border-radius:999px;text-decoration:none;box-shadow:0 8px 22px rgba(0,0,0,.35)">← Volver a la web</a>')
 
 
 def chips(e, slug, pre=""):
@@ -593,11 +610,14 @@ def plural(n, uno, varios):
 
 def tarjeta_tema(t, info, lista, slugs, hay_herr):
     """Tarjeta de la portada: soluciones disponibles, progreso personal (lo pinta progreso.js) y tests."""
+    teo = [x for x in lista if es_teoria(x[1])]
+    lista = [x for x in lista if not es_teoria(x[1])]
     n = len(lista)
     n_sol = sum(1 for _, e in lista if e["sols"]); n_vid = sum(1 for _, e in lista if e["video"])
     ids = ",".join(slugs[i] for i, _ in lista)
     pct_sol = round(n_sol / n * 100) if n else 0
     herr = '<span class="chip">@@i:tool@@ Herramienta</span>' if hay_herr else ""
+    herr += '<span class="chip p">@@i:book@@ Teoría</span>' if teo else ""
     vid = f'<span class="chip v">@@i:video@@ {plural(n_vid, "vídeo", "vídeos")}</span>' if n_vid else ""
     return (f'<a class="tcard" href="tema/{t}.html" data-ids="{ids}" data-tema="{t}" style="--b:{color_de(t)}">'
             f'<div class="th"><div><span class="n">{t:02d}</span><b>{esc(info["nombre"])}</b></div><span class="est" data-est>Sin empezar</span></div>'
@@ -610,7 +630,7 @@ FILTRO_JS = r"""
 (function(){var f={f:'todos',v:false};
 function hechos(){try{return JSON.parse(localStorage.getItem('studia-da-hechos')||'{}')}catch(e){return{}}}
 function ap(){var h=hechos(),filas=document.querySelectorAll('#p-ejercicios .exr'),vis=0;
- filas.forEach(function(r){var k=r.querySelector('[data-ok]').dataset.ok,d=!!h[k];var ok=(f.f==='todos'||(f.f==='hechos'?d:!d))&&(!f.v||r.dataset.v==='1');r.style.display=ok?'':'none';if(ok)vis++});
+ filas.forEach(function(r){var b=r.querySelector('[data-ok]');if(!b){r.style.display='';return}var k=b.dataset.ok,d=!!h[k];var ok=(f.f==='todos'||(f.f==='hechos'?d:!d))&&(!f.v||r.dataset.v==='1');r.style.display=ok?'':'none';if(ok)vis++});
  var n=document.getElementById('sin');if(n)n.style.display=vis?'none':'block'}
 document.querySelectorAll('[data-f]').forEach(function(b){b.onclick=function(){f.f=b.dataset.f;document.querySelectorAll('[data-f]').forEach(function(x){x.classList.toggle('on',x===b)});ap()}});
 var fv=document.querySelector('[data-fv]');if(fv)fv.onclick=function(){f.v=!f.v;fv.classList.toggle('on',f.v);ap()};
@@ -620,10 +640,16 @@ document.addEventListener('click',function(){setTimeout(ap,0)});window.addEventL
 
 def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     color = color_de(t)
+    teo = [x for x in lista if es_teoria(x[1])]
+    lista = [x for x in lista if not es_teoria(x[1])]
     n = len(lista)
     n_sol = sum(1 for _, e in lista if e["sols"])
     ids = ",".join(slugs[i] for i, _ in lista)
     filas = []
+    for i, e in teo:
+        s_ = slugs[i]
+        filas.append(f'<div class="exr teoria" style="--c:{color}"><span class="okb th0" aria-hidden="true">@@i:book@@</span><span class="id">Teoría</span>'
+                     f'<span class="t"><a href="../ej/{s_}.html">Teoría del tema</a></span><span class="idea">{md_inline(e["idea"])}</span><span class="chips">{chips(e, s_, "../")}</span></div>')
     for i, e in lista:
         s_ = slugs[i]
         filas.append(f'<div class="exr" data-v="{1 if e["video"] else 0}" style="--c:{color}"><button class="okb" data-ok="{s_}" aria-label="Marcar {esc(e["id"])} como hecho" aria-pressed="false">@@i:check@@</button>'
@@ -654,7 +680,7 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
               f'<div class="pane" id="p-tp">{sin_tests("tests del profe")}</div><div class="pane" id="p-tn">{sin_tests("tests propios")}</div>{pager}</div>')
     titulo = f'Tema {t} · {info["nombre"]} | Diseño de Algoritmos UCM'
     desc = f'{info["resumen"]} Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++ con explicación.'
-    return pagina(titulo, cuerpo, "../", TABS_JS + FILTRO_JS, desc)
+    return pagina(titulo, cuerpo, "../", TABS_JS + FILTRO_JS, desc, ruta=f"tema/{t}.html")
 
 
 
@@ -713,7 +739,8 @@ def main():
     shutil.copytree(ESTILO / "marca", OUT / "estilo" / "marca")
 
     # portada
-    n_pdf = sum(1 for e in ej if e["pdf"]); n_vid = sum(1 for e in ej if e["video"]); n_sol = sum(1 for e in ej if e["sols"])
+    solo_ej = [e for e in ej if not es_teoria(e)]
+    n_pdf = sum(1 for e in ej if e["pdf"]); n_vid = sum(1 for e in ej if e["video"]); n_sol = sum(1 for e in solo_ej if e["sols"])
     todos_ids = ",".join(slugs[i] for i in range(len(ej)))
     bloques_html = []
     for nombre_b, temas_b, col in BLOQUES:
@@ -733,26 +760,27 @@ def main():
     cuerpo = f"""<div class="wrap">
 <div class="hero"><p class="eyebrow">FDI UCM · Informática · Computadores · Software</p>
 <h1>Diseño de Algoritmos: ejercicios resueltos, vídeos y herramientas</h1>
-<p class="lede">Todos los problemas del juez con su enunciado, la solución en C++, la explicación del planteamiento, un vídeo paso a paso y herramientas interactivas para entender cada estructura de datos.</p>
+<p class="lede">Todos los problemas del juez con su enunciado, la solución en C++, la explicación del planteamiento, el vídeo paso a paso de cada uno y herramientas interactivas para entender cada estructura de datos.</p>
 <label class="search">@@i:arrow@@<input id="q" type="search" placeholder="Buscar ejercicio (nombre, número, técnica…)" aria-label="Buscar ejercicio"><kbd>/</kbd></label></div>
 <div class="sm" data-resumen>
 <div class="box hi"><small>Tu progreso</small><b data-r="pct">0%</b><span data-r="txt"></span><div class="prog"><i data-r="bar"></i></div></div>
 <div class="box"><small>Temas completados</small><b><u data-r="comp">0</u><em> / {n_temas}</em></b><span data-r="curso">0 en curso</span></div>
-<div class="box"><small>Con solución</small><b>{round(n_sol / len(ej) * 100)}%</b><span>{n_sol} de {len(ej)} ejercicios</span></div>
+<div class="box"><small>Con solución</small><b>{round(n_sol / len(solo_ej) * 100)}%</b><span>{n_sol} de {len(solo_ej)} ejercicios</span></div>
 <div class="box"><small>Tests</small><b>0</b><span>del profe y propios · pronto</span></div></div>
 <section id="resultados" hidden><h2 id="res-t" style="margin-bottom:12px"></h2><div id="res-l"></div><p class="vacio" id="vacio">Ningún ejercicio coincide con la búsqueda.</p></section>
 <div id="temas">{"".join(bloques_html)}</div>
 <section class="bloque" id="herramientas"><h2>Herramientas interactivas</h2><p class="lede">Ejecutan la misma lógica que el C++ de la asignatura y resaltan el código línea a línea.</p><div class="tools">{tools_html}</div></section>
 <section class="bloque" id="estructuras"><h2>Estructuras de datos</h2><p class="lede">Las cabeceras que da la asignatura, con visor de código, copiar y descargar.</p><div class="cabs">{est_html}</div></section>
-<section class="bloque" id="videos"><h2>Vídeos</h2><p class="lede">{n_vid} vídeos explicativos que se ven aquí mismo, con subtítulos. <a href="videos.html">Ver todos los vídeos →</a></p></section>
+<section class="bloque" id="videos"><h2>Vídeos</h2><p class="lede">Un vídeo paso a paso por cada ejercicio y por cada tema ({n_vid} en total), que se ven aquí mismo, con subtítulos. <a href="videos.html">Ver todos los vídeos →</a></p></section>
 <footer>Material de estudio independiente, no afiliado a la UCM{" · commit <code>" + esc(sha) + "</code>" if sha else ""} · actualizado {ahora}</footer></div>"""
     datos = json.dumps([{"s": slugs[i], "i": e["id"], "t": e["titulo"], "d": re.sub(r"`", "", e["idea"]), "k": color_de(e["tema"]),
-                         "v": 1 if e["video"] else 0, "c": 1 if e["sols"] else 0, "e": 1 if e["readme"] else 0, "p": 1 if e["pdf"] else 0} for i, e in enumerate(ej)], ensure_ascii=False)
+                         "h": 1 if es_teoria(e) else 0, "v": 1 if e["video"] else 0, "c": 1 if e["sols"] else 0, "e": 1 if e["readme"] else 0, "p": 1 if e["pdf"] else 0} for i, e in enumerate(ej)], ensure_ascii=False)
     js = ("const EJ=" + datos.replace("</", "<\\/") + r""";
 const q=document.getElementById('q');
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function fila(x){const ch=[];if(x.p)ch.push('<a class="chip p" href="ej/'+x.s+'.html#enunciado">Enunciado</a>');if(x.c)ch.push('<a class="chip" href="ej/'+x.s+'.html#codigo">Código</a>');if(x.e)ch.push('<a class="chip" href="ej/'+x.s+'.html#explicacion">Explicación</a>');if(x.v)ch.push('<a class="chip v" href="ej/'+x.s+'.html#video">Vídeo</a>');
- return '<div class="exr" style="--c:'+x.k+'"><button class="okb" data-ok="'+x.s+'" aria-label="Marcar '+esc(x.i)+' como hecho" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></button><span class="id">'+esc(x.i)+'</span><span class="t"><a href="ej/'+x.s+'.html">'+esc(x.t)+'</a></span><span class="idea">'+esc(x.d)+'</span><span class="chips">'+ch.join('')+'</span></div>'}
+ const ok=x.h?'<span class="okb th0" aria-hidden="true"><svg class="i"><use href="#i-book"/></svg></span>':'<button class="okb" data-ok="'+x.s+'" aria-label="Marcar '+esc(x.i)+' como hecho" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></button>';
+ return '<div class="exr'+(x.h?' teoria':'')+'" style="--c:'+x.k+'">'+ok+'<span class="id">'+(x.h?'Teoría':esc(x.i))+'</span><span class="t"><a href="ej/'+x.s+'.html">'+esc(x.t)+'</a></span><span class="idea">'+esc(x.d)+'</span><span class="chips">'+ch.join('')+'</span></div>'}
 function filtra(){const v=q.value.trim().toLowerCase(),r=document.getElementById('resultados'),t=document.getElementById('temas');
  try{sessionStorage.setItem('q',q.value)}catch(e){}
  if(!v){r.hidden=true;t.hidden=false;return}
@@ -764,7 +792,13 @@ q.oninput=filtra;
 document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus()}});
 window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');if(g&&!q.value){q.value=g}}catch(e){}if(q.value)filtra()});""")
     (OUT / "index.html").write_text(pagina("Diseño de Algoritmos UCM: ejercicios resueltos, vídeos y herramientas | StudIA", cuerpo, "", js,
-                                           "Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++, con explicación, vídeos paso a paso y visualizadores de AVL, grafos y Dijkstra."), encoding="utf-8")
+                                           "Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++, con explicación, vídeo paso a paso de cada uno y visualizadores de AVL, grafos y Dijkstra.", ruta=""), encoding="utf-8")
+    sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    hoy = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    for r in dict.fromkeys(PAGINAS):
+        sm.append(f"  <url><loc>{esc(BASE_DA + quote(r))}</loc><lastmod>{hoy}</lastmod></url>")
+    sm.append("</urlset>")
+    (OUT / "sitemap.xml").write_text("\n".join(sm) + "\n", encoding="utf-8")
     (OUT / ".nojekyll").write_text("")
 
     # copiar ficheros referenciados + código de cada ejercicio
