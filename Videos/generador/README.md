@@ -86,6 +86,9 @@ python v07_teoria.py             # genera el mp4
 `anim.py` dibuja cada escena fotograma a fotograma (30 fps) en vez de diapositivas fijas: los objetos se mueven y cambian justo cuando la voz lo dice (`f.c(k)` = segundo en que empieza la frase k). Cada escena se codifica en su propio mp4 y se juntan sin recodificar. La voz se guarda en caché (`/tmp/tts_cache`) para no sintetizar dos veces.
 
 - `v08_1.py` → `../08-1_agujeros_en_la_manguera.mp4`
+- `v08_2.py`, `v08_3.py`, `v08_4.py`, `v08_L.py`, `v09_1.py` … `v09_4.py`, `v09_L.py`, `vEval_1.py` → ejercicios de voraces y Eval-1
+- `v08_teoria.py` → `../08-0_algoritmos_voraces_teoria.mp4` (teoría de los temas 8 y 9)
+- `vor_comun.py`: piezas comunes (cajas, mover, pasos, ✓/✗, etiquetas sobre fondo oscuro)
 - `v10_1.py` → `../10-1_la_cuerda_de_la_cometa.mp4`
 - `v10_2.py` → `../10-2_construyendo_dianas.mp4`
 - `v10_3.py` → `../10-3_esquivando_las_obras.mp4`

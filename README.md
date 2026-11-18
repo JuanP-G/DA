@@ -174,11 +174,12 @@ Carpeta [`8-Algoritmos voraces/`](8-Algoritmos%20voraces). No usan ninguna estru
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
+| 08-0 | Teoría de los temas 8 y 9 (explicación general) | — | [📘 Explicación del tema (receta, demostración por intercambio y patrones)](8-Algoritmos%20voraces/README.md) | [🎬 Vídeo](Videos/08-0_algoritmos_voraces_teoria.mp4) | Elegir lo mejor ahora sin volver atrás, contraejemplos, argumento de intercambio, los patrones del curso y voraz frente a dinámica |
 | 08-1 | Agujeros en la manguera | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-1/EJ_08-1.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-1/README.md) | [🎬 Vídeo](Videos/08-1_agujeros_en_la_manguera.mp4) | Cada parche empieza en el primer agujero sin tapar y llega hasta `p + L` |
-| 08-2 | ¡Nos invaden! | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-2/EJ_08-2.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-2/README.md) | — | Ordenar ciudades y equipos; a cada ciudad, el equipo más pequeño que la gana (dos índices) |
-| 08-3 | Comienza la temporada | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-3/EJ_08-3.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-3/README.md) | — | Contar por tallas; de menor a mayor, primero su talla y luego una más |
-| 08-4 | Maratón de cine de terror | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-4/EJ_08-4.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-4/README.md) | — | Selección de actividades: ordenar por fin y coger si `inicio ≥ fin anterior + 10` |
-| 08-L | Planificación de conferencias | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-L/EJ_08-L.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-L/README.md) | — | Por hora de comienzo, reutilizar la sala que queda libre antes (`priority_queue`) o abrir una nueva |
+| 08-2 | ¡Nos invaden! | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-2/EJ_08-2.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-2/README.md) | [🎬 Vídeo](Videos/08-2_nos_invaden.mp4) | Ordenar ciudades y equipos; a cada ciudad, el equipo más pequeño que la gana (dos índices) |
+| 08-3 | Comienza la temporada | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-3/EJ_08-3.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-3/README.md) | [🎬 Vídeo](Videos/08-3_comienza_la_temporada.mp4) | Contar por tallas; de menor a mayor, primero su talla y luego una más |
+| 08-4 | Maratón de cine de terror | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-4/EJ_08-4.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-4/README.md) | [🎬 Vídeo](Videos/08-4_maraton_de_cine_de_terror.mp4) | Selección de actividades: ordenar por fin y coger si `inicio ≥ fin anterior + 10` |
+| 08-L | Planificación de conferencias | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-L/EJ_08-L.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-L/README.md) | [🎬 Vídeo](Videos/08-L_planificacion_de_conferencias.mp4) | Por hora de comienzo, reutilizar la sala que queda libre antes (`priority_queue`) o abrir una nueva |
 
 ## Tema 9 · Algoritmos voraces II
 
@@ -186,11 +187,11 @@ Carpeta [`9-Algoritmos voraces II/`](9-Algoritmos%20voraces%20II). Más voraces 
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| 09-1 | ¡En primera línea de playa! | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-1/EJ_09-1.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-1/README.md) | — | Pinchar intervalos: ordenar por extremo oriental y poner el pasadizo en `[E − 1, E]` |
-| 09-2 | El alienígena infiltrado | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-2/EJ_09-2.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-2/README.md) | — | Cubrir `[C, F)`: entre los que empiezan antes de lo cubierto, el que llega más lejos |
-| 09-3 | Carreras de coches | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-3/EJ_09-3.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-3/README.md) | — | Emparejar extremos: si la más débil y la más fuerte llegan a V, coche; si no, se descarta la débil |
-| 09-4 | El telesilla | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-4/EJ_09-4.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-4/README.md) | — | Emparejar extremos: el más pesado sube con el más ligero si caben, si no solo |
-| 09-L | Necesitamos agua | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-L/EJ_09-L.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-L/README.md) | — | Dijkstra desde las dos plantas; todos al sur y se pasan al norte los de menor `dN − dS` |
+| 09-1 | ¡En primera línea de playa! | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-1/EJ_09-1.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-1/README.md) | [🎬 Vídeo](Videos/09-1_en_primera_linea_de_playa.mp4) | Pinchar intervalos: ordenar por extremo oriental y poner el pasadizo en `[E − 1, E]` |
+| 09-2 | El alienígena infiltrado | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-2/EJ_09-2.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-2/README.md) | [🎬 Vídeo](Videos/09-2_el_alienigena_infiltrado.mp4) | Cubrir `[C, F)`: entre los que empiezan antes de lo cubierto, el que llega más lejos |
+| 09-3 | Carreras de coches | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-3/EJ_09-3.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-3/README.md) | [🎬 Vídeo](Videos/09-3_carreras_de_coches.mp4) | Emparejar extremos: si la más débil y la más fuerte llegan a V, coche; si no, se descarta la débil |
+| 09-4 | El telesilla | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-4/EJ_09-4.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-4/README.md) | [🎬 Vídeo](Videos/09-4_el_telesilla.mp4) | Emparejar extremos: el más pesado sube con el más ligero si caben, si no solo |
+| 09-L | Necesitamos agua | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-L/EJ_09-L.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-L/README.md) | [🎬 Vídeo](Videos/09-L_necesitamos_agua.mp4) | Dijkstra desde las dos plantas; todos al sur y se pasan al norte los de menor `dN − dS` |
 
 ## Tema 10 · Programación dinámica
 
@@ -219,7 +220,7 @@ Carpeta [`12-Evaluacion/`](12-Evaluacion). Problemas de evaluación del juez. Ma
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| Eval-1 | MasterHash | juez | [💻 Solución](12-Evaluacion/EJ_Eval-1/EJ_Eval-1.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-1/README.md) | — | Lo que necesita P = alcanzables desde P en el **inverso**; NO si incluye S o hay ciclo (Kahn); si no, orden topológico |
+| Eval-1 | MasterHash | juez | [💻 Solución](12-Evaluacion/EJ_Eval-1/EJ_Eval-1.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-1/README.md) | [🎬 Vídeo](Videos/Eval-1_masterhash.mp4) | Lo que necesita P = alcanzables desde P en el **inverso**; NO si incluye S o hay ciclo (Kahn); si no, orden topológico |
 
 ---
 
@@ -324,8 +325,9 @@ Todos en [`Videos/`](Videos), con subtítulos en castellano (y capítulos el de 
 | `05-1` … `05-6`, `05-L` | Ejercicios del tema 5 |
 | `06-1` … `06-5`, `06-L` | Ejercicios del tema 6 |
 | `07-1` … `07-7` | Ejercicios del tema 7 |
+| [`08-0_algoritmos_voraces_teoria.mp4`](Videos/08-0_algoritmos_voraces_teoria.mp4) | **Teoría de algoritmos voraces** (temas 8 y 9): la idea, cuándo falla, la receta, demostración por intercambio, patrones y voraz frente a dinámica (animado, con capítulos) |
 | [`10-0_programacion_dinamica_teoria.mp4`](Videos/10-0_programacion_dinamica_teoria.mp4) | **Teoría de programación dinámica** (temas 10 y 11): fibonacci, la receta, ahorro de memoria, reconstrucción, patrones y formato de examen (animado, con capítulos) |
-| `08-1` | Ejercicio del tema 8 (animado) |
+| `08-1` … `08-L`, `09-1` … `09-L`, `Eval-1` | Ejercicios de voraces y de evaluación (animados) |
 | `10-1` … `10-4`, `11-1`, `11-2` | Ejercicios de programación dinámica (animados) |
 
 Se generan con los scripts de [`Videos/generador/`](Videos/generador) (diapositivas con Pillow, voz Kokoro y ffmpeg); las trazas salen del mismo algoritmo que el `.cpp` y el código en pantalla se lee del fichero real.
