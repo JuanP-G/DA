@@ -29,6 +29,7 @@ Carpeta [`1-Arboles AVL/`](1-Arboles%20AVL).
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
+| 01-0 | Teoría del tema (explicación general) | — | [📘 Explicación del tema (resumen)](1-Arboles%20AVL/README.md) | [🎬 Vídeo](Videos/01-0_arboles_avl_teoria.mp4) | Árboles de búsqueda, árbol degenerado, condición AVL, rotaciones simples y dobles, insertar y el `Set` del curso |
 | 01-1 | ¿Es un árbol AVL? (enteros) | [📄 PDF](1-Arboles%20AVL/Enunciados/prob-%C2%BFEs%20un%20%C3%A1rbol%20AVL_.pdf) | [💻 Solución](1-Arboles%20AVL/EJ_01-1/EJ%2001-1.cpp) · [📘 Explicación](1-Arboles%20AVL/EJ_01-1/README.md) | [🎬 Vídeo](Videos/01-1_es_un_arbol_avl.mp4) | Postorden: altura, mínimo y máximo de cada subárbol |
 | 01-1 | ¿Es un árbol AVL? (genérico) | [📄 PDF](1-Arboles%20AVL/Enunciados/prob-%C2%BFEs%20un%20%C3%A1rbol%20AVL_%20%281%29.pdf) | [💻 Versión 1](1-Arboles%20AVL/EJ_01-1%20%28generico%20v1%29/EJ%2001-1%20%28GENERICO%29.cpp) · [💻 Versión final](1-Arboles%20AVL/EJ_01-1%20%28generico%29/EJ%2001-1%20%28GENERICO%20BIEN%29.cpp) · [📘 Explicación](1-Arboles%20AVL/EJ_01-1%20%28generico%29/README.md) | [🎬 Vídeo](Videos/01-1_es_un_arbol_avl.mp4) | Lo mismo con `template <class T>` y `BinTree<T>` |
 | 01-2 | Encontrar el k-ésimo elemento en un árbol AVL | [📄 PDF](1-Arboles%20AVL/Enunciados/prob-Encontrar%20el%20k-%C3%A9simo%20elemento%20en%20un%20%C3%A1rbol%20AVL.pdf) | [💻 Solución](1-Arboles%20AVL/EJ_01-2/EJ%2001-2.cpp) · [📘 Explicación](1-Arboles%20AVL/EJ_01-2/README.md) | [🎬 Vídeo](Videos/01-2_kesimo_en_un_avl.mp4) | `Set` AVL con tamaño de subárbol → `kesimo` |
@@ -39,6 +40,7 @@ Carpeta [`2-Colas de prioridad/`](2-Colas%20de%20prioridad).
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
+| 02-0 | Teoría del tema (explicación general) | — | [📘 Explicación del tema (resumen)](2-Colas%20de%20prioridad/README.md) | [🎬 Vídeo](Videos/02-0_colas_de_prioridad_teoria.mp4) | TAD cola de prioridad, montículo en un vector, flotar y hundir, heapify, heapsort y `priority_queue` |
 | 02-1 | Lo que cuesta sumar | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Lo%20que%20cuesta%20sumar.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-1/EJ_02-1.cpp) · [📘 Explicación](2-Colas%20de%20prioridad/EJ_02-1/README.md) | [🎬 Vídeo](Videos/02-1_lo_que_cuesta_sumar.mp4) | Cola de mínimos: sumar siempre los dos menores |
 | 02-2 | Unidad Curiosa de Monitorización | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Unidad%20Curiosa%20de%20Monitorizaci%C3%B3n.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-2/EJ_02-2.cpp) · [📘 Explicación](2-Colas%20de%20prioridad/EJ_02-2/README.md) | [🎬 Vídeo](Videos/02-2_unidad_curiosa_de_monitorizacion.mp4) | Cola de mínimos de próximos envíos (instante, id) |
 | 02-3 | Reina del súper | [📄 PDF](2-Colas%20de%20prioridad/Enunciados/prob-Reina%20del%20s%C3%BAper.pdf) | [💻 Solución](2-Colas%20de%20prioridad/EJ_02-3/EJ_02-3.cpp) · [📘 Explicación](2-Colas%20de%20prioridad/EJ_02-3/README.md) | [🎬 Vídeo](Videos/02-3_reina_del_super.mp4) | Cola de mínimos de cajas (instante libre, nº de caja) |
@@ -53,6 +55,7 @@ Carpeta [`3-Colas de prioridad variable (Heapsort)/`](3-Colas%20de%20prioridad%2
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
+| 03-0 | Teoría del tema (explicación general) | — | [📘 Explicación del tema (resumen)](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/README.md) | [🎬 Vídeo](Videos/03-0_indexpq_teoria.mp4) | Cambiar prioridades: `array` + `posiciones`, `update` que flota o hunde, operaciones y comparadores |
 | 03-1 | Volando drones | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-Volando%20drones.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-1/EJ_03-1.cpp) · [📘 Explicación](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-1/README.md) | [🎬 Vídeo](Videos/03-1_volando_drones.mp4) | Dos colas de máximos de pilas (9V y 1,5V) |
 | 03-2 | 12 points go to… | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-12%20points%20go%20to%E2%80%A6.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-2/EJ_03-2.cpp) · [📘 Explicación](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-2/README.md) | [🎬 Vídeo](Videos/03-2_12_points_go_to.mp4) | `IndexPQ` de países con `update` de puntos |
 | 03-3 | Multitarea | [📄 PDF](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/Enunciados/prob-Multitarea.pdf) | [💻 Solución](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-3/EJ_03-3.cpp) · [📘 Explicación](3-Colas%20de%20prioridad%20variable%20%28Heapsort%29/EJ_03-3/README.md) | [🎬 Vídeo](Videos/03-3_multitarea.mp4) | `IndexPQ` de intervalos (tareas únicas y periódicas) |
@@ -66,6 +69,7 @@ Carpeta [`4-Grafos no dirigidos/`](4-Grafos%20no%20dirigidos). Todos usan [`Graf
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
+| 04-0 | Teoría del tema (explicación general) | — | [📘 Explicación del tema (resumen)](4-Grafos%20no%20dirigidos/README.md) | [🎬 Vídeo](Videos/04-0_grafos_no_dirigidos_teoria.mp4) | Conceptos, listas de adyacencia, DFS, BFS, componentes, bipartito, ciclos y grafos implícitos |
 | 04-1 | Árboles libres | [📄 PDF](4-Grafos%20no%20dirigidos/Enunciados/prob-%C3%81rboles%20libres.pdf) | [💻 Solución](4-Grafos%20no%20dirigidos/EJ_04-1/EJ_04-1.cpp) · [📘 Explicación](4-Grafos%20no%20dirigidos/EJ_04-1/README.md) | [🎬 Vídeo](Videos/04-1_arboles_libres.mp4) | DFS: conexo y A = V − 1 |
 | 04-2 | Los amigos de mis amigos son mis amigos | [📄 PDF](4-Grafos%20no%20dirigidos/Enunciados/prob-Los%20amigos%20de%20mis%20amigos%20son%20mis%20amigos.pdf) | [💻 Solución](4-Grafos%20no%20dirigidos/EJ_04-2/EJ_04-2.cpp) · [📘 Explicación](4-Grafos%20no%20dirigidos/EJ_04-2/README.md) | [🎬 Vídeo](Videos/04-2_amigos_de_mis_amigos.mp4) | DFS: componente conexa más grande |
 | 04-3 | Detección de manchas negras | [📄 PDF](4-Grafos%20no%20dirigidos/Enunciados/prob-Detecci%C3%B3n%20de%20manchas%20negras.pdf) | [💻 Solución](4-Grafos%20no%20dirigidos/EJ_04-3/EJ_04-3.cpp) · [📘 Explicación](4-Grafos%20no%20dirigidos/EJ_04-3/README.md) | [🎬 Vídeo](Videos/04-3_manchas_negras.mp4) | Píxel → vértice i·C + j; DFS: número de componentes y la mayor |
@@ -317,6 +321,10 @@ Todos en [`Videos/`](Videos), con subtítulos en castellano (y capítulos el de 
 
 | Vídeo | Contenido |
 |---|---|
+| [`01-0_arboles_avl_teoria.mp4`](Videos/01-0_arboles_avl_teoria.mp4) | **Teoría del tema 1**: árboles de búsqueda, condición AVL y rotaciones (animado, con capítulos) |
+| [`02-0_colas_de_prioridad_teoria.mp4`](Videos/02-0_colas_de_prioridad_teoria.mp4) | **Teoría del tema 2**: montículos, flotar y hundir, heapsort y `priority_queue` (animado, con capítulos) |
+| [`03-0_indexpq_teoria.mp4`](Videos/03-0_indexpq_teoria.mp4) | **Teoría del tema 3**: la `IndexPQ` por dentro y `update` (animado, con capítulos) |
+| [`04-0_grafos_no_dirigidos_teoria.mp4`](Videos/04-0_grafos_no_dirigidos_teoria.mp4) | **Teoría del tema 4**: grafos, DFS, BFS y sus aplicaciones (animado, con capítulos) |
 | [`05-0_grafos_dirigidos_teoria.mp4`](Videos/05-0_grafos_dirigidos_teoria.mp4) | **Teoría completa del tema 5** (23 min, 10 capítulos) |
 | [`06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4`](Videos/06-0_conjuntos_disjuntos_grafos_valorados_teoria.mp4) | **Teoría completa del tema 6**: conjuntos disjuntos, grafos valorados, Kruskal y Prim, y cómo se aplican a 06-1 … 06-5 (con capítulos) |
 | [`07-0_digrafos_valorados_caminos_minimos_teoria.mp4`](Videos/07-0_digrafos_valorados_caminos_minimos_teoria.mp4) | **Teoría completa del tema 7**: dígrafos valorados, relajación, Dijkstra paso a paso (con código, corrección y coste), Dijkstra con vector, caminos mínimos vs ARM, y los ejercicios 07-1 … 07-3 (con capítulos) |
