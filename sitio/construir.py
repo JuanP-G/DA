@@ -35,6 +35,11 @@ TEMAS = {
     5: dict(nombre="Grafos dirigidos", resumen="Digrafos: BFS dirigido, orden topológico (postorden inverso) y detección de ciclos.", herr="tema5-digrafo.html", cab=["Digrafo.h"]),
     6: dict(nombre="Conjuntos disjuntos y grafos valorados", resumen="Particiones que solo se unen, grafos con valores en las aristas y árbol de recubrimiento de coste mínimo (Kruskal y Prim).", herr="tema6-kruskal.html", cab=["ConjuntosDisjuntos.h", "GrafoValorado.h"]),
     7: dict(nombre="Dígrafos valorados y caminos mínimos", resumen="Dígrafos con costes en las aristas y el algoritmo de Dijkstra: distancias mínimas, contar caminos y reconstruir rutas.", herr="tema7-dijkstra.html", cab=["DigrafoValorado.h", "IndexPQ.h"]),
+    8: dict(nombre="Algoritmos voraces", resumen="Elegir en cada paso lo que parece mejor sin volver atrás: intervalos, emparejamientos y por qué la elección es óptima.", herr="", cab=[]),
+    9: dict(nombre="Algoritmos voraces II", resumen="Más voraces: pinchar y cubrir intervalos, emparejar extremos de un vector ordenado y voraces sobre Dijkstra.", herr="", cab=[]),
+    10: dict(nombre="Programación dinámica", resumen="Recurrencias con subproblemas repetidos rellenadas en tablas: mochila, cambio de monedas y caminos en cuadrículas.", herr="", cab=[]),
+    11: dict(nombre="Programación dinámica II", resumen="Programación dinámica con reconstrucción de la solución: mochila 0/1 y palíndromos sobre intervalos.", herr="", cab=[]),
+    12: dict(nombre="Problemas de evaluación", resumen="Problemas de evaluación de la asignatura.", herr="", cab=[]),
 }
 HERRAMIENTAS = [
     ("tema1-avl.html", "Tema 1", "Árbol AVL", "Inserta, borra y pide el k-ésimo; mira el factor de equilibrio y cada rotación."),
@@ -79,7 +84,7 @@ def leer_readme():
         return ej
     tema = None
     for linea in p.read_text(encoding="utf-8").splitlines():
-        m = re.match(r"##\s+Tema\s+(\d)\b", linea)
+        m = re.match(r"##\s+Tema\s+(\d+)\b", linea)
         if m:
             tema = int(m.group(1)); continue
         if linea.startswith("## "):
@@ -87,7 +92,7 @@ def leer_readme():
         if tema is None or not linea.startswith("|"):
             continue
         c = celdas(linea)
-        if len(c) < 6 or not re.match(r"^\d\d-\w+$", c[0]):
+        if len(c) < 6 or not re.match(r"^(\d\d|Eval)-\w+$", c[0]):
             continue
         e = dict(tema=tema, id=c[0], titulo=re.sub(r"`", "", c[1]), idea=c[5], pdf=None, sols=[], readme=None, video=None)
         for etq, ruta in enlaces(c[2]):
@@ -105,16 +110,17 @@ def leer_readme():
 def descubrir(ej):
     """Carpetas EJ_0T-N que no aparecen en el README."""
     conocidos = {posixpath.dirname(s[1]) for e in ej for s in e["sols"]}
-    for d in sorted(RAIZ.glob("*/EJ_0[1-9]-*")):   # <tema>/EJ_0T-N
+    for d in sorted(RAIZ.glob("[0-9]*-*/EJ_*")):   # <tema>/EJ_TT-N
         if not d.is_dir() or d.relative_to(RAIZ).as_posix() in conocidos:
             continue
-        m = re.match(r"EJ_0(\d)-(\w+)", d.name)
+        m = re.match(r"EJ_(\d\d|Eval)-(\w+)$", d.name)
+        mt = re.match(r"(\d+)-", d.parent.name)
         cpp = sorted(p for p in d.glob("*.cpp"))
-        if not cpp:
+        if not m or not mt or int(mt.group(1)) not in TEMAS or not cpp:
             continue
-        id_ = f"0{m.group(1)}-{m.group(2)}"
+        id_ = f"{m.group(1)}-{m.group(2)}"
         v = sorted((RAIZ / "Videos").glob(f"{id_}_*.mp4"))
-        ej.append(dict(tema=int(m.group(1)), id=id_, titulo=f"Ejercicio {id_}", idea="(añadido automáticamente: falta su fila en el README)",
+        ej.append(dict(tema=int(mt.group(1)), id=id_, titulo=f"Ejercicio {id_}", idea="(añadido automáticamente: falta su fila en el README)",
                        pdf=None, sols=[("Solución", c.relative_to(RAIZ).as_posix()) for c in cpp],
                        readme=(d / "README.md").relative_to(RAIZ).as_posix() if (d / "README.md").exists() else None,
                        video=v[0].relative_to(RAIZ).as_posix() if v else None))
@@ -475,7 +481,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
         acc.append(f'<button class="btn prim" id="zip" data-name="{esc(e["id"] + " " + e["titulo"])}" data-files="{esc(json.dumps(ficheros_zip, ensure_ascii=False))}">⬇ Descargar todo (.zip)</button>')
     if acr:
         acc.append(f'<a class="btn" href="{acepta_url(acr)}" target="_blank" rel="noopener">🔗 Probar en Acepta el Reto #{acr["num"]}</a>')
-    if (RAIZ / "Visualizaciones" / herr).exists():
+    if herr and (RAIZ / "Visualizaciones" / herr).exists():
         acc.append(f'<a class="btn" href="../herramientas/{herr}">🧩 Herramienta interactiva del tema</a>')
     contenido_zip = ", ".join(x for x, ok in (("enunciado", e["pdf"]), ("código", codigos), ("explicación", e["readme"]), ("vídeo", e["video"]), ("versión para Acepta el Reto", acr_fich)) if ok)
 
