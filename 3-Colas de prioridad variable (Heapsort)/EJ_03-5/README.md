@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Tridente de temas candentes.pdf>) · 💻 [Solución](EJ_03-5.cpp) · 🎬 [Vídeo](../../Videos/03-5_tridente_temas_candentes.mp4)
 
+🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato (fin del fichero).
+
 ## Qué piden
 Procesar citas (`C tema n`) y expiraciones (`E tema n`) y, en cada `TC`, escribir los 3 temas con más citas vigentes (empate ⇒ el de `C` más reciente; los de 0 citas no salen).
 

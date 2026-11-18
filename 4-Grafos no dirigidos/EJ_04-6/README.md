@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Un nodo muy muy lejano.pdf>) · 💻 [Solución](EJ_04-6.cpp) · 🎬 [Vídeo](../../Videos/04-6_nodo_muy_lejano.mp4)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Dado un nodo origen y un TTL, cuántos nodos **no** recibe el mensaje.
 

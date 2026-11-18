@@ -10,10 +10,38 @@
 //  - el separador de cada caso es `----` (cuatro guiones)
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <queue>
 #include <vector>
 using namespace std;
+
+/*@ <answer>
+
+ Unidad Curiosa de Monitorizacion
+
+ Usuarios con un periodo de envio. Escribir a quien van los K primeros envios; si coinciden en el
+ tiempo, primero el de identificador menor. Tras cada caso, ---. Acaba con un caso con n = 0.
+
+ PLANTEAMIENTO (simulacion por eventos)
+ Cola de minimos de Envio(t, id, periodo) ordenada por (t, id). Cada usuario entra con t = periodo.
+ K veces: se saca la cima, se escribe su id y vuelve a entrar con t + periodo.
+
+ Coste: O((n + K) log n) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 struct Envio {
     long long t;      // instante del proximo envio
@@ -52,10 +80,10 @@ bool resuelveCaso() {
     return true;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
 
+int main() {
     while (resuelveCaso());
     return 0;
 }

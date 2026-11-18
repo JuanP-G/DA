@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Encontrar el k-ésimo elemento en un árbol AVL.pdf>) · 💻 [Solución](<EJ 01-2.cpp>) · [TreeSet_AVL_plantilla.h](TreeSet_AVL_plantilla.h)
 
+🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato (fin del fichero).
+
 ## Qué piden
 Añadir a `Set` (conjunto con árbol AVL) la operación `kesimo(k)`, que devuelve el k-ésimo menor elemento en **tiempo logarítmico**, o lanza excepción si no existe (se escribe `??`).
 
@@ -22,7 +24,7 @@ Las rotaciones dobles son composición de simples, así que no necesitan nada m�
 3. `k < a->tami` → buscar el mismo `k` en el izquierdo.
 4. `k > a->tami` → buscar `k − a->tami` en el derecho (se saltan la raíz y todo el izquierdo).
 
-`main` inserta los N valores, y para cada consulta escribe `kesimo(k)` o `??` si salta la excepción.
+`resuelveCaso()` lee N (si es 0, es el centinela y devuelve `false`), inserta los N valores y para cada consulta escribe `kesimo(k)` o `??` si salta la excepción.
 
 ## Por qué así
 - **Por qué no recorrer en inorden:** funcionaría, pero cuesta O(k), lineal en el peor caso. Con `tami` cada paso descarta un subárbol entero.

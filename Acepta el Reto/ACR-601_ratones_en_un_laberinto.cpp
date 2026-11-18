@@ -10,9 +10,18 @@
 //  - no hay numero de casos: se lee hasta el final del fichero
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <limits>
+using namespace std;
+
 // ---------- DigrafoValorado.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos dirigidos valorados
@@ -325,30 +334,34 @@ private:
 #endif /* INDEXPQ_H_ */
 // ---------- fin de IndexPQ.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    Ratones en un laberinto
+ Ratones en un laberinto
 
-    Laberinto con N celdas (1 <= N <= 100.000) y P pasadizos DIRIGIDOS (0 <= P <= 200.000)
-    con tiempo 1..10.000 (pueden repetirse y haber bucles). Hay un raton en cada celda
-    menos en la salida S y todos van por el camino mas rapido hacia S. Cuantos ratones
-    llegan a S en como mucho T segundos?
-*/
+ Laberinto con N celdas (1 <= N <= 100.000) y P pasadizos DIRIGIDOS (0 <= P <= 200.000)
+ con tiempo 1..10.000 (pueden repetirse y haber bucles). Hay un raton en cada celda
+ menos en la salida S y todos van por el camino mas rapido hacia S. Cuantos ratones
+ llegan a S en como mucho T segundos?
 
-/*
-    PLANTEAMIENTO
-    Hay que conocer, para CADA celda, el tiempo minimo hasta S. Un Dijkstra normal da las
-    distancias DESDE un origen; aqui queremos las distancias HACIA un destino:
+ PLANTEAMIENTO
+ Hay que conocer, para CADA celda, el tiempo minimo hasta S. Un Dijkstra normal da las
+ distancias DESDE un origen; aqui queremos las distancias HACIA un destino:
 
-        camino de a a S en el grafo  ==  camino de S a a en el grafo INVERSO
+     camino de a a S en el grafo  ==  camino de S a a en el grafo INVERSO
 
-    Asi que un solo Dijkstra desde S en el grafo inverso da dist[a] = tiempo del raton de a.
-    Se cuentan las celdas a != S con dist[a] <= T (el "como mucho" incluye el igual).
-    Las celdas sin camino a S se quedan en infinito y no cuentan.
+ Asi que un solo Dijkstra desde S en el grafo inverso da dist[a] = tiempo del raton de a.
+ Se cuentan las celdas a != S con dist[a] <= T (el "como mucho" incluye el igual).
+ Las celdas sin camino a S se quedan en infinito y no cuentan.
 
-    Coste: O(P log N) por caso.
-*/
+ Coste: O(P log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     int N, S, T, P;
@@ -385,11 +398,10 @@ void resuelveCaso() {
     cout << ratones << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     while (cin >> ws && cin.peek() != EOF) resuelveCaso();
-
     return 0;
 }

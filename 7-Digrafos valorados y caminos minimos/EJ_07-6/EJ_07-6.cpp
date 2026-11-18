@@ -1,38 +1,52 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <limits>
-#include "DigrafoValorado.h"
-#include "IndexPQ.h"
-
 using namespace std;
 
-/*
-    Repartiendo paquetes
+#include "DigrafoValorado.h"  // estructuras de datos de clase
+#include "IndexPQ.h"  // estructuras de datos de clase
 
-    Comarca con N casas (1 <= N <= 100.000) y C conexiones DIRIGIDAS (1 <= C <= 200.000) con
-    esfuerzo 1..10.000 (puede haber varias entre el mismo par e incluso de una casa a ella
-    misma). La oficina esta en la casa O y hay P paquetes con sus casas destino (una casa
-    puede recibir varios). El repartidor lleva un paquete cada vez: va de la oficina al
-    destino y VUELVE a la oficina. Escribir el esfuerzo minimo total, o Imposible.
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    El orden de reparto no importa: cada paquete cuesta lo mismo (ida + vuelta) y los
-    viajes son independientes. Para el paquete que va a la casa d:
+ Repartiendo paquetes
 
-        coste = dist(O -> d)  +  dist(d -> O)
+ Comarca con N casas (1 <= N <= 100.000) y C conexiones DIRIGIDAS (1 <= C <= 200.000) con
+ esfuerzo 1..10.000 (puede haber varias entre el mismo par e incluso de una casa a ella
+ misma). La oficina esta en la casa O y hay P paquetes con sus casas destino (una casa
+ puede recibir varios). El repartidor lleva un paquete cada vez: va de la oficina al
+ destino y VUELVE a la oficina. Escribir el esfuerzo minimo total, o Imposible.
 
-    - dist(O -> d): un Dijkstra desde O en el grafo.
-    - dist(d -> O): un Dijkstra desde O en el grafo INVERSO (con todas las aristas dadas
-      la vuelta), porque un camino de d a O es un camino de O a d en el inverso.
-      Asi bastan DOS Dijkstra para todos los paquetes, en vez de uno por paquete.
+ PLANTEAMIENTO
+ El orden de reparto no importa: cada paquete cuesta lo mismo (ida + vuelta) y los
+ viajes son independientes. Para el paquete que va a la casa d:
 
-    Se suman los costes de los P paquetes (una casa repetida se suma varias veces). Si para
-    algun destino alguna de las dos distancias es infinita, el reparto es Imposible.
+     coste = dist(O -> d)  +  dist(d -> O)
 
-    Coste: O(C log N) por caso + O(P).
-*/
+ - dist(O -> d): un Dijkstra desde O en el grafo.
+ - dist(d -> O): un Dijkstra desde O en el grafo INVERSO (con todas las aristas dadas
+   la vuelta), porque un camino de d a O es un camino de O a d en el inverso.
+   Asi bastan DOS Dijkstra para todos los paquetes, en vez de uno por paquete.
+
+ Se suman los costes de los P paquetes (una casa repetida se suma varias veces). Si para
+ algun destino alguna de las dos distancias es infinita, el reparto es Imposible.
+
+ Coste: O(C log N) por caso + O(P).
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 vector<long long> dijkstra(DigrafoValorado<int> const& g, int origen) {
     const long long INF = numeric_limits<long long>::max();
@@ -82,12 +96,25 @@ void resuelveCaso() {
     else cout << "Imposible\n";
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

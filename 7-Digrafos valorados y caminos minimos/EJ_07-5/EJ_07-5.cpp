@@ -1,47 +1,61 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
 #include <limits>
 #include <utility>
 #include <functional>
-#include "DigrafoValorado.h"
-#include "IndexPQ.h"
-
 using namespace std;
 
-/*
-    Cual es el mejor camino?
+#include "DigrafoValorado.h"  // estructuras de datos de clase
+#include "IndexPQ.h"  // estructuras de datos de clase
 
-    Ciudad con N intersecciones (2 <= N <= 20.000) y C calles (0 <= C <= 100.000) de
-    longitud 1..5.000, de doble sentido. Para cada una de K <= 10 consultas (origen y
-    destino distintos) escribir la distancia minima y SI si algun camino de esa distancia
-    usa ademas el MENOR NUMERO DE CALLES posible entre los dos puntos (NO si no), o
-    SIN CAMINO. Tras cada caso, una linea con ---. La entrada empieza con el numero de casos.
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Dos cosas distintas desde el origen:
+ Cual es el mejor camino?
 
-      1. Menor numero de calles posible (sin mirar la longitud): un recorrido en anchura.
-            calles[v] = menor numero de calles de origen a v
-      2. Distancia minima, y entre los caminos de esa distancia, el de MENOS calles:
-         Dijkstra donde la prioridad es una pareja (distancia, calles) comparada en ese orden.
-            dist[v]   = distancia minima
-            pasos[v]  = menos calles entre los caminos de distancia dist[v]
+ Ciudad con N intersecciones (2 <= N <= 20.000) y C calles (0 <= C <= 100.000) de
+ longitud 1..5.000, de doble sentido. Para cada una de K <= 10 consultas (origen y
+ destino distintos) escribir la distancia minima y SI si algun camino de esa distancia
+ usa ademas el MENOR NUMERO DE CALLES posible entre los dos puntos (NO si no), o
+ SIN CAMINO. Tras cada caso, una linea con ---. La entrada empieza con el numero de casos.
 
-    Respuesta de la consulta: distancia dist[destino] y SI si pasos[destino] == calles[destino]
-    (el mejor camino en distancia tambien es de los de menos calles), NO si pasos > calles.
+ PLANTEAMIENTO
+ Dos cosas distintas desde el origen:
 
-    - Con la pareja, al sumar una calle (c, 1) el orden lexicografico se conserva, asi que
-      Dijkstra sigue siendo correcto.
-    - Doble sentido: dos aristas dirigidas por calle.
-    - El Dijkstra se para en cuanto el destino esta en la cabeza de la cola: su (distancia, calles)
-      ya es definitivo (las calles miden >= 1, asi que nada que salga despues puede mejorarlo).
-    - Hasta 10 consultas con origenes distintos: se repiten los dos recorridos por consulta.
+   1. Menor numero de calles posible (sin mirar la longitud): un recorrido en anchura.
+         calles[v] = menor numero de calles de origen a v
+   2. Distancia minima, y entre los caminos de esa distancia, el de MENOS calles:
+      Dijkstra donde la prioridad es una pareja (distancia, calles) comparada en ese orden.
+         dist[v]   = distancia minima
+         pasos[v]  = menos calles entre los caminos de distancia dist[v]
 
-    Coste: O(K * C log N) por caso.
-*/
+ Respuesta de la consulta: distancia dist[destino] y SI si pasos[destino] == calles[destino]
+ (el mejor camino en distancia tambien es de los de menos calles), NO si pasos > calles.
+
+ - Con la pareja, al sumar una calle (c, 1) el orden lexicografico se conserva, asi que
+   Dijkstra sigue siendo correcto.
+ - Doble sentido: dos aristas dirigidas por calle.
+ - El Dijkstra se para en cuanto el destino esta en la cabeza de la cola: su (distancia, calles)
+   ya es definitivo (las calles miden >= 1, asi que nada que salga despues puede mejorarlo).
+ - Hasta 10 consultas con origenes distintos: se repiten los dos recorridos por consulta.
+
+ Coste: O(K * C log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 using Par = pair<int, int>;                   // (distancia, calles)
 
@@ -103,12 +117,25 @@ void resuelveCaso() {
     cout << "---\n";
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    int casos;
-    cin >> casos;
-    while (casos--) resuelveCaso();
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

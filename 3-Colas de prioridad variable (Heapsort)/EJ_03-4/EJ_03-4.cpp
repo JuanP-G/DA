@@ -1,10 +1,40 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <queue>
 #include <vector>
 #include <functional>
 using namespace std;
 
-bool resolverCaso() {
+/*@ <answer>
+
+ Pájaros en vuelo
+
+ Una bandada empieza con un pájaro y se le unen parejas. Tras cada pareja escribir la mediana de
+ las edades. La entrada acaba con un caso 0 0.
+
+ PLANTEAMIENTO (mediana con dos montículos)
+ lider = mediana; menores = cola de máximos con los más jóvenes; mayores = cola de mínimos con los
+ más viejos, siempre del mismo tamaño. Cada pájaro nuevo va a su lado; si un lado queda con dos
+ más, el líder pasa al lado pequeño y la cima del grande es el nuevo líder.
+
+ Coste: O(log P) por pareja.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
+
+bool resuelveCaso() {
     int primero, parejas;
     cin >> primero >> parejas;
 
@@ -34,10 +64,22 @@ bool resolverCaso() {
     return true;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    while (resolverCaso());
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

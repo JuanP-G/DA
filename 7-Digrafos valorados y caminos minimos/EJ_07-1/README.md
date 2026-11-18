@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Navegando sin teclado.pdf>) · 💻 [Solución](EJ_07-1.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#318 · Navegando sin teclado](https://aceptaelreto.com/problem/statement.php?id=318) — *casi el mismo problema*. Misma historia, pero allí los límites son menores (hasta 1.000 páginas; aquí 3.000 páginas y 30.000 enlaces) y no hay número de casos: se lee hasta el final del fichero.
 

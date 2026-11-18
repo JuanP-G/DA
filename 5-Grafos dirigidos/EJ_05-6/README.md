@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Sistema de inecuaciones.pdf>) · 💻 [Solución](EJ_05-6.cpp) · 🎬 [Vídeo](../../Videos/05-6_sistema_inecuaciones.mp4)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Valores enteros para x1 … xN que cumplan todas las inecuaciones `xi < xj`, o `NO` si no existen.
 

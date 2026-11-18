@@ -1,33 +1,47 @@
-#include <iostream>
-#include <vector>
-#include "Digrafo.h"
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
+#include <iostream>
+#include <fstream>
+#include <vector>
 using namespace std;
 
-/*
-    Sumidero en un grafo dirigido
+#include "Digrafo.h"  // estructuras de datos de clase
 
-    Vertices --> 1 <= V <= 10.000
-    Aristas  --> 0 <= A <= 100.000 (sin lazos ni repetidas)
-    Salida: "SI s" si s es sumidero, "NO" si no hay ninguno
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    s es sumidero <=> grado de salida 0  Y  grado de entrada V - 1
-    (como no hay aristas repetidas ni lazos, entrada V - 1 significa
-    que TODOS los demas vertices tienen una arista hacia s).
+ Sumidero en un grafo dirigido
 
-    - grado de salida de v  = g.ady(v).size()
-    - grado de entrada de v = cuantas veces aparece v en las listas
-      de adyacentes (un recorrido de todas las listas, O(V + A))
+ Vertices --> 1 <= V <= 10.000
+ Aristas  --> 0 <= A <= 100.000 (sin lazos ni repetidas)
+ Salida: "SI s" si s es sumidero, "NO" si no hay ninguno
 
-    * Como mucho hay UN sumidero: si s y t lo fueran, habria arista t --> s,
-      y entonces t no tendria grado de salida 0.
-    * V = 1: el unico vertice tiene salida 0 y entrada 0 = V - 1 --> SI 0.
+ PLANTEAMIENTO
+ s es sumidero <=> grado de salida 0  Y  grado de entrada V - 1
+ (como no hay aristas repetidas ni lazos, entrada V - 1 significa
+ que TODOS los demas vertices tienen una arista hacia s).
 
-    Coste: O(V + A) por caso.
-*/
+ - grado de salida de v  = g.ady(v).size()
+ - grado de entrada de v = cuantas veces aparece v en las listas
+   de adyacentes (un recorrido de todas las listas, O(V + A))
+
+ * Como mucho hay UN sumidero: si s y t lo fueran, habria arista t --> s,
+   y entonces t no tendria grado de salida 0.
+ * V = 1: el unico vertice tiene salida 0 y entrada 0 = V - 1 --> SI 0.
+
+ Coste: O(V + A) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 int sumidero(Digrafo const& g) {
 	// grado de entrada de cada vertice
@@ -58,11 +72,22 @@ bool resuelveCaso() {
     return true;
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    while (resuelveCaso());
+   while (resuelveCaso());
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

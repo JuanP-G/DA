@@ -10,8 +10,17 @@
 //  - no hay numero de casos: se lee hasta el final del fichero
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
+using namespace std;
+
 // ---------- Grafo.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos no dirigidos.
@@ -105,34 +114,38 @@ inline std::ostream& operator<<(std::ostream& o, Grafo const& g) {
 #endif /* GRAFO_H_ */
 // ---------- fin de Grafo.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    Arboles libres
+ Arboles libres
 
-    Vertices --> 1 <= V <= 10.000
-    Aristas  --> 0 <= A <= 100.000
-    Vertices numerados de 0 a V-1, sin lazos ni aristas repetidas
-    Entrada: V en una linea y A en la siguiente --> justo lo que lee Grafo(cin)
-*/
+ Vertices --> 1 <= V <= 10.000
+ Aristas  --> 0 <= A <= 100.000
+ Vertices numerados de 0 a V-1, sin lazos ni aristas repetidas
+ Entrada: V en una linea y A en la siguiente --> justo lo que lee Grafo(cin)
 
-/*
-    PLANTEAMIENTO
-    Arbol libre = grafo ACICLICO y CONEXO.
+ PLANTEAMIENTO
+ Arbol libre = grafo ACICLICO y CONEXO.
 
-    Propiedad clave de los arboles: un grafo con V vertices es un arbol
-    si cumple DOS de estas tres cosas (y entonces cumple la tercera):
-        - es conexo
-        - es aciclico
-        - tiene exactamente V-1 aristas
-    Asi que no hace falta buscar ciclos: basta con mirar que A == V-1
-    y que un recorrido (DFS) desde cualquier vertice llega a los V.
+ Propiedad clave de los arboles: un grafo con V vertices es un arbol
+ si cumple DOS de estas tres cosas (y entonces cumple la tercera):
+     - es conexo
+     - es aciclico
+     - tiene exactamente V-1 aristas
+ Asi que no hace falta buscar ciclos: basta con mirar que A == V-1
+ y que un recorrido (DFS) desde cualquier vertice llega a los V.
 
-    Coste: O(V + A) por caso (el DFS visita cada vertice y arista una vez).
+ Coste: O(V + A) por caso (el DFS visita cada vertice y arista una vez).
 
-    Nota: el dfs recursivo puede llegar a profundidad V (hasta 10.000).
-    Un caso enorme podria desbordar la pila.
-*/
+ Nota: el dfs recursivo puede llegar a profundidad V (hasta 10.000).
+ Un caso enorme podria desbordar la pila.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 class ArbolLibre {
 public:
@@ -168,11 +181,10 @@ void resuelveCaso() {
     cout << (al.esArbol() ? "SI" : "NO") << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     while (cin >> ws && cin.peek() != EOF) resuelveCaso();
-
     return 0;
 }

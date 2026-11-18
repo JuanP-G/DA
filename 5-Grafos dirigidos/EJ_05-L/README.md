@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-El Necronomicón de la informática.pdf>) · 💻 [Solución](EJ_05-L.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Un «programa oscuro» tiene L instrucciones de tres tipos: `A` (pasa a la siguiente), `J N` (salta a la N) y `C N` (salta a la N **o** sigue; no se puede predecir). Empieza en la 1 y termina al llegar detrás de la última. Hay que decir si **SIEMPRE** termina, **NUNCA** termina o **A VECES** sí y a veces no.
 

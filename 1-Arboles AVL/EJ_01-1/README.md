@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-¿Es un árbol AVL_.pdf>) · 💻 [Solución](<EJ 01-1.cpp>)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#303 · ¿Es un árbol AVL?](https://aceptaelreto.com/problem/statement.php?id=303) — *mismo problema*. Mismo enunciado: el árbol llega en preorden y -1 es el árbol vacío.
 

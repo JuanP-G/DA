@@ -7,9 +7,18 @@
 // (no la edites a mano: se vuelve a generar).
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
+using namespace std;
+
 // ---------- Grafo.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos no dirigidos.
@@ -103,35 +112,39 @@ inline std::ostream& operator<<(std::ostream& o, Grafo const& g) {
 #endif /* GRAFO_H_ */
 // ---------- fin de Grafo.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    Los amigos de mis amigos son mis amigos
+ Los amigos de mis amigos son mis amigos
 
-    Personas --> 1 <= N <= 20.000
-    Parejas  --> 0 <= M <= 200.000
-    Personas numeradas de 1 a N --> Grafo(cin, 1) les resta 1 (vertices 0..N-1)
-    Una pareja puede repetirse --> no pasa nada: el dfs no visita dos veces
-*/
+ Personas --> 1 <= N <= 20.000
+ Parejas  --> 0 <= M <= 200.000
+ Personas numeradas de 1 a N --> Grafo(cin, 1) les resta 1 (vertices 0..N-1)
+ Una pareja puede repetirse --> no pasa nada: el dfs no visita dos veces
 
-/*
-    PLANTEAMIENTO
-    Modelo: cada persona es un vertice y cada amistad una arista.
-    "Los amigos de mis amigos son mis amigos" significa que dos personas
-    estan en el mismo grupo si hay un CAMINO entre ellas en el grafo.
-    Es decir, un grupo de amigos = una COMPONENTE CONEXA.
+ PLANTEAMIENTO
+ Modelo: cada persona es un vertice y cada amistad una arista.
+ "Los amigos de mis amigos son mis amigos" significa que dos personas
+ estan en el mismo grupo si hay un CAMINO entre ellas en el grafo.
+ Es decir, un grupo de amigos = una COMPONENTE CONEXA.
 
-    Lo que piden: el tamano de la componente conexa mas grande.
-    Para cada vertice no visitado lanzo un dfs que devuelve cuantos
-    vertices ha visitado (el tamano de esa componente) y me quedo
-    con el maximo.
+ Lo que piden: el tamano de la componente conexa mas grande.
+ Para cada vertice no visitado lanzo un dfs que devuelve cuantos
+ vertices ha visitado (el tamano de esa componente) y me quedo
+ con el maximo.
 
-    Coste: O(N + M) por caso.
+ Coste: O(N + M) por caso.
 
-    Nota: el dfs recursivo puede llegar a profundidad N (hasta 20.000).
-    En el juez no da problemas, pero en Visual Studio (pila de 1MB)
-    un caso enorme podria desbordar la pila --> ver EJ_04-L, que usa BFS.
-*/
+ Nota: el dfs recursivo puede llegar a profundidad N (hasta 20.000).
+ En el juez no da problemas, pero en Visual Studio (pila de 1MB)
+ un caso enorme podria desbordar la pila --> ver EJ_04-L, que usa BFS.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 class MaximaCompConexa {
 public:
@@ -168,12 +181,11 @@ void resuelveCaso() {
     cout << mcc.maximo() << '\n';
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
 
+int main() {
     int casos; cin >> casos;
     while (casos--) resuelveCaso();
-
     return 0;
 }

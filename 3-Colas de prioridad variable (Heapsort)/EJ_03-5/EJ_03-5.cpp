@@ -1,10 +1,39 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "IndexPQ.h"
-
 using namespace std;
+
+#include "IndexPQ.h"  // estructuras de datos de clase
+
+/*@ <answer>
+
+ Tridente de temas candentes
+
+ Eventos: C tema n (n citas nuevas), E tema n (expiran n) y TC (escribir los 3 temas con más citas
+ vigentes; empate -> el de C más reciente; los de 0 citas no salen). Acaba con el fichero.
+
+ PLANTEAMIENTO
+ IndexPQ<Prio, Mejor> con índice = número de tema y prioridad = (citas, instante del último C).
+ C y E hacen update. TC saca hasta 3 cimas con citas > 0, las escribe y las vuelve a meter.
+
+ Coste: O(log T) por evento, con T el número de temas.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 struct Prio {
     int citas;     // citas vigentes del tema
@@ -18,7 +47,7 @@ struct Mejor {
     }
 };
 
-bool resolverCaso() {
+bool resuelveCaso() {
     int n;
     if (!(cin >> n)) return false;
 
@@ -62,9 +91,22 @@ bool resolverCaso() {
     return true;
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    while (resolverCaso());
-    return 0;
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

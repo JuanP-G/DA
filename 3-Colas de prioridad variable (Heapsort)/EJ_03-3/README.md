@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Multitarea.pdf>) · 💻 [Solución](EJ_03-3.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#649 · Multitarea](https://aceptaelreto.com/problem/statement.php?id=649) — *casi el mismo problema*. Mismo problema; allí los instantes llegan hasta 10^9 (aquí 10^8) y no hay número de casos: se lee hasta el final del fichero.
 

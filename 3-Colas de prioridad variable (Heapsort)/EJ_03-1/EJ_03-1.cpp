@@ -1,15 +1,45 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
-#include <functional> //greater
-#include "IndexPQ.h"
-
+#include <functional>
 using namespace std;
-/*
-drones	--> 1 <= N <= 100.000 (10^5)
-pila 9V/1.5V --> 1 <= pila <= 200.000 (2*10^5)
-*/
 
-bool resolverCaso(){
+#include "IndexPQ.h"  // estructuras de datos de clase
+
+/*@ <answer>
+
+ Volando drones
+
+ Cada sábado se monta en cada dron la pila de 9 V y la de 1,5 V más cargadas que queden. Escribir
+ las horas de vuelo totales de cada sábado mientras quede alguna pila de cada tipo.
+ La entrada acaba con el fichero.
+
+ PLANTEAMIENTO
+ Dos colas de máximos (IndexPQ, índice = número de pila, prioridad = horas que le quedan). Cada
+ sábado, para cada dron se saca la mejor pila de cada tipo; vuela min(h9, h1) horas y se resta a
+ las dos. Las que aún tienen carga se apartan y vuelven a la cola al acabar el sábado.
+
+ Coste: O(P log P) por sábado, con P el número de pilas.
+
+ drones    --> 1 <= N <= 100.000 (10^5)
+ pila 9V/1.5V --> 1 <= pila <= 200.000 (2*10^5)
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
+
+bool resuelveCaso(){
 	int drones;
 	if (!(cin >> drones)) return false;
 
@@ -75,11 +105,22 @@ bool resolverCaso(){
 	return true;
 }
 
-int main()
-{
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-	while (resolverCaso());
-	return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

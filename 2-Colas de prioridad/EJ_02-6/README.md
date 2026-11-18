@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Coleccionando cómics.pdf>) · 💻 [Solución](EJ_02-6.cpp)
 
+🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato (fin del fichero).
+
 ## Qué piden
 Hay N pilas de cómics y cada cliente se lleva **el menor identificador entre las cimas**. ¿Qué puesto de la fila hay que ocupar para llevarse **el menor de toda la tienda**?
 

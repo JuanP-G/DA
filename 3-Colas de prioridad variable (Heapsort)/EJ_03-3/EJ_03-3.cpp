@@ -1,13 +1,43 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
-#include "IndexPQ.h"
+#include <fstream>
 
 using namespace std;
 
-/*
-	N --> tareas unicas
-	M --> tareasperiodicas
-	T --> minutos donde saber si hay conflictos
-*/
+#include "IndexPQ.h"  // estructuras de datos de clase
+
+/*@ <answer>
+
+ Multitarea
+
+ N tareas únicas [c, f) y M periódicas (se repiten cada p minutos). Decir si dos se solapan dentro
+ de [0, T): SI o NO.
+
+ PLANTEAMIENTO (barrido por comienzo)
+ IndexPQ<pair<int,int>> de mínimos: índice = tarea, prioridad = (ini, fin) de su próxima aparición.
+ Se van sacando por orden de comienzo guardando el fin de la última: si una empieza antes, hay
+ conflicto. Una periódica no se saca: update a su siguiente aparición (ini + p, fin + p).
+
+ Coste: O(k log (N + M)), con k el número de apariciones antes de T o del primer conflicto.
+
+ N --> tareas unicas
+ M --> tareasperiodicas
+ T --> minutos donde saber si hay conflictos
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
+
 void resuelveCaso() {
 	int N, M, T;
 	cin >> N >> M >> T;
@@ -50,14 +80,25 @@ void resuelveCaso() {
 	cout << (hayConflictos ? "SI" : "NO") << "\n";
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-	int casos; cin >> casos;
-	for (int i = 0; i < casos; i++)
-		resuelveCaso();
-
-	return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

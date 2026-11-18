@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-¿Cuál es el mejor camino_.pdf>) · 💻 [Solución](EJ_07-5.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#504 · ¿Cuál es el mejor camino?](https://aceptaelreto.com/problem/statement.php?id=504) — *casi el mismo problema*. Mismo enunciado, pero allí no hay número de casos (se lee hasta el final del fichero) y el separador tras cada caso es `----` (cuatro guiones) en vez de `---`.
 
@@ -42,7 +44,7 @@ Consulta 6 → 5: `6→7→5` mide 19 con 2 calles y `6→4→5` mide 20 con 2; 
 - **Coste:** O(K · C log N) por caso.
 
 ## Ojo con
-- **Número de casos:** la primera línea del juez de la asignatura es T, y después van los T casos (`cin >> casos; while (casos--) resuelveCaso();`, y N se lee dentro del caso). Si se lee con `while (cin >> N)` y el fichero trae algo más al final, la lectura falla a medias, `K` queda sin inicializar y el programa termina con *run-error*. En Acepta el Reto, en cambio, no hay número de casos y se lee hasta el final del fichero.
+- **Número de casos:** la primera línea del juez de la asignatura es T, y después van los T casos (plantilla de número de casos: el `main` lee `numCasos` y llama a `resuelveCaso()` esas veces, y N se lee dentro del caso). Si se lee con `while (cin >> N)` y el fichero trae algo más al final, la lectura falla a medias, `K` queda sin inicializar y el programa termina con *run-error*. En Acepta el Reto, en cambio, no hay número de casos y se lee hasta el final del fichero.
 - Imprimir `---` **después de cada caso**, también si todas las consultas son `SIN CAMINO`.
 - `SIN CAMINO` va solo, sin distancia.
 - Intersecciones desde 1: restar 1 al leer.

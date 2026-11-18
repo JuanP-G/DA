@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-¿Dónde construimos los aeropuertos_.pdf>) · 💻 [Solución](EJ_06-L.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 N localidades y M carreteras posibles de doble sentido (puede haber varias entre el mismo par), cada una con su coste. Un aeropuerto cuesta A. Cada localidad debe **tener un aeropuerto o poder llegar por carretera a otra que lo tenga**. Hay que dar el **coste mínimo** y el **número de aeropuertos**; si varias soluciones empatan en coste, la que tenga **más aeropuertos**.
 
@@ -54,4 +56,4 @@ Ordenar: O(M log M). Kruskal con la partición: O(N + M · lg\* N). En total **O
 ## Ojo con
 - Condición **estricta** `C < A` (con `≤` el tercer ejemplo daría `120 1`).
 - Cada caso crea su propia partición.
-- La suma de N y de M de todos los casos llega a 500.000: leer con `ios::sync_with_stdio(false)`.
+- La suma de N y de M de todos los casos llega a 500.000: con el `cin` de la plantilla basta (unas décimas de segundo).

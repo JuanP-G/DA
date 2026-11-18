@@ -1,19 +1,48 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
-#include <utility> //pair
+#include <utility>
 #include <climits>
-#include "Pila.h"       // la implementación con vector dinámico
 using namespace std;
 
-/*
-Pilas           --> 1 <= N <= 100.000       (10^5)
-Comics por pila --> 1 <= K <= 100
-Identificador   --> 1 <= id <= 100.000.000  (10^8)
-Total comics    --> suma de K <= 1.000.000  (10^6)
-Puesto (salida) --> 1 <= puesto <= 1.000.000
-Todo cabe en int.
-*/
+#include "Pila.h"  // estructuras de datos de clase
+
+/*@ <answer>
+
+ Coleccionando cómics
+
+ N pilas de cómics; cada cliente se lleva el menor identificador entre las cimas. Decir qué puesto
+ de la fila hay que ocupar para llevarse el menor de toda la tienda. Acaba con el fichero.
+
+ PLANTEAMIENTO (simulación)
+ Cada pila es una Pila<int>; mientras se lee se calcula el mínimo de todo el caso. Cola de mínimos
+ de pares (cima, pila): si la cima global es el buscado, ese es el puesto; si no, ese cliente se
+ lleva el cómic, se desapila y, si la pila no queda vacía, entra su nueva cima.
+
+ Coste: O(T log N) por caso, con T el total de cómics.
+
+ Pilas           --> 1 <= N <= 100.000       (10^5)
+ Comics por pila --> 1 <= K <= 100
+ Identificador   --> 1 <= id <= 100.000.000  (10^8)
+ Total comics    --> suma de K <= 1.000.000  (10^6)
+ Puesto (salida) --> 1 <= puesto <= 1.000.000
+ Todo cabe en int.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 bool resuelveCaso() {
     int n;
@@ -51,10 +80,22 @@ bool resuelveCaso() {
     return true;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    while (resuelveCaso());
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

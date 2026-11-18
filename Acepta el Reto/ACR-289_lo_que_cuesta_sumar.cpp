@@ -7,10 +7,38 @@
 // (no la edites a mano: se vuelve a generar).
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <queue>
 #include <vector>
 using namespace std;
+
+/*@ <answer>
+
+ Lo que cuesta sumar
+
+ Sumar N numeros con el minimo esfuerzo total, sabiendo que sumar a + b cuesta a + b.
+ La entrada acaba con un caso con N = 0.
+
+ PLANTEAMIENTO (voraz, como Huffman)
+ Cola de prioridad de minimos con los N numeros. Mientras quede mas de uno, se sacan los dos
+ menores, se suma su suma al esfuerzo y se mete el resultado. long long: el esfuerzo crece mucho.
+
+ Coste: O(N log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 bool resuelveCaso() {
     int N;
@@ -36,10 +64,10 @@ bool resuelveCaso() {
     return true;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
 
+int main() {
     while (resuelveCaso());
     return 0;
 }

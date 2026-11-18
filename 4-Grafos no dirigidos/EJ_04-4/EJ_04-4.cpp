@@ -1,49 +1,63 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <queue>
 #include <unordered_map>
-#include "Grafo.h"
-
 using namespace std;
 
-/*
-    Los numeros de Bacon
+#include "Grafo.h"  // estructuras de datos de clase
 
-    Peliculas         --> 1 <= P <= 5.000
-    Actores distintos --> como mucho 100.000
-    Consultas         --> 1 <= N <= 100.000 (siempre actores que existen)
-    Los nombres son una sola palabra --> se leen con cin >> string
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    El numero de Bacon de un actor es la longitud del camino MAS CORTO
-    hasta KevinBacon, donde cada paso es "han salido en la misma pelicula".
-    Camino mas corto sin pesos --> BFS desde KevinBacon (una sola vez,
-    y luego cada consulta es mirar dist[actor]).
+ Los numeros de Bacon
 
-    1) Los actores vienen por nombre --> unordered_map nombre -> numero
-       de vertice, para poder usar Grafo (que trabaja con 0..V-1).
+ Peliculas         --> 1 <= P <= 5.000
+ Actores distintos --> como mucho 100.000
+ Consultas         --> 1 <= N <= 100.000 (siempre actores que existen)
+ Los nombres son una sola palabra --> se leen con cin >> string
 
-    2) Para construir el grafo, lo directo seria unir con una arista cada
-       par de actores de la misma pelicula, pero una pelicula con k actores
-       daria k*(k-1)/2 aristas (con 100.000 actores, imposible).
-       Truco: meter tambien las PELICULAS como vertices:
-            actor --- pelicula --- actor
-       Asi una pelicula de k actores son solo k aristas. Pero ahora pasar
-       de un actor a otro cuesta 2 aristas (actor-peli-actor), asi que
-            numero de Bacon = dist / 2
+ PLANTEAMIENTO
+ El numero de Bacon de un actor es la longitud del camino MAS CORTO
+ hasta KevinBacon, donde cada paso es "han salido en la misma pelicula".
+ Camino mas corto sin pesos --> BFS desde KevinBacon (una sola vez,
+ y luego cada consulta es mirar dist[actor]).
 
-    3) Grafo necesita saber V al crearlo, y no sabemos cuantos actores hay
-       hasta leer todas las peliculas: primero guardo los repartos y
-       despues construyo el grafo con V = actores + peliculas.
-       Vertices: 0..actores-1 son actores, actores+p es la pelicula p.
+ 1) Los actores vienen por nombre --> unordered_map nombre -> numero
+    de vertice, para poder usar Grafo (que trabaja con 0..V-1).
 
-    4) Si KevinBacon no sale en ninguna pelicula, todos son INF.
+ 2) Para construir el grafo, lo directo seria unir con una arista cada
+    par de actores de la misma pelicula, pero una pelicula con k actores
+    daria k*(k-1)/2 aristas (con 100.000 actores, imposible).
+    Truco: meter tambien las PELICULAS como vertices:
+         actor --- pelicula --- actor
+    Asi una pelicula de k actores son solo k aristas. Pero ahora pasar
+    de un actor a otro cuesta 2 aristas (actor-peli-actor), asi que
+         numero de Bacon = dist / 2
 
-    Coste: O(V + A) para el BFS, con V <= 105.000 y A = suma de repartos.
-*/
+ 3) Grafo necesita saber V al crearlo, y no sabemos cuantos actores hay
+    hasta leer todas las peliculas: primero guardo los repartos y
+    despues construyo el grafo con V = actores + peliculas.
+    Vertices: 0..actores-1 son actores, actores+p es la pelicula p.
+
+ 4) Si KevinBacon no sale en ninguna pelicula, todos son INF.
+
+ Coste: O(V + A) para el BFS, con V <= 105.000 y A = suma de repartos.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 const string BACON = "KevinBacon";
 
@@ -121,12 +135,25 @@ void resuelveCaso() {
     cout << "---\n";
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

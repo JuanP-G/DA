@@ -1,38 +1,52 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
-#include "GrafoValorado.h"
-#include "ConjuntosDisjuntos.h"
-
 using namespace std;
 
-/*
-    Las minas del emperador Trajano
+#include "GrafoValorado.h"  // estructuras de datos de clase
+#include "ConjuntosDisjuntos.h"  // estructuras de datos de clase
 
-    N camaras (1 <= N <= 20.000) y M galerias (0 <= M <= 200.000) que se recorren en
-    los dos sentidos y tardan cierto tiempo (hasta 1.000.000 s) en recorrerse.
-    Palencia Jones va de la camara 'origen' a la camara 'destino' aguantando la
-    respiracion en cada galeria. Tiempo MAXIMO que tendra que aguantar (de camara
-    en camara) por el camino que menos le exija, o "IMPOSIBLE".
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Grafo valorado no dirigido. No se minimiza la SUMA de un camino sino su arista
-    MAS LARGA (se descansa en cada camara): hay que encontrar el camino cuya galeria
-    mas larga sea lo mas corta posible ("camino de cuello de botella", minimax).
+ Las minas del emperador Trajano
 
-    Con un limite T se puede usar cualquier galeria de tiempo <= T. El menor T que
-    conecta origen y destino se encuentra con KRUSKAL: se anaden aristas de menor a
-    mayor y se PARA en cuanto origen y destino estan unidos (unidos(origen, destino)).
-    La respuesta es el valor de la arista que lo consigue.
+ N camaras (1 <= N <= 20.000) y M galerias (0 <= M <= 200.000) que se recorren en
+ los dos sentidos y tardan cierto tiempo (hasta 1.000.000 s) en recorrerse.
+ Palencia Jones va de la camara 'origen' a la camara 'destino' aguantando la
+ respiracion en cada galeria. Tiempo MAXIMO que tendra que aguantar (de camara
+ en camara) por el camino que menos le exija, o "IMPOSIBLE".
 
-    Casos:
-      origen == destino  --> 0  (no hay que bucear)
-      nunca se unen      --> IMPOSIBLE
+ PLANTEAMIENTO
+ Grafo valorado no dirigido. No se minimiza la SUMA de un camino sino su arista
+ MAS LARGA (se descansa en cada camara): hay que encontrar el camino cuya galeria
+ mas larga sea lo mas corta posible ("camino de cuello de botella", minimax).
 
-    Coste: O(N + M log M).
-*/
+ Con un limite T se puede usar cualquier galeria de tiempo <= T. El menor T que
+ conecta origen y destino se encuentra con KRUSKAL: se anaden aristas de menor a
+ mayor y se PARA en cuanto origen y destino estan unidos (unidos(origen, destino)).
+ La respuesta es el valor de la arista que lo consigue.
+
+ Casos:
+   origen == destino  --> 0  (no hay que bucear)
+   nunca se unen      --> IMPOSIBLE
+
+ Coste: O(N + M log M).
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     GrafoValorado<int> g(cin, 1);   // N, M y M galerias; camaras numeradas desde 1
@@ -61,12 +75,25 @@ void resuelveCaso() {
     else cout << "IMPOSIBLE\n";
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

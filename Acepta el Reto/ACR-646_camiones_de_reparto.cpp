@@ -10,8 +10,17 @@
 //  - no hay numero de casos: se lee hasta el final del fichero
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
+using namespace std;
+
 // ---------- GrafoValorado.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos no dirigidos valorados
@@ -163,33 +172,37 @@ inline std::ostream& operator<<(std::ostream & o, GrafoValorado<Valor> const& g)
 #endif /* GRAFOVALORADO_H_ */
 // ---------- fin de GrafoValorado.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    Camiones de reparto
+ Camiones de reparto
 
-    V intersecciones (2 <= V <= 10.000) y E calles de doble sentido (0 <= E <= 100.000),
-    cada una con la anchura MAXIMA que puede tener un camion para pasar por ella.
-    K <= 10 consultas (origen, destino, anchura del camion): SI/NO segun pueda ir.
-*/
+ V intersecciones (2 <= V <= 10.000) y E calles de doble sentido (0 <= E <= 100.000),
+ cada una con la anchura MAXIMA que puede tener un camion para pasar por ella.
+ K <= 10 consultas (origen, destino, anchura del camion): SI/NO segun pueda ir.
 
-/*
-    PLANTEAMIENTO
-    Grafo valorado no dirigido: intersecciones = vertices, calles = aristas,
-    anchura maxima = valor de la arista.
+ PLANTEAMIENTO
+ Grafo valorado no dirigido: intersecciones = vertices, calles = aristas,
+ anchura maxima = valor de la arista.
 
-    Cada consulta es una pregunta de alcanzabilidad CON FILTRO:
-        hay un camino origen --> destino que use solo aristas con valor >= anchura?
+ Cada consulta es una pregunta de alcanzabilidad CON FILTRO:
+     hay un camino origen --> destino que use solo aristas con valor >= anchura?
 
-    Un recorrido (DFS) desde el origen que ignora las aristas demasiado estrechas lo
-    responde. La comparacion es >= : un camion de anchura 15 cabe justo por una calle
-    de anchura maxima 15 (el fragmento de las transparencias usa <, que es otra cosa).
+ Un recorrido (DFS) desde el origen que ignora las aristas demasiado estrechas lo
+ responde. La comparacion es >= : un camion de anchura 15 cabe justo por una calle
+ de anchura maxima 15 (el fragmento de las transparencias usa <, que es otra cosa).
 
-    Se repite para cada consulta (el filtro cambia con la anchura), con un vector
-    de visitados nuevo cada vez.
+ Se repite para cada consulta (el filtro cambia con la anchura), con un vector
+ de visitados nuevo cada vez.
 
-    Coste: O(K * (V + E)). La recursion baja como mucho V = 10.000 niveles.
-*/
+ Coste: O(K * (V + E)). La recursion baja como mucho V = 10.000 niveles.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 class Alcanzables {
 public:
@@ -229,11 +242,10 @@ void resuelveCaso() {
     }
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     while (cin >> ws && cin.peek() != EOF) resuelveCaso();
-
     return 0;
 }

@@ -10,8 +10,17 @@
 //  - no hay numero de casos: se lee hasta el final del fichero
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
+using namespace std;
+
 // ---------- Grafo.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos no dirigidos.
@@ -105,32 +114,36 @@ inline std::ostream& operator<<(std::ostream& o, Grafo const& g) {
 #endif /* GRAFO_H_ */
 // ---------- fin de Grafo.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    Grafo bipartito
+ Grafo bipartito
 
-    Vertices --> 1 <= V <= 100
-    Aristas  --> A (vertices de 0 a V-1, sin lazos ni repetidas)
-    Entrada: V en una linea y A en la siguiente --> justo lo que lee Grafo(cin)
-*/
+ Vertices --> 1 <= V <= 100
+ Aristas  --> A (vertices de 0 a V-1, sin lazos ni repetidas)
+ Entrada: V en una linea y A en la siguiente --> justo lo que lee Grafo(cin)
 
-/*
-    PLANTEAMIENTO
-    Bipartito = se puede colorear con 2 colores sin que una arista
-    una dos vertices del mismo color.
+ PLANTEAMIENTO
+ Bipartito = se puede colorear con 2 colores sin que una arista
+ una dos vertices del mismo color.
 
-    Idea: el color de un vertice OBLIGA el color de sus vecinos (el contrario).
-    Asi que hago un dfs coloreando: al vertice de partida le doy un color
-    cualquiera y a cada vecino nuevo el color contrario al de su padre.
-    Si encuentro una arista v-w con w ya visitado y del MISMO color que v,
-    hay conflicto --> no es bipartito (hay un ciclo de longitud impar).
+ Idea: el color de un vertice OBLIGA el color de sus vecinos (el contrario).
+ Asi que hago un dfs coloreando: al vertice de partida le doy un color
+ cualquiera y a cada vecino nuevo el color contrario al de su padre.
+ Si encuentro una arista v-w con w ya visitado y del MISMO color que v,
+ hay conflicto --> no es bipartito (hay un ciclo de longitud impar).
 
-    OJO: el grafo puede no ser conexo, asi que hay que lanzar el dfs desde
-    cada vertice no visitado (cada componente se colorea por separado).
+ OJO: el grafo puede no ser conexo, asi que hay que lanzar el dfs desde
+ cada vertice no visitado (cada componente se colorea por separado).
 
-    Coste: O(V + A) por caso.
-*/
+ Coste: O(V + A) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 class Bipartito {
 public:
@@ -170,11 +183,10 @@ void resuelveCaso() {
     cout << (b.esBipartito() ? "SI" : "NO") << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     while (cin >> ws && cin.peek() != EOF) resuelveCaso();
-
     return 0;
 }

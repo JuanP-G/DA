@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Lo que cuesta sumar.pdf>) · 💻 [Solución](EJ_02-1.cpp)
 
+🧩 Plantilla: [**centinela**](../../Plantillas/2.Centinela.cpp) — un caso especial marca el final; `bool resuelveCaso()` devuelve `false` al leerlo.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#289 · Lo que cuesta sumar](https://aceptaelreto.com/problem/statement.php?id=289) — *mismo problema*. Mismo enunciado.
 

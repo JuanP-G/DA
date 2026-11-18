@@ -1,41 +1,55 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
 #include <algorithm>
-#include "Digrafo.h"
-
 using namespace std;
 
-/*
-    Juego de Transformacion Modular
+#include "Digrafo.h"  // estructuras de datos de clase
 
-    Modulo        --> 1 <= M <= 10.000
-    Inicio/Objetivo --> 0 <= S, T < M
-    Operaciones   --> 1 <= N <= 100, cada una x --> (a*x + b) mod M, 0 <= a, b < 10.000
-    Casos de prueba --> como mucho 500
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Grafo DIRIGIDO (clase Digrafo):
-        vertices: los numeros 0..M-1 (el valor actual de x)
-        aristas:  x --> (a_i * x + b_i) mod M, una por cada operacion i
-    Minimo numero de jugadas = camino mas corto (en aristas) de S a T
-    --> BFS desde S. Si T no se alcanza, -1.
+ Juego de Transformacion Modular
 
-    Construir el grafo: para cada x y cada operacion, ponArista(x, (a*x+b) % M).
-    Son como mucho M*N = 1.000.000 de aristas por caso (unos 4 MB).
+ Modulo        --> 1 <= M <= 10.000
+ Inicio/Objetivo --> 0 <= S, T < M
+ Operaciones   --> 1 <= N <= 100, cada una x --> (a*x + b) mod M, 0 <= a, b < 10.000
+ Casos de prueba --> como mucho 500
 
-    * La direccion importa: x --> y no implica y --> x (no se puede "deshacer"
-      una operacion), por eso Digrafo y no Grafo.
-    * a*x + b cabe en un int: como mucho 9.999 * 9.999 + 9.999 < 10^8.
-    * Si S == T la respuesta es 0 (el BFS lo da solo: dist[S] = 0).
-      Tambien con M = 1: el unico numero es el 0.
-    * Se corta el BFS en cuanto se saca T, y las operaciones repetidas
-      (mismo a y mismo b modulo M) se quitan antes: no aportan aristas nuevas.
+ PLANTEAMIENTO
+ Grafo DIRIGIDO (clase Digrafo):
+     vertices: los numeros 0..M-1 (el valor actual de x)
+     aristas:  x --> (a_i * x + b_i) mod M, una por cada operacion i
+ Minimo numero de jugadas = camino mas corto (en aristas) de S a T
+ --> BFS desde S. Si T no se alcanza, -1.
 
-    Coste: construir el grafo O(M * N) y BFS O(M + A) = O(M * N) por caso.
-*/
+ Construir el grafo: para cada x y cada operacion, ponArista(x, (a*x+b) % M).
+ Son como mucho M*N = 1.000.000 de aristas por caso (unos 4 MB).
+
+ * La direccion importa: x --> y no implica y --> x (no se puede "deshacer"
+   una operacion), por eso Digrafo y no Grafo.
+ * a*x + b cabe en un int: como mucho 9.999 * 9.999 + 9.999 < 10^8.
+ * Si S == T la respuesta es 0 (el BFS lo da solo: dist[S] = 0).
+   Tambien con M = 1: el unico numero es el 0.
+ * Se corta el BFS en cuanto se saca T, y las operaciones repetidas
+   (mismo a y mismo b modulo M) se quitan antes: no aportan aristas nuevas.
+
+ Coste: construir el grafo O(M * N) y BFS O(M + A) = O(M * N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class TransformacionModular {
 public:
@@ -93,12 +107,25 @@ void resuelveCaso() {
     cout << tm.jugadas(t) << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

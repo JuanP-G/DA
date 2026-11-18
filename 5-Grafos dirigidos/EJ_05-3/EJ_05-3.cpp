@@ -1,42 +1,56 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
-#include "Digrafo.h"
-
 using namespace std;
 
-/*
-    Ordenando tareas
+#include "Digrafo.h"  // estructuras de datos de clase
 
-    Tareas      --> 1 <= N <= 10.000   (numeradas de 1 a N)
-    Dependencias --> 0 <= M <= 100.000, "A antes que B" (A != B)
-    Salida: un orden valido (cualquiera) o Imposible
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Grafo DIRIGIDO: una arista A --> B significa "A tiene que hacerse antes que B".
-    Un orden valido de las tareas es un ORDEN TOPOLOGICO del grafo; existe
-    si y solo si el grafo NO tiene ciclos (si no, ninguna tarea del ciclo
-    puede empezar: Imposible).
+ Ordenando tareas
 
-    Orden topologico con DFS:
-        orden topologico = postorden inverso
-    Cuando el DFS termina un vertice v, ya ha terminado todo lo que depende
-    de v (sus sucesores), asi que v va ANTES que todos ellos: basta ir
-    metiendo los vertices en una lista al terminar y darle la vuelta al final.
+ Tareas      --> 1 <= N <= 10.000   (numeradas de 1 a N)
+ Dependencias --> 0 <= M <= 100.000, "A antes que B" (A != B)
+ Salida: un orden valido (cualquiera) o Imposible
 
-    Deteccion de ciclos en el mismo DFS: cada vertice tiene 3 estados
-        0 = sin visitar,  1 = en la pila del DFS (se esta explorando),  2 = terminado
-    Si desde v veo un vecino w en estado 1, w es un ANTECESOR de v en el
-    recorrido y v --> w cierra un ciclo --> Imposible.
-    (Ver un vecino en estado 2 es normal: ya terminado, no hay ciclo.)
+ PLANTEAMIENTO
+ Grafo DIRIGIDO: una arista A --> B significa "A tiene que hacerse antes que B".
+ Un orden valido de las tareas es un ORDEN TOPOLOGICO del grafo; existe
+ si y solo si el grafo NO tiene ciclos (si no, ninguna tarea del ciclo
+ puede empezar: Imposible).
 
-    * Hay muchos ordenes validos; el problema acepta cualquiera.
-    * Profundidad de la recursion <= N = 10.000, no hay problema de pila.
+ Orden topologico con DFS:
+     orden topologico = postorden inverso
+ Cuando el DFS termina un vertice v, ya ha terminado todo lo que depende
+ de v (sus sucesores), asi que v va ANTES que todos ellos: basta ir
+ metiendo los vertices en una lista al terminar y darle la vuelta al final.
 
-    Coste: O(N + M).
-*/
+ Deteccion de ciclos en el mismo DFS: cada vertice tiene 3 estados
+     0 = sin visitar,  1 = en la pila del DFS (se esta explorando),  2 = terminado
+ Si desde v veo un vecino w en estado 1, w es un ANTECESOR de v en el
+ recorrido y v --> w cierra un ciclo --> Imposible.
+ (Ver un vecino en estado 2 es normal: ya terminado, no hay ciclo.)
+
+ * Hay muchos ordenes validos; el problema acepta cualquiera.
+ * Profundidad de la recursion <= N = 10.000, no hay problema de pila.
+
+ Coste: O(N + M).
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class OrdenTopologico {
 public:
@@ -93,12 +107,25 @@ void resuelveCaso() {
     }
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

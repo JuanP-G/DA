@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-La conferencia de paz.pdf>) · 💻 [Solución](EJ_07-4.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 N aldeas (3 ≤ N ≤ 100.000) unidas por caminos de **doble sentido** con longitud 1..1.000 (el grafo es conexo). Unas aldeas son de los **galos**, otras de los **romanos** y el resto son **neutrales**. Hay que elegir una aldea **neutral** tal que la distancia a la aldea gala **más cercana** y la distancia a la romana **más cercana** se diferencien lo **menos** posible. Si hay empate, la de índice menor. Se escribe el índice de la aldea y esa diferencia.
 
