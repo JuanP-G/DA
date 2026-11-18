@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej10-1`) · 💻 [Solución](EJ_10-1.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 N cordeles (1..1.000), cada uno con su longitud y su coste (1..1.000), y una longitud L (1..1.000). Cada cordel se usa **como mucho una vez** y el orden de unión no importa. Si se puede formar exactamente L, hay que escribir `SI` y tres respuestas por separado: el **número de formas**, el **mínimo número de cordeles** y el **mínimo coste**. Si no se puede, `NO`.
 

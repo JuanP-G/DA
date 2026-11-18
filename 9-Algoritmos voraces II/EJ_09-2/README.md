@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej09-2`) · 💻 [Solución](EJ_09-2.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Un intervalo `[C, F)` y N trabajos (0 ≤ N ≤ 200.000), cada uno con su intervalo `[c, f)`. Hay que escribir el **mínimo número de trabajos** que cubren todo `[C, F)` (en cada instante al menos uno en marcha), o `Imposible`.
 

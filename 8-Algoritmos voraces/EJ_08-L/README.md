@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej08-L`) · 💻 [Solución](EJ_08-L.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 N conferencias (1 ≤ N ≤ 250.000), cada una con hora de comienzo y de fin (enteros 0..10⁹). Dos conferencias que se solapan no pueden ir en la misma sala; una que empieza **justo cuando acaba otra no se solapa** con ella. Hay que escribir el **mínimo número R de salas** y, en otra línea, la sala (1..R) de cada conferencia en el orden de la entrada. Vale **cualquier** asignación válida.
 

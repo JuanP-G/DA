@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej10-2`) · 💻 [Solución](EJ_10-2.cpp)
 
+🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato.
+
 ## Qué piden
 Un valor V (1..50.000) y una diana con S sectores (1..100) de puntuaciones distintas en orden creciente (1..1.000). Cada sector se puede usar **las veces que haga falta**. Hay que escribir el **mínimo número de dardos** para sumar V y las puntuaciones usadas (`4: 25 25 25 25`), o `Imposible`. Vale cualquier solución óptima. **La entrada acaba con el fichero.**
 
@@ -59,7 +61,7 @@ En la segunda opción se queda en la **fila i** porque el sector i se puede volv
 
 ## El código, paso a paso
 
-**1. Lectura.** No hay número de casos, así que se lee `while (cin >> V >> S)`. Las puntuaciones se guardan en `p[1..S]` (por eso `p` tiene `S + 1` posiciones), igual que en la fórmula: el sector `i` es `p[i]`.
+**1. Lectura.** No hay número de casos (plantilla de casos ilimitados): `resuelveCaso()` lee `V` y `S` y, si `cin` ha fallado (fin del fichero), devuelve `false` y el `while (resuelveCaso());` del `main` termina. Las puntuaciones se guardan en `p[1..S]` (por eso `p` tiene `S + 1` posiciones), igual que en la fórmula: el sector `i` es `p[i]`.
 
 **2. La tabla.** `dardos` tiene `S + 1` filas y `V + 1` columnas, todas a `INF` («no se puede»). La fila `i` significa «puedo usar los sectores `1..i`», así que la **fila 0** es «sin ningún sector». La columna `j` es la suma que quiero conseguir.
 
@@ -114,5 +116,5 @@ Con el 6 también se llega a 8 (6 + 1 + 1), pero con 3 dardos. Por eso tirar sie
 - **Coste:** O(S·V) en tiempo y en espacio por caso (como mucho 5·10⁶ casillas).
 
 ## Ojo con
-- No hay número de casos: `while (cin >> V >> S)`.
+- No hay número de casos: plantilla de **casos ilimitados** (`if (!cin) return false;` justo después de leer `V` y `S`). Si es imposible se escribe `Imposible` y se hace `return true` (el caso ha terminado, pero puede haber más).
 - El formato es `k:` y luego cada puntuación precedida de un espacio.

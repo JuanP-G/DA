@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej09-L`) · 💻 [Solución](EJ_09-L.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Una isla con N puntos (N par, 2..200.000): la desalinizadora norte es el **1**, la sur es el **N** y los N − 2 restantes son pueblos. Hay M carreteras de doble sentido con su coste (1..100.000), y el grafo es conexo. A cada pueblo le llega un camión que sale de una planta, va al pueblo y **vuelve**. Exactamente la **mitad** de los pueblos se sirven desde el norte y la otra mitad desde el sur. Hay que escribir el **coste mínimo total**.
 

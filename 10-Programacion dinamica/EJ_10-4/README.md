@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej10-4`) · 💻 [Solución](EJ_10-4.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Un tablero N × N (3 ≤ N ≤ 1.000) con números 1..10.000. Se empieza en una casilla de la **última fila** y se sube hasta la **primera**. En cada paso se va a una de las tres casillas de la fila de encima (vertical o diagonal) sin salirse. Hay que escribir la **suma máxima** y la **columna** de la última fila por la que empezar; si hay empate, la de más a la izquierda.
 

@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej09-1`) · 💻 [Solución](EJ_09-1.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 N edificios (1 ≤ N ≤ 100.000), cada uno con su extremo occidental W y oriental E (enteros 0..10⁹). Un pasadizo de **1 metro de ancho** le sirve a un edificio si queda **completamente debajo** de él: el pasadizo del metro `[x, x+1]` sirve a `[W, E]` si `W ≤ x` y `x + 1 ≤ E`. Hay que escribir el **mínimo número de pasadizos** para que todos los edificios tengan uno.
 
