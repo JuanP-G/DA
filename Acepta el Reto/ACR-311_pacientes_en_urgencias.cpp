@@ -10,18 +10,43 @@
 //  - el separador de cada caso es `----` (cuatro guiones)
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
-
 using namespace std;
 
-/*
-    Casos --> 1 <= N <= 200.000  (2*10^5)
-	Gravedad --> 1 <= N <= 1.000.000   (10^0)
-	I (Ingreso) --> Los nombres son strings de 1 a 20 caracteres, sin espacios
-	A (Atencion) --> No hay atencion si no hay pacientes
-*/
+/*@ <answer>
+
+ Ordenando a los pacientes en urgencias
+
+ Eventos: I nombre gravedad (ingreso) y A (atender). En cada A escribir el paciente mas grave y,
+ a igualdad, el que mas lleva esperando. Tras cada caso, ---. Acaba con un caso con 0 eventos.
+
+ PLANTEAMIENTO
+ Cola de maximos de Paciente(nombre, gravedad, orden de llegada): operator< da menos prioridad al
+ de menor gravedad y, si empatan, al que llego despues. I hace push; A escribe top() y hace pop().
+
+ Coste: O(n log n) por caso.
+
+ Casos --> 1 <= N <= 200.000  (2*10^5)
+ Gravedad --> 1 <= N <= 1.000.000   (10^0)
+ I (Ingreso) --> Los nombres son strings de 1 a 20 caracteres, sin espacios
+ A (Atencion) --> No hay atencion si no hay pacientes
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 struct Paciente {
     string nombre;
@@ -62,11 +87,10 @@ bool resuelveCaso() {
 	return true;
 }
 
-int main()
-{
-    ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
 
+int main() {
     while (resuelveCaso());
     return 0;
 }

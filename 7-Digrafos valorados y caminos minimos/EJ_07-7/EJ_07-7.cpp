@@ -1,33 +1,47 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <limits>
-#include "DigrafoValorado.h"
-#include "IndexPQ.h"
-
 using namespace std;
 
-/*
-    Ratones en un laberinto
+#include "DigrafoValorado.h"  // estructuras de datos de clase
+#include "IndexPQ.h"  // estructuras de datos de clase
 
-    Laberinto con N celdas (1 <= N <= 100.000) y P pasadizos DIRIGIDOS (0 <= P <= 200.000)
-    con tiempo 1..10.000 (pueden repetirse y haber bucles). Hay un raton en cada celda
-    menos en la salida S y todos van por el camino mas rapido hacia S. Cuantos ratones
-    llegan a S en como mucho T segundos?
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Hay que conocer, para CADA celda, el tiempo minimo hasta S. Un Dijkstra normal da las
-    distancias DESDE un origen; aqui queremos las distancias HACIA un destino:
+ Ratones en un laberinto
 
-        camino de a a S en el grafo  ==  camino de S a a en el grafo INVERSO
+ Laberinto con N celdas (1 <= N <= 100.000) y P pasadizos DIRIGIDOS (0 <= P <= 200.000)
+ con tiempo 1..10.000 (pueden repetirse y haber bucles). Hay un raton en cada celda
+ menos en la salida S y todos van por el camino mas rapido hacia S. Cuantos ratones
+ llegan a S en como mucho T segundos?
 
-    Asi que un solo Dijkstra desde S en el grafo inverso da dist[a] = tiempo del raton de a.
-    Se cuentan las celdas a != S con dist[a] <= T (el "como mucho" incluye el igual).
-    Las celdas sin camino a S se quedan en infinito y no cuentan.
+ PLANTEAMIENTO
+ Hay que conocer, para CADA celda, el tiempo minimo hasta S. Un Dijkstra normal da las
+ distancias DESDE un origen; aqui queremos las distancias HACIA un destino:
 
-    Coste: O(P log N) por caso.
-*/
+     camino de a a S en el grafo  ==  camino de S a a en el grafo INVERSO
+
+ Asi que un solo Dijkstra desde S en el grafo inverso da dist[a] = tiempo del raton de a.
+ Se cuentan las celdas a != S con dist[a] <= T (el "como mucho" incluye el igual).
+ Las celdas sin camino a S se quedan en infinito y no cuentan.
+
+ Coste: O(P log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     int N, S, T, P;
@@ -64,12 +78,25 @@ void resuelveCaso() {
     cout << ratones << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

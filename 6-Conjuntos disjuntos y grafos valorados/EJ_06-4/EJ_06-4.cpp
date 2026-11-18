@@ -1,41 +1,55 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
-#include "GrafoValorado.h"
-#include "ConjuntosDisjuntos.h"
-
 using namespace std;
 
-/*
-    La selva de Tarzan
+#include "GrafoValorado.h"  // estructuras de datos de clase
+#include "ConjuntosDisjuntos.h"  // estructuras de datos de clase
 
-    N arboles (1 <= N <= 10.000) y M saltos posibles (0 <= M <= 100.000);
-    cada salto une dos arboles y exige una cuerda de AL MENOS cierta longitud
-    (hasta 1.000.000). Tarzan lleva una sola cuerda y quiere poder ir de cualquier
-    arbol a cualquier otro. Longitud MINIMA de cuerda, o "Imposible".
-    La entrada es una secuencia de selvas (hasta el final del fichero).
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Grafo valorado no dirigido: arboles = vertices, saltos = aristas,
-    longitud minima del salto = valor.
+ La selva de Tarzan
 
-    Con una cuerda de longitud L se pueden hacer todos los saltos de valor <= L.
-    Se busca el menor L tal que las aristas de valor <= L conecten todo el grafo.
+ N arboles (1 <= N <= 10.000) y M saltos posibles (0 <= M <= 100.000);
+ cada salto une dos arboles y exige una cuerda de AL MENOS cierta longitud
+ (hasta 1.000.000). Tarzan lleva una sola cuerda y quiere poder ir de cualquier
+ arbol a cualquier otro. Longitud MINIMA de cuerda, o "Imposible".
+ La entrada es una secuencia de selvas (hasta el final del fichero).
 
-    Eso es lo que hace KRUSKAL: mete aristas de menor a mayor, y cuando mete una de
-    valor L es porque ya estan todas las mas cortas. La respuesta es el valor de la
-    ULTIMA arista que Kruskal acepta (la que deja todos los arboles conectados):
-    la arista mas pesada de un ARM.
+ PLANTEAMIENTO
+ Grafo valorado no dirigido: arboles = vertices, saltos = aristas,
+ longitud minima del salto = valor.
 
-    Diferencia con 06-3: no se suman los costes, se guarda el valor de la ultima.
+ Con una cuerda de longitud L se pueden hacer todos los saltos de valor <= L.
+ Se busca el menor L tal que las aristas de valor <= L conecten todo el grafo.
 
-    Si al terminar quedan varios conjuntos --> "Imposible".
-    Con N = 1 no se acepta ninguna arista y ya hay un solo conjunto --> 0.
+ Eso es lo que hace KRUSKAL: mete aristas de menor a mayor, y cuando mete una de
+ valor L es porque ya estan todas las mas cortas. La respuesta es el valor de la
+ ULTIMA arista que Kruskal acepta (la que deja todos los arboles conectados):
+ la arista mas pesada de un ARM.
 
-    Coste: O(N + M log M).
-*/
+ Diferencia con 06-3: no se suman los costes, se guarda el valor de la ultima.
+
+ Si al terminar quedan varios conjuntos --> "Imposible".
+ Con N = 1 no se acepta ninguna arista y ya hay un solo conjunto --> 0.
+
+ Coste: O(N + M log M).
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 bool resuelveCaso() {
     GrafoValorado<int> g(cin, 1);   // N, M y M saltos; arboles numerados desde 1
@@ -63,11 +77,22 @@ bool resuelveCaso() {
     return true;
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    while (resuelveCaso());
+   while (resuelveCaso());
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

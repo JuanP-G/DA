@@ -1,32 +1,45 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
-
 using namespace std;
 
-/*
-    ¡En primera linea de playa!
+/*@ <answer>
 
-    N edificios (1 <= N <= 100.000), cada uno con su extremo occidental W y oriental E (W < E,
-    enteros 0..10^9). Un pasadizo de 1 metro de ancho sirve a un edificio si queda COMPLETAMENTE
-    debajo de el: el pasadizo del metro [x, x + 1] sirve al edificio [W, E] si W <= x y x + 1 <= E.
-    Escribir el minimo numero de pasadizos para servir a todos los edificios.
-*/
+ ¡En primera linea de playa!
+ 
+ N edificios (1 <= N <= 100.000), cada uno con su extremo occidental W y oriental E (W < E,
+ enteros 0..10^9). Un pasadizo de 1 metro de ancho sirve a un edificio si queda COMPLETAMENTE
+ debajo de el: el pasadizo del metro [x, x + 1] sirve al edificio [W, E] si W <= x y x + 1 <= E.
+ Escribir el minimo numero de pasadizos para servir a todos los edificios.
 
-/*
-    PLANTEAMIENTO (voraz: puntos que pinchan intervalos)
-    Se ordenan los edificios por su extremo ORIENTAL. El edificio que acaba antes necesita un
-    pasadizo; lo mejor es ponerlo lo mas al este posible dentro de el, en el metro [E - 1, E]:
-    asi sirve tambien a todos los edificios que empiezan como muy tarde en E - 1.
+ PLANTEAMIENTO (voraz: puntos que pinchan intervalos)
+ Se ordenan los edificios por su extremo ORIENTAL. El edificio que acaba antes necesita un
+ pasadizo; lo mejor es ponerlo lo mas al este posible dentro de el, en el metro [E - 1, E]:
+ asi sirve tambien a todos los edificios que empiezan como muy tarde en E - 1.
+ 
+ Recorriendo en ese orden, un edificio ya esta servido por el ultimo pasadizo (en [x, x + 1])
+ si W <= x (su E es >= que el del edificio que lo coloco, asi que x + 1 <= E). Si no, se pone
+ un pasadizo nuevo en su metro mas oriental.
+ 
+ Ojo: dos edificios que solo se tocan en un punto ([1, 4] y [4, 8]) no comparten ningun metro.
+ 
+ Coste: O(N log N) por caso.
 
-    Recorriendo en ese orden, un edificio ya esta servido por el ultimo pasadizo (en [x, x + 1])
-    si W <= x (su E es >= que el del edificio que lo coloco, asi que x + 1 <= E). Si no, se pone
-    un pasadizo nuevo en su metro mas oriental.
+ @ </answer> */
 
-    Ojo: dos edificios que solo se tocan en un punto ([1, 4] y [4, 8]) no comparten ningun metro.
 
-    Coste: O(N log N) por caso.
-*/
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     int N;
@@ -46,12 +59,25 @@ void resuelveCaso() {
     cout << pasadizos << '\n';
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    int casos;
-    cin >> casos;
-    while (casos--) resuelveCaso();
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

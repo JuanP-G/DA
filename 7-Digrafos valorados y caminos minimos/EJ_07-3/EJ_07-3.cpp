@@ -1,43 +1,57 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <deque>
 #include <limits>
-#include "DigrafoValorado.h"
-#include "IndexPQ.h"
-
 using namespace std;
 
-/*
-    RapidEats con ruta
+#include "DigrafoValorado.h"  // estructuras de datos de clase
+#include "IndexPQ.h"  // estructuras de datos de clase
 
-    Ciudad con N puntos (2 <= N <= 20.000) y C tramos de calle (0 <= C <= 100.000), cada
-    uno con una duracion 1..500. Los tramos se recorren en ambos sentidos y puede haber
-    varios entre los mismos dos puntos. Para cada uno de K pedidos (K <= 10), de un origen
-    a un destino, escribir el tiempo minimo y el camino:
+/*@ <answer>
 
-        30: 1 -> 3                (o NO LLEGA si no hay camino)
+ RapidEats con ruta
 
-    Despues de cada caso, una linea con ---.
-*/
+ Ciudad con N puntos (2 <= N <= 20.000) y C tramos de calle (0 <= C <= 100.000), cada
+ uno con una duracion 1..500. Los tramos se recorren en ambos sentidos y puede haber
+ varios entre los mismos dos puntos. Para cada uno de K pedidos (K <= 10), de un origen
+ a un destino, escribir el tiempo minimo y el camino:
 
-/*
-    PLANTEAMIENTO
-    Caminos de coste minimo con Dijkstra, pero ahora tambien hay que decir POR DONDE se va.
-    Para eso sirve ulti[w] (la ultima arista del camino mas corto hasta w, que se actualiza
-    en cada relajacion): se recorre hacia atras desde el destino hasta el origen.
+     30: 1 -> 3                (o NO LLEGA si no hay camino)
 
-        ulti[destino] = (a -> destino);  ulti[a] = (b -> a);  ... hasta llegar al origen
+ Despues de cada caso, una linea con ---.
 
-    y se escribe al reves (se van metiendo los vertices por delante en un deque).
+ PLANTEAMIENTO
+ Caminos de coste minimo con Dijkstra, pero ahora tambien hay que decir POR DONDE se va.
+ Para eso sirve ulti[w] (la ultima arista del camino mas corto hasta w, que se actualiza
+ en cada relajacion): se recorre hacia atras desde el destino hasta el origen.
 
-    - Tramos de doble sentido: dos aristas dirigidas por cada tramo (los tramos repetidos
-      no molestan: Dijkstra se queda con el mas rapido).
-    - Hay hasta 10 pedidos con origenes distintos, asi que se ejecuta Dijkstra UNA VEZ POR
-      PEDIDO (el grafo se construye una sola vez por caso).
-    - Si hay varios caminos con el mismo tiempo vale cualquiera.
+     ulti[destino] = (a -> destino);  ulti[a] = (b -> a);  ... hasta llegar al origen
 
-    Coste: O(K * C log N) por caso.
-*/
+ y se escribe al reves (se van metiendo los vertices por delante en un deque).
+
+ - Tramos de doble sentido: dos aristas dirigidas por cada tramo (los tramos repetidos
+   no molestan: Dijkstra se queda con el mas rapido).
+ - Hay hasta 10 pedidos con origenes distintos, asi que se ejecuta Dijkstra UNA VEZ POR
+   PEDIDO (el grafo se construye una sola vez por caso).
+ - Si hay varios caminos con el mismo tiempo vale cualquiera.
+
+ Coste: O(K * C log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     int N, C;
@@ -93,12 +107,25 @@ void resuelveCaso() {
     cout << "---\n";
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

@@ -7,9 +7,18 @@
 // (no la edites a mano: se vuelve a generar).
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
-#include <functional> //greater
+#include <functional>
+using namespace std;
+
 // ---------- IndexPQ.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /**
  * Implementacion de colas con prioridad mediante monticulos.
@@ -166,13 +175,33 @@ private:
 #endif /* INDEXPQ_H_ */
 // ---------- fin de IndexPQ.h ----------
 
-using namespace std;
-/*
-drones	--> 1 <= N <= 100.000 (10^5)
-pila 9V/1.5V --> 1 <= pila <= 200.000 (2*10^5)
-*/
+/*@ <answer>
 
-bool resolverCaso(){
+ Volando drones
+
+ Cada sabado se monta en cada dron la pila de 9 V y la de 1,5 V mas cargadas que queden. Escribir
+ las horas de vuelo totales de cada sabado mientras quede alguna pila de cada tipo.
+ La entrada acaba con el fichero.
+
+ PLANTEAMIENTO
+ Dos colas de maximos (IndexPQ, indice = numero de pila, prioridad = horas que le quedan). Cada
+ sabado, para cada dron se saca la mejor pila de cada tipo; vuela min(h9, h1) horas y se resta a
+ las dos. Las que aun tienen carga se apartan y vuelven a la cola al acabar el sabado.
+
+ Coste: O(P log P) por sabado, con P el numero de pilas.
+
+ drones    --> 1 <= N <= 100.000 (10^5)
+ pila 9V/1.5V --> 1 <= pila <= 200.000 (2*10^5)
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
+
+bool resuelveCaso(){
 	int drones;
 	if (!(cin >> drones)) return false;
 
@@ -238,11 +267,10 @@ bool resolverCaso(){
 	return true;
 }
 
-int main()
-{
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
 
-	while (resolverCaso());
-	return 0;
+int main() {
+    while (resuelveCaso());
+    return 0;
 }

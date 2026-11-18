@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Repartiendo paquetes.pdf>) · 💻 [Solución](EJ_07-6.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Para practicar lo mismo en Acepta el Reto:** [#292 · Repartiendo paquetes](https://aceptaelreto.com/problem/statement.php?id=292) — *problema relacionado*. No he podido leer la página de allí desde aquí: comprueba el formato de entrada y de salida (y los límites) antes de enviar.
 <!-- acr:fin -->

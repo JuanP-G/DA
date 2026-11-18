@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej11-2`) · 💻 [Solución](EJ_11-2.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Una palabra de 1 a 1.000 letras minúsculas. Hay que escribir el **mínimo número de letras que añadir** (en cualquier posición) para convertirla en un palíndromo, y **uno de esos palíndromos**. Vale cualquiera de los que tengan el mínimo.
 

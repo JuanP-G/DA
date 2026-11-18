@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej11-1`) · 💻 [Solución](EJ_11-1.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Una botella de T segundos de aire (1..10.000) y N cofres (1..100), cada uno con su profundidad p (1..500) y su oro (1..10.000). Bajar a p cuesta p segundos y subir cuesta 2p, y en cada inmersión se sube **un solo cofre**. Hay que escribir el **máximo oro**, cuántos cofres hay que coger y **cuáles** (profundidad y oro como en la entrada), y después `---`. Vale cualquier solución óptima, con los cofres en cualquier orden.
 

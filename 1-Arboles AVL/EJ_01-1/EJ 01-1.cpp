@@ -1,26 +1,44 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <climits>
 #include <cstdlib>
-
 using namespace std;
 
+/*@ <answer>
+
+ ¿Es un árbol AVL?
+
+ Árbol binario de enteros en preorden (-1 = vacío). Decidir si es AVL: de búsqueda
+ (estricto) y con alturas de los hijos que difieren como mucho en 1 en todo nodo.
+
+ PLANTEAMIENTO
+ No se construye el árbol: leerAVL(altura, minimo, maximo) lee un subárbol y lo comprueba a
+ la vez. Como viene en preorden, se lee la raíz y se llama dos veces (izquierdo y derecho).
+ Devuelve si es AVL y deja por referencia su altura, su mínimo y su máximo
+ (vacío: altura 0, mínimo INT_MAX, máximo INT_MIN). Un nodo es AVL si:
+   - los dos hijos lo son,
+   - |altIzq - altDer| <= 1,
+   - maxIzq < valor < minDer.
+
+ Coste: O(n) por árbol, con n el número de nodos (cada nodo se lee una vez).
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
+
 bool leerAVL(int& altura, int& min, int& max);
-
-int main()
-{
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-
-	int casos;
-	cin >> casos;
-	
-	for (int i = 0; i < casos; ++i) {
-		int altura = 0, minimo = 0, maximo = 0;
-		cout << (leerAVL(altura, minimo, maximo) ? "SI" : "NO") << endl;
-
-	}
-}
 
 bool leerAVL(int& altura, int& minimo, int& maximo) {
 	int valor;
@@ -46,6 +64,34 @@ bool leerAVL(int& altura, int& minimo, int& maximo) {
 
 	// Comprobamos tanto la propiedad de AVL como la propiedad de árbol binario de búsqueda
 	return izqOK && derOK && (abs(altIzq - altDer) <= 1) && (maxIzq < valor) && (valor < minDer);
+}
+
+void resuelveCaso() {
+    int altura = 0, minimo = 0, maximo = 0;
+    cout << (leerAVL(altura, minimo, maximo) ? "SI" : "NO") << '\n';
+}
+
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }
 
 //ENTRADA SALIDA

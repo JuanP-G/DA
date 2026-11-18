@@ -1,42 +1,56 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <algorithm>
-#include "Grafo.h"
-
 using namespace std;
 
-/*
-    Deteccion de manchas negras
+#include "Grafo.h"  // estructuras de datos de clase
 
-    Filas, columnas --> 1 <= F, C <= 1.000
-    Suma de F*C de todos los casos <= 4.000.000
-    Ninguna mancha tiene mas de 50.000 pixeles
-    '#' = pixel negro, '-' = pixel blanco
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Modelo: cada pixel es un vertice. El pixel (i, j) es el vertice i*C + j
-    (fila por fila, como se guarda una matriz en un vector).
-    Dos pixeles NEGROS vecinos en horizontal o vertical se unen con una arista.
-    Las diagonales NO cuentan (el enunciado lo avisa con las dos manchas que
-    se tocan por una esquina).
+ Deteccion de manchas negras
 
-    Una mancha = una COMPONENTE CONEXA formada por pixeles negros.
-    Lo que piden: cuantas componentes hay (contando solo pixeles negros)
-    y el tamano de la mayor --> igual que EJ_04-2, pero ademas contando.
+ Filas, columnas --> 1 <= F, C <= 1.000
+ Suma de F*C de todos los casos <= 4.000.000
+ Ninguna mancha tiene mas de 50.000 pixeles
+ '#' = pixel negro, '-' = pixel blanco
 
-    Para poner las aristas basta mirar, desde cada pixel negro, el de su
-    DERECHA y el de ABAJO: la arista con el de la izquierda y el de arriba
-    ya la puso ese otro pixel (si no, cada arista saldria dos veces).
+ PLANTEAMIENTO
+ Modelo: cada pixel es un vertice. El pixel (i, j) es el vertice i*C + j
+ (fila por fila, como se guarda una matriz en un vector).
+ Dos pixeles NEGROS vecinos en horizontal o vertical se unen con una arista.
+ Las diagonales NO cuentan (el enunciado lo avisa con las dos manchas que
+ se tocan por una esquina).
 
-    Los pixeles blancos quedan como vertices sueltos y el recorrido los salta.
+ Una mancha = una COMPONENTE CONEXA formada por pixeles negros.
+ Lo que piden: cuantas componentes hay (contando solo pixeles negros)
+ y el tamano de la mayor --> igual que EJ_04-2, pero ademas contando.
 
-    Coste: O(F*C) por caso (como mucho 2 aristas por pixel).
-    El dfs recursivo baja como mucho 50.000 niveles (el tamano maximo de una
-    mancha, que el enunciado garantiza justo para esto).
-*/
+ Para poner las aristas basta mirar, desde cada pixel negro, el de su
+ DERECHA y el de ABAJO: la arista con el de la izquierda y el de arriba
+ ya la puso ese otro pixel (si no, cada arista saldria dos veces).
+
+ Los pixeles blancos quedan como vertices sueltos y el recorrido los salta.
+
+ Coste: O(F*C) por caso (como mucho 2 aristas por pixel).
+ El dfs recursivo baja como mucho 50.000 niveles (el tamano maximo de una
+ mancha, que el enunciado garantiza justo para esto).
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class Manchas {
 public:
@@ -98,12 +112,25 @@ void resuelveCaso() {
     cout << m.numero() << ' ' << m.mayor() << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

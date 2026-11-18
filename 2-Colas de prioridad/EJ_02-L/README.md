@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Cinemáticas digitales.pdf>) · 💻 [Solución](EJ_02-L.cpp)
 
+🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato (fin del fichero).
+
 *Ejercicio de laboratorio.*
 
 ## Qué piden

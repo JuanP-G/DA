@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-RapidEats.pdf>) · 💻 [Solución](EJ_07-3.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#813 · RapidEats](https://aceptaelreto.com/problem/statement.php?id=813) — *casi el mismo problema*. Allí solo se pide el **tiempo mínimo** de cada pedido (sin la ruta: `30` en vez de `30: 1 -> 3`) y no hay número de casos (se lee hasta el final del fichero); el resto es igual.
 

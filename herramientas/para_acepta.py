@@ -42,7 +42,7 @@ EJERCICIOS = {
     505: dict(id="03-1", titulo="Volando drones", fuente="3-Colas de prioridad variable (Heapsort)/EJ_03-1/EJ_03-1.cpp", slug="volando_drones", cambios=[]),
     649: dict(id="03-3", titulo="Multitarea", fuente="3-Colas de prioridad variable (Heapsort)/EJ_03-3/EJ_03-3.cpp", slug="multitarea",
               cambios=[
-                  (r"int casos;\s*cin >> casos;\s*for \(int i = 0; i < casos; i\+\+\)\s*resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
+                  (r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
                    "no hay número de casos: se lee hasta el final del fichero"),
                   (r"IndexPQ<pair<int, int>>", "IndexPQ<pair<long long, long long>>", "los instantes llegan hasta 10^9: `long long`"),
                   (r"vector<int> periodo", "vector<long long> periodo", "los instantes llegan hasta 10^9: `long long`"),
@@ -61,7 +61,7 @@ EJERCICIOS = {
               cambios=[(r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
                         "no hay número de casos: se lee hasta el final del fichero")]),
     319: dict(id="05-1", titulo="La máquina calculadora", fuente="5-Grafos dirigidos/EJ_05-1/EJ_05-1.cpp", slug="maquina_calculadora",
-              cambios=[(r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(g\);", HASTA_EOF + " resuelveCaso(g);",
+              cambios=[(r"int casos;\s*cin >> casos;\s*while \(casos--\) resuelveCaso\(\);", HASTA_EOF + " resuelveCaso();",
                         "no hay número de casos: se lee hasta el final del fichero")]),
     253: dict(id="05-5", titulo="Haciendo trampas en Serpientes y Escaleras", fuente="5-Grafos dirigidos/EJ_05-5/EJ_05-5.cpp", slug="serpientes_y_escaleras",
               cambios=[
@@ -143,11 +143,24 @@ def inlinear(ruta, vistos):
     return re.sub(r'^[ \t]*#include\s+"([^"]+)"[^\n]*$', sustituye, txt, flags=re.M)
 
 
+def sin_plantilla(codigo):
+    """El main de las plantillas del juez (casos.txt, system("PAUSE")) no sirve en Acepta el Reto:
+    se cambia por un main normal con la misma forma de leer los casos."""
+    m = re.search(r"^int main\(\) \{\n.*?#ifndef DOMJUDGE.*?^\}\n", codigo, re.S | re.M)
+    if not m:
+        return codigo
+    if "numCasos" in m.group(0):
+        nuevo = "int main() {\n    int casos; cin >> casos;\n    while (casos--) resuelveCaso();\n    return 0;\n}\n"
+    else:
+        nuevo = "int main() {\n    while (resuelveCaso());\n    return 0;\n}\n"
+    return codigo[:m.start()] + nuevo + codigo[m.end():]
+
+
 def generar(num, d):
     fuente = RAIZ / d["fuente"]
     if not fuente.is_file():
         raise SystemExit(f"No existe {d['fuente']}")
-    codigo = inlinear(fuente, {fuente.resolve()})
+    codigo = sin_plantilla(inlinear(fuente, {fuente.resolve()}))
     explicaciones = []
     for patron, sust, expl in d["cambios"]:
         codigo, n = re.subn(patron, sust, codigo)

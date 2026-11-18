@@ -13,11 +13,20 @@
 //  - una fila puede venir recortada
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <limits>
 #include <algorithm>
+using namespace std;
+
 // ---------- ConjuntosDisjuntos.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de estructuras de particion (o conjuntos disjuntos)
@@ -116,42 +125,46 @@ private:
 #endif
 // ---------- fin de ConjuntosDisjuntos.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    Petroleros hundidos
+ Petroleros hundidos
 
-    Rejilla F x C (1 <= F, C <= 1.000), '-' mar y '#' petroleo
-    Dos celdas negras son de la misma mancha si se llega de una a otra por celdas
-    negras moviendose en 8 direcciones.
-    Despues aparecen N (<= 100.000) celdas nuevas de petroleo, una a una.
-    Salida: tamano de la mancha mas grande al principio y tras cada celda nueva.
-*/
+ Rejilla F x C (1 <= F, C <= 1.000), '-' mar y '#' petroleo
+ Dos celdas negras son de la misma mancha si se llega de una a otra por celdas
+ negras moviendose en 8 direcciones.
+ Despues aparecen N (<= 100.000) celdas nuevas de petroleo, una a una.
+ Salida: tamano de la mancha mas grande al principio y tras cada celda nueva.
 
-/*
-    PLANTEAMIENTO
-    Las celdas solo se anaden, nunca se quitan: las manchas solo pueden crecer o
-    fundirse, jamas partirse. Eso es exactamente lo que sabe hacer una particion
-    de CONJUNTOS DISJUNTOS (solo sabe unir).
+ PLANTEAMIENTO
+ Las celdas solo se anaden, nunca se quitan: las manchas solo pueden crecer o
+ fundirse, jamas partirse. Eso es exactamente lo que sabe hacer una particion
+ de CONJUNTOS DISJUNTOS (solo sabe unir).
 
-        elemento    = celda (i, j)  -->  numero i*C + j
-        conjunto    = mancha
-        unir(a, b)  = dos celdas negras vecinas (8 direcciones)
-        cardinal(a) = tamano de la mancha de a
+     elemento    = celda (i, j)  -->  numero i*C + j
+     conjunto    = mancha
+     unir(a, b)  = dos celdas negras vecinas (8 direcciones)
+     cardinal(a) = tamano de la mancha de a
 
-    anade(i, j): marca la celda como petroleo, la une con sus vecinas que ya sean
-    petroleo y compara el tamano de SU mancha con el maximo. Como solo hay uniones,
-    la unica mancha que puede haber cambiado es la de la celda nueva y el maximo
-    nunca baja: no hace falta recorrer todos los conjuntos.
+ anade(i, j): marca la celda como petroleo, la une con sus vecinas que ya sean
+ petroleo y compara el tamano de SU mancha con el maximo. Como solo hay uniones,
+ la unica mancha que puede haber cambiado es la de la celda nueva y el maximo
+ nunca baja: no hace falta recorrer todos los conjuntos.
 
-    La imagen inicial se procesa con la misma operacion: celda negra a celda negra.
-    Al llegar a una celda, las vecinas posteriores aun no estan marcadas, pero
-    cuando se procesen ellas se uniran con esta: el resultado final es el mismo.
+ La imagen inicial se procesa con la misma operacion: celda negra a celda negra.
+ Al llegar a una celda, las vecinas posteriores aun no estan marcadas, pero
+ cuando se procesen ellas se uniran con esta: el resultado final es el mismo.
 
-    La rejilla es el grafo: no se construye ninguna lista de adyacencia.
+ La rejilla es el grafo: no se construye ninguna lista de adyacencia.
 
-    Coste: O(F*C + N) con la lg* de la particion practicamente constante.
-*/
+ Coste: O(F*C + N) con la lg* de la particion practicamente constante.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 class Manchas {
 public:
@@ -207,11 +220,10 @@ void resuelveCaso() {
     cout << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     while (cin >> ws && cin.peek() != EOF) resuelveCaso();
-
     return 0;
 }

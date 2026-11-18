@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Ej08-2`) · 💻 [Solución](EJ_08-2.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 N ciudades invadidas (1 ≤ N ≤ 300.000), cada una con sus efectivos enemigos, y N equipos de defensa con sus efectivos. Se asigna **un equipo por ciudad**. La victoria está garantizada si el equipo tiene **al menos** tantos efectivos como el enemigo. Hay que escribir el **máximo número de victorias garantizadas**.
 

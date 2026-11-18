@@ -353,6 +353,7 @@ Las carpetas de cada tema coinciden con las carpetas de la solución de Visual S
 ├── 7-Digrafos valorados y caminos minimos/    ejercicios (código + explicación) y resumen del tema
 ├── 8-Algoritmos voraces/  ·  9-Algoritmos voraces II/        ejercicios (código + explicación)
 ├── 10-Programacion dinamica/  ·  11-Programacion dinamica II/  ejercicios (código + explicación)
+├── Plantillas/                   las 3 plantillas del juez (número de casos, centinela, casos ilimitados) y cuál usar
 ├── 12-Evaluacion/                problemas de evaluación (EJ_Eval-1, …)
 ├── Acepta el Reto/              versiones de las soluciones listas para enviar a aceptaelreto.com (un solo fichero)
 ├── Estructuras de datos/        cabeceras de la asignatura (+ algoritmos de los temas 4 a 7)

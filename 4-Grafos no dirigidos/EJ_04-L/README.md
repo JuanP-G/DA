@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Peaje a la sombra.pdf>) · 💻 [Solución](EJ_04-L.cpp) · 🎬 [Vídeo](../../Videos/04-L_peaje_a_la_sombra.mp4)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Álex y Lucas salen de casas distintas hacia el mismo trabajo. Cada tramo de calle cuesta 1 € y, si van juntos por un tramo, lo paga solo uno. Hay que dar el **mínimo de tramos distintos** que recorren entre los dos.
 

@@ -11,10 +11,19 @@
 //  - alli solo se pide el tiempo minimo de cada pedido (sin la ruta): se escribe `30` en vez de `30: 1 -> 3`
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <deque>
 #include <limits>
+using namespace std;
+
 // ---------- DigrafoValorado.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos dirigidos valorados
@@ -327,39 +336,43 @@ private:
 #endif /* INDEXPQ_H_ */
 // ---------- fin de IndexPQ.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    RapidEats con ruta
+ RapidEats con ruta
 
-    Ciudad con N puntos (2 <= N <= 20.000) y C tramos de calle (0 <= C <= 100.000), cada
-    uno con una duracion 1..500. Los tramos se recorren en ambos sentidos y puede haber
-    varios entre los mismos dos puntos. Para cada uno de K pedidos (K <= 10), de un origen
-    a un destino, escribir el tiempo minimo y el camino:
+ Ciudad con N puntos (2 <= N <= 20.000) y C tramos de calle (0 <= C <= 100.000), cada
+ uno con una duracion 1..500. Los tramos se recorren en ambos sentidos y puede haber
+ varios entre los mismos dos puntos. Para cada uno de K pedidos (K <= 10), de un origen
+ a un destino, escribir el tiempo minimo y el camino:
 
-        30: 1 -> 3                (o NO LLEGA si no hay camino)
+     30: 1 -> 3                (o NO LLEGA si no hay camino)
 
-    Despues de cada caso, una linea con ---.
-*/
+ Despues de cada caso, una linea con ---.
 
-/*
-    PLANTEAMIENTO
-    Caminos de coste minimo con Dijkstra, pero ahora tambien hay que decir POR DONDE se va.
-    Para eso sirve ulti[w] (la ultima arista del camino mas corto hasta w, que se actualiza
-    en cada relajacion): se recorre hacia atras desde el destino hasta el origen.
+ PLANTEAMIENTO
+ Caminos de coste minimo con Dijkstra, pero ahora tambien hay que decir POR DONDE se va.
+ Para eso sirve ulti[w] (la ultima arista del camino mas corto hasta w, que se actualiza
+ en cada relajacion): se recorre hacia atras desde el destino hasta el origen.
 
-        ulti[destino] = (a -> destino);  ulti[a] = (b -> a);  ... hasta llegar al origen
+     ulti[destino] = (a -> destino);  ulti[a] = (b -> a);  ... hasta llegar al origen
 
-    y se escribe al reves (se van metiendo los vertices por delante en un deque).
+ y se escribe al reves (se van metiendo los vertices por delante en un deque).
 
-    - Tramos de doble sentido: dos aristas dirigidas por cada tramo (los tramos repetidos
-      no molestan: Dijkstra se queda con el mas rapido).
-    - Hay hasta 10 pedidos con origenes distintos, asi que se ejecuta Dijkstra UNA VEZ POR
-      PEDIDO (el grafo se construye una sola vez por caso).
-    - Si hay varios caminos con el mismo tiempo vale cualquiera.
+ - Tramos de doble sentido: dos aristas dirigidas por cada tramo (los tramos repetidos
+   no molestan: Dijkstra se queda con el mas rapido).
+ - Hay hasta 10 pedidos con origenes distintos, asi que se ejecuta Dijkstra UNA VEZ POR
+   PEDIDO (el grafo se construye una sola vez por caso).
+ - Si hay varios caminos con el mismo tiempo vale cualquiera.
 
-    Coste: O(K * C log N) por caso.
-*/
+ Coste: O(K * C log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     int N, C;
@@ -408,11 +421,10 @@ void resuelveCaso() {
     cout << "---\n";
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     while (cin >> ws && cin.peek() != EOF) resuelveCaso();
-
     return 0;
 }

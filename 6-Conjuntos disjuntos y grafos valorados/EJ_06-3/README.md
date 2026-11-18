@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-Recorriendo el archipiélago en bicicleta.pdf>) · 💻 [Solución](EJ_06-3.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 <!-- acr:inicio -->
 🔗 **Pruébalo en Acepta el Reto** (sin necesidad del juez de la asignatura): [#645 · Recorriendo el archipiélago en bicicleta](https://aceptaelreto.com/problem/statement.php?id=645) — *casi el mismo problema*. Misma historia, pero allí los límites son menores (hasta 1.000 islas y 10.000 puentes; aquí 10.000 y 100.000) y no hay número de casos: se lee hasta el final del fichero.
 

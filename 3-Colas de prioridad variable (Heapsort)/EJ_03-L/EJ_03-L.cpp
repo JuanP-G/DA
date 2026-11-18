@@ -1,34 +1,60 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
-#include "IndexPQ.h"
-
 using namespace std;
 
-/*
-    1ª linea
+#include "IndexPQ.h"  // estructuras de datos de clase
 
-    Duracion D (minutos de la franja) -->  1 ≤ D ≤ 10^9
-	Numero C de canales --> 1 ≤ C ≤ 2*10^5
-	Numerp N de actualizciones --> 1 ≤ N ≤ min(D − 1, 2*10^5)
-    --------------------------------------
-    2ªlinea
+/*@ <answer>
 
-    C numeros de las audiencias en el minuto 0
-	N lineas con las actualizaciones de audiencia
-    ---------------------------------------
-    xª linea
-	minuto de la actualizacion --> 1 ≤ m ≤ D − 1
-	numero de canales que cambian de audiencia 
-	ck es el canal que cambia de audiencia y ek es la nueva audiencia del canal ck
-*/
+ La batalla por las audiencias
 
-/*
-    D (duracion en minutos)   --> 1 <= D <= 10^9
-    C (canales, del 1 al C)   --> 1 <= C <= 2*10^5
-    N (actualizaciones)       --> 0 <= N <= min(D-1, 2*10^5)
-    audiencias                --> 0 .. 10^6
-*/
+ Audiencias iniciales de C canales y actualizaciones por minuto. Decir cuántos minutos ha sido líder
+ cada canal en [0, D), de más a menos (empate -> canal menor).
+
+ PLANTEAMIENTO
+ IndexPQ de máximos con índice = canal y prioridad = (audiencia, canal). En cada actualización, el
+ líder actual suma los minutos desde la anterior y después se aplican los cambios con update. Al
+ final el líder suma el último tramo; se ordena y se escriben los que tienen minutos.
+
+ Coste: O((C + U) log C + C log C), con U el número de cambios de audiencia.
+
+ 1ª linea
+
+ Duracion D (minutos de la franja) -->  1 ≤ D ≤ 10^9
+ Numero C de canales --> 1 ≤ C ≤ 2*10^5
+ Numerp N de actualizciones --> 1 ≤ N ≤ min(D − 1, 2*10^5)
+ --------------------------------------
+ 2ªlinea
+
+ C numeros de las audiencias en el minuto 0
+ N lineas con las actualizaciones de audiencia
+ ---------------------------------------
+ xª linea
+ minuto de la actualizacion --> 1 ≤ m ≤ D − 1
+ numero de canales que cambian de audiencia
+ ck es el canal que cambia de audiencia y ek es la nueva audiencia del canal ck
+
+ D (duracion en minutos)   --> 1 <= D <= 10^9
+ C (canales, del 1 al C)   --> 1 <= C <= 2*10^5
+ N (actualizaciones)       --> 0 <= N <= min(D-1, 2*10^5)
+ audiencias                --> 0 .. 10^6
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 struct Canales {
     int audiencia;
@@ -40,7 +66,7 @@ struct Canales {
 	}
 };
 
-void resolverCaso() {
+void resuelveCaso() {
 	int duracion, canales, actualizaciones;
     cin >> duracion >> canales >> actualizaciones;
 
@@ -91,13 +117,25 @@ void resolverCaso() {
     cout << "---\n";
 }
 
-int main()
-{
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-    
-    int casos; cin >> casos;
-    while(casos--) resolverCaso();
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

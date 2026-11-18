@@ -1,45 +1,59 @@
-#include <iostream>
-#include <vector>
-#include "Digrafo.h"
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
+#include <iostream>
+#include <fstream>
+#include <vector>
 using namespace std;
 
-/*
-    El Necronomicon de la informatica
+#include "Digrafo.h"  // estructuras de datos de clase
 
-    Programa oscuro de L instrucciones (1 <= L <= 10.000):
-        A    --> aritmetica o asignacion (pasa a la siguiente)
-        J N  --> salta a la instruccion N
-        C N  --> salta a la N O pasa a la siguiente (no se puede predecir)
-    Empieza en la 1 y termina al llegar detras de la ultima.
-    Salida: SIEMPRE (todas las ejecuciones terminan), NUNCA (ninguna termina)
-            o A VECES (unas si y otras no).
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Digrafo con L + 1 vertices: la instruccion i es el vertice i - 1 y el vertice L
-    es "el programa ha terminado". Cada ejecucion posible es un camino desde el 0:
+ El Necronomicon de la informatica
 
-        A       -->  arista  i - 1 --> i
-        J N     -->  arista  i - 1 --> N - 1
-        C N     -->  las DOS aristas  i - 1 --> i  y  i - 1 --> N - 1
+ Programa oscuro de L instrucciones (1 <= L <= 10.000):
+     A    --> aritmetica o asignacion (pasa a la siguiente)
+     J N  --> salta a la instruccion N
+     C N  --> salta a la N O pasa a la siguiente (no se puede predecir)
+ Empieza en la 1 y termina al llegar detras de la ultima.
+ Salida: SIEMPRE (todas las ejecuciones terminan), NUNCA (ninguna termina)
+         o A VECES (unas si y otras no).
 
-    Todos los vertices tienen sucesores salvo el final, asi que un camino
-    solo se acaba al llegar al vertice L; si no, sigue para siempre.
-    Un unico DFS desde el 0 responde a todo:
+ PLANTEAMIENTO
+ Digrafo con L + 1 vertices: la instruccion i es el vertice i - 1 y el vertice L
+ es "el programa ha terminado". Cada ejecucion posible es un camino desde el 0:
 
-    * NUNCA:    el vertice L NO es alcanzable desde el 0.
-    * SIEMPRE:  no hay ningun CICLO alcanzable desde el 0 (sin ciclos todos los
-                caminos son finitos y acaban en L, y L si es alcanzable).
-    * A VECES:  L es alcanzable y ademas hay un ciclo alcanzable (se puede dar
-                vueltas al ciclo para siempre o salir hacia L).
+     A       -->  arista  i - 1 --> i
+     J N     -->  arista  i - 1 --> N - 1
+     C N     -->  las DOS aristas  i - 1 --> i  y  i - 1 --> N - 1
 
-    Un salto hacia atras NO es un ciclo si no se puede volver a el (ejemplo 2).
-    Los ciclos que no se alcanzan desde la instruccion 1 no cuentan.
+ Todos los vertices tienen sucesores salvo el final, asi que un camino
+ solo se acaba al llegar al vertice L; si no, sigue para siempre.
+ Un unico DFS desde el 0 responde a todo:
 
-    Coste: O(L) por caso (cada instruccion aporta como mucho 2 aristas).
-*/
+ * NUNCA:    el vertice L NO es alcanzable desde el 0.
+ * SIEMPRE:  no hay ningun CICLO alcanzable desde el 0 (sin ciclos todos los
+             caminos son finitos y acaban en L, y L si es alcanzable).
+ * A VECES:  L es alcanzable y ademas hay un ciclo alcanzable (se puede dar
+             vueltas al ciclo para siempre o salir hacia L).
+
+ Un salto hacia atras NO es un ciclo si no se puede volver a el (ejemplo 2).
+ Los ciclos que no se alcanzan desde la instruccion 1 no cuentan.
+
+ Coste: O(L) por caso (cada instruccion aporta como mucho 2 aristas).
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class ProgramaOscuro {
 public:
@@ -88,12 +102,25 @@ void resuelveCaso() {
     else cout << "A VECES\n";
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

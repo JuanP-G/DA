@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-La selva de Tarzán.pdf>) · 💻 [Solución](EJ_06-4.cpp)
 
+🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato (fin del fichero).
+
 ## Qué piden
 N árboles y M saltos posibles; cada salto entre dos árboles exige una **cuerda de al menos cierta longitud**. Tarzán lleva **una sola cuerda** y quiere poder llegar de cualquier árbol a cualquier otro. ¿Cuál es la **longitud mínima** de cuerda que lo permite? Si aunque la cuerda fuese infinita no se puede, `Imposible`.
 
@@ -34,7 +36,7 @@ Es casi el mismo código, pero **no se suman los costes**: se guarda el valor de
 
 ## Por qué así
 - **Aristas que sobran** (largas, o repetidas, o entre árboles ya conectados) simplemente se descartan con `unidos`; no hay que tratarlas aparte.
-- **Entrada:** no hay número de casos; se leen selvas **hasta el final del fichero** (`while (cin >> N >> M)`). Para el grafo, `GrafoValorado<int> g(N)` y `ponArista({u - 1, v - 1, L})` M veces, o leer las aristas directamente a un vector (el grafo no es imprescindible: solo hace falta la lista de aristas ordenada).
+- **Entrada:** no hay número de casos; se leen selvas **hasta el final del fichero** (plantilla de casos ilimitados: `if (!cin) return false;` tras leer `N` y `M`). Para el grafo, `GrafoValorado<int> g(N)` y `ponArista({u - 1, v - 1, L})` M veces, o leer las aristas directamente a un vector (el grafo no es imprescindible: solo hace falta la lista de aristas ordenada).
 - **Longitudes** hasta 10⁶: caben en `int`.
 - Hasta 10.000 árboles y 100.000 saltos: ordenar es O(M log M), muy holgado.
 

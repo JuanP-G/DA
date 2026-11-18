@@ -1,8 +1,37 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
-
 using namespace std;
+
+/*@ <answer>
+
+ Cinemáticas digitales
+
+ R escenas llegan en orden (minuto de envío, duración) a S estaciones iguales. Escribir el tiempo
+ máximo que alguna escena espera antes de empezar. La entrada acaba con el fichero.
+
+ PLANTEAMIENTO
+ Cola de mínimos con el instante en que queda libre cada estación (al principio S ceros). Para cada
+ escena: libre = top, inicio = max(libre, minuto), espera = inicio - minuto, y la estación queda
+ ocupada hasta inicio + duración.
+
+ Coste: O(S + R log S) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 //escenas de renderizado --> 𝟣 <= 𝘙 <= 𝟤.𝟢𝟢𝟢.𝟢𝟢0
 //estaciones de renderizado--> 𝟣 <= 𝘛 <= 𝟣𝟢𝟢.𝟢𝟢0
@@ -36,11 +65,22 @@ bool resuelveCaso() {
     return true;
 }
 
-int main()
-{
-    ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    while (resuelveCaso());
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

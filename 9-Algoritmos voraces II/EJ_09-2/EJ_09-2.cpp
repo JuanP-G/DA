@@ -1,32 +1,45 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
-
 using namespace std;
 
-/*
-    El alienigena infiltrado
+/*@ <answer>
 
-    Intervalo [C, F) y N trabajos (0 <= N <= 200.000), cada uno con su intervalo [c, f).
-    Escribir el minimo numero de trabajos que cubren todo [C, F) (en cada instante hay al menos
-    uno en marcha), o Imposible.
-*/
+ El alienigena infiltrado
+ 
+ Intervalo [C, F) y N trabajos (0 <= N <= 200.000), cada uno con su intervalo [c, f).
+ Escribir el minimo numero de trabajos que cubren todo [C, F) (en cada instante hay al menos
+ uno en marcha), o Imposible.
 
-/*
-    PLANTEAMIENTO (voraz: cubrir un intervalo)
-    Se ordenan los trabajos por comienzo. 'cubierto' es hasta donde llega lo ya cubierto
-    (al principio, C). Mientras cubierto < F:
-      - entre los trabajos que empiezan como muy tarde en 'cubierto' (asi no dejan hueco),
-        se elige el que acaba MAS TARDE;
-      - si ninguno pasa de 'cubierto', hay un hueco: Imposible;
-      - si no, cubierto = ese final y se cuenta un trabajo mas.
+ PLANTEAMIENTO (voraz: cubrir un intervalo)
+ Se ordenan los trabajos por comienzo. 'cubierto' es hasta donde llega lo ya cubierto
+ (al principio, C). Mientras cubierto < F:
+   - entre los trabajos que empiezan como muy tarde en 'cubierto' (asi no dejan hueco),
+     se elige el que acaba MAS TARDE;
+   - si ninguno pasa de 'cubierto', hay un hueco: Imposible;
+   - si no, cubierto = ese final y se cuenta un trabajo mas.
+ 
+ Por que es optimo: cualquier solucion necesita un trabajo que cubra el instante 'cubierto';
+ ese trabajo empieza como muy tarde ahi, asi que el elegido llega al menos igual de lejos.
+ 
+ Como los trabajos se recorren una sola vez con un indice que solo avanza, el coste es
+ O(N log N) por caso (la ordenacion).
 
-    Por que es optimo: cualquier solucion necesita un trabajo que cubra el instante 'cubierto';
-    ese trabajo empieza como muy tarde ahi, asi que el elegido llega al menos igual de lejos.
+ @ </answer> */
 
-    Como los trabajos se recorren una sola vez con un indice que solo avanza, el coste es
-    O(N log N) por caso (la ordenacion).
-*/
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     long long C, F;
@@ -54,12 +67,25 @@ void resuelveCaso() {
     else cout << "Imposible\n";
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    int casos;
-    cin >> casos;
-    while (casos--) resuelveCaso();
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

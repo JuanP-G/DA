@@ -1,42 +1,56 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
-#include "Digrafo.h"
-
 using namespace std;
 
-/*
-    La maquina calculadora
+#include "Digrafo.h"  // estructuras de datos de clase
 
-    Marcador de 4 digitos --> numeros 0..9.999
-    Botones: +1, *2 y /3, todo modulo 10.000 y la division es entera
-    Casos de prueba --> como mucho 2.000, cada uno con (inicial, final)
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Grafo DIRIGIDO (clase Digrafo) con 10.000 vertices (lo que muestra el marcador):
-        x --> (x + 1) mod 10000
-        x --> (x * 2) mod 10000
-        x --> x / 3                  (division entera)
-    Minimo de pulsaciones = camino mas corto de inicial a final --> BFS.
+ La maquina calculadora
 
-    El grafo NO depende del caso (siempre es el mismo marcador): se construye
-    UNA sola vez en main y se reutiliza en los 2.000 casos.
+ Marcador de 4 digitos --> numeros 0..9.999
+ Botones: +1, *2 y /3, todo modulo 10.000 y la division es entera
+ Casos de prueba --> como mucho 2.000, cada uno con (inicial, final)
 
-    Se ve que es dirigido: de 5.000 se llega a 0 con *2, pero de 0 no se llega
-    a 5.000 con ningun boton directo.
+ PLANTEAMIENTO
+ Grafo DIRIGIDO (clase Digrafo) con 10.000 vertices (lo que muestra el marcador):
+     x --> (x + 1) mod 10000
+     x --> (x * 2) mod 10000
+     x --> x / 3                  (division entera)
+ Minimo de pulsaciones = camino mas corto de inicial a final --> BFS.
 
-    * En el 0, *2 y /3 dan 0: aristas que son lazos. No pasa nada, 0 ya
-      esta visitado cuando se miran.
-    * inicial == final --> 0 pulsaciones (dist[inicial] = 0).
-    * Se corta el BFS al sacar el vertice final (el BFS ya le ha dado su
-      distancia minima).
-    * Siempre hay camino: con +1 se llega a cualquier numero.
+ El grafo NO depende del caso (siempre es el mismo marcador): se construye
+ UNA sola vez en main y se reutiliza en los 2.000 casos.
 
-    Coste: construir el grafo O(10.000) una vez; despues O(10.000 + 30.000)
-    por caso, unas 8*10^7 operaciones como mucho con los 2.000 casos.
-*/
+ Se ve que es dirigido: de 5.000 se llega a 0 con *2, pero de 0 no se llega
+ a 5.000 con ningun boton directo.
+
+ * En el 0, *2 y /3 dan 0: aristas que son lazos. No pasa nada, 0 ya
+   esta visitado cuando se miran.
+ * inicial == final --> 0 pulsaciones (dist[inicial] = 0).
+ * Se corta el BFS al sacar el vertice final (el BFS ya le ha dado su
+   distancia minima).
+ * Siempre hay camino: con +1 se llega a cualquier numero.
+
+ Coste: construir el grafo O(10.000) una vez; despues O(10.000 + 30.000)
+ por caso, unas 8*10^7 operaciones como mucho con los 2.000 casos.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 const int MARCADOR = 10000;
 
@@ -82,7 +96,8 @@ Digrafo construyeMaquina() {
     return g;
 }
 
-void resuelveCaso(Digrafo const& g) {
+void resuelveCaso() {
+    static const Digrafo g = construyeMaquina();   // se construye una sola vez, en la primera llamada
     int inicial, final_;
     cin >> inicial >> final_;
 
@@ -90,14 +105,25 @@ void resuelveCaso(Digrafo const& g) {
     cout << mc.minimoPulsaciones() << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    Digrafo g = construyeMaquina();   // una sola vez para todos los casos
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso(g);
-
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

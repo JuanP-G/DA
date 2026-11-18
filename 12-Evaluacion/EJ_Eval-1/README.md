@@ -2,6 +2,8 @@
 
 📄 Enunciado: en el juez de la asignatura (`Eval-1`) · 💻 [Solución](EJ_Eval-1.cpp)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 N elaboraciones (1..100.000) y A anotaciones (0..200.000) de la forma `X Y`: la elaboración X hace falta para la Y. La elaboración **S se ha quemado** y **P es el plato** que se quiere hacer (pueden coincidir). El plato se puede hacer si **no necesita S** (ni directa ni indirectamente) y las anotaciones de lo que necesita **no tienen ciclos**. Hay que escribir `NO`, o `SI` seguido de un orden válido de las elaboraciones necesarias que acabe en P.
 

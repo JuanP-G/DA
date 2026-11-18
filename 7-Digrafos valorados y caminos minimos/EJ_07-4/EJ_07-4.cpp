@@ -1,40 +1,54 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <limits>
 #include <cstdlib>
-#include "DigrafoValorado.h"
-#include "IndexPQ.h"
-
 using namespace std;
 
-/*
-    La conferencia de paz
+#include "DigrafoValorado.h"  // estructuras de datos de clase
+#include "IndexPQ.h"  // estructuras de datos de clase
 
-    N aldeas (3 <= N <= 100.000) unidas por caminos de doble sentido con longitud 1..1.000
-    (el grafo es conexo). Unas son de los galos, otras de los romanos y el resto neutrales.
-    Hay que elegir una aldea NEUTRAL cuya distancia a la aldea gala mas cercana y cuya
-    distancia a la romana mas cercana se diferencien lo MENOS posible. Si hay empate, la de
-    indice menor. Salida: indice de la aldea y esa diferencia.
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Dos Dijkstra con VARIAS ORIGENES a la vez (se meten todos con distancia 0):
+ La conferencia de paz
 
-        dGalos[v]    = distancia de v a la aldea gala mas cercana
-        dRomanos[v]  = distancia de v a la aldea romana mas cercana
+ N aldeas (3 <= N <= 100.000) unidas por caminos de doble sentido con longitud 1..1.000
+ (el grafo es conexo). Unas son de los galos, otras de los romanos y el resto neutrales.
+ Hay que elegir una aldea NEUTRAL cuya distancia a la aldea gala mas cercana y cuya
+ distancia a la romana mas cercana se diferencien lo MENOS posible. Si hay empate, la de
+ indice menor. Salida: indice de la aldea y esa diferencia.
 
-    Es lo mismo que anadir un vertice falso unido con coste 0 a todas las aldeas del bando
-    y hacer Dijkstra desde el, pero sin construirlo.
-    Despues se recorren las aldeas neutrales en orden creciente y nos quedamos con la de
-    menor |dGalos - dRomanos| (con "<" estricto gana la primera, que es la de indice menor).
+ PLANTEAMIENTO
+ Dos Dijkstra con VARIAS ORIGENES a la vez (se meten todos con distancia 0):
 
-    - Todos pueden pasar por cualquier aldea (aunque sea de un bando): el camino mas corto
-      puede atravesar aldeas galas, romanas o neutrales.
-    - Camino de doble sentido: dos aristas dirigidas.
+     dGalos[v]    = distancia de v a la aldea gala mas cercana
+     dRomanos[v]  = distancia de v a la aldea romana mas cercana
 
-    Coste: O(C log N) por caso (dos Dijkstra).
-*/
+ Es lo mismo que anadir un vertice falso unido con coste 0 a todas las aldeas del bando
+ y hacer Dijkstra desde el, pero sin construirlo.
+ Despues se recorren las aldeas neutrales en orden creciente y nos quedamos con la de
+ menor |dGalos - dRomanos| (con "<" estricto gana la primera, que es la de indice menor).
+
+ - Todos pueden pasar por cualquier aldea (aunque sea de un bando): el camino mas corto
+   puede atravesar aldeas galas, romanas o neutrales.
+ - Camino de doble sentido: dos aristas dirigidas.
+
+ Coste: O(C log N) por caso (dos Dijkstra).
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 vector<int> distanciaMinima(DigrafoValorado<int> const& g, vector<int> const& origenes) {
     const int INF = numeric_limits<int>::max();
@@ -89,12 +103,25 @@ void resuelveCaso() {
     cout << mejor + 1 << ' ' << difMejor << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

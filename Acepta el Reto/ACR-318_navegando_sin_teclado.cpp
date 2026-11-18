@@ -10,9 +10,18 @@
 //  - no hay numero de casos: se lee hasta el final del fichero
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <limits>
+using namespace std;
+
 // ---------- DigrafoValorado.h (copiado aqui porque Acepta el Reto solo admite un fichero) ----------
 /*
  * Implementacion de grafos dirigidos valorados
@@ -325,35 +334,39 @@ private:
 #endif /* INDEXPQ_H_ */
 // ---------- fin de IndexPQ.h ----------
 
-using namespace std;
+/*@ <answer>
 
-/*
-    Navegando sin teclado
+ Navegando sin teclado
 
-    N paginas web (2 <= N <= 3000). Se empieza en la 1 y se quiere llegar a la N.
-    Cada pagina tiene un tiempo de CARGA y cada enlace (v -> w) un tiempo de
-    LOCALIZAR Y PULSAR. Minimo tiempo total contando la carga de TODAS las paginas
-    visitadas (tambien la 1 y la N). Si no se puede llegar: IMPOSIBLE.
-*/
+ N paginas web (2 <= N <= 3000). Se empieza en la 1 y se quiere llegar a la N.
+ Cada pagina tiene un tiempo de CARGA y cada enlace (v -> w) un tiempo de
+ LOCALIZAR Y PULSAR. Minimo tiempo total contando la carga de TODAS las paginas
+ visitadas (tambien la 1 y la N). Si no se puede llegar: IMPOSIBLE.
 
-/*
-    PLANTEAMIENTO
-    Digrafo valorado (los enlaces tienen sentido) y caminos de coste minimo: Dijkstra.
-    Hay DOS tipos de coste: el de los enlaces (en las aristas) y el de carga (en los
-    vertices). Truco: el tiempo de carga de una pagina se paga siempre que se LLEGA a ella,
-    asi que se suma al valor de la arista que entra:
+ PLANTEAMIENTO
+ Digrafo valorado (los enlaces tienen sentido) y caminos de coste minimo: Dijkstra.
+ Hay DOS tipos de coste: el de los enlaces (en las aristas) y el de carga (en los
+ vertices). Truco: el tiempo de carga de una pagina se paga siempre que se LLEGA a ella,
+ asi que se suma al valor de la arista que entra:
 
-        coste de la arista v -> w  =  tiempo del enlace  +  carga[w]
+     coste de la arista v -> w  =  tiempo del enlace  +  carga[w]
 
-    Lo unico que queda fuera es la carga de la pagina de partida, que se paga siempre:
-    dist[origen] = carga[origen] (en lugar de 0).
+ Lo unico que queda fuera es la carga de la pagina de partida, que se paga siempre:
+ dist[origen] = carga[origen] (en lugar de 0).
 
-    Dijkstra necesita valores >= 0: todos los tiempos estan entre 0 y 10.000. Perfecto.
+ Dijkstra necesita valores >= 0: todos los tiempos estan entre 0 y 10.000. Perfecto.
 
-    El mayor coste posible es 3000 paginas * (10.000 + 10.000) = 6 * 10^7: cabe en int.
+ El mayor coste posible es 3000 paginas * (10.000 + 10.000) = 6 * 10^7: cabe en int.
 
-    Coste: O(M log N) por caso.
-*/
+ Coste: O(M log N) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
 
 void resuelveCaso() {
     int N, M;
@@ -392,11 +405,10 @@ void resuelveCaso() {
     else cout << dist[N - 1] << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     while (cin >> ws && cin.peek() != EOF) resuelveCaso();
-
     return 0;
 }

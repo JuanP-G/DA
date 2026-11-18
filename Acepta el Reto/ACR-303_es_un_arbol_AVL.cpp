@@ -7,29 +7,46 @@
 // (no la edites a mano: se vuelve a generar).
 // =====================================================================
 
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <climits>
 #include <cstdlib>
-
 using namespace std;
 
+/*@ <answer>
+
+ Es un arbol AVL?
+
+ Arbol binario de enteros en preorden (-1 = vacio). Decidir si es AVL: de busqueda
+ (estricto) y con alturas de los hijos que difieren como mucho en 1 en todo nodo.
+
+ PLANTEAMIENTO
+ No se construye el arbol: leerAVL(altura, minimo, maximo) lee un subarbol y lo comprueba a
+ la vez. Como viene en preorden, se lee la raiz y se llama dos veces (izquierdo y derecho).
+ Devuelve si es AVL y deja por referencia su altura, su minimo y su maximo
+ (vacio: altura 0, minimo INT_MAX, maximo INT_MIN). Un nodo es AVL si:
+   - los dos hijos lo son,
+   - |altIzq - altDer| <= 1,
+   - maxIzq < valor < minDer.
+
+ Coste: O(n) por arbol, con n el numero de nodos (cada nodo se lee una vez).
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el codigo completo de tu solucion aqui debajo
+// ================================================================
+//@ <answer>
+
 bool leerAVL(int& altura, int& min, int& max);
-
-int main()
-{
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-
-	int casos;
-	cin >> casos;
-	
-	for (int i = 0; i < casos; ++i) {
-		int altura = 0, minimo = 0, maximo = 0;
-		cout << (leerAVL(altura, minimo, maximo) ? "SI" : "NO") << endl;
-
-	}
-}
 
 bool leerAVL(int& altura, int& minimo, int& maximo) {
 	int valor;
@@ -55,6 +72,20 @@ bool leerAVL(int& altura, int& minimo, int& maximo) {
 
 	// Comprobamos tanto la propiedad de AVL como la propiedad de arbol binario de busqueda
 	return izqOK && derOK && (abs(altIzq - altDer) <= 1) && (maxIzq < valor) && (valor < minDer);
+}
+
+void resuelveCaso() {
+    int altura = 0, minimo = 0, maximo = 0;
+    cout << (leerAVL(altura, minimo, maximo) ? "SI" : "NO") << '\n';
+}
+
+//@ </answer>
+//  Lo que se escriba dejado de esta linea ya no forma parte de la solucion.
+
+int main() {
+    int casos; cin >> casos;
+    while (casos--) resuelveCaso();
+    return 0;
 }
 
 //ENTRADA SALIDA

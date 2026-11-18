@@ -1,44 +1,58 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
-#include "Grafo.h"
-
 using namespace std;
 
-/*
-    ¡Las noticias vuelan!
+#include "Grafo.h"  // estructuras de datos de clase
 
-    Usuarios --> 1 <= N <= 100.000   (numerados de 1 a N)
-    Grupos   --> 1 <= M <= 100.000   (cada uno con 0..N usuarios distintos)
-    Suma de N de todos los casos <= 1.000.000, y lo mismo la suma de tamanos de grupo
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Modelo: cada usuario es un vertice; dos usuarios estan unidos si
-    comparten grupo. La noticia se extiende hasta que no queda ningun
-    amigo sin enterarse --> llega a TODA la componente conexa del que
-    la empieza (y solo a ella).
-    Respuesta para el usuario i = tamano de la componente conexa de i.
+ ¡Las noticias vuelan!
 
-    1) Construir el grafo. Lo directo es unir todos los pares de cada grupo,
-       pero un grupo de k usuarios daria k*(k-1)/2 aristas (con k = 100.000
-       son 5.000 millones). Truco: solo importa QUIEN esta conectado con
-       quien, no por cuantas aristas, asi que basta unir a todos los del
-       grupo con el primero (una "estrella"): k-1 aristas y el grupo sigue
-       quedando en una sola componente.
+ Usuarios --> 1 <= N <= 100.000   (numerados de 1 a N)
+ Grupos   --> 1 <= M <= 100.000   (cada uno con 0..N usuarios distintos)
+ Suma de N de todos los casos <= 1.000.000, y lo mismo la suma de tamanos de grupo
 
-    2) Recorrer cada componente una vez (no un recorrido por usuario, que
-       seria cuadratico): para cada vertice sin visitar, recorro su
-       componente, guardo en comp[v] su numero y en tam[] su tamano.
-       Despues la respuesta de v es tam[comp[v]].
+ PLANTEAMIENTO
+ Modelo: cada usuario es un vertice; dos usuarios estan unidos si
+ comparten grupo. La noticia se extiende hasta que no queda ningun
+ amigo sin enterarse --> llega a TODA la componente conexa del que
+ la empieza (y solo a ella).
+ Respuesta para el usuario i = tamano de la componente conexa de i.
 
-    3) Uso BFS (iterativo) en lugar de un dfs recursivo: una componente
-       puede tener 100.000 vertices y la recursion tan profunda podria
-       desbordar la pila. Para contar una componente da igual el orden.
+ 1) Construir el grafo. Lo directo es unir todos los pares de cada grupo,
+    pero un grupo de k usuarios daria k*(k-1)/2 aristas (con k = 100.000
+    son 5.000 millones). Truco: solo importa QUIEN esta conectado con
+    quien, no por cuantas aristas, asi que basta unir a todos los del
+    grupo con el primero (una "estrella"): k-1 aristas y el grupo sigue
+    quedando en una sola componente.
 
-    Coste: O(N + suma de tamanos de grupo) por caso.
-*/
+ 2) Recorrer cada componente una vez (no un recorrido por usuario, que
+    seria cuadratico): para cada vertice sin visitar, recorro su
+    componente, guardo en comp[v] su numero y en tam[] su tamano.
+    Despues la respuesta de v es tam[comp[v]].
+
+ 3) Uso BFS (iterativo) en lugar de un dfs recursivo: una componente
+    puede tener 100.000 vertices y la recursion tan profunda podria
+    desbordar la pila. Para contar una componente da igual el orden.
+
+ Coste: O(N + suma de tamanos de grupo) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class TamComponentes {
 public:
@@ -108,12 +122,25 @@ void resuelveCaso() {
 	cout << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-¡Las noticias vuelan!.pdf>) · 💻 [Solución](EJ_04-5.cpp) · 🎬 [Vídeo](../../Videos/04-5_las_noticias_vuelan.mp4)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Para **cada** usuario, a cuántos usuarios llegaría una noticia que empezara en él.
 

@@ -1,7 +1,36 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <queue>
 #include <vector>
 using namespace std;
+
+/*@ <answer>
+
+ Unidad Curiosa de Monitorización
+
+ Usuarios con un periodo de envío. Escribir a quién van los K primeros envíos; si coinciden en el
+ tiempo, primero el de identificador menor. Tras cada caso, ---. Acaba con un caso con n = 0.
+
+ PLANTEAMIENTO (simulación por eventos)
+ Cola de mínimos de Envio(t, id, periodo) ordenada por (t, id). Cada usuario entra con t = periodo.
+ K veces: se saca la cima, se escribe su id y vuelve a entrar con t + periodo.
+
+ Coste: O((n + K) log n) por caso.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 struct Envio {
     long long t;      // instante del próximo envío
@@ -40,10 +69,22 @@ bool resuelveCaso() {
     return true;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-    while (resuelveCaso());
-    return 0;
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

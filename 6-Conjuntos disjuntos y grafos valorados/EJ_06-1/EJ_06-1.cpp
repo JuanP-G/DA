@@ -1,46 +1,60 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <limits>
 #include <algorithm>
-#include "ConjuntosDisjuntos.h"
-
 using namespace std;
 
-/*
-    Petroleros hundidos
+#include "ConjuntosDisjuntos.h"  // estructuras de datos de clase
 
-    Rejilla F x C (1 <= F, C <= 1.000), '-' mar y '#' petroleo
-    Dos celdas negras son de la misma mancha si se llega de una a otra por celdas
-    negras moviendose en 8 direcciones.
-    Despues aparecen N (<= 100.000) celdas nuevas de petroleo, una a una.
-    Salida: tamano de la mancha mas grande al principio y tras cada celda nueva.
-*/
+/*@ <answer>
 
-/*
-    PLANTEAMIENTO
-    Las celdas solo se añaden, nunca se quitan: las manchas solo pueden crecer o
-    fundirse, jamas partirse. Eso es exactamente lo que sabe hacer una particion
-    de CONJUNTOS DISJUNTOS (solo sabe unir).
+ Petroleros hundidos
 
-        elemento    = celda (i, j)  -->  numero i*C + j
-        conjunto    = mancha
-        unir(a, b)  = dos celdas negras vecinas (8 direcciones)
-        cardinal(a) = tamano de la mancha de a
+ Rejilla F x C (1 <= F, C <= 1.000), '-' mar y '#' petroleo
+ Dos celdas negras son de la misma mancha si se llega de una a otra por celdas
+ negras moviendose en 8 direcciones.
+ Despues aparecen N (<= 100.000) celdas nuevas de petroleo, una a una.
+ Salida: tamano de la mancha mas grande al principio y tras cada celda nueva.
 
-    anade(i, j): marca la celda como petroleo, la une con sus vecinas que ya sean
-    petroleo y compara el tamano de SU mancha con el maximo. Como solo hay uniones,
-    la unica mancha que puede haber cambiado es la de la celda nueva y el maximo
-    nunca baja: no hace falta recorrer todos los conjuntos.
+ PLANTEAMIENTO
+ Las celdas solo se añaden, nunca se quitan: las manchas solo pueden crecer o
+ fundirse, jamas partirse. Eso es exactamente lo que sabe hacer una particion
+ de CONJUNTOS DISJUNTOS (solo sabe unir).
 
-    La imagen inicial se procesa con la misma operacion: celda negra a celda negra.
-    Al llegar a una celda, las vecinas posteriores aun no estan marcadas, pero
-    cuando se procesen ellas se uniran con esta: el resultado final es el mismo.
+     elemento    = celda (i, j)  -->  numero i*C + j
+     conjunto    = mancha
+     unir(a, b)  = dos celdas negras vecinas (8 direcciones)
+     cardinal(a) = tamano de la mancha de a
 
-    La rejilla es el grafo: no se construye ninguna lista de adyacencia.
+ anade(i, j): marca la celda como petroleo, la une con sus vecinas que ya sean
+ petroleo y compara el tamano de SU mancha con el maximo. Como solo hay uniones,
+ la unica mancha que puede haber cambiado es la de la celda nueva y el maximo
+ nunca baja: no hace falta recorrer todos los conjuntos.
 
-    Coste: O(F*C + N) con la lg* de la particion practicamente constante.
-*/
+ La imagen inicial se procesa con la misma operacion: celda negra a celda negra.
+ Al llegar a una celda, las vecinas posteriores aun no estan marcadas, pero
+ cuando se procesen ellas se uniran con esta: el resultado final es el mismo.
+
+ La rejilla es el grafo: no se construye ninguna lista de adyacencia.
+
+ Coste: O(F*C + N) con la lg* de la particion practicamente constante.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 class Manchas {
 public:
@@ -96,12 +110,25 @@ void resuelveCaso() {
     cout << '\n';
 }
 
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
 
-    int casos; cin >> casos;
-    while (casos--) resuelveCaso();
+   int numCasos;
+   std::cin >> numCasos;
+   for (int i = 0; i < numCasos; ++i)
+      resuelveCaso();
 
-    return 0;
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }

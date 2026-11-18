@@ -2,6 +2,8 @@
 
 📄 [Enunciado](<../Enunciados/prob-La batalla por las audiencias.pdf>) · 💻 [Solución](EJ_03-L.cpp) · 🎬 [Vídeo](../../Videos/03-L_batalla_audiencias.mp4)
 
+🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
+
 ## Qué piden
 Dadas las audiencias iniciales de C canales y una serie de actualizaciones por minuto, decir cuántos minutos ha sido líder cada canal en la franja `[0, D)`, ordenados de más a menos (empate ⇒ canal menor).
 

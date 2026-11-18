@@ -1,11 +1,41 @@
+
+/*@ <answer>
+ *
+ * Nombre y Apellidos:
+ *
+ *@ </answer> */
+
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <functional>
-#include "IndexPQ.h"
-
 using namespace std;
+
+#include "IndexPQ.h"  // estructuras de datos de clase
+
+/*@ <answer>
+
+ 12 points go to…
+
+ Eventos: sumar o restar puntos a un país, o preguntar (?) quién va primero y con cuántos puntos
+ (empate -> nombre menor). La entrada acaba con el fichero.
+
+ PLANTEAMIENTO
+ IndexPQ<pair<int,string>, Mejor>: índice = número del país (unordered_map nombre -> índice),
+ prioridad = (puntos, nombre). En cada cambio, update(idx, nuevos puntos): sube o baja en el
+ montículo. En cada ?, top() da el líder.
+
+ Coste: O(log P) por evento, con P el número de países.
+
+ @ </answer> */
+
+
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 using Par = pair<int, string>;   // (puntos, nombre)
 
@@ -16,7 +46,7 @@ struct Mejor {
 	}
 };
 
-bool resolverCaso() {
+bool resuelveCaso() {
 	//Numero de eventos que se van a realizar
 	int n;
 	if (!(cin >> n)) return false;
@@ -58,10 +88,23 @@ bool resolverCaso() {
 	cout << "---\n";
 	return true;
 }
-int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
 
-	while (resolverCaso());
-	return 0;
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
+int main() {
+   // ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+   std::ifstream in("casos.txt");
+   auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+   while (resuelveCaso());
+
+   // para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+   std::cin.rdbuf(cinbuf);
+   system("PAUSE");
+#endif
+   return 0;
 }
