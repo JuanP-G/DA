@@ -198,10 +198,11 @@ Carpeta [`10-Programacion dinamica/`](10-Programacion%20dinamica). Recurrencias 
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| 10-1 | La cuerda de la cometa | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-1/EJ_10-1.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-1/README.md) | — | Mochila 0/1 de suma exacta con tres tablas a la vez: formas, mínimo de cordeles y mínimo coste |
+| 10-0 | Teoría de los temas 10 y 11 (explicación general) | — | [📘 Explicación del tema (resumen, patrones y formato de examen)](10-Programacion%20dinamica/README.md) | [🎬 Vídeo](Videos/10-0_programacion_dinamica_teoria.mp4) | Subproblemas repetidos, principio de optimalidad, la receta, ascendente vs descendente, ahorrar memoria (sentido del recorrido), reconstrucción y los cuatro patrones |
+| 10-1 | La cuerda de la cometa | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-1/EJ_10-1.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-1/README.md) | [🎬 Vídeo](Videos/10-1_la_cuerda_de_la_cometa.mp4) | Mochila 0/1 de suma exacta con tres tablas a la vez: formas, mínimo de cordeles y mínimo coste |
 | 10-2 | Construyendo dianas | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-2/EJ_10-2.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-2/README.md) | [🎬 Vídeo](Videos/10-2_construyendo_dianas.mp4) | Cambio de monedas ilimitadas con la tabla entera para reconstruir los dardos |
-| 10-3 | Esquivando las obras en los cruces | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-3/EJ_10-3.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-3/README.md) | — | Contar caminos sur/este: `caminos(i, j) = arriba + izquierda`, 0 en las obras |
-| 10-4 | ¿Por dónde hay que subir? | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-4/EJ_10-4.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-4/README.md) | — | `mejor(i, j) = t(i, j) + máx` de las tres de encima; el máximo de la última fila, el de más a la izquierda |
+| 10-3 | Esquivando las obras en los cruces | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-3/EJ_10-3.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-3/README.md) | [🎬 Vídeo](Videos/10-3_esquivando_las_obras.mp4) | Contar caminos sur/este: `caminos(i, j) = arriba + izquierda`, 0 en las obras |
+| 10-4 | ¿Por dónde hay que subir? | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-4/EJ_10-4.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-4/README.md) | [🎬 Vídeo](Videos/10-4_por_donde_hay_que_subir.mp4) | `mejor(i, j) = t(i, j) + máx` de las tres de encima; el máximo de la última fila, el de más a la izquierda |
 
 ## Tema 11 · Programación dinámica II
 
@@ -209,8 +210,8 @@ Carpeta [`11-Programacion dinamica II/`](11-Programacion%20dinamica%20II). Progr
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| 11-1 | El cazatesoros | juez | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-1/EJ_11-1.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-1/README.md) | — | Mochila 0/1 (peso 3p, capacidad T) y reconstrucción de los cofres desde `(N, T)` |
-| 11-2 | Aibofobia | juez | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-2/EJ_11-2.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-2/README.md) | — | `faltan(i, j)` sobre intervalos y reconstrucción del palíndromo por los dos extremos |
+| 11-1 | El cazatesoros | juez | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-1/EJ_11-1.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-1/README.md) | [🎬 Vídeo](Videos/11-1_el_cazatesoros.mp4) | Mochila 0/1 (peso 3p, capacidad T) y reconstrucción de los cofres desde `(N, T)` |
+| 11-2 | Aibofobia | juez | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-2/EJ_11-2.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-2/README.md) | [🎬 Vídeo](Videos/11-2_aibofobia.mp4) | `faltan(i, j)` sobre intervalos y reconstrucción del palíndromo por los dos extremos |
 
 ## Tema 12 · Problemas de evaluación
 
@@ -323,6 +324,9 @@ Todos en [`Videos/`](Videos), con subtítulos en castellano (y capítulos el de 
 | `05-1` … `05-6`, `05-L` | Ejercicios del tema 5 |
 | `06-1` … `06-5`, `06-L` | Ejercicios del tema 6 |
 | `07-1` … `07-7` | Ejercicios del tema 7 |
+| [`10-0_programacion_dinamica_teoria.mp4`](Videos/10-0_programacion_dinamica_teoria.mp4) | **Teoría de programación dinámica** (temas 10 y 11): fibonacci, la receta, ahorro de memoria, reconstrucción, patrones y formato de examen (animado, con capítulos) |
+| `08-1` | Ejercicio del tema 8 (animado) |
+| `10-1` … `10-4`, `11-1`, `11-2` | Ejercicios de programación dinámica (animados) |
 
 Se generan con los scripts de [`Videos/generador/`](Videos/generador) (diapositivas con Pillow, voz Kokoro y ffmpeg); las trazas salen del mismo algoritmo que el `.cpp` y el código en pantalla se lee del fichero real.
 
