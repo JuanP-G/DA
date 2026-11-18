@@ -80,3 +80,12 @@ python v07_teoria.py             # genera el mp4
 ## Vídeos de ejercicios del tema 5
 
 `v05_1.py`, `v05_2.py`, `v05_3.py`, `v05_4.py` (sumidero), `v05_5.py` (serpientes y escaleras, con el BFS sobre el tablero), `v05_6.py` y `v05_L.py` (El Necronomicón: programa → digrafo y un DFS desde la instrucción 1). Las trazas salen de repetir el mismo algoritmo que el `.cpp`, y el código en pantalla se lee del fichero real.
+
+## Vídeos animados (desde el tema 8)
+
+`anim.py` dibuja cada escena fotograma a fotograma (30 fps) en vez de diapositivas fijas: los objetos se mueven y cambian justo cuando la voz lo dice (`f.c(k)` = segundo en que empieza la frase k). Cada escena se codifica en su propio mp4 y se juntan sin recodificar. La voz se guarda en caché (`/tmp/tts_cache`) para no sintetizar dos veces.
+
+- `v08_1.py` → `../08-1_agujeros_en_la_manguera.mp4`
+- `v10_2.py` → `../10-2_construyendo_dianas.mp4`
+
+`python3 v10_2.py --preview` saca fotogramas sueltos (con los tiempos reales de la voz) en `preview/` para revisarlos antes de renderizar.

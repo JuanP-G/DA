@@ -174,7 +174,7 @@ Carpeta [`8-Algoritmos voraces/`](8-Algoritmos%20voraces). No usan ninguna estru
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| 08-1 | Agujeros en la manguera | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-1/EJ_08-1.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-1/README.md) | — | Cada parche empieza en el primer agujero sin tapar y llega hasta `p + L` |
+| 08-1 | Agujeros en la manguera | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-1/EJ_08-1.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-1/README.md) | [🎬 Vídeo](Videos/08-1_agujeros_en_la_manguera.mp4) | Cada parche empieza en el primer agujero sin tapar y llega hasta `p + L` |
 | 08-2 | ¡Nos invaden! | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-2/EJ_08-2.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-2/README.md) | — | Ordenar ciudades y equipos; a cada ciudad, el equipo más pequeño que la gana (dos índices) |
 | 08-3 | Comienza la temporada | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-3/EJ_08-3.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-3/README.md) | — | Contar por tallas; de menor a mayor, primero su talla y luego una más |
 | 08-4 | Maratón de cine de terror | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-4/EJ_08-4.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-4/README.md) | — | Selección de actividades: ordenar por fin y coger si `inicio ≥ fin anterior + 10` |
@@ -199,7 +199,7 @@ Carpeta [`10-Programacion dinamica/`](10-Programacion%20dinamica). Recurrencias 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
 | 10-1 | La cuerda de la cometa | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-1/EJ_10-1.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-1/README.md) | — | Mochila 0/1 de suma exacta con tres tablas a la vez: formas, mínimo de cordeles y mínimo coste |
-| 10-2 | Construyendo dianas | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-2/EJ_10-2.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-2/README.md) | — | Cambio de monedas ilimitadas con la tabla entera para reconstruir los dardos |
+| 10-2 | Construyendo dianas | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-2/EJ_10-2.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-2/README.md) | [🎬 Vídeo](Videos/10-2_construyendo_dianas.mp4) | Cambio de monedas ilimitadas con la tabla entera para reconstruir los dardos |
 | 10-3 | Esquivando las obras en los cruces | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-3/EJ_10-3.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-3/README.md) | — | Contar caminos sur/este: `caminos(i, j) = arriba + izquierda`, 0 en las obras |
 | 10-4 | ¿Por dónde hay que subir? | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-4/EJ_10-4.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-4/README.md) | — | `mejor(i, j) = t(i, j) + máx` de las tres de encima; el máximo de la última fila, el de más a la izquierda |
 
