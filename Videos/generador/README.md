@@ -86,6 +86,13 @@ python v07_teoria.py             # genera el mp4
 `anim.py` dibuja cada escena fotograma a fotograma (30 fps) en vez de diapositivas fijas: los objetos se mueven y cambian justo cuando la voz lo dice (`f.c(k)` = segundo en que empieza la frase k). Cada escena se codifica en su propio mp4 y se juntan sin recodificar. La voz se guarda en caché (`/tmp/tts_cache`) para no sintetizar dos veces.
 
 - `v08_1.py` → `../08-1_agujeros_en_la_manguera.mp4`
+- `v10_1.py` → `../10-1_la_cuerda_de_la_cometa.mp4`
 - `v10_2.py` → `../10-2_construyendo_dianas.mp4`
+- `v10_3.py` → `../10-3_esquivando_las_obras.mp4`
+- `v10_4.py` → `../10-4_por_donde_hay_que_subir.mp4`
+- `v11_1.py` → `../11-1_el_cazatesoros.mp4`
+- `v11_2.py` → `../11-2_aibofobia.mp4`
+- `v10_teoria.py` → `../10-0_programacion_dinamica_teoria.mp4` (teoría de los temas 10 y 11)
+- `pd_comun.py`: piezas comunes de los vídeos de PD (tablas con flechas, fórmulas con llave, código, portada y cierre)
 
 `python3 v10_2.py --preview` saca fotogramas sueltos (con los tiempos reales de la voz) en `preview/` para revisarlos antes de renderizar.
