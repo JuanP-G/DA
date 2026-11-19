@@ -309,3 +309,7 @@ a.arow.main:hover{border-color:var(--accent);box-shadow:0 12px 26px -14px var(--
 .gdonde a:hover{background:color-mix(in srgb,var(--accent) 8%,transparent)}.gdonde b{flex:0 0 160px}.gdonde span{flex:1 1 280px;color:var(--muted)}
 .gcta{display:flex;flex-wrap:wrap;align-items:center;gap:18px;padding:22px 26px;border-radius:18px;background:var(--glass,var(--panel));border:1px solid var(--accent)}
 .gcta div{flex:1 1 360px;display:flex;flex-direction:column;gap:4px}.gcta span{color:var(--muted)}
+
+/* enlaces con aspecto de botón nunca se subrayan */
+a.mb,a.mi,a.btn,a.arow,a.enav,a.volver,a.back,a.tool,a.tcard,a.chip{text-decoration:none}
+a.mb:hover,a.mi:hover,a.btn:hover,a.arow:hover,a.enav:hover,a.volver:hover,a.back:hover{text-decoration:none}

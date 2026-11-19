@@ -651,7 +651,7 @@ def pagina_cabecera(nombre):
     herr = next((TEMAS[t]["herr"] for t in TEMAS if nombre in TEMAS[t]["cab"]), None)
     extra = f'<a class="btn" href="../herramientas/{herr}">@@i:tool@@ Herramienta interactiva</a>' if herr and (RAIZ / "Visualizaciones" / herr).exists() else ""
     txt = leer_texto(rel)
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#estructuras" data-back>← Volver</a>'
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#estructuras">← Volver</a>'
               f'<a href="../index.html">Inicio</a>›<a href="../index.html#estructuras">Estructuras</a>›<span>{esc(nombre)}</span></div>'
               f'<div class="ejhead"><span class="tag">Estructura de datos</span><h1>{esc(nombre)}</h1>'
               f'<div class="acc"><button class="btn" data-copy="src0">@@i:copy@@ Copiar código</button>{descargar(rel, "@@i:download@@ Descargar " + esc(nombre))}{extra}</div></div>'
@@ -669,15 +669,31 @@ def pagina_videos(ej, slugs):
                 cards.append(f'<a class="vcard" href="ej/{slugs[i]}.html#video"><span class="n">▶ {esc(e["id"])} · {mb}</span><b>{esc(e["titulo"])}</b><span class="d">{md_inline(e["idea"])}</span></a>')
         if cards:
             bloques.append(f'<section class="bloque"><h2>Tema {t} · {esc(info["nombre"])}</h2><div class="vlist">{"".join(cards)}</div></section>')
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="index.html" data-back>← Volver</a><a href="index.html">Inicio</a>›<span>Vídeos</span></div>'
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="index.html">← Volver</a><a href="index.html">Inicio</a>›<span>Vídeos</span></div>'
               f'<div class="hero"><span class="tag">Vídeos</span><h1>Vídeos explicativos</h1><p class="lede">Se ven aquí mismo, con subtítulos y, en los largos, capítulos. Cada uno abre la página de su ejercicio, donde también se puede descargar.</p></div>'
               f'{"".join(bloques)}</div>')
     return pagina("Vídeos de Diseño de Algoritmos UCM | StudIA", cuerpo, "", "", "Vídeos paso a paso de todos los ejercicios de Diseño de Algoritmos de la FDI UCM, con subtítulos.", ruta="videos.html")
 
 
-VOLVER_HERR = ('<a href="../index.html#herramientas" onclick="try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){history.back();return false}}catch(e){}" '
-               'style="position:fixed;left:12px;bottom:12px;z-index:99;font:600 14px system-ui,sans-serif;background:#151d31;color:#e7ecf7;border:1px solid #2a3556;'
-               'padding:9px 16px;border-radius:999px;text-decoration:none;box-shadow:0 8px 22px rgba(0,0,0,.35)">← Volver a la web</a>')
+def volver_herr(t):
+    """Botón fijo de las herramientas: siempre al menú del tema (nunca a «atrás», que podía caer en los apuntes)."""
+    return (f'<a href="../tema/{t}.html" class="volver-tema" '
+            'style="position:fixed;left:12px;bottom:12px;z-index:99;font:600 14px system-ui,sans-serif;background:#151d31;color:#e7ecf7;border:1px solid #2a3556;'
+            f'padding:9px 16px;border-radius:999px;text-decoration:none;box-shadow:0 8px 22px rgba(0,0,0,.35)">← Volver al tema {t}</a>') if t else (
+            '<a href="../index.html#herramientas" class="volver-tema" '
+            'style="position:fixed;left:12px;bottom:12px;z-index:99;font:600 14px system-ui,sans-serif;background:#151d31;color:#e7ecf7;border:1px solid #2a3556;'
+            'padding:9px 16px;border-radius:999px;text-decoration:none;box-shadow:0 8px 22px rgba(0,0,0,.35)">← Volver a la web</a>')
+
+
+SIN_SUBRAYADO = ('<style>a.back,a.btn,.btn,a.card,.volver-tema,.foot a{text-decoration:none!important}'
+                 'a.back:hover,a.btn:hover,.btn:hover,.volver-tema:hover{text-decoration:none!important}</style>')
+
+
+def limpiar_herr(h, t):
+    h = re.sub(r"\s*\(A\. Verdejo[^)]*\)", "", h)
+    h = h.replace("</head>", SIN_SUBRAYADO + "</head>", 1)
+    h = re.sub(r"(<body[^>]*>)", lambda m: m.group(1) + volver_herr(t), h, count=1)
+    return h
 
 
 def chips(e, slug, pre=""):
@@ -857,7 +873,7 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
                + (f'<details class="sbox aprende" data-aprende><summary><h2>Aprende</h2></summary><div class="alist main">{"".join(principales)}</div>{('<h3 class="sub">PDFs de teoría</h3><div class="alist">' + "".join(pdfs) + '</div>') if pdfs else ""}</details>' if aprender else '')
                + (f'<div class="sbox"><h2>Plantillas y código</h2><div class="rec">{"".join(recursos)}</div></div>' if recursos else '')
                + '</aside>')
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas" data-back>← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>Tema {t}</span></div>'
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas">← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>Tema {t}</span></div>'
               f'<div class="thead" data-ids="{ids}"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="tag">{esc(bloque)}</span><span class="est" data-est>Sin empezar</span></div>'
               f'<h1>Tema {t} · {esc(info["nombre"])}</h1><p class="lede">{esc(info["resumen"])}</p></div>'
               f'<div class="tlay">{lateral}<main class="tmain">{vhero}<div class="mh" id="ejercicios"><h2>Ejercicios <span class="cnt">{n}</span></h2>'
@@ -916,7 +932,8 @@ def main():
         (OUT / "herramientas").mkdir()
         for p in herr_dir.glob("*.html"):
             h = p.read_text(encoding="utf-8")
-            h = re.sub(r"(<body[^>]*>)", lambda m: m.group(1) + VOLVER_HERR, h, count=1)
+            t_herr = next((t for t in TEMAS if TEMAS[t]["herr"] == p.name), None)
+            h = limpiar_herr(h, t_herr)
             (OUT / "herramientas" / p.name).write_text(h, encoding="utf-8")
 
     # páginas de tema
