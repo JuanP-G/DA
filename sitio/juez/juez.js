@@ -160,24 +160,31 @@
       this.btn.disabled = true;
       this.res.replaceChildren();
       let r;
+      // Si la Pi no contesta en un tiempo razonable (colgada, sin red, túnel caído), se usa el navegador.
+      const corte = new AbortController();
+      const reloj = setTimeout(() => corte.abort(), 150000);
       try {
         this.msg('Enviando al servidor del juez…');
         const resp = await fetch(this.cfg.servidor.replace(/\/$/, '') + '/juzgar', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: this.m.id, codigo: this.ta.value }),
+          signal: corte.signal,
         });
         r = await resp.json();
-        if (!resp.ok) {              // límites (429/503/413): se informa, no se cae al navegador
+        if (resp.status === 503) throw new Error('juez ocupado o en mantenimiento');
+        if (!resp.ok) {              // límites (429/413): se informa, no se cae al navegador
           this.msg('');
           this.res.replaceChildren(h('div', { class: 'dj-err' }, r.error || ('Error ' + resp.status)));
           this.ocupado = false; this.btn.disabled = false;
           return;
         }
-      } catch (e) {                  // servidor apagado o sin conexión: respaldo en el navegador
+      } catch (e) {                  // servidor apagado, colgado, ocupado o sin conexión: respaldo en el navegador
+        clearTimeout(reloj);
         this.ocupado = false; this.btn.disabled = false;
         this.msg('El servidor del juez no responde; se usa el compilador del navegador…');
         return this.comprobarWasm();
       }
+      clearTimeout(reloj);
       this.msg('');
       try {
         if (r.error) this.res.replaceChildren(h('div', { class: 'dj-err' }, r.error));

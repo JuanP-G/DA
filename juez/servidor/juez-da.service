@@ -1,0 +1,47 @@
+# Servicio systemd del juez de DA (Raspberry Pi). Lo instala instalar.sh, que cambia
+# USUARIO y CARPETA por los tuyos. A mano:
+#   sudo cp juez-da.service /etc/systemd/system/ && sudo systemctl daemon-reload
+#   sudo systemctl enable --now juez-da
+#   journalctl -u juez-da -f            (registro de envíos y autopruebas)
+[Unit]
+Description=Juez de DA para StudIA
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=10
+
+[Service]
+Type=notify
+NotifyAccess=main
+User=USUARIO
+WorkingDirectory=CARPETA/juez/servidor
+ExecStart=/usr/bin/python3 -u CARPETA/juez/servidor/servidor.py
+Environment=JUEZ_ORIGENES=https://studia-one-flax.vercel.app
+Environment=JUEZ_CONFIAR_CF=1
+
+# Si se cae, vuelve a arrancar; si se cuelga (no responde a /salud), systemd lo reinicia.
+Restart=always
+RestartSec=3
+WatchdogSec=60
+TimeoutStartSec=120
+
+# Red de seguridad para TODO el juez (servidor + compilaciones + programas de los alumnos),
+# además de los límites de cada ejecución. MemoryMax solo actúa si el cgroup de memoria está
+# activado en el núcleo; TasksMax (pids) funciona siempre.
+MemoryMax=2500M
+TasksMax=600
+LimitCORE=0
+# Ante falta de memoria, el núcleo mata antes al juez que a otros servicios de la Pi.
+OOMScoreAdjust=500
+Nice=5
+IOSchedulingClass=idle
+
+# Endurecimiento que no estorba a bubblewrap.
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=full
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+
+[Install]
+WantedBy=multi-user.target
