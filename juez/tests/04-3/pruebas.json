@@ -3,6 +3,7 @@
   "n": 1,
   "nombre": "Ejemplo 1 del enunciado",
   "tipo": "enunciado",
+  "casos": 1,
   "comprueba": "El primer ejemplo del PDF: dos manchas que se tocan solo por una esquina.",
   "si": {
    "wa": "Si falla hasta el ejemplo, el fallo es de base: lectura de la entrada, formato de la salida o la idea del recorrido."
@@ -11,13 +12,13 @@
    "Ejecútalo en tu ordenador con este mismo ejemplo y compara línea a línea.",
    "Comprueba que escribes «número de manchas, espacio, tamaño de la mayor» y un salto de línea por caso.",
    "Recuerda que la entrada empieza con el número de casos: usa la plantilla de número de casos."
-  ],
-  "casos": 1
+  ]
  },
  {
   "n": 2,
   "nombre": "Ejemplo 2 del enunciado",
   "tipo": "enunciado",
+  "casos": 1,
   "comprueba": "El segundo ejemplo: columnas que solo se unen por arriba.",
   "si": {
    "wa": "Las manchas de este ejemplo solo se unen por la primera fila: si sale de más, tu recorrido no sigue la mancha por todas las direcciones."
@@ -25,13 +26,13 @@
   "pistas": [
    "La mancha grande (9 píxeles) baja por dos columnas unidas solo por arriba.",
    "Desde cada píxel hay que poder ir hacia arriba, abajo, izquierda y derecha (en el grafo, las aristas son no dirigidas)."
-  ],
-  "casos": 1
+  ]
  },
  {
   "n": 3,
   "nombre": "Sin ningún píxel negro",
   "tipo": "borde",
+  "casos": 2,
   "comprueba": "Un bitmap todo blanco: debe salir «0 0».",
   "si": {
    "wa": "Con cero manchas el tamaño de la mayor debe ser 0. Suele fallar por inicializar el máximo a otra cosa o por dividir el caso «sin manchas»."
@@ -39,26 +40,26 @@
   "pistas": [
    "¿Qué escribe tu programa si no hay ningún «#»?",
    "Inicializa el contador de manchas y el tamaño máximo a 0 en cada caso."
-  ],
-  "casos": 2
+  ]
  },
  {
   "n": 4,
   "nombre": "Un único píxel",
   "tipo": "borde",
+  "casos": 3,
   "comprueba": "Bitmaps mínimos con un solo píxel negro: «1 1».",
   "si": {
    "rte": "Con una sola fila o columna, mirar el vecino de abajo o de la derecha se sale del bitmap si no compruebas los bordes."
   },
   "pistas": [
    "Antes de mirar un vecino, comprueba que está dentro: 0 ≤ i < F y 0 ≤ j < C."
-  ],
-  "casos": 3
+  ]
  },
  {
   "n": 5,
   "nombre": "Todo negro",
   "tipo": "borde",
+  "casos": 2,
   "comprueba": "Todo el bitmap es una sola mancha: «1 F·C».",
   "si": {
    "wa": "Si cuentas más de una mancha, no se marcan bien los visitados o no se recorren todos los vecinos."
@@ -66,13 +67,13 @@
   "pistas": [
    "Un solo DFS desde el primer píxel tiene que llegar a todos.",
    "Marca un píxel como visitado al entrar en él, no al salir."
-  ],
-  "casos": 2
+  ]
  },
  {
   "n": 6,
   "nombre": "Las diagonales no unen",
   "tipo": "trampa",
+  "casos": 2,
   "comprueba": "Píxeles que solo se tocan en diagonal son manchas distintas.",
   "si": {
    "wa": "Estás uniendo píxeles en diagonal. Solo cuentan los 4 vecinos: arriba, abajo, izquierda y derecha."
@@ -80,13 +81,13 @@
   "pistas": [
    "En «#-» / «-#» hay dos manchas, no una.",
    "Quita los vecinos diagonales (i±1, j±1) del recorrido."
-  ],
-  "casos": 2
+  ]
  },
  {
   "n": 7,
   "nombre": "Una sola fila y una sola columna",
   "tipo": "borde",
+  "casos": 2,
   "comprueba": "Bitmaps de 1×C y F×1.",
   "si": {
    "wa": "Con una sola fila o columna fallan los índices: revisa cómo pasas de (i, j) a número de vértice.",
@@ -95,13 +96,13 @@
   "pistas": [
    "Prueba a mano 1 8 y «#-##-###»: deben salir 3 manchas, la mayor de 3.",
    "El vértice del píxel (i, j) es i·C + j (C = columnas), no i·F + j."
-  ],
-  "casos": 2
+  ]
  },
  {
   "n": 8,
   "nombre": "Bitmap no cuadrado",
   "tipo": "trampa",
+  "casos": 2,
   "comprueba": "Filas y columnas distintas (3×7 y 7×3).",
   "si": {
    "wa": "Funciona con cuadrados pero no con rectángulos: casi seguro has cruzado F y C en algún sitio (al numerar i·C + j o al leer).",
@@ -110,13 +111,13 @@
   "pistas": [
    "La entrada da primero las FILAS y luego las COLUMNAS.",
    "Busca en tu código cada «F» y «C» y comprueba que no están cambiadas (por ejemplo i*F+j)."
-  ],
-  "casos": 2
+  ]
  },
  {
   "n": 9,
   "nombre": "Final de una fila y principio de la siguiente",
   "tipo": "trampa",
+  "casos": 2,
   "comprueba": "El último píxel de una fila y el primero de la siguiente NO son vecinos aunque sus números sean seguidos.",
   "si": {
    "wa": "Unes v con v+1 sin comprobar que v no es el último de su fila: con la numeración i·C + j, el píxel (i, C-1) más uno es (i+1, 0)."
@@ -124,13 +125,13 @@
   "pistas": [
    "En «---#» / «#---» hay 2 manchas de 1 píxel.",
    "Para unir con el de la derecha, comprueba j + 1 < C antes de usar v + 1."
-  ],
-  "casos": 2
+  ]
  },
  {
   "n": 10,
   "nombre": "Manchas en la última fila y columna",
   "tipo": "borde",
+  "casos": 2,
   "comprueba": "Manchas pegadas al borde de abajo y de la derecha.",
   "si": {
    "rte": "Al mirar el vecino de abajo (v + C) desde la última fila te sales del bitmap.",
@@ -139,13 +140,13 @@
   "pistas": [
    "Comprueba i + 1 < F antes de mirar el de abajo.",
    "Revisa que tus bucles son i < F y j < C (no ≤ ni F-1)."
-  ],
-  "casos": 2
+  ]
  },
  {
   "n": 11,
   "nombre": "Forma de U",
   "tipo": "trampa",
+  "casos": 2,
   "comprueba": "Partes de una mancha que solo se juntan al final (abajo).",
   "si": {
    "wa": "Tu método cuenta las patas de la U como manchas distintas. Hace falta un recorrido (DFS/BFS) o conjuntos disjuntos, no una sola pasada mirando arriba e izquierda."
@@ -153,13 +154,13 @@
   "pistas": [
    "La U «#-#»/«#-#»/«###» es una sola mancha de 7.",
    "Al descubrir un píxel nuevo, recorre toda su mancha antes de seguir buscando."
-  ],
-  "casos": 2
+  ]
  },
  {
   "n": 12,
   "nombre": "Varios casos seguidos",
   "tipo": "trampa",
+  "casos": 4,
   "comprueba": "Un caso grande seguido de otros pequeños: nada del caso anterior debe quedar.",
   "si": {
    "wa": "Algo se arrastra de un caso al siguiente: un vector de visitados, un contador o el máximo global que no se reinicia.",
@@ -168,13 +169,13 @@
   "pistas": [
    "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
    "Declara el grafo, los visitados y los contadores dentro de la función de cada caso."
-  ],
-  "casos": 4
+  ]
  },
  {
   "n": 13,
   "nombre": "Aleatorios pequeños",
   "tipo": "aleatorio",
+  "casos": 40,
   "comprueba": "40 bitmaps pequeños al azar.",
   "si": {
    "wa": "Hay algún caso concreto que no tratas: mira la línea que falla, cuenta qué caso es y prueba ese bitmap a mano."
@@ -182,13 +183,13 @@
   "pistas": [
    "La línea que falla es el número de caso: busca ese bitmap en la entrada.",
    "Dibuja ese caso en papel y sigue tu recorrido paso a paso."
-  ],
-  "casos": 40
+  ]
  },
  {
   "n": 14,
   "nombre": "Grande aleatorio (1000×1000)",
   "tipo": "rendimiento",
+  "casos": 1,
   "comprueba": "El tamaño máximo (F·C = 10⁶): mide la eficiencia.",
   "si": {
    "tle": "Tu solución es lenta para 10⁶ píxeles. Debe ser O(F·C): cada píxel se visita una vez.",
@@ -199,13 +200,13 @@
    "¿Vuelves a recorrer píxeles ya visitados? Cada uno debe procesarse una vez.",
    "Pasa los vectores por referencia (const&) a las funciones recursivas; copiarlos en cada llamada es muy caro.",
    "Si usas una matriz de adyacencia (F·C)², cámbiala por listas de adyacencia (la clase Grafo)."
-  ],
-  "casos": 1
+  ]
  },
  {
   "n": 15,
   "nombre": "Mancha muy larga (serpiente de ~50.000 píxeles)",
   "tipo": "rendimiento",
+  "casos": 1,
   "comprueba": "Una mancha en zigzag con el máximo de píxeles: recursión muy profunda.",
   "si": {
    "rte": "La recursión del DFS es muy profunda. Aquí no debería romperse (el juez da pila de sobra); revisa que no reservas arrays grandes dentro de la función recursiva.",
@@ -215,13 +216,13 @@
   "pistas": [
    "No declares vectores ni arrays locales dentro de la función recursiva.",
    "Si tu DFS es iterativo con una pila, marca visitado al apilar, no al desapilar."
-  ],
-  "casos": 1
+  ]
  },
  {
   "n": 16,
   "nombre": "Muchas manchas diminutas",
   "tipo": "rendimiento",
+  "casos": 1,
   "comprueba": "Un tablero de ajedrez de 1000×500: 250.000 manchas de 1 píxel.",
   "si": {
    "tle": "Algo cuesta por cada mancha más de lo que debería: ¿reinicias un vector entero de visitados cada vez que empiezas una mancha?",
@@ -229,7 +230,6 @@
   },
   "pistas": [
    "Los visitados se crean una vez por caso, no una vez por mancha."
-  ],
-  "casos": 1
+  ]
  }
 ]

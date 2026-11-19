@@ -1,0 +1,11 @@
+{
+ "solucion": "4-Grafos no dirigidos/EJ_04-3/EJ_04-3.cpp",
+ "cabeceras": [
+  "4-Grafos no dirigidos/EJ_04-3/Grafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "m.numero() << ' ' << m.mayor()",
+  "m.mayor() << ' ' << m.numero()"
+ ]
+}

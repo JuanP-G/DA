@@ -921,7 +921,7 @@ window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');
     for rel in sorted(COPIAR):
         if existe(rel):
             d = OUT / rel; d.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(RAIZ / rel, d)
-    n_juez = generar_juez(ej)
+    n_juez = generar_juez(ej, slugs)
     print(f"ok: {len(ej)} ejercicios, {n_vid} vídeos, {n_pdf} PDFs, {len(herr)} herramientas, {len(cabs)} cabeceras, {n_juez} jueces -> {OUT}")
 
 
@@ -931,20 +931,33 @@ def escribe_lf(ruta, texto):
         f.write(texto)
 
 
-def generar_juez(ej):
+def config_juez():
+    """Configuración de los jueces: juez/juez.json (antigua) + juez/tests/<id>/config.json (una por
+    ejercicio, la escribe herramientas/generar_tests_juez.py). La clave es el slug de la página."""
+    cfg = {}
+    p = RAIZ / "juez" / "juez.json"
+    if p.exists():
+        cfg.update(json.loads(p.read_text(encoding="utf-8")))
+    for c in sorted((RAIZ / "juez" / "tests").glob("*/config.json")):
+        cfg[c.parent.name] = json.loads(c.read_text(encoding="utf-8"))
+    return cfg
+
+
+def generar_juez(ej, slugs=None):
     """Juez en el navegador (prototipo). Lee juez/juez.json y juez/tests/<ej>/N.in|N.out.
     Genera _site/juez/<ej>.html (página independiente) y _site/juez/<ej>/ (manifest, tests, cabeceras).
     El componente (sitio/juez/juez.js) no toca la página de ejercicio: se encaja donde se quiera."""
-    cfg_p = RAIZ / "juez" / "juez.json"
-    if not cfg_p.exists():
+    cfg = config_juez()
+    if not cfg:
         return 0
-    cfg = json.loads(cfg_p.read_text(encoding="utf-8"))
+    por_slug = {slugs[i]: e for i, e in enumerate(ej)} if slugs else {e["id"].lower(): e for e in ej}
     wasm_base = os.environ.get("JUEZ_WASM_BASE", "https://binji.github.io/wasm-clang/")
     servidor = os.environ.get("JUEZ_SERVIDOR", "")   # URL del servidor del juez (Raspberry Pi); vacío = solo navegador
     shutil.copytree(AQUI / "juez", OUT / "juez")
     for ej_id, c in cfg.items():
-        e = next((x for x in ej if x["id"] == ej_id), None)
+        e = por_slug.get(ej_id.lower())
         if e is None:
+            print(f"aviso: juez {ej_id} sin ejercicio en la web")
             continue
         d = OUT / "juez" / ej_id
         sol = leer_texto(c["solucion"])
@@ -980,7 +993,7 @@ def generar_juez(ej):
                   f'<div class="ejhead"><span class="tag">Prototipo del juez</span><h1>{esc(ej_id)} · {esc(e["titulo"])}</h1>'
                   f'<p class="lede">Pega o escribe tu solución y comprueba si pasa las {len(tests)} pruebas de este ejercicio.</p></div>'
                   f'<div id="juez"></div></div>'
-                  f'<script src="juez.js"></script><script>DAJuez.mount(document.getElementById("juez"),{{manifest:"{ej_id}/manifest.json",wasmBase:{json.dumps(wasm_base)},servidor:{json.dumps(servidor)}}})</script>')
+                  f'<script src="diagnostico.js"></script><script src="juez.js"></script><script>DAJuez.mount(document.getElementById("juez"),{{manifest:"{ej_id}/manifest.json",wasmBase:{json.dumps(wasm_base)},servidor:{json.dumps(servidor)}}})</script>')
         pag = pagina(f"Probar {ej_id} {e['titulo']} | Diseño de Algoritmos UCM", cuerpo, "../", "", "Prototipo del juez en el navegador.",
                      '<meta name="robots" content="noindex"><link rel="stylesheet" href="juez.css">')
         escribe_lf(OUT / "juez" / f"{ej_id}.html", pag)

@@ -247,7 +247,14 @@ def leer(p):
 
 
 def config():
-    return json.loads((RAIZ / "juez" / "juez.json").read_text(encoding="utf-8"))
+    """juez/juez.json (antigua) + juez/tests/<id>/config.json (una por ejercicio)."""
+    cfg = {}
+    p = RAIZ / "juez" / "juez.json"
+    if p.exists():
+        cfg.update(json.loads(p.read_text(encoding="utf-8")))
+    for c in sorted((RAIZ / "juez" / "tests").glob("*/config.json")):
+        cfg[c.parent.name] = json.loads(c.read_text(encoding="utf-8"))
+    return cfg
 
 
 # ---------------------------------------------------------------- caja (bubblewrap + límites)

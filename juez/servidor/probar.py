@@ -17,7 +17,7 @@ args = [a for a in sys.argv[1:] if not a.startswith("--")]
 URL = (args[0] if args else "http://127.0.0.1:8099").rstrip("/")
 RAPIDO = "--rapido" in sys.argv
 RAIZ = Path(__file__).resolve().parent.parent.parent
-cfg = json.loads((RAIZ / "juez" / "juez.json").read_text(encoding="utf-8"))["04-3"]
+cfg = json.loads((RAIZ / "juez" / "tests" / "04-3" / "config.json").read_text(encoding="utf-8"))
 sol = (RAIZ / cfg["solucion"]).read_bytes().decode("utf-8", "replace")
 fallo = sol.replace(cfg["fallo"][0], cfg["fallo"][1])
 sin_main = sol.replace("int main()", "int main2()")
