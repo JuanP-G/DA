@@ -311,6 +311,7 @@ html.embed, html.embed body { background: transparent; }
 html.embed .noembed { display: none !important; }
 html.embed .wrap { padding: 0; max-width: none; }
 html.embed .volver-tema { display: none !important; }
+html.embed a.back, html.embed .foot a[href="index.html"] { display: none !important; }
 
 .back { align-self: flex-start; font-size: .88rem; color: var(--blue); text-decoration: none; }
 .back:hover { text-decoration: underline; }
@@ -399,7 +400,7 @@ table.t td:first-child { white-space: nowrap; }
 
 <div class="wrap">
   <a class="back" href="index.html">← Todas las estructuras</a>
-  <header class="top">
+  <header class="top noembed">
     <span class="tag">Tema 3</span>
     <h1>IndexPQ</h1>
     <p class="lede">Una cola con prioridad cuyos elementos son enteros <code>0..N-1</code> y cuya prioridad <b>se puede cambiar</b> con <code>update</code> en O(log n). Es el mismo montículo binario del tema 2, más un vector <code>posiciones</code> que dice en qué sitio del array está cada elemento. Observa cómo se actualiza esa tabla en cada movimiento.</p>
@@ -495,7 +496,7 @@ table.t td:first-child { white-space: nowrap; }
     </ol>
   </section>
 
-  <section class="panel">
+  <section class="panel noembed">
     <h2>Ejercicios del repo que usan IndexPQ</h2>
     <div class="tbl-wrap">
     <table class="t">
@@ -512,7 +513,7 @@ table.t td:first-child { white-space: nowrap; }
     </div>
   </section>
 
-  <footer class="foot">Apuntes de DA · <code>Estructuras de datos/IndexPQ.h</code> (A. Verdejo, I. Fábregas). Los nombres de elementos de la visualización son solo etiquetas: la estructura real guarda enteros.</footer>
+  <footer class="foot noembed">Apuntes de DA · <code>Estructuras de datos/IndexPQ.h</code> (A. Verdejo, I. Fábregas). Los nombres de elementos de la visualización son solo etiquetas: la estructura real guarda enteros.</footer>
 </div>
 
 <script>

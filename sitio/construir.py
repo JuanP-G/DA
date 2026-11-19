@@ -677,6 +677,61 @@ LABS = {
             ("Camino mínimo (BFS)", "Distancia en aristas desde un origen", "O(V + A)", "BFS procesa cada vértice una vez y mira cada lista una vez. La cola garantiza que se llega a cada vértice por el camino con menos aristas."),
             ("Bipartito", "Colorear con 2 colores con DFS", "O(V + A)", "Es otro recorrido completo: al visitar cada arista se comprueba si los dos extremos tienen el mismo color. No hay trabajo extra por encima de V + A."),
         ]),
+    "tema1-avl.html": dict(
+        slug="avl", titulo="Árbol AVL", cab="TreeSet_AVL_plantilla.h", nota="El <b>coste</b> dice cómo crece el tiempo al crecer el árbol. <b>n</b> es el número de elementos. Abre cualquier fila para ver el razonamiento.",
+        lede="Un árbol binario de búsqueda que se reequilibra solo con rotaciones. Inserta, borra y pide el k-ésimo elemento: ves el factor de equilibrio de cada nodo y cada rotación.",
+        ops=[
+            ("insertar(x)", "Añade x en su sitio y reequilibra", "O(log n)", "Bajas desde la raíz comparando (una rama por nivel) y al volver arriba corriges el equilibrio con como mucho una rotación simple o doble. Como el AVL garantiza altura ≤ 1,44·log₂(n+2), todo ello es logarítmico."),
+            ("borrar(x)", "Quita x y reequilibra", "O(log n)", "Buscar x y su sucesor cuesta una bajada. Al volver, puede hacer falta una rotación en cada nivel del camino, y son O(log n) niveles con O(1) cada rotación."),
+            ("buscar / contiene(x)", "Dice si x está", "O(log n)", "Es una búsqueda binaria en el árbol: en cada nodo descartas un subárbol entero. Un AVL nunca se degenera en lista, así que la altura es log n."),
+            ("k-ésimo(k)", "El elemento en posición k del orden", "O(log n)", "Cada nodo guarda cuántos elementos hay en su subárbol. Con ese tamaño decides en cada nivel si el k-ésimo está a la izquierda, es el nodo actual o está a la derecha: una sola bajada."),
+            ("Rotación", "Reordena 3 nodos para bajar la altura", "O(1)", "Solo cambia un puñado de punteros (y recalcula altura/tamaño de dos nodos). No recorre nada del árbol."),
+            ("Recorrido en inorden", "Todos los elementos ordenados", "O(n)", "Visitas cada nodo una vez. No se puede ir más rápido: hay que producir n resultados."),
+        ]),
+    "tema2-cola-prioridad.html": dict(
+        slug="cola-prioridad", titulo="Cola de prioridad", cab=None, nota="El <b>coste</b> dice cómo crece el tiempo al crecer la cola. <b>n</b> es el número de elementos. Abre cualquier fila para ver el razonamiento.",
+        lede="Un montículo binario guardado en un vector. Siempre tienes a mano el mínimo (o el máximo): mira cómo flota cada push y cómo se hunde tras cada pop.",
+        ops=[
+            ("push(x)", "Añade x al final y lo hace flotar", "O(log n)", "Se coloca en la primera posición libre del vector y, mientras sea mejor que su padre, intercambia con él. Como el árbol es completo tiene altura log n, así que sube como mucho log n niveles."),
+            ("top()", "Mira el mejor elemento", "O(1)", "Está siempre en la posición 1 del vector (la raíz). No hay que buscar nada."),
+            ("pop()", "Quita el mejor y reordena", "O(log n)", "Se mueve el último elemento a la raíz y se hunde intercambiándolo con su mejor hijo. Baja como mucho log n niveles."),
+            ("size() / empty()", "Cuántos elementos hay", "O(1)", "Es el tamaño del vector menos uno (la posición 0 no se usa). Leerlo es instantáneo."),
+            ("Construir con n elementos", "Heapify: hundir desde la mitad hacia atrás", "O(n)", "Parece O(n log n) pero no lo es: la mitad de los nodos son hojas y no se hunden, un cuarto se hunde 1 nivel, un octavo 2 niveles… La suma Σ n/2^k · k es lineal."),
+            ("Heapsort", "Ordenar haciendo n pops", "O(n log n)", "Construir el montículo cuesta O(n) y después hay n pops de O(log n) cada uno."),
+        ]),
+    "tema3-indexpq.html": dict(
+        slug="indexpq", titulo="IndexPQ", cab="IndexPQ.h", nota="El <b>coste</b> dice cómo crece el tiempo al crecer la cola. <b>n</b> es el número de elementos. Abre cualquier fila para ver el razonamiento.",
+        lede="Un montículo con una tabla de posiciones: sabes dónde está cada elemento, así que puedes cambiar su prioridad sin recorrer nada. Es la pieza clave de Dijkstra y Prim.",
+        ops=[
+            ("push(e, p)", "Inserta e con prioridad p", "O(log n)", "Se añade al final, se anota su posición en la tabla y se hace flotar. La tabla se actualiza en cada intercambio, que cuesta O(1)."),
+            ("update(e, p)", "Cambia la prioridad de e", "O(log n)", "Aquí está la gracia: la tabla de posiciones te dice dónde está e en O(1). Después solo hay que flotarlo (o hundirlo) y eso son log n niveles. Sin la tabla habría que buscarlo antes: O(n)."),
+            ("top() / prioridad", "Mejor elemento y su prioridad", "O(1)", "El mejor está en la raíz y su prioridad se lee directamente del vector."),
+            ("pop()", "Quita el mejor", "O(log n)", "Se baja el último a la raíz y se hunde. Cada intercambio actualiza la tabla de posiciones en O(1)."),
+            ("size() / empty()", "Cuántos elementos hay", "O(1)", "Es el tamaño del vector menos uno."),
+        ]),
+    "tema6-kruskal.html": dict(
+        slug="conjuntos-disjuntos", titulo="Conjuntos disjuntos y ARM", cab="ConjuntosDisjuntos.h", nota="El <b>coste</b> dice cómo crece el tiempo. <b>n</b> es el número de elementos, <b>V</b> y <b>A</b> los vértices y aristas del grafo. Abre cualquier fila para ver el razonamiento.",
+        lede="Particiones que solo se unen, comparadas en sus cuatro versiones, y su uso en Kruskal y Prim para encontrar el árbol de recubrimiento de coste mínimo.",
+        ops=[
+            ("buscar(a)", "Representante del conjunto de a", "O(α(n)) ≈ O(1)", "Con unión por tamaños el árbol tiene altura log n; con compresión de caminos cada búsqueda aplana el camino recorrido. Juntas dan un coste amortizado α(n) (inversa de Ackermann), que en la práctica es menor que 5."),
+            ("unir(a, b)", "Fusiona los conjuntos de a y b", "O(α(n)) ≈ O(1)", "Son dos búsquedas más colgar la raíz pequeña de la grande. Lo único caro son las búsquedas."),
+            ("unidos(a, b)", "¿Están en el mismo conjunto?", "O(α(n)) ≈ O(1)", "Dos búsquedas y comparar representantes."),
+            ("cardinal(a) / num_cjtos()", "Tamaño del conjunto / cuántos hay", "O(α(n)) / O(1)", "El tamaño se guarda en la raíz (hay que buscarla); el número de conjuntos es un contador."),
+            ("Versión «búsqueda rápida»", "Vector id[] con el conjunto de cada uno", "buscar O(1), unir O(n)", "Buscar es leer id[a]. Pero unir obliga a recorrer todo el vector para renombrar un conjunto."),
+            ("Kruskal", "Ordenar aristas y unir sin formar ciclos", "O(A log A)", "Ordenar las aristas domina: A log A. Después hay A comprobaciones/uniones casi constantes gracias a los conjuntos disjuntos."),
+            ("Prim", "Crecer el árbol con una cola de prioridad", "O(A log V)", "Cada arista puede provocar un update/push en la cola (log V) y hay A aristas."),
+        ]),
+    "tema7-dijkstra.html": dict(
+        slug="dijkstra", titulo="Dijkstra", cab="DigrafoValorado.h", nota="El <b>coste</b> dice cómo crece el tiempo. <b>V</b> y <b>A</b> son los vértices y aristas del dígrafo. Abre cualquier fila para ver el razonamiento.",
+        lede="Caminos mínimos desde un origen en un dígrafo con costes. Ves la cola de prioridad, las distancias que se van fijando y cómo se reconstruye la ruta.",
+        ops=[
+            ("ponArista(v, w, c)", "Añade la arista v→w con coste c", "O(1)", "Un push_back en la lista de v. No recorre nada."),
+            ("ady(v)", "Aristas que salen de v", "O(1)", "Devuelve la lista ya guardada. Recorrerla cuesta O(grado de salida)."),
+            ("Dijkstra completo", "Distancias mínimas desde el origen", "O(A log V)", "Cada vértice sale una vez de la cola (V pops de log V) y cada arista se relaja una vez, y relajar puede ser un update de la IndexPQ (log V). Total: (V + A)·log V, que es O(A log V) si todos los vértices son alcanzables."),
+            ("Reconstruir el camino", "Seguir los predecesores hasta el origen", "O(V)", "Se sigue el vector de predecesores de destino a origen: como mucho V pasos."),
+            ("Contar caminos mínimos", "Contador junto a cada distancia", "O(A log V)", "Es el mismo Dijkstra con un contador extra que se actualiza en cada relajación: no añade coste asintótico."),
+            ("Con pesos negativos", "No funciona", "—", "Dijkstra fija la distancia de un vértice al sacarlo de la cola porque asume que ningún camino posterior puede mejorarla, y con pesos negativos eso es falso. Para ellos hace falta Bellman-Ford."),
+        ]),
     "tema5-digrafo.html": dict(
         slug="digrafo", titulo="Digrafo", cab="Digrafo.h",
         lede="En un grafo dirigido cada arista v→w tiene sentido. Construye uno, mira cómo se rellenan las listas de sucesores y ejecuta BFS, orden topológico o inverso() sobre el código real.",
@@ -700,24 +755,25 @@ def url_herr(herr, pre=""):
 
 
 def pagina_lab(herr, lab, tema, info, lista_ej, slugs, descr_herr, otros=()):
-    rel = f"Estructuras de datos/{lab['cab']}"
-    txt = leer_texto(rel)
+    rel = f"Estructuras de datos/{lab['cab']}" if lab["cab"] else None
+    txt = leer_texto(rel) if rel else ""
+    nota = lab.get("nota", "El <b>coste</b> dice cómo crece el tiempo al crecer el grafo. <b>V</b> es el número de vértices y <b>A</b> el de aristas. Abre cualquier fila para ver el razonamiento.")
     filas = []
     for i, e in lista_ej:
         if es_teoria(e):
             continue
         filas.append(f'<a class="labej" data-st="{slugs[i]}" href="../ej/{slugs[i]}.html"><span class="tk" aria-hidden="true">@@i:check@@</span><b>{esc(e["id"])}</b><span class="t">{esc(e["titulo"])}</span><span class="e">Hecho</span></a>')
     ops = "".join(f'<details class="op"><summary><code>{o[0]}</code><span class="q">{o[1]}</span><b class="c">{o[2]}</b><i>¿Por qué?</i></summary><div class="why"><b>Por qué: </b>{o[3]}</div></details>' for o in lab["ops"])
-    tabs = [("vis", "Visualizar"), ("cod", f"Código ({lab['cab']})"), ("ops", "Operaciones y coste"), ("ej", "Ejercicios")]
+    tabs = [("vis", "Visualizar")] + ([("cod", f"Código ({lab['cab']})")] if rel else []) + [("ops", "Operaciones y coste"), ("ej", "Ejercicios")]
     botones = "".join(f'<button class="btn{" pref" if i == "vis" else ""}" data-tab="{i}">{t}</button>' for i, t in tabs)
     panes = (f'<div class="pane" id="p-vis"><iframe id="labframe" class="labframe" src="../herramientas/{herr}?embed=1" title="Simulador de {esc(lab["titulo"])}" loading="eager"></iframe></div>'
-             f'<div class="pane" id="p-cod"><pre data-code="{esc(lab["cab"])}" id="src0">{esc(txt)}</pre></div>'
-             f'<div class="pane" id="p-ops"><p class="lede">El <b>coste</b> dice cómo crece el tiempo al crecer el grafo. <b>V</b> es el número de vértices y <b>A</b> el de aristas. Abre cualquier fila para ver el razonamiento.</p><div class="ops">{ops}</div></div>'
+             + (f'<div class="pane" id="p-cod"><pre data-code="{esc(lab["cab"])}" id="src0">{esc(txt)}</pre></div>' if rel else '') +
+             f'<div class="pane" id="p-ops"><p class="lede">{nota}</p><div class="ops">{ops}</div></div>'
              f'<div class="pane" id="p-ej"><p class="lede">Ejercicios del juez que usan esta estructura. Se marcan en verde cuando los das por hechos.</p><div class="labejs">{"".join(filas)}</div></div>')
     cuerpo = (f'<div class="wrap lab"><div class="crumbs"><a class="back" href="../laboratorio.html">← Laboratorio</a>'
               f'<a href="../index.html">Inicio</a>›<a href="../laboratorio.html">Laboratorio</a>›<span>{esc(lab["titulo"])}</span></div>'
               f'<div class="ejhead"><span class="tag">Tema {tema} · Estructura de datos</span><h1>{esc(lab["titulo"])}</h1><p class="lede">{lab["lede"]}</p>'
-              f'<div class="acc"><button class="btn" data-copy="src0">@@i:copy@@ Copiar código</button>{descargar(rel, "@@i:download@@ Descargar " + esc(lab["cab"]))}'
+              f'<div class="acc">' + (f'<button class="btn" data-copy="src0">@@i:copy@@ Copiar código</button>{descargar(rel, "@@i:download@@ Descargar " + esc(lab["cab"]))}' if rel else '')
               + "".join(f'<a class="btn" href="../estructuras/{quote(c)}.html">@@i:code@@ {esc(c)}</a>' for c in otros) + f'<a class="btn" href="../tema/{tema}.html">@@i:book@@ Ver el tema {tema}</a></div></div>'
               f'<div class="tabsbar"><div class="tabs">{botones}</div></div>{panes}</div>')
     js = HIGHLIGHT_JS + TABS_JS + LAB_JS

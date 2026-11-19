@@ -311,6 +311,7 @@ html.embed, html.embed body { background: transparent; }
 html.embed .noembed { display: none !important; }
 html.embed .wrap { padding: 0; max-width: none; }
 html.embed .volver-tema { display: none !important; }
+html.embed a.back, html.embed .foot a[href="index.html"] { display: none !important; }
 
 .back { align-self: flex-start; font-size: .88rem; color: var(--blue); text-decoration: none; }
 .back:hover { text-decoration: underline; }
@@ -385,7 +386,7 @@ table.t td:first-child { white-space: nowrap; }
 
 <div class="wrap">
   <a class="back" href="index.html">← Todas las estructuras</a>
-  <header class="top">
+  <header class="top noembed">
     <span class="tag">Tema 2</span>
     <h1>Cola de prioridad</h1>
     <p class="lede">Un montículo binario (<i>heap</i>) guardado en un array: <code>top</code> da el más prioritario en O(1) y <code>push</code> / <code>pop</code> cuestan O(log n). Es lo que hay debajo de <code>std::priority_queue</code>. Aquí lo ves a la vez como <b>árbol</b> y como <b>array</b>, con índices <b>desde 1</b> (como <code>IndexPQ</code>): padre = <code>i/2</code>, hijos = <code>2i</code> y <code>2i+1</code>.</p>
@@ -469,7 +470,7 @@ table.t td:first-child { white-space: nowrap; }
     </ol>
   </section>
 
-  <section class="panel">
+  <section class="panel noembed">
     <h2>Ejercicios del repo que usan la cola de prioridad</h2>
     <div class="tbl-wrap">
     <table class="t">
@@ -487,7 +488,7 @@ table.t td:first-child { white-space: nowrap; }
     </div>
   </section>
 
-  <footer class="foot">Apuntes de DA · el <code>Monticulo</code> del panel de código es una versión didáctica de <code>std::priority_queue</code> escrita con la misma técnica del hueco que <code>IndexPQ.h</code>; la librería real no usa exactamente este código.</footer>
+  <footer class="foot noembed">Apuntes de DA · el <code>Monticulo</code> del panel de código es una versión didáctica de <code>std::priority_queue</code> escrita con la misma técnica del hueco que <code>IndexPQ.h</code>; la librería real no usa exactamente este código.</footer>
 </div>
 
 <script>
