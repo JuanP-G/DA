@@ -921,7 +921,65 @@ window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');
     for rel in sorted(COPIAR):
         if existe(rel):
             d = OUT / rel; d.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(RAIZ / rel, d)
-    print(f"ok: {len(ej)} ejercicios, {n_vid} vídeos, {n_pdf} PDFs, {len(herr)} herramientas, {len(cabs)} cabeceras -> {OUT}")
+    n_juez = generar_juez(ej)
+    print(f"ok: {len(ej)} ejercicios, {n_vid} vídeos, {n_pdf} PDFs, {len(herr)} herramientas, {len(cabs)} cabeceras, {n_juez} jueces -> {OUT}")
+
+
+def escribe_lf(ruta, texto):
+    ruta.parent.mkdir(parents=True, exist_ok=True)
+    with open(ruta, "w", encoding="utf-8", newline="\n") as f:
+        f.write(texto)
+
+
+def generar_juez(ej):
+    """Juez en el navegador (prototipo). Lee juez/juez.json y juez/tests/<ej>/N.in|N.out.
+    Genera _site/juez/<ej>.html (página independiente) y _site/juez/<ej>/ (manifest, tests, cabeceras).
+    El componente (sitio/juez/juez.js) no toca la página de ejercicio: se encaja donde se quiera."""
+    cfg_p = RAIZ / "juez" / "juez.json"
+    if not cfg_p.exists():
+        return 0
+    cfg = json.loads(cfg_p.read_text(encoding="utf-8"))
+    wasm_base = os.environ.get("JUEZ_WASM_BASE", "https://binji.github.io/wasm-clang/")
+    shutil.copytree(AQUI / "juez", OUT / "juez")
+    for ej_id, c in cfg.items():
+        e = next((x for x in ej if x["id"] == ej_id), None)
+        if e is None:
+            continue
+        d = OUT / "juez" / ej_id
+        sol = leer_texto(c["solucion"])
+        vacio = "//@ <answer>\n\n    // Escribe aquí tu solución\n\n//@ </answer>"
+        plantilla = re.sub(r"//@ <answer>.*?//@ </answer>", lambda m: vacio, sol, count=1, flags=re.S)
+        escribe_lf(d / "solucion.cpp", sol)
+        a, b = c["fallo"]
+        assert a in sol, f"juez {ej_id}: no encuentro «{a}» para fabricar el fallo de demostración"
+        escribe_lf(d / "fallo.cpp", sol.replace(a, b, 1))
+        cab = []
+        for rel in c.get("cabeceras", []):
+            nombre = posixpath.basename(rel)
+            escribe_lf(d / nombre, leer_texto(rel))
+            cab.append({"nombre": nombre, "url": nombre})
+        tests = []
+        for p in sorted((RAIZ / "juez" / "tests" / ej_id).glob("*.in"), key=lambda p: int(p.stem)):
+            n = p.stem
+            escribe_lf(d / f"{n}.in", leer_texto(p.relative_to(RAIZ).as_posix()))
+            escribe_lf(d / f"{n}.out", leer_texto(p.with_suffix(".out").relative_to(RAIZ).as_posix()))
+            nombre_p = p.with_suffix(".txt")
+            tests.append({"n": int(n), "nombre": nombre_p.read_text(encoding="utf-8").strip() if nombre_p.exists() else "",
+                          "in": f"{n}.in", "out": f"{n}.out"})
+        manifest = {"id": ej_id, "titulo": e["titulo"], "limite_ms": c.get("limite_ms", 3000), "plantilla": plantilla,
+                    "cabeceras": cab, "tests": tests,
+                    "demo": {"solucion": "solucion.cpp", "fallo": "fallo.cpp"}}
+        escribe_lf(d / "manifest.json", json.dumps(manifest, ensure_ascii=False, indent=1) + "\n")
+        cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../ej/{ej_id.lower()}.html">← Volver al ejercicio</a>'
+                  f'<a href="../index.html">Inicio</a>›<a href="../tema/{e["tema"]}.html">Tema {e["tema"]}</a>›<span>{esc(ej_id)} · probar</span></div>'
+                  f'<div class="ejhead"><span class="tag">Prototipo del juez</span><h1>{esc(ej_id)} · {esc(e["titulo"])}</h1>'
+                  f'<p class="lede">Pega o escribe tu solución y comprueba si pasa las {len(tests)} pruebas de este ejercicio.</p></div>'
+                  f'<div id="juez"></div></div>'
+                  f'<script src="juez.js"></script><script>DAJuez.mount(document.getElementById("juez"),{{manifest:"{ej_id}/manifest.json",wasmBase:{json.dumps(wasm_base)}}})</script>')
+        pag = pagina(f"Probar {ej_id} {e['titulo']} | Diseño de Algoritmos UCM", cuerpo, "../", "", "Prototipo del juez en el navegador.",
+                     '<meta name="robots" content="noindex"><link rel="stylesheet" href="juez.css">')
+        escribe_lf(OUT / "juez" / f"{ej_id}.html", pag)
+    return len(cfg)
 
 
 def md_inline(s):
