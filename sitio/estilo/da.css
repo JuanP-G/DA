@@ -343,15 +343,57 @@ a.labej.hecho .e{display:inline}
 .labfil{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
 .labfil .btn.on{border-color:var(--accent);color:var(--ink)}
 .labgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
-a.labcard{display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:20px;border:1px solid var(--glass-b,var(--line));background:var(--glass,var(--panel));color:inherit;text-decoration:none;transition:border-color .15s,transform .15s}
-a.labcard:hover{border-color:var(--accent);transform:translateY(-2px)}
-a.labcard .top{display:flex;justify-content:space-between;align-items:center}
-a.labcard .tm{font:600 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-a.labcard .pill{font-size:.72rem;font-weight:600;color:var(--amber,#f3c34a);border:1px solid var(--amber,#f3c34a);border-radius:99px;padding:2px 9px;display:inline-flex;gap:4px;align-items:center}
-a.labcard .pill svg{width:12px;height:12px}
-a.labcard .nm{font-size:1.15rem}
-a.labcard .ds{font-size:.88rem;color:var(--muted);flex:1}
-a.labcard .bt{display:flex;flex-wrap:wrap;gap:6px}
-a.labcard.code .tm{color:var(--muted)}
+.labcard{display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:20px;border:1px solid var(--glass-b,var(--line));background:var(--glass,var(--panel));color:inherit;text-decoration:none;transition:border-color .15s,transform .15s}
+.labcard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.labcard .top{display:flex;justify-content:space-between;align-items:center}
+.labcard .tm{font:600 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.labcard .pill{font-size:.72rem;font-weight:600;color:var(--amber,#f3c34a);border:1px solid var(--amber,#f3c34a);border-radius:99px;padding:2px 9px;display:inline-flex;gap:4px;align-items:center}
+.labcard .pill svg{width:12px;height:12px}
+.labcard .nm{font-size:1.15rem}
+.labcard .ds{font-size:.88rem;color:var(--muted);flex:1}
+.labcard .bt{display:flex;flex-wrap:wrap;gap:6px}
+.labcard.code .tm{color:var(--muted)}
 @media(max-width:720px){details.op>summary{grid-template-columns:1fr auto;}details.op .q{grid-column:1/-1;order:3}a.labej{grid-template-columns:auto 1fr auto}a.labej b{display:none}.labframe{min-height:900px}}
 a.labej .t{color:var(--ink)}
+.labcard{min-width:0}
+.labcard .tm{overflow-wrap:anywhere}
+.labcard a.nm{display:flex;flex-direction:column;gap:2px;font-size:1.25rem;font-weight:700;color:var(--ink);text-decoration:none;overflow-wrap:anywhere}
+.labcard a.nm .go{font-size:.8rem;font-weight:600;color:var(--accent);display:inline-flex;gap:4px;align-items:center}
+.labcard a.nm:hover .go{text-decoration:underline}
+.labcard a.nm .go svg{width:12px;height:12px}
+.labgrid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.labcard .chip{max-width:100%;overflow-wrap:anywhere}
+
+/* ---------- laboratorio: botones E (segmentado claro) y microanimaciones discretas ---------- */
+.lab .tabsbar{border:0;padding:0;margin:18px 0 16px}
+.lab .tabs{position:relative;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:5px;gap:4px;display:inline-flex;flex-wrap:wrap}
+.lab .tabs .btn{position:relative;z-index:1;background:none!important;border:0!important;box-shadow:none!important;border-radius:11px;padding:10px 20px;color:var(--muted);transition:color .2s,background-color .2s,transform .12s}
+.lab .tabs .btn:hover{color:var(--ink);background:rgba(255,255,255,.07)!important}
+.lab .tabs .btn:active{transform:scale(.97)}
+.lab .tabs .btn.on{color:#fff;font-weight:700;background:none!important}
+.lab .tabs .ind{position:absolute;z-index:0;top:5px;bottom:5px;left:0;width:0;border-radius:11px;background:linear-gradient(135deg,#7c6cff,#5a7bff);box-shadow:0 4px 16px rgba(124,108,255,.5),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .28s cubic-bezier(.3,.8,.3,1),width .28s cubic-bezier(.3,.8,.3,1);pointer-events:none}
+.lab .tabs.sin-ind .btn.on{background:linear-gradient(135deg,#7c6cff,#5a7bff)!important}
+.lab .acc .btn{border-radius:8px;padding:5px 10px;font-size:.8rem;background:none!important;border:1px dashed var(--line)!important;color:var(--muted);box-shadow:none!important;transition:color .15s,border-color .15s,transform .12s,background-color .15s}
+.lab .acc .btn:hover{color:var(--ink);border-color:var(--accent)!important;background:rgba(255,255,255,.05)!important;transform:translateY(-1px)}
+.lab .acc .btn:active{transform:translateY(0) scale(.97)}
+.lab .acc a.btn[href*="tema/"]{border:0!important;font-weight:700;font-size:.85rem;padding:7px 14px;color:#06251f!important;background:linear-gradient(135deg,#2dd4bf,#34d399)!important;box-shadow:0 3px 14px rgba(45,212,191,.35)!important}
+.lab .acc a.btn[href*="tema/"]:hover{box-shadow:0 5px 20px rgba(45,212,191,.55)!important;transform:translateY(-1px);color:#06251f!important}
+.lab .acc a.btn[href*="tema/"]:active{transform:translateY(0) scale(.97)}
+/* cambio de pestaña: aparece suave */
+.lab .pane.on{animation:labIn .25s ease both}
+@keyframes labIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* «¿Por qué?»: la explicación se despliega y la etiqueta gira */
+details.op{transition:border-color .2s,background-color .2s}
+details.op:hover{border-color:var(--accent)}
+details.op summary i{transition:color .2s,border-color .2s,background-color .2s}
+details.op summary i::after{content:" ▾";display:inline-block;transition:transform .2s}
+details.op[open] summary i::after{transform:rotate(180deg)}
+details.op[open] .why{animation:labWhy .28s ease both}
+@keyframes labWhy{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+a.labej,.labcard{transition:border-color .15s,transform .15s,background-color .15s}
+a.labej:hover{transform:translateX(2px)}
+.labfil .btn{transition:border-color .15s,color .15s,transform .12s}.labfil .btn:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.lab *,.lab *::before{animation:none!important;transition:none!important}}
+@media(max-width:720px){details.op>summary{grid-template-columns:1fr auto;gap:6px 10px}details.op .q{grid-column:1/-1;order:0;grid-row:2}details.op summary i{grid-column:1/-1;justify-self:start;grid-row:3}details.op summary b.c{grid-row:1;grid-column:2}}
+details.op summary code{justify-self:start}
+.lab .tabs:not(.listo) .ind{transition:none}

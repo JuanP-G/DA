@@ -699,7 +699,7 @@ def url_herr(herr, pre=""):
     return f"{pre}lab/{lab['slug']}.html" if lab else f"{pre}herramientas/{herr}"
 
 
-def pagina_lab(herr, lab, tema, info, lista_ej, slugs, descr_herr):
+def pagina_lab(herr, lab, tema, info, lista_ej, slugs, descr_herr, otros=()):
     rel = f"Estructuras de datos/{lab['cab']}"
     txt = leer_texto(rel)
     filas = []
@@ -718,7 +718,7 @@ def pagina_lab(herr, lab, tema, info, lista_ej, slugs, descr_herr):
               f'<a href="../index.html">Inicio</a>›<a href="../laboratorio.html">Laboratorio</a>›<span>{esc(lab["titulo"])}</span></div>'
               f'<div class="ejhead"><span class="tag">Tema {tema} · Estructura de datos</span><h1>{esc(lab["titulo"])}</h1><p class="lede">{lab["lede"]}</p>'
               f'<div class="acc"><button class="btn" data-copy="src0">@@i:copy@@ Copiar código</button>{descargar(rel, "@@i:download@@ Descargar " + esc(lab["cab"]))}'
-              f'<a class="btn" href="../tema/{tema}.html">@@i:book@@ Ver el tema {tema}</a></div></div>'
+              + "".join(f'<a class="btn" href="../estructuras/{quote(c)}.html">@@i:code@@ {esc(c)}</a>' for c in otros) + f'<a class="btn" href="../tema/{tema}.html">@@i:book@@ Ver el tema {tema}</a></div></div>'
               f'<div class="tabsbar"><div class="tabs">{botones}</div></div>{panes}</div>')
     js = HIGHLIGHT_JS + TABS_JS + LAB_JS
     return pagina(f"{lab['titulo']} · Laboratorio | Diseño de Algoritmos UCM", cuerpo, "../", js,
@@ -729,36 +729,46 @@ LAB_JS = r"""
 // el simulador (iframe) avisa de su alto; así no hay doble barra de desplazamiento
 (function(){var f=document.getElementById('labframe');if(!f)return;
  window.addEventListener('message',function(e){if(e.source!==f.contentWindow||!e.data||e.data.tipo!=='da-lab-alto')return;if(e.data.alto>200)f.style.height=(e.data.alto+4)+'px'});
- document.querySelectorAll('[data-tab]').forEach(function(b){b.addEventListener('click',function(){if(b.dataset.tab==='vis')setTimeout(function(){try{f.contentWindow.postMessage({tipo:'da-lab-medir'},'*')}catch(x){}},60)})});
+ (function(){var t=document.querySelector('.lab .tabs');if(!t)return;var ind=document.createElement('span');ind.className='ind';t.appendChild(ind);
+ function mv(){var b=t.querySelector('.btn.on');if(!b||!b.offsetWidth){t.classList.add('sin-ind');return}t.classList.remove('sin-ind');ind.style.width=b.offsetWidth+'px';ind.style.transform='translateX('+b.offsetLeft+'px)'}
+ mv();setTimeout(function(){mv();setTimeout(function(){t.classList.add('listo')},30)},50);window.addEventListener('resize',mv);window.addEventListener('hashchange',function(){requestAnimationFrame(mv)});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(mv);
+ t.querySelectorAll('.btn').forEach(function(b){b.addEventListener('click',function(){requestAnimationFrame(mv)})})})();
+document.querySelectorAll('[data-tab]').forEach(function(b){b.addEventListener('click',function(){if(b.dataset.tab==='vis')setTimeout(function(){try{f.contentWindow.postMessage({tipo:'da-lab-medir'},'*')}catch(x){}},60)})});
 })();
 """
 
 
-def pagina_laboratorio(labs_info, pendientes, solo_codigo, n_ej_por_tema):
-    """Catálogo del laboratorio: una tarjeta por estructura (con simulador o solo código)."""
+def cabs_por_tema(cabs):
+    """Cada cabecera .h pertenece a un tema: el primero que la lista (o el de su cabecera base, p. ej. Grafo_algoritmos.h -> Grafo.h)."""
+    res = {t: [] for t in TEMAS}
+    for c in cabs:
+        base = c.split("_")[0].replace(".h", "") + ".h"
+        dueno = next((t for t in TEMAS if c in TEMAS[t]["cab"]), None) or next((t for t in TEMAS if base in TEMAS[t]["cab"]), None)
+        if dueno:
+            res[dueno].append(c)
+    return res
+
+
+def pagina_laboratorio(temas_lab, n_ej_por_tema):
+    """Catálogo: una tarjeta por tema con estructura (simulador + sus cabeceras + ejercicios)."""
     tarjetas = []
-    for herr, lab, tema, desc in labs_info:
-        n = n_ej_por_tema.get(tema, 0)
-        tarjetas.append(f'<a class="labcard vis" data-f="vis t{tema}" href="lab/{lab["slug"]}.html"><span class="top"><b class="tm">Tema {tema}</b><span class="pill">@@i:tool@@ Simulador</span></span>'
-                        f'<b class="nm">{esc(lab["titulo"])}</b><span class="ds">{esc(desc)}</span><span class="bt"><span class="chip">@@i:code@@ {esc(lab["cab"])}</span><span class="chip">{plural(n, "ejercicio", "ejercicios")}</span></span></a>')
-    for herr, nombre, tema, desc in pendientes:
-        tarjetas.append(f'<a class="labcard vis" data-f="vis t{tema}" href="herramientas/{herr}"><span class="top"><b class="tm">Tema {tema}</b><span class="pill">@@i:tool@@ Simulador</span></span>'
-                        f'<b class="nm">{esc(nombre)}</b><span class="ds">{esc(desc)}</span><span class="bt"><span class="chip">{plural(n_ej_por_tema.get(tema, 0), "ejercicio", "ejercicios")}</span></span></a>')
-    for c in solo_codigo:
-        tarjetas.append(f'<a class="labcard code" data-f="code" href="estructuras/{quote(c)}.html"><span class="top"><b class="tm">Apoyo</b></span>'
-                        f'<b class="nm">{esc(c.replace(".h", ""))}</b><span class="ds">Cabecera de la asignatura: visor de código, copiar y descargar.</span><span class="bt"><span class="chip">@@i:code@@ {esc(c)}</span></span></a>')
-    filtros = [("all", "Todo"), ("vis", "Con simulador"), ("code", "Solo código"), ("t1", "Temas 1-3"), ("t4", "Temas 4-5"), ("t6", "Temas 6-7")]
+    for t, titulo, url, cab_main, otros, desc, lab_ok in temas_lab:
+        n = n_ej_por_tema.get(t, 0)
+        chips_h = "".join(f'<a class="chip" href="estructuras/{quote(c)}.html">@@i:code@@ {esc(c)}</a>' for c in ([cab_main] if cab_main else []) + otros)
+        tarjetas.append(f'<div class="labcard" data-f="t{t}"><span class="top"><b class="tm">Tema {t} · {esc(TEMAS[t]["nombre"])}</b></span>'
+                        f'<a class="nm" href="{url}">{esc(titulo)}<span class="go">{"Abrir laboratorio" if lab_ok else "Abrir simulador"} @@i:arrow@@</span></a>'
+                        f'<span class="ds">{esc(desc)}</span><span class="bt">{chips_h}<a class="chip" href="tema/{t}.html">{plural(n, "ejercicio", "ejercicios")}</a></span></div>')
+    filtros = [("all", "Todo"), ("t1", "Temas 1-3"), ("t4", "Temas 4-5"), ("t6", "Temas 6-7")]
     chips = "".join(f'<button class="btn{" on" if k == "all" else ""}" data-lf="{k}">{t}</button>' for k, t in filtros)
     cuerpo = (f'<div class="wrap lab"><div class="crumbs"><a class="back" href="index.html">← Volver</a><a href="index.html">Inicio</a>›<span>Laboratorio</span></div>'
               f'<div class="hero"><p class="eyebrow">Laboratorio</p><h1>Estructuras de datos y simuladores</h1>'
-              f'<p class="lede">Cada estructura tiene su propio laboratorio: la ves funcionar paso a paso, lees el código que usa la asignatura, entiendes el coste de cada operación y practicas con ejercicios. Todo en una sola página.</p></div>'
-              f'<div class="labfil" role="group" aria-label="Filtrar">{chips}</div><div class="labgrid" id="labgrid">{"".join(tarjetas)}</div></div>')
+              f'<p class="lede">Cada estructura pertenece a un tema: aquí tienes su simulador paso a paso, el código de la asignatura, el coste de cada operación y los ejercicios de ese tema.</p></div>'
+              f'<div class="labfil" role="group" aria-label="Filtrar por tema">{chips}</div><div class="labgrid" id="labgrid">{"".join(tarjetas)}</div></div>')
     js = r"""
 var fb=document.querySelectorAll('[data-lf]');
 function filtra(k){fb.forEach(function(b){b.classList.toggle('on',b.dataset.lf===k)});
- document.querySelectorAll('.labcard').forEach(function(c){var f=(c.dataset.f||'').split(' ');
-  var t=k==='all'||f.indexOf(k)>=0||(k==='t1'&&/t[123]\b/.test(c.dataset.f))||(k==='t4'&&/t[45]\b/.test(c.dataset.f))||(k==='t6'&&/t[67]\b/.test(c.dataset.f));
-  c.style.display=t?'':'none'})}
+ document.querySelectorAll('.labcard').forEach(function(c){var t=+c.dataset.f.slice(1);
+  var ok=k==='all'||(k==='t1'&&t<=3)||(k==='t4'&&t>=4&&t<=5)||(k==='t6'&&t>=6&&t<=7);c.style.display=ok?'':'none'})}
 fb.forEach(function(b){b.onclick=function(){filtra(b.dataset.lf)}});
 """
     return pagina("Laboratorio: estructuras de datos y simuladores | Diseño de Algoritmos UCM", cuerpo, "", js,
@@ -1055,20 +1065,20 @@ def main():
     # laboratorio
     (OUT / "lab").mkdir()
     n_ej_tema = {t: sum(1 for _, e in por_tema[t] if not es_teoria(e)) for t in TEMAS}
-    labs_info, pendientes = [], []
+    cpt = cabs_por_tema(cabs)
+    temas_lab = []
     for f, a_, b_, c_ in herr:
         t_ = next((t for t in TEMAS if TEMAS[t]["herr"] == f), None)
-        if t_ is None:
+        if t_ is None or not por_tema.get(t_):
             continue
-        if f in LABS and por_tema.get(t_):
+        otros = [c for c in cpt[t_] if not (f in LABS and c == LABS[f]["cab"])]
+        if f in LABS:
             lab = LABS[f]
-            labs_info.append((f, lab, t_, c_))
-            (OUT / "lab" / f"{lab['slug']}.html").write_text(pagina_lab(f, lab, t_, TEMAS[t_], por_tema[t_], slugs, c_), encoding="utf-8", newline="\n")
+            (OUT / "lab" / f"{lab['slug']}.html").write_text(pagina_lab(f, lab, t_, TEMAS[t_], por_tema[t_], slugs, c_, otros), encoding="utf-8", newline="\n")
+            temas_lab.append((t_, lab["titulo"], f"lab/{lab['slug']}.html", lab["cab"], otros, c_, True))
         else:
-            pendientes.append((f, b_, t_, c_))
-    usadas = {l[1]["cab"] for l in labs_info}
-    solo_codigo = [c for c in cabs if c not in usadas]
-    (OUT / "laboratorio.html").write_text(pagina_laboratorio(labs_info, pendientes, solo_codigo, n_ej_tema), encoding="utf-8", newline="\n")
+            temas_lab.append((t_, b_, f"herramientas/{f}", None, otros, c_, False))
+    (OUT / "laboratorio.html").write_text(pagina_laboratorio(temas_lab, n_ej_tema), encoding="utf-8", newline="\n")
 
     # portada
     solo_ej = [e for e in ej if not es_teoria(e)]
