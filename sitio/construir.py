@@ -528,7 +528,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
         if MEDIA_BASE:
             vurl = MEDIA_BASE + quote(e["video"])
         vtt, caps = media_video(e["video"])
-        track = f'<track kind="subtitles" srclang="es" label="Español" src="{(MEDIA_BASE + quote(vtt)) if MEDIA_BASE else "../" + quote(vtt)}" default>' if vtt else ""
+        track = f'<track kind="subtitles" srclang="es" label="Español" src="{(MEDIA_BASE + quote(vtt)) if MEDIA_BASE else "../" + quote(vtt)}">' if vtt else ""
         lista_caps = ("<div class='caps'><b>Capítulos</b>" + "".join(f'<button data-t="{t:.2f}"><span>{mmss(t)}</span>{esc(ti)}</button>' for t, ti in caps) + "</div>") if caps else ""
         p_vid = (f'<div class="bar">{descargar(e["video"], "@@i:download@@ Descargar vídeo")}<span class="hint">{tam_legible((RAIZ / e["video"]).stat().st_size)} · subtítulos con el botón CC del reproductor</span></div>'
                  f'<div class="{"vid" if caps else ""}"><video controls preload="metadata" playsinline{" crossorigin=anonymous" if MEDIA_BASE else ""} src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div>')
@@ -749,7 +749,7 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     if tv:
         vurl = (MEDIA_BASE + quote(tv["video"])) if MEDIA_BASE else "../" + quote(tv["video"])
         vtt, caps = media_video(tv["video"])
-        track = f'<track kind="subtitles" srclang="es" label="Español" src="{(MEDIA_BASE + quote(vtt)) if MEDIA_BASE else "../" + quote(vtt)}" default>' if vtt else ""
+        track = f'<track kind="subtitles" srclang="es" label="Español" src="{(MEDIA_BASE + quote(vtt)) if MEDIA_BASE else "../" + quote(vtt)}">' if vtt else ""
         lista_caps = ("<div class='vcaps'><b>Capítulos</b>" + "".join(f'<button type="button" data-vt="{t:.2f}"><span>{mmss(t)}</span>{esc(ti)}</button>' for t, ti in caps) + "</div>") if caps else ""
         vhero = (f'<section class="vhero" id="video-tema" aria-label="Vídeo del tema"><div class="vh"><span class="vtag">@@i:video@@ Empieza por aquí</span><h2>Vídeo del tema</h2>'
                  f'</div>'
