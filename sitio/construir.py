@@ -296,7 +296,8 @@ JSZIP = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.
 
 def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head="", ruta=None):
     portal = f'<a href="{esc(PORTAL_URL)}/#asignaturas">Asignaturas</a>' if PORTAL_URL else ""
-    nav = (f'<header class="nav"><div class="nav-pill"><a class="brand" href="{prefijo}index.html" aria-label="Diseño de Algoritmos, inicio"><img src="{prefijo}estilo/marca/mark.png" alt="" width="201" height="242"><b>StudIA</b><span class="subj">DA</span></a>'
+    marca = f'href="{prefijo}../" aria-label="StudIA, portal de asignaturas"' if PORTAL_URL else f'href="{prefijo}index.html" aria-label="Diseño de Algoritmos, inicio"'
+    nav = (f'<header class="nav"><div class="nav-pill"><a class="brand" {marca}><img src="{prefijo}estilo/marca/mark.png" alt="" width="201" height="242"><b>StudIA</b><span class="subj">DA</span></a>'
            f'<nav aria-label="Principal">{portal}<a class="keep" href="{prefijo}index.html#temas">Temas</a><a href="{prefijo}index.html#herramientas">Herramientas</a>'
            f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a class="keep" href="{prefijo}videos.html">Vídeos</a><a href="{prefijo}guia.html">Guía</a></nav>'
            f'<button id="tema" class="icon-btn" type="button" aria-label="Cambiar tema claro/oscuro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></div></header>')
@@ -963,7 +964,7 @@ def main():
 <section class="bloque" id="herramientas"><h2>Herramientas interactivas</h2><p class="lede">Ejecutan la misma lógica que el C++ de la asignatura y resaltan el código línea a línea.</p><div class="tools">{tools_html}</div></section>
 <section class="bloque" id="estructuras"><h2>Estructuras de datos</h2><p class="lede">Las cabeceras que da la asignatura, con visor de código, copiar y descargar.</p><div class="cabs">{est_html}</div></section>
 <section class="bloque" id="videos"><h2>Vídeos</h2><p class="lede">Un vídeo paso a paso por cada ejercicio y por cada tema ({n_vid} en total), que se ven aquí mismo, con subtítulos.</p><p><a class="btn primary" href="videos.html">Ver todos los vídeos →</a></p></section>
-<footer>Material de estudio independiente, no afiliado a la UCM{" · commit <code>" + esc(sha) + "</code>" if sha else ""} · actualizado {ahora}</footer></div>"""
+<footer>Material de estudio independiente, no afiliado a la UCM</footer></div>"""
     datos = json.dumps([{"s": slugs[i], "i": e["id"], "t": e["titulo"], "d": re.sub(r"`", "", e["idea"]), "k": color_de(e["tema"]),
                          "h": 1 if es_teoria(e) else 0, "v": 1 if e["video"] else 0, "c": 1 if e["sols"] else 0, "e": 1 if e["readme"] else 0, "p": 1 if e["pdf"] else 0} for i, e in enumerate(ej)], ensure_ascii=False)
     js = ("const EJ=" + datos.replace("</", "<\\/") + r""";
