@@ -940,6 +940,7 @@ def generar_juez(ej):
         return 0
     cfg = json.loads(cfg_p.read_text(encoding="utf-8"))
     wasm_base = os.environ.get("JUEZ_WASM_BASE", "https://binji.github.io/wasm-clang/")
+    servidor = os.environ.get("JUEZ_SERVIDOR", "")   # URL del servidor del juez (Raspberry Pi); vacío = solo navegador
     shutil.copytree(AQUI / "juez", OUT / "juez")
     for ej_id, c in cfg.items():
         e = next((x for x in ej if x["id"] == ej_id), None)
@@ -975,7 +976,7 @@ def generar_juez(ej):
                   f'<div class="ejhead"><span class="tag">Prototipo del juez</span><h1>{esc(ej_id)} · {esc(e["titulo"])}</h1>'
                   f'<p class="lede">Pega o escribe tu solución y comprueba si pasa las {len(tests)} pruebas de este ejercicio.</p></div>'
                   f'<div id="juez"></div></div>'
-                  f'<script src="juez.js"></script><script>DAJuez.mount(document.getElementById("juez"),{{manifest:"{ej_id}/manifest.json",wasmBase:{json.dumps(wasm_base)}}})</script>')
+                  f'<script src="juez.js"></script><script>DAJuez.mount(document.getElementById("juez"),{{manifest:"{ej_id}/manifest.json",wasmBase:{json.dumps(wasm_base)},servidor:{json.dumps(servidor)}}})</script>')
         pag = pagina(f"Probar {ej_id} {e['titulo']} | Diseño de Algoritmos UCM", cuerpo, "../", "", "Prototipo del juez en el navegador.",
                      '<meta name="robots" content="noindex"><link rel="stylesheet" href="juez.css">')
         escribe_lf(OUT / "juez" / f"{ej_id}.html", pag)

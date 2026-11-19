@@ -97,7 +97,9 @@
       this.estado = h('div', { class: 'dj-estado', role: 'status', 'aria-live': 'polite' });
       this.res = h('div', { class: 'dj-res' });
       this.raiz.replaceChildren(
-        h('p', { class: 'dj-nota' }, 'Tu código se compila y se ejecuta en tu navegador con ', h('b', {}, 'clang 8 (C++17)'),
+        this.cfg.servidor
+          ? h('p', { class: 'dj-nota' }, 'Al pulsar Comprobar, tu código se envía al servidor del juez (una Raspberry Pi), que lo compila con g++ (C++17) y lo ejecuta aislado con límites de tiempo y memoria. Si el servidor no responde, se usa el compilador del navegador (clang 8, ~60 MB la primera vez).')
+          : h('p', { class: 'dj-nota' }, 'Tu código se compila y se ejecuta en tu navegador con ', h('b', {}, 'clang 8 (C++17)'),
           '; no se envía a ningún servidor. La primera vez descarga el compilador (~60 MB, queda en caché).'),
         this.ta,
         h('div', { class: 'dj-bar' }, botones),
@@ -150,7 +152,47 @@
     }
 
     // ---------- comprobar ----------
+    // Si hay servidor (la Raspberry Pi), el código se juzga allí; si no responde, se usa el navegador.
     async comprobar() {
+      if (this.ocupado) return;
+      if (!this.cfg.servidor) return this.comprobarWasm();
+      this.ocupado = true;
+      this.btn.disabled = true;
+      this.res.replaceChildren();
+      let r;
+      try {
+        this.msg('Enviando al servidor del juez…');
+        const resp = await fetch(this.cfg.servidor.replace(/\/$/, '') + '/juzgar', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: this.m.id, codigo: this.ta.value }),
+        });
+        r = await resp.json();
+        if (!resp.ok) {              // límites (429/503/413): se informa, no se cae al navegador
+          this.msg('');
+          this.res.replaceChildren(h('div', { class: 'dj-err' }, r.error || ('Error ' + resp.status)));
+          this.ocupado = false; this.btn.disabled = false;
+          return;
+        }
+      } catch (e) {                  // servidor apagado o sin conexión: respaldo en el navegador
+        this.ocupado = false; this.btn.disabled = false;
+        this.msg('El servidor del juez no responde; se usa el compilador del navegador…');
+        return this.comprobarWasm();
+      }
+      this.msg('');
+      try {
+        if (r.error) this.res.replaceChildren(h('div', { class: 'dj-err' }, r.error));
+        else if (r.veredicto === 'ce' && !r.tests) this.res.replaceChildren(this.veredicto('ce', 'No compila'), h('pre', { class: 'dj-log' }, r.log || ''));
+        else {
+          const filas = r.tests.map(f => ({ t: this.m.tests.find(x => x.n === f.n) || { nombre: '' }, v: f.v, ms: f.ms, dif: f.dif, detalle: f.detalle }));
+          this.pintar(filas, true);
+        }
+      } finally {
+        this.ocupado = false;
+        this.btn.disabled = false;
+      }
+    }
+
+    async comprobarWasm() {
       if (this.ocupado) return;
       this.ocupado = true;
       this.btn.disabled = true;
