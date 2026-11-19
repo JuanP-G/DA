@@ -197,3 +197,23 @@ a.arow>.i{width:16px;height:16px;color:var(--muted)}
 .aprende[open] summary::after{content:"–"}
 .aprende[open] summary{margin-bottom:10px}
 @media (min-width:961px){.aprende summary{pointer-events:none}.aprende summary::after{display:none}}
+
+/* vídeo del tema: protagonista de la página */
+.vhero{margin:0 0 26px;padding:16px;border-radius:24px;border:1px solid color-mix(in srgb,var(--green) 40%,transparent);background:linear-gradient(135deg,color-mix(in srgb,var(--green) 12%,transparent),var(--glass,var(--panel)));box-shadow:inset 0 1px 0 var(--hi,transparent)}
+.vhero .vh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-bottom:12px}
+.vhero h2{margin:0;font-size:1.25rem}
+.vhero .vtag{display:inline-flex;align-items:center;gap:6px;font:700 .72rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--green);background:color-mix(in srgb,var(--green) 16%,transparent);padding:4px 11px;border-radius:999px}
+.vhero .hint{margin-left:auto;color:var(--muted);font-size:.8rem}
+.vhero video{width:100%;display:block;border-radius:16px;background:#000;aspect-ratio:16/9}
+.vbody.conc{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:14px;align-items:start}
+.vcaps{display:flex;flex-direction:column;gap:2px;max-height:100%;overflow:auto;font-size:.84rem}
+.vcaps b{font:700 .72rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:2px 0 6px}
+.vcaps button{display:flex;gap:8px;text-align:left;font:inherit;color:var(--ink);background:transparent;border:0;border-radius:10px;padding:6px 8px;cursor:pointer}
+.vcaps button span{font:600 .76rem var(--mono);color:var(--muted);flex:none}
+.vcaps button:hover,.vcaps button.on{background:color-mix(in srgb,var(--green) 16%,transparent)}
+@media (max-width:760px){.vbody.conc{grid-template-columns:1fr}.vcaps{flex-direction:row;flex-wrap:wrap;gap:4px}.vcaps b{width:100%}}
+.vbody.conc{display:block}
+.vcaps{flex-direction:row;flex-wrap:wrap;gap:6px;margin-top:12px;overflow:visible}
+.vcaps b{width:100%;margin:0}
+.vcaps button{border:1px solid var(--glass-b,var(--line));border-radius:999px;padding:5px 12px;background:color-mix(in srgb,var(--panel2) 60%,transparent)}
+.vcaps button.on{border-color:var(--green)}

@@ -638,6 +638,8 @@ function ap(){var h=hechos(),filas=document.querySelectorAll('#p-ejercicios .exr
 document.querySelectorAll('[data-f]').forEach(function(b){b.onclick=function(){f.f=b.dataset.f;document.querySelectorAll('[data-f]').forEach(function(x){x.classList.toggle('on',x===b)});ap()}});
 var fv=document.querySelector('[data-fv]');if(fv)fv.onclick=function(){f.v=!f.v;fv.classList.toggle('on',f.v);ap()};
 (function(){var d=document.querySelector('[data-aprende]');if(d&&window.innerWidth>960)d.open=true})();
+document.querySelectorAll('[data-vt]').forEach(function(b){b.onclick=function(){var v=document.querySelector('.vhero video');v.currentTime=+b.dataset.vt;v.play()}});
+(function(){var v=document.querySelector('.vhero video');if(!v)return;v.addEventListener('timeupdate',function(){var cur=null,bs=document.querySelectorAll('[data-vt]');bs.forEach(function(b){if(+b.dataset.vt<=v.currentTime+.3)cur=b});bs.forEach(function(b){b.classList.toggle('on',b===cur)})})})();
 function sig(){var a=document.querySelector('[data-sig]');if(!a)return;var h=hechos(),n=null,hay=false;
  document.querySelectorAll('#p-ejercicios .exr [data-ok]').forEach(function(b){hay=hay||!!h[b.dataset.ok];if(!n&&!h[b.dataset.ok])n=b.closest('.exr')});
  if(!n){a.textContent='¡Tema completado!';a.removeAttribute('href');return}
@@ -732,12 +734,23 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     next_t = t + 1 if t + 1 in nombres_temas else None
     pager = ('<div class="pager">' + (f'<a class="btn" href="{prev_t}.html">← Tema {prev_t} · {esc(nombres_temas[prev_t])}</a>' if prev_t else "<span></span>")
              + (f'<a class="btn" href="{next_t}.html">Tema {next_t} · {esc(nombres_temas[next_t])} →</a>' if next_t else "<span></span>") + "</div>")
+    # --- Vídeo del tema: lo más útil para entender el tema, va arriba del todo ---
+    vhero = ""
+    tv = next((e for _, e in teo if e["video"]), None)
+    if tv:
+        vurl = (MEDIA_BASE + quote(tv["video"])) if MEDIA_BASE else "../" + quote(tv["video"])
+        vtt, caps = media_video(tv["video"])
+        track = f'<track kind="subtitles" srclang="es" label="Español" src="{(MEDIA_BASE + quote(vtt)) if MEDIA_BASE else "../" + quote(vtt)}" default>' if vtt else ""
+        lista_caps = ("<div class='vcaps'><b>Capítulos</b>" + "".join(f'<button type="button" data-vt="{t:.2f}"><span>{mmss(t)}</span>{esc(ti)}</button>' for t, ti in caps) + "</div>") if caps else ""
+        vhero = (f'<section class="vhero" id="video-tema" aria-label="Vídeo del tema"><div class="vh"><span class="vtag">@@i:video@@ Empieza por aquí</span><h2>Vídeo del tema</h2>'
+                 f'<span class="hint">{tam_legible((RAIZ / tv["video"]).stat().st_size)} · subtítulos con el botón CC</span></div>'
+                 f'<div class="vbody{" conc" if caps else ""}"><video controls preload="metadata" playsinline{" crossorigin=anonymous" if MEDIA_BASE else ""} src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div></section>')
     # --- Barra lateral: progreso, aprender (teoría, vídeo, herramienta) y recursos ---
     docs = TEORIA.get(t) or []
     aprender = []
     for i, e in teo:
         s_ = slugs[i]
-        aprender.append(f'<a class="arow" href="../ej/{s_}.html"><span class="pic">@@i:book@@</span><span class="at"><b>Explicación del tema</b><small>Apuntes{" y vídeo" if e["video"] else ""}</small></span>@@i:arrow@@</a>')
+        aprender.append(f'<a class="arow" href="../ej/{s_}.html"><span class="pic">@@i:book@@</span><span class="at"><b>Apuntes del tema</b><small>Apuntes escritos</small></span>@@i:arrow@@</a>')
     for k, (r, nom, tam) in enumerate(docs):
         aprender.append(f'<div class="arow"><span class="pic">@@i:pdf@@</span><span class="at"><b>{esc(nom)}</b><small>PDF · {tam_legible(tam)}</small></span>'
                         f'<button class="mb" type="button" data-teo="{k}" title="Abrir aquí" aria-label="Abrir {esc(nom)} aquí">@@i:book@@</button>'
@@ -754,7 +767,7 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas" data-back>← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>Tema {t}</span></div>'
               f'<div class="thead" data-ids="{ids}"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="tag">{esc(bloque)}</span><span class="est" data-est>Sin empezar</span></div>'
               f'<h1>Tema {t} · {esc(info["nombre"])}</h1><p class="lede">{esc(info["resumen"])}</p></div>'
-              f'<div class="tlay">{lateral}<main class="tmain" id="ejercicios"><div class="mh"><h2>Ejercicios <span class="cnt">{n}</span></h2>'
+              f'<div class="tlay">{lateral}<main class="tmain">{vhero}<div class="mh" id="ejercicios"><h2>Ejercicios <span class="cnt">{n}</span></h2>'
               f'<div class="filters"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="pend">Pendientes</button><button class="chip" data-f="hechos">Hechos</button><button class="chip" data-fv>@@i:video@@ Con vídeo</button></div></div>'
               f'<div id="p-ejercicios">{"".join(filas)}<p class="vacio" id="sin">Ningún ejercicio coincide con el filtro.</p></div>'
               f'<p class="notas">Tests del profe y propios: próximamente.</p></main></div>{pager}</div>{teoria_panel(t, "../")}')
