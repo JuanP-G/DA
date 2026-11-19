@@ -14,7 +14,7 @@
       var f=b.closest('.exr');if(f)f.classList.toggle('hecho',on);
       var l=b.querySelector('.lab');if(l)l.textContent=on?'Hecho':'Marcar como hecho';
     });
-    document.querySelectorAll('.tcard[data-ids],.box[data-ids],.thead[data-ids]').forEach(function(c){
+    document.querySelectorAll('.tcard[data-ids],.box[data-ids],.prog-box[data-ids],.thead[data-ids]').forEach(function(c){
       var l=ids(c),n=cuenta(l,h),t=l.length;
       var bar=c.querySelector('[data-bar]');if(bar)bar.style.width=pct(n,t)+'%';
       var tx=c.querySelector('[data-txt]');if(tx)tx.textContent=n+'/'+t+' · '+pct(n,t)+'%';

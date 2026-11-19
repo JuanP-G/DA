@@ -589,11 +589,14 @@ VOLVER_HERR = ('<a href="../index.html#herramientas" onclick="try{if(document.re
 
 
 def chips(e, slug, pre=""):
+    """Accesos rápidos de la fila: iconos con etiqueta accesible (en móvil y escritorio)."""
     c = []
-    if e["pdf"]: c.append(f'<a class="chip p" href="{pre}ej/{slug}.html#enunciado">Enunciado</a>')
-    if e["sols"]: c.append(f'<a class="chip" href="{pre}ej/{slug}.html#codigo">Código</a>')
-    if e["readme"]: c.append(f'<a class="chip" href="{pre}ej/{slug}.html#explicacion">Explicación</a>')
-    if e["video"]: c.append(f'<a class="chip v" href="{pre}ej/{slug}.html#video">Vídeo</a>')
+    def mk(cls, icono, etq, ancla):
+        c.append(f'<a class="mi {cls}" href="{pre}ej/{slug}.html#{ancla}" title="{etq}" aria-label="{etq}">@@i:{icono}@@<span>{etq}</span></a>')
+    if e["pdf"]: mk("", "pdf", "Enunciado", "enunciado")
+    if e["sols"]: mk("", "code", "Código", "codigo")
+    if e["readme"]: mk("", "book", "Explicación", "explicacion")
+    if e["video"]: mk("v", "video", "Vídeo", "video")
     return "".join(c)
 
 
@@ -634,7 +637,12 @@ function ap(){var h=hechos(),filas=document.querySelectorAll('#p-ejercicios .exr
  var n=document.getElementById('sin');if(n)n.style.display=vis?'none':'block'}
 document.querySelectorAll('[data-f]').forEach(function(b){b.onclick=function(){f.f=b.dataset.f;document.querySelectorAll('[data-f]').forEach(function(x){x.classList.toggle('on',x===b)});ap()}});
 var fv=document.querySelector('[data-fv]');if(fv)fv.onclick=function(){f.v=!f.v;fv.classList.toggle('on',f.v);ap()};
-document.addEventListener('click',function(){setTimeout(ap,0)});window.addEventListener('storage',ap);window.addEventListener('pageshow',ap);ap()})();
+(function(){var d=document.querySelector('[data-aprende]');if(d&&window.innerWidth>960)d.open=true})();
+function sig(){var a=document.querySelector('[data-sig]');if(!a)return;var h=hechos(),n=null,hay=false;
+ document.querySelectorAll('#p-ejercicios .exr [data-ok]').forEach(function(b){hay=hay||!!h[b.dataset.ok];if(!n&&!h[b.dataset.ok])n=b.closest('.exr')});
+ if(!n){a.textContent='¡Tema completado!';a.removeAttribute('href');return}
+ a.href=n.querySelector('.t a').getAttribute('href');a.textContent=(hay?'Continuar con ':'Empezar con ')+n.querySelector('.id').textContent+' →'}
+document.addEventListener('click',function(){setTimeout(function(){ap();sig()},0)});window.addEventListener('storage',function(){ap();sig()});window.addEventListener('pageshow',function(){ap();sig()});ap();sig()})();
 """
 
 
@@ -708,15 +716,11 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     n_sol = sum(1 for _, e in lista if e["sols"])
     ids = ",".join(slugs[i] for i, _ in lista)
     filas = []
-    for i, e in teo:
-        s_ = slugs[i]
-        filas.append(f'<div class="exr teoria" style="--c:{color}"><span class="okb th0" aria-hidden="true">@@i:book@@</span><span class="id">Teoría</span>'
-                     f'<span class="t"><a href="../ej/{s_}.html">Teoría del tema</a></span><span class="idea">{md_inline(e["idea"])}</span><span class="chips">{chips(e, s_, "../")}</span></div>')
     for i, e in lista:
         s_ = slugs[i]
         filas.append(f'<div class="exr" data-v="{1 if e["video"] else 0}" style="--c:{color}"><button class="okb" data-ok="{s_}" aria-label="Marcar {esc(e["id"])} como hecho" aria-pressed="false">@@i:check@@</button>'
-                     f'<span class="id">{esc(e["id"])}</span><span class="t"><a href="../ej/{s_}.html">{esc(e["titulo"])}</a></span>'
-                     f'<span class="idea">{md_inline(e["idea"])}</span><span class="chips">{chips(e, s_, "../")}</span></div>')
+                     f'<span class="id">{esc(e["id"])}</span><span class="t"><a href="../ej/{s_}.html">{esc(e["titulo"])}</a>'
+                     f'<span class="idea">{md_inline(e["idea"])}</span></span><span class="chips">{chips(e, s_, "../")}</span></div>')
     acc = []
     if herr_ok:
         acc.append(f'<a class="btn" href="../herramientas/{info["herr"]}">@@i:tool@@ Herramienta interactiva</a>')
@@ -728,22 +732,35 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     next_t = t + 1 if t + 1 in nombres_temas else None
     pager = ('<div class="pager">' + (f'<a class="btn" href="{prev_t}.html">← Tema {prev_t} · {esc(nombres_temas[prev_t])}</a>' if prev_t else "<span></span>")
              + (f'<a class="btn" href="{next_t}.html">Tema {next_t} · {esc(nombres_temas[next_t])} →</a>' if next_t else "<span></span>") + "</div>")
-    sin_tests = lambda tipo: (f'<div class="nada"><b>Aún no hay {tipo} en este tema</b>Aquí irán los {tipo}. Cuando se publiquen verás cuántos has hecho y tu mejor nota.</div>')
+    # --- Barra lateral: progreso, aprender (teoría, vídeo, herramienta) y recursos ---
+    docs = TEORIA.get(t) or []
+    aprender = []
+    for i, e in teo:
+        s_ = slugs[i]
+        aprender.append(f'<a class="arow" href="../ej/{s_}.html"><span class="pic">@@i:book@@</span><span class="at"><b>Explicación del tema</b><small>Apuntes{" y vídeo" if e["video"] else ""}</small></span>@@i:arrow@@</a>')
+    for k, (r, nom, tam) in enumerate(docs):
+        aprender.append(f'<div class="arow"><span class="pic">@@i:pdf@@</span><span class="at"><b>{esc(nom)}</b><small>PDF · {tam_legible(tam)}</small></span>'
+                        f'<button class="mb" type="button" data-teo="{k}" title="Abrir aquí" aria-label="Abrir {esc(nom)} aquí">@@i:book@@</button>'
+                        f'<a class="mb" href="{url_teoria(t, r, "../")}" download title="Descargar" aria-label="Descargar {esc(nom)}">@@i:download@@</a></div>')
+    if herr_ok:
+        aprender.append(f'<a class="arow" href="../herramientas/{info["herr"]}"><span class="pic">@@i:tool@@</span><span class="at"><b>Herramienta interactiva</b><small>Pruébalo paso a paso</small></span>@@i:arrow@@</a>')
+    recursos = [f'<a class="chip" href="../estructuras/{quote(c)}.html">@@i:code@@ {esc(c)}</a>' for c in info["cab"] if c in cabs]
+    lateral = (f'<aside class="tside">'
+               f'<div class="sbox prog-box" data-ids="{ids}" style="--c:{color}"><div class="ph"><small>Tu progreso</small><b data-pct>0%</b></div><div class="prog"><i data-bar></i></div>'
+               f'<span class="pt" data-hechos>0 de {n} hechos</span><a class="btn prim sig" data-sig href="#ejercicios">Empezar con {esc(lista[0][1]["id"]) if lista else ""} →</a></div>'
+               + (f'<details class="sbox aprende" data-aprende><summary><h2>Aprende <span class="cnt">{len(aprender)}</span></h2></summary><div class="alist">{"".join(aprender)}</div></details>' if aprender else '')
+               + (f'<div class="sbox"><h2>Plantillas y código</h2><div class="rec">{"".join(recursos)}</div></div>' if recursos else '')
+               + '</aside>')
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas" data-back>← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>Tema {t}</span></div>'
               f'<div class="thead" data-ids="{ids}"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="tag">{esc(bloque)}</span><span class="est" data-est>Sin empezar</span></div>'
-              f'<h1>Tema {t} · {esc(info["nombre"])}</h1><p class="lede">{esc(info["resumen"])}</p><div class="acc">{"".join(acc)}</div></div>'
-              f'<div class="sm" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))"><div class="box hi" data-ids="{ids}" style="background:linear-gradient(135deg,color-mix(in srgb,{color} 60%,#0a0b1c),color-mix(in srgb,{color} 25%,#0a0b1c));border-color:color-mix(in srgb,{color} 55%,transparent)"><small>Tu progreso</small><b data-pct>0%</b><span data-hechos>0 de {n} hechos</span><div class="prog"><i data-bar></i></div></div>'
-              f'<div class="box"><small>Con solución</small><b>{round(n_sol / n * 100) if n else 0}%</b><span>{n_sol} de {n} ejercicios</span></div>'
-              f'<div class="box"><small>Tests</small><b>0</b><span>del profe y propios · próximamente</span></div></div>'
-              f'{teoria_cards(t, "../")}'
-              f'<div class="tabs"><button class="btn" data-tab="ejercicios">@@i:code@@ Ejercicios <span class="cnt">{n}</span></button>'
-              f'<button class="btn" data-tab="tp">@@i:check@@ Tests del profe <span class="cnt">0</span></button><button class="btn" data-tab="tn">@@i:check@@ Tests propios <span class="cnt">0</span></button></div>'
-              f'<div class="pane" id="p-ejercicios"><div class="filters"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="pend">Pendientes</button><button class="chip" data-f="hechos">Hechos</button><button class="chip" data-fv>@@i:video@@ Con vídeo</button></div>'
-              f'{"".join(filas)}<p class="vacio" id="sin">Ningún ejercicio coincide con el filtro.</p></div>'
-              f'<div class="pane" id="p-tp">{sin_tests("tests del profe")}</div><div class="pane" id="p-tn">{sin_tests("tests propios")}</div>{pager}</div>{teoria_panel(t, "../")}')
+              f'<h1>Tema {t} · {esc(info["nombre"])}</h1><p class="lede">{esc(info["resumen"])}</p></div>'
+              f'<div class="tlay">{lateral}<main class="tmain" id="ejercicios"><div class="mh"><h2>Ejercicios <span class="cnt">{n}</span></h2>'
+              f'<div class="filters"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="pend">Pendientes</button><button class="chip" data-f="hechos">Hechos</button><button class="chip" data-fv>@@i:video@@ Con vídeo</button></div></div>'
+              f'<div id="p-ejercicios">{"".join(filas)}<p class="vacio" id="sin">Ningún ejercicio coincide con el filtro.</p></div>'
+              f'<p class="notas">Tests del profe y propios: próximamente.</p></main></div>{pager}</div>{teoria_panel(t, "../")}')
     titulo = f'Tema {t} · {info["nombre"]} | Diseño de Algoritmos UCM'
     desc = f'{info["resumen"]} Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++ con explicación.'
-    return pagina(titulo, cuerpo, "../", TABS_JS + FILTRO_JS + (TEORIA_JS if TEORIA.get(t) else ""), desc, ruta=f"tema/{t}.html")
+    return pagina(titulo, cuerpo, "../", FILTRO_JS + (TEORIA_JS if TEORIA.get(t) else ""), desc, ruta=f"tema/{t}.html")
 
 
 
