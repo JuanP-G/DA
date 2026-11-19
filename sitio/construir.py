@@ -858,9 +858,9 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     principales, pdfs = [], []
     for i, e in teo:
         s_ = slugs[i]
-        principales.append(f'<a class="arow main" href="../ej/{s_}.html"><span class="pic">@@i:book@@</span><span class="at"><b>Apuntes del tema</b><small>Explicación escrita paso a paso</small></span>@@i:arrow@@</a>')
+        principales.append(f'<a class="arow main" href="../ej/{s_}.html"><span class="pic">@@i:book@@</span><span class="at"><b>Apuntes del tema</b><small>Teoría explicada paso a paso</small></span>@@i:arrow@@</a>')
     if herr_ok:
-        principales.append(f'<a class="arow main" href="../herramientas/{info["herr"]}"><span class="pic">@@i:tool@@</span><span class="at"><b>Herramienta interactiva</b><small>Pruébalo paso a paso</small></span>@@i:arrow@@</a>')
+        principales.append(f'<a class="arow main alt" href="../herramientas/{info["herr"]}"><span class="pic">@@i:tool@@</span><span class="at"><b>Herramienta interactiva</b><small>Prueba el algoritmo paso a paso</small></span>@@i:arrow@@</a>')
     for k, (r, nom, tam) in enumerate(docs):
         pdfs.append(f'<div class="arow"><span class="pic">@@i:pdf@@</span><span class="at"><b>{esc(nom)}</b><small>PDF · {tam_legible(tam)}</small></span>'
                     f'<button class="mb" type="button" data-teo="{k}" title="Abrir aquí" aria-label="Abrir {esc(nom)} aquí">@@i:book@@</button>'
