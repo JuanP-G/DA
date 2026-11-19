@@ -6,10 +6,24 @@
   const RUTA_WORKER = new URL('juez-worker.js', AQUI).href;
   const WASM_BASE = 'https://binji.github.io/wasm-clang/';
 
+  // Veredictos (las siglas son las de los jueces de programación, DOMjudge incluido)
   const NOMBRES = {
-    ac: 'Correcto', wa: 'Respuesta incorrecta', ce: 'Error de compilación',
-    tle: 'Tiempo excedido', rte: 'Error de ejecución', skip: 'No ejecutada',
+    ac: 'Correcto', wa: 'Respuesta incorrecta', pe: 'Error de presentación', ce: 'Error de compilación',
+    tle: 'Tiempo excedido', mle: 'Memoria excedida', rte: 'Error de ejecución', ole: 'Salida excesiva',
+    skip: 'No ejecutada',
   };
+  const SIGLAS = { ac: 'AC', wa: 'WA', pe: 'PE', ce: 'CE', tle: 'TLE', mle: 'MLE', rte: 'RTE', ole: 'OLE', skip: '—' };
+  const QUE_ES = {
+    wa: 'Tu programa termina, pero escribe algo distinto de lo esperado.',
+    pe: 'Los datos son correctos, pero el formato no: espacios, saltos de línea o el orden en que los escribes.',
+    tle: 'Tu programa tarda más del límite: o no termina (bucle infinito) o el algoritmo es demasiado lento.',
+    mle: 'Tu programa usa más memoria de la permitida.',
+    rte: 'Tu programa se rompe mientras se ejecuta (acceso fuera de rango, división entre cero, excepción...).',
+    ole: 'Tu programa escribe muchísimo más de lo esperado (casi siempre, un bucle que no para).',
+    ce: 'El código no compila: el compilador te dice en qué línea está el error.',
+  };
+  // Orden en que se busca la prueba que mejor explica el fallo: las pensadas para un error concreto primero.
+  const PRIORIDAD = { trampa: 0, borde: 1, enunciado: 2, aleatorio: 3, rendimiento: 4 };
 
   // ---- comparación: ignora espacios al final de línea y líneas vacías finales ----
   function lineas(t) {
@@ -21,7 +35,10 @@
     const a = lineas(esperada), b = lineas(obtenida);
     const n = Math.max(a.length, b.length);
     for (let i = 0; i < n; i++) {
-      if (a[i] !== b[i]) return { igual: false, linea: i + 1, esperada: a[i], obtenida: b[i], total: a.length };
+      if (a[i] !== b[i]) {
+        const pe = esperada.trim().split(/\s+/).join(' ') === obtenida.trim().split(/\s+/).join(' ');
+        return { igual: false, linea: i + 1, esperada: a[i], obtenida: b[i], total: a.length, lineas_tuyas: b.length, pe };
+      }
     }
     return { igual: true };
   }
@@ -188,7 +205,7 @@
       this.msg('');
       try {
         if (r.error) this.res.replaceChildren(h('div', { class: 'dj-err' }, r.error));
-        else if (r.veredicto === 'ce' && !r.tests) this.res.replaceChildren(this.veredicto('ce', 'No compila'), h('pre', { class: 'dj-log' }, r.log || ''));
+        else if (r.veredicto === 'ce' && !r.tests) this.pintarCE(r.log || '');
         else {
           const filas = r.tests.map(f => ({ t: this.m.tests.find(x => x.n === f.n) || { nombre: '' }, v: f.v, ms: f.ms, dif: f.dif, detalle: f.detalle }));
           this.pintar(filas, true);
@@ -212,7 +229,7 @@
         const c = await this.asegurarCompilado(codigo);
         if (!c.ok) {
           this.msg('');
-          this.res.replaceChildren(this.veredicto('ce', 'No compila'), h('pre', { class: 'dj-log' }, c.log));
+          this.pintarCE(c.log);
           return;
         }
         for (let i = 0; i < this.m.tests.length; i++) {
@@ -251,7 +268,7 @@
       if (r.estado === 'rte') return { t, v: 'rte', ms: r.ms, detalle: explica(r.detalle) };
       if (r.ms > limite) return { t, v: 'tle', ms: r.ms };
       const d = compara(esperada, r.salida);
-      return d.igual ? { t, v: 'ac', ms: r.ms } : { t, v: 'wa', ms: r.ms, dif: d };
+      return d.igual ? { t, v: 'ac', ms: r.ms } : { t, v: d.pe ? 'pe' : 'wa', ms: r.ms, dif: d };
     }
 
     veredicto(v, texto) { return h('div', { class: 'dj-ver dj-' + v }, texto); }
@@ -262,27 +279,138 @@
       const hechas = filas.filter(f => f.v !== 'skip').length;
       const mal = filas.find(f => f.v !== 'ac' && f.v !== 'skip');
       let cab;
-      if (final && !mal) cab = this.veredicto('ac', `Correcto · ${ok}/${total} pruebas`);
-      else if (mal && final) cab = this.veredicto(mal.v, `${NOMBRES[mal.v]} · ${ok}/${total} pruebas`);
+      if (final && !mal) cab = this.veredicto('ac', `${SIGLAS.ac} · Correcto · ${ok}/${total} pruebas`);
+      else if (mal && final) cab = this.veredicto(mal.v, `${SIGLAS[mal.v]} · ${NOMBRES[mal.v]} · ${ok}/${total} pruebas`);
       else cab = this.veredicto('run', `En curso · ${ok}/${hechas} bien`);
       const lista = h('ul', { class: 'dj-tests' }, filas.map((f, i) => {
         const li = h('li', { class: 'dj-' + f.v },
-          h('span', { class: 'dj-pill' }, NOMBRES[f.v]),
-          h('b', {}, `Prueba ${i + 1}`), f.t.nombre ? ' · ' + f.t.nombre : '',
-          h('span', { class: 'dj-ms' }, f.ms + ' ms'));
-        if (f.v === 'wa') {
+          h('span', { class: 'dj-pill', title: NOMBRES[f.v] }, SIGLAS[f.v]),
+          h('b', {}, `Prueba ${f.t.n || i + 1}`), f.t.nombre ? ' · ' + f.t.nombre : '',
+          f.t.tipo ? h('span', { class: 'dj-tipo' }, f.t.tipo) : null,
+          h('span', { class: 'dj-ms' }, f.v === 'skip' ? '' : f.ms + ' ms'));
+        if (f.v === 'wa' || f.v === 'pe') {
           li.append(h('div', { class: 'dj-dif' },
-            `Primera diferencia en la línea ${f.dif.linea} de ${f.dif.total}:`,
+            `Primera diferencia en la línea ${f.dif.linea} de ${f.dif.total}` + ((f.t.casos || 0) > 1 && f.dif.linea > 1 ? ` (las ${f.dif.linea - 1} primeras están bien)` : '') + ':',
             h('div', {}, h('span', {}, 'esperado '), h('code', {}, corta(f.dif.esperada))),
             h('div', {}, h('span', {}, 'tu salida '), h('code', {}, corta(f.dif.obtenida)))));
-        } else if (f.v === 'rte') {
-          li.append(h('div', { class: 'dj-dif' }, f.detalle));
+        } else if (f.v === 'rte' || f.v === 'mle' || f.v === 'ole') {
+          li.append(h('div', { class: 'dj-dif' }, f.detalle || QUE_ES[f.v]));
         } else if (f.v === 'tle') {
-          li.append(h('div', { class: 'dj-dif' }, `Pasó del límite de ${this.m.limite_ms || 3000} ms (en este navegador; el juez de la asignatura puede ir más rápido).`));
+          li.append(h('div', { class: 'dj-dif' }, `Pasó del límite de ${this.m.limite_ms || 3000} ms.`));
         }
+        if (f.t.comprueba && f.v !== 'ac' && f.v !== 'skip') li.append(h('div', { class: 'dj-que' }, 'Qué comprueba: ' + f.t.comprueba));
         return li;
       }));
-      this.res.replaceChildren(cab, lista);
+      const partes = [cab];
+      if (final && mal) partes.push(this.guia(filas));
+      partes.push(lista);
+      this.res.replaceChildren(...partes);
+    }
+
+    // ---------- guía: de dónde viene el fallo ----------
+    diagnostico(filas) {
+      const malas = filas.filter(f => f.v !== 'ac' && f.v !== 'skip');
+      const ok = filas.filter(f => f.v === 'ac');
+      const notas = [];
+      let clave = null;
+      const veredictos = new Set(malas.map(f => f.v));
+      // 1) Todo PE: los datos están bien
+      if (malas.length && malas.every(f => f.v === 'pe')) {
+        clave = malas[0];
+        notas.push('Tus resultados son correctos: solo falla el formato. Compara carácter a carácter tu salida con la esperada (espacios entre números, un salto de línea por caso, nada de texto extra como «Resultado:»).');
+        return { clave, notas };
+      }
+      // 2) Estado que se arrastra entre casos: aciertan las pruebas de un caso y en las de varios
+      //    los primeros casos salen bien pero luego no.
+      const multi = malas.filter(f => (f.v === 'wa') && (f.t.casos || 0) > 1 && f.dif && f.dif.linea > 1);
+      const unCasoMal = malas.some(f => (f.t.casos || 0) === 1 && f.t.tipo !== 'rendimiento');
+      if (multi.length >= 2 && !unCasoMal) {
+        clave = filas.find(f => /varios casos/i.test(f.t.nombre || '') && f.v !== 'ac') || multi[0];
+        notas.push(`En ${multi.length} pruebas con varios casos aciertas los primeros y fallas los siguientes, y las pruebas de un solo caso salen bien. Casi seguro hay algo que no se reinicia entre casos (un vector, un contador o un máximo declarado fuera de la función de cada caso).`);
+        return { clave, notas };
+      }
+      // 3) La prueba que mejor explica el fallo
+      // Puntuación: tipo de prueba; si falla en un caso posterior al primero, su «trampa» puede no ser la
+      // causa (+2); si la prueba no tiene explicación para ese veredicto, explica menos (+3).
+      const puntos = f => (PRIORIDAD[f.t.tipo] ?? 3) + (f.dif && f.dif.linea > 1 ? 2 : 0) + ((f.t.si && f.t.si[f.v]) ? 0 : 3);
+      const ord = malas.slice().sort((a, b) => puntos(a) - puntos(b) || (a.t.n - b.t.n));
+      clave = ord[0];
+      const especifica = !!(clave && clave.t.si && clave.t.si[clave.v]);
+      const enun = filas.filter(f => f.t.tipo === 'enunciado');
+      const rend = filas.filter(f => f.t.tipo === 'rendimiento');
+      const soloRend = rend.length && malas.length && malas.every(f => f.t.tipo === 'rendimiento');
+      if (enun.length && enun.every(f => f.v === 'ac') && malas.length && !soloRend) notas.push('Los ejemplos del enunciado salen bien: la idea es buena y falla en casos especiales.');
+      if (soloRend) {
+        notas.push('Todas las pruebas pequeñas salen bien y solo fallan las grandes: el algoritmo es correcto pero no es eficiente (o gasta demasiada memoria). Fíjate en el coste: ¿repites trabajo?, ¿copias estructuras grandes al llamar a funciones?');
+        clave = ord[0];
+      }
+      if (clave && clave.dif && !especifica) {
+        if (clave.dif.obtenida == null) notas.push(`Tu salida tiene menos líneas de las esperadas (${clave.dif.lineas_tuyas ?? '?'} de ${clave.dif.total}): ¿te saltas casos o el programa termina antes de tiempo?`);
+        else if (clave.dif.esperada == null) notas.push('Escribes líneas de más: quita mensajes de depuración o texto que no pide el enunciado.');
+        else {
+          const ne = (clave.dif.esperada.match(/-?\d+/g) || []).map(Number), no = (clave.dif.obtenida.match(/-?\d+/g) || []).map(Number);
+          if (ne.length === no.length && ne.length > 1 && ne.slice().sort().join() === no.slice().sort().join()) notas.push('Escribes los números correctos pero en otro orden.');
+          else if (ne.length === no.length && ne.length && ne.every((x, i) => Math.abs(x - no[i]) <= 1) && ne.some((x, i) => x !== no[i])) notas.push('Te diferencias en una unidad: revisa los límites de los bucles (< o ≤) y por dónde empiezas a contar.');
+        }
+      }
+      if (veredictos.has('rte') && !notas.length) notas.push('Un error de ejecución en C++ suele ser un índice fuera del vector, un puntero sin memoria o una pila de llamadas infinita.');
+      return { clave, notas };
+    }
+
+    guia(filas) {
+      const { clave, notas } = this.diagnostico(filas);
+      const caja = h('div', { class: 'dj-guia' });
+      caja.append(h('b', { class: 'dj-guia-t' }, 'Dónde falla'));
+      if (clave) {
+        caja.append(h('p', {}, h('b', {}, `${SIGLAS[clave.v]} en la prueba ${clave.t.n} · ${clave.t.nombre || ''}. `), QUE_ES[clave.v] || ''));
+        if (clave.t.comprueba) caja.append(h('p', {}, 'Esta prueba comprueba: ' + clave.t.comprueba));
+        const si = clave.t.si && (clave.t.si[clave.v] || clave.t.si.wa);
+        if (si && clave.v !== 'pe') caja.append(h('p', { class: 'dj-guia-si' }, si));
+      }
+      for (const n of notas) caja.append(h('p', {}, n));
+      // Pistas: de menos a más; al final, la entrada de la prueba si es pequeña.
+      const pistas = ((clave && clave.t.pistas) || []).slice();
+      const verEntrada = clave && clave.t.bytes != null && clave.t.bytes <= 3000;
+      if (pistas.length || verEntrada) {
+        const zona = h('div', { class: 'dj-pistas' });
+        let dadas = 0;
+        const btn = h('button', { class: 'btn', type: 'button' }, 'Dame una pista');
+        btn.onclick = async () => {
+          if (dadas < pistas.length) {
+            zona.append(h('p', { class: 'dj-pista' }, h('b', {}, `Pista ${dadas + 1}: `), pistas[dadas]));
+            dadas++;
+          } else if (verEntrada) {
+            const [ent, sal] = await Promise.all([this.texto(clave.t.in), this.texto(clave.t.out)]);
+            zona.append(h('div', { class: 'dj-pista' }, h('b', {}, 'Entrada de la prueba:'), h('pre', { class: 'dj-log' }, ent),
+                                                    h('b', {}, 'Salida esperada:'), h('pre', { class: 'dj-log' }, sal)));
+            dadas++;
+          }
+          const quedan = pistas.length - dadas + (verEntrada && dadas <= pistas.length ? 1 : 0);
+          if (quedan <= 0) btn.remove();
+          else btn.textContent = dadas < pistas.length ? 'Otra pista' : 'Ver la entrada de esta prueba';
+        };
+        caja.append(zona, h('div', { class: 'dj-bar' }, btn));
+      }
+      return caja;
+    }
+
+    pintarCE(log) {
+      const notas = [];
+      const reglas = [
+        [/was not declared in this scope/, 'Usas algo que no está declarado: una variable con otro nombre, una función que no existe o te falta un #include (por ejemplo <vector>, <string> o <algorithm>).'],
+        [/expected [^\n]*['‘];['’]/, 'Falta un punto y coma (;) en la línea que indica o en la anterior.'],
+        [/expected ['‘]?\}['’]? at end of input|expected declaration/, 'Hay una llave { sin cerrar: cuenta las llaves de tus funciones.'],
+        [/no matching function for call/, 'Llamas a una función con argumentos de tipo o número distinto al que espera.'],
+        [/undefined reference to [`'‘]main/, 'Falta la función main: usa la plantilla del ejercicio completa.'],
+        [/No such file or directory/, 'Un #include que no existe en el juez: usa solo cabeceras estándar y las del ejercicio.'],
+        [/Rechazado antes de compilar/, 'El juez no permite esa llamada o cabecera (crear procesos, ficheros del sistema, red...). Ningún ejercicio la necesita.'],
+        [/conversion from .* to non-scalar|cannot convert/, 'Mezclas tipos que no son compatibles (por ejemplo, asignar un vector a un int).'],
+      ];
+      for (const [rx, t] of reglas) if (rx.test(log)) notas.push(t);
+      const lin = (log.match(/main\.cpp:(\d+):/) || [])[1];
+      const caja = h('div', { class: 'dj-guia' }, h('b', { class: 'dj-guia-t' }, 'Dónde falla'),
+        h('p', {}, QUE_ES.ce + (lin ? ` El primer error está en la línea ${lin}.` : '')), ...notas.map(n => h('p', {}, n)));
+      this.res.replaceChildren(this.veredicto('ce', 'CE · No compila'), caja, h('pre', { class: 'dj-log' }, log));
     }
   }
 

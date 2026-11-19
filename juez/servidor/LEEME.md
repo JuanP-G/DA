@@ -10,13 +10,17 @@ si no, el juez lo detecta solo y limita con `prlimit`.
     cd ~/DA/juez/servidor
     python3 servidor.py --diagnostico   # qué límites funcionan en esta Pi + autoprueba
     sh instalar.sh                      # servicio systemd (arranca solo, se reinicia si cae o se cuelga)
-    python3 probar.py                   # 19 envíos de prueba + conexiones lentas
+    python3 probar.py                   # 22 envíos de prueba + conexiones lentas
 
 Registro de envíos y autopruebas: `journalctl -u juez-da -f`.
 Salud desde fuera: `curl http://127.0.0.1:8099/salud/sistema` (temperatura, estrangulamiento, carga,
 memoria, disco, límites activos y última autoprueba).
 
-## Qué protege
+## Qué protege (código malicioso)
+Las capas, de fuera a dentro; cada una funciona aunque fallen las demás:
+- **seccomp** (dentro de la caja, lo instala el medidor justo antes de ejecutar): el programa del
+  alumno no puede crear procesos ni hilos, ni usar ptrace, montar, módulos, eBPF, io_uring, red,
+  enviar señales a otros... Lo que ningún ejercicio necesita. Se compila en la propia Pi.
 - Caja de bubblewrap: sin red, `/usr` solo lectura, sin tus archivos, procesos aislados. Al ejecutar,
   todo el sistema de ficheros es de solo lectura (no se puede llenar la RAM escribiendo en `/tmp`).
 - Memoria 256 MB por programa (1 GB al compilar). Con cgroup de memoria, `MemoryMax`; sin él,
@@ -32,6 +36,41 @@ memoria, disco, límites activos y última autoprueba).
 - Servicio systemd: `Restart=always`, watchdog (si deja de responder, se reinicia), y topes para todo
   el juez (`MemoryMax=2500M`, `TasksMax=600`, `OOMScoreAdjust=500`).
 - Sin `JUEZ_ORIGENES` acepta peticiones de cualquier web; el servicio lo fija a StudIA.
+
+## Veredictos
+| Sigla | Nombre | Cuándo |
+|---|---|---|
+| AC | Correcto | Pasa todas las pruebas. |
+| WA | Respuesta incorrecta | Termina pero escribe otra cosa. |
+| PE | Error de presentación | Los datos son correctos pero el formato no (espacios, saltos de línea). |
+| CE | Error de compilación | No compila, o usa algo prohibido (system, fork, cabeceras del sistema...). |
+| TLE | Tiempo excedido | Pasa del límite de CPU, o se queda parado (tope de reloj). |
+| MLE | Memoria excedida | Pasa de 256 MB. |
+| RTE | Error de ejecución | Se rompe: fuera de rango, división entre cero, excepción, intento bloqueado por seccomp... |
+| OLE | Salida excesiva | Escribe más de 2 MB. |
+
+El veredicto global es el de la primera prueba que falla; tras un TLE no se ejecutan las demás.
+
+## Pruebas con guía y pistas
+Cada ejercicio tiene muchas pruebas pequeñas y cada una busca **un error típico**. Se generan con
+`herramientas/generar_tests_juez.py` (la salida esperada la calcula un solucionador independiente en
+Python) y se describen en `juez/tests/<id>/pruebas.json`:
+
+    {"n": 9, "nombre": "Final de una fila y principio de la siguiente",
+     "tipo": "trampa",                     // enunciado | borde | trampa | aleatorio | rendimiento
+     "casos": 2,
+     "comprueba": "qué mira esta prueba",
+     "si": {"wa": "qué suele significar fallarla", "rte": "..."},
+     "pistas": ["pista suave", "pista más directa"]}
+
+La web elige la prueba que mejor explica el fallo (antes las trampas y los bordes, las que fallan en
+su primer caso y las que tienen explicación para ese veredicto), detecta patrones (solo falla el
+formato, estado que no se reinicia entre casos, solo fallan las grandes...) y ofrece «Dame una pista»:
+las pistas de esa prueba de menos a más y, al final, su entrada y la salida esperada (si es pequeña).
+
+Hoy lo tiene el 04-3 (16 pruebas, comprobadas con 7 soluciones con fallos típicos: cada una cae en
+la prueba pensada para su error). Para añadir otro ejercicio: su generador en
+`generar_tests_juez.py`, su entrada en `juez/juez.json` y volver a construir la web.
 
 ## Raspberry Pi OS: activar el cgroup de memoria (recomendado)
 Viene desactivado. Sin él, el límite de memoria por programa es `prlimit --as` (funciona, pero

@@ -21,3 +21,16 @@
 .dj-dif span{display:inline-block;min-width:72px}
 .dj-err{padding:12px 16px;border-radius:12px;border:1px solid #e5484d}
 .dj-tests .dj-skip{opacity:.55}
+.dj-ver.dj-pe,.dj-ver.dj-mle,.dj-ver.dj-ole{background:color-mix(in srgb,#e5484d 16%,transparent);border-color:#e5484d;color:var(--ink)}
+.dj-ver.dj-pe{background:color-mix(in srgb,#f5a524 18%,transparent);border-color:#f5a524}
+.dj-tests .dj-pe .dj-pill{background:#f5a524;color:#2a1a00}
+.dj-tests .dj-mle .dj-pill,.dj-tests .dj-ole .dj-pill{background:#e5484d;color:#fff}
+.dj-tipo{font-size:.75rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+.dj-que{flex:1 1 100%;font-size:.85rem;color:var(--muted)}
+.dj-guia{padding:14px 18px;border-radius:14px;border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);display:flex;flex-direction:column;gap:6px}
+.dj-guia p{margin:0;line-height:1.5}
+.dj-guia-t{font-size:1rem}
+.dj-guia-si{font-weight:600}
+.dj-pistas{display:flex;flex-direction:column;gap:8px}
+.dj-pista{margin:0;padding:10px 14px;border-radius:12px;background:color-mix(in srgb,var(--panel2) 80%,transparent);border:1px dashed var(--line)}
+.dj-pista pre{margin:6px 0}

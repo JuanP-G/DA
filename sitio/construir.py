@@ -960,13 +960,17 @@ def generar_juez(ej):
             escribe_lf(d / nombre, leer_texto(rel))
             cab.append({"nombre": nombre, "url": nombre})
         tests = []
+        meta_p = RAIZ / "juez" / "tests" / ej_id / "pruebas.json"   # qué comprueba cada prueba, pistas...
+        meta = {m["n"]: m for m in json.loads(meta_p.read_text(encoding="utf-8"))} if meta_p.exists() else {}
         for p in sorted((RAIZ / "juez" / "tests" / ej_id).glob("*.in"), key=lambda p: int(p.stem)):
             n = p.stem
             escribe_lf(d / f"{n}.in", leer_texto(p.relative_to(RAIZ).as_posix()))
             escribe_lf(d / f"{n}.out", leer_texto(p.with_suffix(".out").relative_to(RAIZ).as_posix()))
             nombre_p = p.with_suffix(".txt")
-            tests.append({"n": int(n), "nombre": nombre_p.read_text(encoding="utf-8").strip() if nombre_p.exists() else "",
-                          "in": f"{n}.in", "out": f"{n}.out"})
+            t = {"n": int(n), "nombre": nombre_p.read_text(encoding="utf-8").strip() if nombre_p.exists() else "",
+                 "in": f"{n}.in", "out": f"{n}.out", "bytes": p.stat().st_size}
+            t.update({k: v for k, v in meta.get(int(n), {}).items() if k != "n"})
+            tests.append(t)
         manifest = {"id": ej_id, "titulo": e["titulo"], "limite_ms": c.get("limite_ms", 3000), "plantilla": plantilla,
                     "cabeceras": cab, "tests": tests,
                     "demo": {"solucion": "solucion.cpp", "fallo": "fallo.cpp"}}

@@ -67,18 +67,93 @@ T_AUTOPRUEBA = 600              # s entre autopruebas
 MEDIDOR_C = r"""
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/wait.h>
 #include <sys/resource.h>
+#include <sys/prctl.h>
+#include <sys/syscall.h>
+#include <linux/filter.h>
+#include <linux/seccomp.h>
+#include <linux/audit.h>
+
+/* seccomp: el programa del alumno no puede crear procesos ni hilos, ni usar llamadas que solo
+   sirven para escaparse o atacar al núcleo. Se compila en la propia máquina, así los números
+   de llamada son los de su arquitectura. */
+#if defined(__x86_64__)
+#define ARCH AUDIT_ARCH_X86_64
+#elif defined(__aarch64__)
+#define ARCH AUDIT_ARCH_AARCH64
+#elif defined(__arm__)
+#define ARCH AUDIT_ARCH_ARM
+#elif defined(__i386__)
+#define ARCH AUDIT_ARCH_I386
+#endif
+
+#define NIEGA(n) BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, (n), 0, 1), BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ERRNO | EPERM)
+
+static int seccomp_alumno(void) {
+#ifndef ARCH
+    return 0;
+#else
+    struct sock_filter f[] = {
+        BPF_STMT(BPF_LD | BPF_W | BPF_ABS, offsetof(struct seccomp_data, arch)),
+        BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, ARCH, 1, 0),
+        BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS),      /* otra ABI (int 0x80, etc.) */
+        BPF_STMT(BPF_LD | BPF_W | BPF_ABS, offsetof(struct seccomp_data, nr)),
+#if defined(__x86_64__)
+        BPF_JUMP(BPF_JMP | BPF_JGE | BPF_K, 0x40000000, 0, 1),     /* ABI x32 */
+        BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS),
+#endif
+#ifdef __NR_fork
+        NIEGA(__NR_fork),
+#endif
+#ifdef __NR_vfork
+        NIEGA(__NR_vfork),
+#endif
+        NIEGA(__NR_clone),
+#ifdef __NR_clone3
+        NIEGA(__NR_clone3),
+#endif
+        NIEGA(__NR_execveat), NIEGA(__NR_ptrace), NIEGA(__NR_process_vm_readv), NIEGA(__NR_process_vm_writev),
+        NIEGA(__NR_mount), NIEGA(__NR_umount2), NIEGA(__NR_pivot_root), NIEGA(__NR_chroot),
+        NIEGA(__NR_unshare), NIEGA(__NR_setns), NIEGA(__NR_keyctl), NIEGA(__NR_add_key), NIEGA(__NR_request_key),
+        NIEGA(__NR_bpf), NIEGA(__NR_userfaultfd), NIEGA(__NR_perf_event_open), NIEGA(__NR_personality),
+        NIEGA(__NR_kexec_load), NIEGA(__NR_init_module), NIEGA(__NR_finit_module), NIEGA(__NR_delete_module),
+        NIEGA(__NR_socket), NIEGA(__NR_socketpair), NIEGA(__NR_connect), NIEGA(__NR_kill), NIEGA(__NR_tkill),
+#ifdef __NR_io_uring_setup
+        NIEGA(__NR_io_uring_setup), NIEGA(__NR_io_uring_enter), NIEGA(__NR_io_uring_register),
+#endif
+#ifdef __NR_open_by_handle_at
+        NIEGA(__NR_open_by_handle_at),
+#endif
+        BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
+    };
+    struct sock_fprog prog = { (unsigned short)(sizeof f / sizeof f[0]), f };
+    if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) return -1;
+    return prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog);
+#endif
+}
+
 int main(int argc, char **argv) {
+    if (argc == 2 && argv[1][0] == '?') {               /* el servidor pregunta si hay seccomp */
+#ifdef ARCH
+        puts("seccomp");
+#endif
+        return 0;
+    }
     if (argc < 3) return 120;
     int fd = atoi(argv[1]);
     fcntl(fd, F_SETFD, FD_CLOEXEC);          /* el programa no hereda el descriptor */
     pid_t p = fork();
     if (p < 0) return 121;
-    if (p == 0) { execv(argv[2], argv + 2); _exit(122); }
+    if (p == 0) {
+        if (seccomp_alumno()) _exit(124);    /* sin filtro no se ejecuta nada */
+        execv(argv[2], argv + 2);
+        _exit(122);
+    }
     int st = 0; struct rusage ru;
     while (wait4(p, &st, 0, &ru) < 0 && errno == EINTR) {}
     long ms = ru.ru_utime.tv_sec * 1000L + ru.ru_utime.tv_usec / 1000
@@ -105,6 +180,8 @@ def preparar_medidor():
         shutil.rmtree(d, ignore_errors=True)
         return "no se pudo compilar el medidor: " + r.stdout.decode("utf-8", "replace")[:200]
     os.chmod(d / "medidor", 0o755)
+    r = subprocess.run([str(d / "medidor"), "?"], stdout=subprocess.PIPE, timeout=10)
+    CAJA["seccomp"] = b"seccomp" in r.stdout
     import atexit
     atexit.register(shutil.rmtree, d, True)
     MEDIDOR = d
@@ -119,7 +196,7 @@ ultimo_lock = threading.Lock()
 conexiones = threading.BoundedSemaphore(MAX_CONEXIONES)
 
 # Lo que funciona en esta máquina (lo rellena detectar()) y el resultado de la última autoprueba.
-CAJA = {"scope": False, "mem_cgroup": False, "pids_cgroup": False, "lib": [], "detalle": ""}
+CAJA = {"scope": False, "mem_cgroup": False, "pids_cgroup": False, "seccomp": False, "detalle": ""}
 ESTADO = {"ok": False, "cuando": 0, "detalle": "sin autoprueba todavía"}
 estado_lock = threading.Lock()
 
@@ -147,12 +224,17 @@ def lineas(t):
 
 
 def compara(esperada, obtenida):
+    """None si coinciden (sin contar espacios al final de línea ni líneas vacías finales).
+    Si no, la primera diferencia; "pe": True si solo cambia el formato (mismas palabras)."""
     a, b = lineas(esperada), lineas(obtenida)
     for i in range(max(len(a), len(b))):
         x = a[i] if i < len(a) else None
         y = b[i] if i < len(b) else None
         if x != y:
-            return {"linea": i + 1, "esperada": x, "obtenida": y, "total": len(a)}
+            d = {"linea": i + 1, "esperada": x, "obtenida": y, "total": len(a), "lineas_tuyas": len(b)}
+            if esperada.split() == obtenida.split():
+                d["pe"] = True
+            return d
     return None
 
 
@@ -351,11 +433,15 @@ def ejecutar(carp, entrada, limite_ms):
         fila["v"] = "tle"
         fila["ms"] = max(ms, limite_ms + 1) if est == "tiempo" else ms
     elif est == "salida":
-        fila["v"] = "wa"; fila["dif"] = {"linea": 1, "esperada": "(salida razonable)", "obtenida": "(demasiada salida)", "total": 1}
+        fila["v"] = "ole"
+        fila["detalle"] = f"escribió más de {MAX_SALIDA >> 20} MB (¿un bucle que no termina de escribir?)"
+    elif "bad_alloc" in texto_err or (s == 9 and CAJA["mem_cgroup"]) or (rc != 0 and fila.get("kb", 0) > (MEM_EJECUTAR >> 10) * 0.9):
+        fila["v"] = "mle"
+        fila["detalle"] = f"pasó del límite de memoria de {MEM_EJECUTAR >> 20} MB"
     elif rc != 0:
         fila["v"] = "rte"
-        if "bad_alloc" in texto_err or (s == 9 and CAJA["mem_cgroup"]):
-            base = f"el programa se quedó sin memoria (límite {MEM_EJECUTAR >> 20} MB)"
+        if rc == 124 or (rc != 0 and "Operation not permitted" in texto_err):
+            base = "el programa intentó algo que el juez no permite (crear procesos, red...)"
         else:
             base = SENALES.get(s, f"el programa terminó con código {rc}")
         fila["detalle"] = base + (": " + limpia(texto_err, 200).strip() if texto_err.strip() else "")
@@ -399,7 +485,7 @@ def juzgar(ej_id, codigo):
             fila["n"] = int(fin.stem)
             if "v" not in fila:
                 d = compara(leer(fin.with_suffix(".out")), out.decode("utf-8", "replace"))
-                if d: fila["v"] = "wa"; fila["dif"] = d
+                if d: fila["v"] = "pe" if d.get("pe") else "wa"; fila["dif"] = d
                 else: fila["v"] = "ac"
             filas.append(fila)
             if fila["v"] != "ac" and global_v == "ac":
@@ -457,6 +543,8 @@ AUTO_SUMA = '#include <iostream>\nint main(){ long long a,b; std::cin>>a>>b; std
 AUTO_MEMORIA = ('#include <vector>\n#include <cstdio>\nint main(){ std::vector<char*> v; '
                 'for(int i=0;i<2048;i++){ char*p=new char[1<<20]; for(int j=0;j<(1<<20);j+=4096) p[j]=1; '
                 'v.push_back(p);} std::printf("SIN LIMITE\\n"); }\n')
+AUTO_PROCESOS = ('#include <cstdio>\nextern "C" int fork();\n'
+                 'int main(){ int r = fork(); if (r == 0) return 0; std::printf(r < 0 ? "bloqueado\\n" : "PERMITIDO\\n"); }\n')
 AUTO_BUCLE = 'int main(){ for(volatile unsigned long i=0;;i++){} }\n'
 AUTO_PILA = ('#include <cstdio>\nint f(int n){ volatile char b[64]; b[0]=(char)n; return n? f(n-1)+b[0] : 0; }\n'
              'int main(){ std::printf("%d\\n", f(300000) != 12345); }\n')
@@ -476,8 +564,9 @@ def autoprueba():
             for nombre, codigo, entrada, esperado in (("suma", AUTO_SUMA, b"2 40\n", "42"),
                                                       ("pila", AUTO_PILA, b"", "1"),
                                                       ("memoria", AUTO_MEMORIA, b"", None),
-                                                      ("bucle", AUTO_BUCLE, b"", "TLE")):
-                if SIN_CAJA and nombre in ("pila", "memoria"):
+                                                      ("bucle", AUTO_BUCLE, b"", "TLE"),
+                                                      ("procesos", AUTO_PROCESOS, b"", "bloqueado")):
+                if (SIN_CAJA and nombre in ("pila", "memoria")) or (nombre == "procesos" and not CAJA["seccomp"]):
                     continue                     # sin caja no hay límites que comprobar
                 (carp / "main.cpp").write_text(codigo, encoding="utf-8")
                 ce = compilar(carp)
@@ -618,7 +707,7 @@ class Manejador(BaseHTTPRequestHandler):
                 ejs, auto["ok"] = [], False
                 auto["detalle"] = f"juez.json ilegible: {e}"
             cuerpo = {"ok": auto["ok"], "ejercicios": ejs, "caja": not SIN_CAJA,
-                      "limites": {k: CAJA[k] for k in ("scope", "mem_cgroup", "pids_cgroup", "detalle")},
+                      "limites": {k: CAJA[k] for k in ("scope", "mem_cgroup", "pids_cgroup", "seccomp", "detalle")},
                       "autoprueba": auto, "cola": cola, "simultaneos": SIMULTANEOS}
             if "/salud/sistema" in self.path or "sistema=1" in self.path:
                 cuerpo["sistema"] = sistema()
@@ -752,7 +841,7 @@ def diagnostico():
     nota = preparar_medidor()
     if nota:
         CAJA["detalle"] += f"; medidor: {nota}"
-    print("Límites:", json.dumps({k: CAJA[k] for k in ("scope", "mem_cgroup", "pids_cgroup", "detalle")}, ensure_ascii=False))
+    print("Límites:", json.dumps({k: CAJA[k] for k in ("scope", "mem_cgroup", "pids_cgroup", "seccomp", "detalle")}, ensure_ascii=False))
     t = time.monotonic()
     ok, det = autoprueba()
     print(f"Autoprueba: {'OK' if ok else 'FALLO'} ({time.monotonic() - t:.1f}s) · {det}")
@@ -777,7 +866,7 @@ if __name__ == "__main__":
     nota = preparar_medidor()
     if nota:
         CAJA["detalle"] += f"; medidor: {nota} (se usa el tiempo de reloj)"
-    log(f"límites: scope={CAJA['scope']} mem_cgroup={CAJA['mem_cgroup']} pids_cgroup={CAJA['pids_cgroup']} · {CAJA['detalle']}")
+    log(f"límites: scope={CAJA['scope']} mem_cgroup={CAJA['mem_cgroup']} pids_cgroup={CAJA['pids_cgroup']} seccomp={CAJA['seccomp']} · {CAJA['detalle']}")
     autoprueba_y_guarda("arranque")
     if not ESTADO["ok"]:
         log("AVISO: la autoprueba falla; /juzgar responderá 503 (la web usará el navegador) hasta que se arregle.")
