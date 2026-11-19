@@ -2,7 +2,7 @@
 
 Ejercicios del juez de **Diseño de Algoritmos** resueltos en C++, cada uno con su enunciado y, según el ejercicio, una explicación del planteamiento y un vídeo paso a paso. Además, herramientas interactivas para entender cada estructura de datos.
 
-> 🌐 **Web con todo reunido y buscador: <https://juanp-g.github.io/DA/>** (se actualiza sola con cada cambio en `main`).
+> 🌐 **Web con todo reunido y buscador: <https://studia-one-flax.vercel.app/da/>** (parte de StudIA).
 
 | Tema | Estructura | Ejercicios | Vídeos | Herramienta interactiva |
 |---|---|:--:|:--:|---|
@@ -289,7 +289,7 @@ Una página HTML por estructura, en [`Visualizaciones/`](Visualizaciones). Ejecu
 | [`tema6-kruskal.html`](Visualizaciones/tema6-kruskal.html) | `ConjuntosDisjuntos`, `GrafoValorado` | laboratorio de las 4 implementaciones de conjuntos disjuntos (autoevaluación 6.1, peor caso), manchas de petróleo (06-1), Kruskal y Prim sobre tu grafo |
 | [`tema7-dijkstra.html`](Visualizaciones/tema7-dijkstra.html) | `DigrafoValorado`, Dijkstra | relajación de aristas, Dijkstra con cola de prioridad y con vector, camino por `ulti[]`, contar caminos (07-2) y coste en vértices (07-1) sobre tu grafo |
 
-Se pueden usar desde la [web](https://juanp-g.github.io/DA/#herramientas) o descargando la carpeta y abriendo `index.html`. Se generan con `python3 Visualizaciones/_fuente/gen_grafos.py && python3 Visualizaciones/_fuente/build.py`.
+Se pueden usar desde la [web](https://studia-one-flax.vercel.app/da/#herramientas) o descargando la carpeta y abriendo `index.html`. Se generan con `python3 Visualizaciones/_fuente/gen_grafos.py && python3 Visualizaciones/_fuente/build.py`.
 
 ## Estructuras de datos
 
@@ -401,7 +401,7 @@ Las soluciones de los temas 4 y 5 están probadas con los ejemplos de los enunci
 
 ## Web del repositorio
 
-**🌐 <https://juanp-g.github.io/DA/>**
+**🌐 <https://studia-one-flax.vercel.app/da/>**
 
 Reúne enunciados, soluciones, explicaciones, vídeos y herramientas en una web estática generada desde este repositorio con [`sitio/construir.py`](sitio/construir.py) y el workflow [`.github/workflows/web.yml`](.github/workflows/web.yml) cada vez que cambia `main`. En local:
 
