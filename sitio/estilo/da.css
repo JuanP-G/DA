@@ -243,3 +243,13 @@ a.arow.main:hover{border-color:var(--accent);box-shadow:0 12px 26px -14px var(--
 .tmain .exr .chips{grid-column:3;flex-wrap:wrap;justify-content:flex-start;margin-top:8px}
 @media (max-width:1180px) and (min-width:961px){.mi span{display:inline}.mi{width:auto;padding:0 14px}}
 @media (max-width:960px){.tmain .exr{grid-template-columns:auto 3rem minmax(0,1fr)}.tmain .exr .chips{grid-column:3}}
+
+/* ---- página de ejercicio: título + hecho, extras discretos junto a las pestañas ---- */
+.ejhead a.tag{text-decoration:none}.ejhead a.tag:hover{filter:brightness(1.15)}
+.ejtit{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between}.ejtit h1{margin:0;flex:1 1 320px}
+.okb-ej.on{background:#1f9d55;border-color:#1f9d55;color:#fff}
+.tabsbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 18px;margin:16px 0 14px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.tabsbar .tabs{margin:0;padding:0;border:0}
+.xls{display:flex;flex-wrap:wrap;gap:4px 16px;margin-left:auto}
+.xl{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:4px 0;font:inherit;font-size:.86rem;color:var(--muted);text-decoration:none;cursor:pointer}
+.xl:hover{color:var(--ink);text-decoration:underline}.xl .i{width:14px;height:14px}.xl:disabled{opacity:.6;cursor:progress}

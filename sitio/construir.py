@@ -273,11 +273,11 @@ const vv=document.querySelector('#p-video video');if(vv){vv.addEventListener('ti
 const zb=document.getElementById('zip');
 if(zb)zb.onclick=async()=>{const lista=JSON.parse(zb.dataset.files),nombre=zb.dataset.name;
  if(typeof JSZip==='undefined'){toast('No se ha podido cargar el compresor; descarga los ficheros por separado');return}
- const z=new JSZip(),txt=zb.textContent;zb.disabled=true;
+ const z=new JSZip(),txt=zb.innerHTML;zb.disabled=true;
  try{let i=0;for(const [url,ruta] of lista){zb.textContent='Preparando… '+(++i)+'/'+lista.length;const r=await fetch(url);if(!r.ok)throw new Error(url);z.file(nombre+'/'+ruta,await r.blob(),{binary:true})}
   zb.textContent='Comprimiendo…';const blob=await z.generateAsync({type:'blob',compression:'STORE'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nombre+'.zip';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);toast('Descarga lista')}
- catch(e){toast('No se ha podido generar el zip')}finally{zb.disabled=false;zb.textContent=txt}};
+ catch(e){toast('No se ha podido generar el zip')}finally{zb.disabled=false;zb.innerHTML=txt}};
 """
 
 KATEX = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">'
@@ -310,9 +310,21 @@ def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head="", ruta=None)
     return ICON_RE.sub(_icono, pag)
 
 
+def limpiar_readme(txt):
+    """Quita lo que la página del ejercicio ya muestra por su cuenta: título, fila Enunciado/Solución/Vídeo y caja de Acepta el Reto."""
+    txt = re.sub(r"<!--\s*acr:inicio\s*-->.*?<!--\s*acr:fin\s*-->\n?", "", txt, flags=re.S)
+    txt = re.sub(r"\A\s*# [^\n]*\n", "", txt, count=1)
+    lineas = txt.split("\n")
+    for i, l in enumerate(lineas[:8]):   # la fila es «📄 [Enunciado](…) · 💻 [Solución](…) · 🎬 [Vídeo](…)»: solo enlaces
+        if re.match(r"^\s*[^\w\s\[]*\s*\[(Enunciado|Soluci[oó]n|V[ií]deo)[^\]]*\]\(", l, re.I):
+            del lineas[i]
+            break
+    return "\n".join(lineas).lstrip("\n")
+
+
 def render_md(ruta_rel):
     base = posixpath.dirname(ruta_rel)
-    txt = (RAIZ / ruta_rel).read_text(encoding="utf-8")
+    txt = limpiar_readme((RAIZ / ruta_rel).read_text(encoding="utf-8"))
     # fórmulas: $$...$$ (bloque) y $...$ (en línea) se apartan antes de markdown y las pinta KaTeX
     formulas = []
 
@@ -524,33 +536,30 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     else:
         p_vid = '<div class="nada">Este ejercicio todavía no tiene vídeo.</div>'
 
-    tabs = [("enunciado", "@@i:pdf@@ Enunciado", bool(e["pdf"]), p_enun), ("codigo", "@@i:code@@ Código", bool(codigos), p_cod),
-            ("explicacion", "@@i:book@@ Explicación", bool(e["readme"]), p_exp), ("video", "@@i:video@@ Vídeo", bool(e["video"]), p_vid)]
-    pref = "explicacion" if e["readme"] else ("codigo" if codigos else "enunciado")
+    tabs = [("enunciado", "@@i:pdf@@ Enunciado", bool(e["pdf"]), p_enun), ("video", "@@i:video@@ Vídeo", bool(e["video"]), p_vid),
+            ("explicacion", "@@i:book@@ Explicación", bool(e["readme"]), p_exp), ("codigo", "@@i:code@@ Código", bool(codigos), p_cod)]
+    pref = "video" if e["video"] else ("explicacion" if e["readme"] else ("codigo" if codigos else "enunciado"))
     botones = "".join(f'<button class="btn{"" if hay else " off"}{" pref" if i == pref else ""}" data-tab="{i}">{t}</button>' for i, t, hay, _ in tabs)
     panes = "".join(f'<div class="pane" id="p-{i}">{c}</div>' for i, _, _, c in tabs)
 
-    acc = [f'<button class="btn okb-ej" data-ok="{slug}" aria-pressed="false">@@i:check@@ <span class="lab">Marcar como hecho</span></button>']
-    if ficheros_zip:
-        total = 0
-        for url, _ in ficheros_zip:
-            pass
-        acc.append(f'<button class="btn prim" id="zip" data-name="{esc(e["id"] + " " + e["titulo"])}" data-files="{esc(json.dumps(ficheros_zip, ensure_ascii=False))}">@@i:download@@ Descargar todo (.zip)</button>')
+    acc = []   # extras discretos, a la derecha de las pestañas
     if acr:
-        acc.append(f'<a class="btn" href="{acepta_url(acr)}" target="_blank" rel="noopener">@@i:link@@ Probar en Acepta el Reto #{acr["num"]}</a>')
+        acc.append(f'<a class="xl" href="{acepta_url(acr)}" target="_blank" rel="noopener">@@i:link@@ Acepta el Reto #{acr["num"]}</a>')
     if herr and (RAIZ / "Visualizaciones" / herr).exists():
-        acc.append(f'<a class="btn" href="../herramientas/{herr}">@@i:tool@@ Herramienta interactiva del tema</a>')
+        acc.append(f'<a class="xl" href="../herramientas/{herr}">@@i:tool@@ Herramienta del tema</a>')
     contenido_zip = ", ".join(x for x, ok in (("enunciado", e["pdf"]), ("código", codigos), ("explicación", e["readme"]), ("vídeo", e["video"]), ("versión para Acepta el Reto", acr_fich)) if ok)
 
+    if ficheros_zip:
+        acc.append(f'<button class="xl" id="zip" data-name="{esc(e["id"] + " " + e["titulo"])}" data-files="{esc(json.dumps(ficheros_zip, ensure_ascii=False))}" title="El zip incluye: {esc(contenido_zip)}">@@i:download@@ Descargar todo .zip</button>')
     pager = '<div class="pager">' + (f'<a class="btn" href="{ant[0]}.html">← {esc(ant[1])}</a>' if ant else "<span></span>") + \
             (f'<a class="btn" href="{sig[0]}.html">{esc(sig[1])} →</a>' if sig else "<span></span>") + "</div>"
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../tema/{tema}.html" data-back>← Volver</a>'
               f'<a href="../index.html">Inicio</a>›<a href="../tema/{tema}.html">Tema {tema}</a>›<span>{esc(e["id"])}</span></div>'
-              f'<div class="ejhead"><span class="tag">Tema {tema} · {esc(TEMAS[tema]["nombre"])}</span>'
-              f'<h1>{esc(e["id"])} · {esc(e["titulo"])}</h1><p class="lede">{md_inline(e["idea"])}</p>'
-              f'<div class="acc">{"".join(acc)}</div>'
-              + (f'<p class="hint" style="margin:0;color:var(--muted);font-size:.85rem">El zip incluye: {contenido_zip}.</p>' if ficheros_zip else "")
-              + f'</div><div class="tabs">{botones}</div>{panes}{pager}</div>{teoria_panel(tema, "../")}')
+              f'<div class="ejhead"><a class="tag" href="../tema/{tema}.html">Tema {tema} · {esc(TEMAS[tema]["nombre"])}</a>'
+              f'<div class="ejtit"><h1>{esc(e["id"])} · {esc(e["titulo"])}</h1>'
+              f'<button class="btn okb-ej" data-ok="{slug}" aria-pressed="false">@@i:check@@ <span class="lab">Marcar como hecho</span></button></div>'
+              f'<p class="lede">{md_inline(e["idea"])}</p>'
+              f'</div><div class="tabsbar"><div class="tabs">{botones}</div><div class="xls">{"".join(acc)}</div></div>{panes}{pager}</div>{teoria_panel(tema, "../")}')
     return pagina(f'{e["id"]} {e["titulo"]} | Diseño de Algoritmos UCM', cuerpo, "../", HIGHLIGHT_JS + TABS_JS + (TEORIA_JS if TEORIA.get(tema) else ""), e["idea"], JSZIP, ruta=f"ej/{slug}.html")
 
 
