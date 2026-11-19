@@ -7,7 +7,7 @@ Corre con un usuario normal. Necesita: `python3`, `g++`, `bwrap` (bubblewrap) y,
     git clone -b claude/juez-da https://github.com/JuanP-G/DA.git ~/DA
     cd ~/DA/juez/servidor
     python3 servidor.py                 # en una terminal (escucha en 127.0.0.1:8099)
-    python3 probar.py                   # en otra: 10 envíos de prueba
+    python3 probar.py                   # en otra: 9 envíos de prueba
 
 ## Qué protege
 - Caja de bubblewrap: sin red, `/usr` solo lectura, sin tus archivos, procesos aislados, `/tmp` vacío.

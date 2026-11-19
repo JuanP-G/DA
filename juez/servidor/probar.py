@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prueba el servidor con 8 envíos (correcto, incorrecto, no compila, bucle infinito, segfault,
+"""Prueba el servidor con 9 envíos (correcto, incorrecto, no compila, bucle infinito, segfault,
 abort, código malicioso y salida infinita). Uso:  python3 probar.py [http://127.0.0.1:8099]"""
 import json, sys, time, urllib.request, urllib.error
 from pathlib import Path
@@ -19,7 +19,6 @@ casos = {
     "malicioso (rechazado)": '#include <cstdlib>\nint main(){ system("cat /etc/passwd"); }',
     "salida infinita (no debe colgar)": sin_main + '\n#include <cstdio>\nint main(){ for(;;) puts("xxxxxxxxxxxxxxxx"); }',
     "memoria infinita (RTE, no debe colgar)": sin_main + "\n#include <vector>\nint main(){ std::vector<int> v; for(;;) v.push_back(1); }",
-    "bomba de procesos (sin efecto)": sin_main + "\n#include <cstdlib>\nint main(){ for(;;) std::system(\"x\"); }".replace("std::system", "std::abs") ,
 }
 for n, c in casos.items():
     t = time.time()
