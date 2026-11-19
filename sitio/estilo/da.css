@@ -217,3 +217,29 @@ a.arow>.i{width:16px;height:16px;color:var(--muted)}
 .vcaps b{width:100%;margin:0}
 .vcaps button{border:1px solid var(--glass-b,var(--line));border-radius:999px;padding:5px 12px;background:color-mix(in srgb,var(--panel2) 60%,transparent)}
 .vcaps button.on{border-color:var(--green)}
+
+/* ---- ajustes tras la primera revisión ---- */
+.vcaps button{align-items:center;line-height:1;padding:8px 14px;min-height:36px}
+.vcaps button span{display:inline-block;line-height:1;min-width:2.4em;font-variant-numeric:tabular-nums}
+/* botones de las filas: más grandes y con texto */
+.tmain .exr .chips{gap:6px}
+.mi{height:38px;padding:0 14px;gap:7px;font-size:.84rem;color:var(--ink);border-color:var(--glass-b,var(--line));background:color-mix(in srgb,var(--panel2) 65%,transparent)}
+.mi .i{width:18px;height:18px;color:var(--accent)}.mi span{display:inline}
+.mi.v{color:var(--green);border-color:color-mix(in srgb,var(--green) 45%,transparent);background:color-mix(in srgb,var(--green) 12%,transparent)}.mi.v .i{color:var(--green)}
+.mi:hover{border-color:var(--accent)}
+@media (max-width:1180px) and (min-width:961px){.mi span{display:none}.mi{width:40px;padding:0;justify-content:center}}
+@media (max-width:520px){.mi{padding:0 11px;font-size:.8rem}}
+/* Aprende: principales destacados y PDFs aparte */
+.alist.main{gap:10px}
+.arow.main{padding:12px 14px;border-radius:16px;border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 24%,transparent),color-mix(in srgb,var(--accent) 8%,transparent))}
+.arow.main .pic{width:42px;height:42px;border-radius:13px;background:var(--accent);color:var(--accent-ink,#fff)}
+.arow.main .pic .i{width:20px;height:20px}
+.arow.main .at b{font-size:1rem}.arow.main .at small{font-size:.8rem}
+a.arow.main:hover{border-color:var(--accent);box-shadow:0 12px 26px -14px var(--accent)}
+.aprende .sub{font:700 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px;padding-top:16px;border-top:1px solid var(--line)}
+/* botones en una segunda línea para que el título tenga todo el ancho */
+.tmain .exr{grid-template-columns:auto 3.2rem minmax(0,1fr);align-items:start}
+.tmain .exr .okb{margin-top:3px}.tmain .exr .id{margin-top:6px}
+.tmain .exr .chips{grid-column:3;flex-wrap:wrap;justify-content:flex-start;margin-top:8px}
+@media (max-width:1180px) and (min-width:961px){.mi span{display:inline}.mi{width:auto;padding:0 14px}}
+@media (max-width:960px){.tmain .exr{grid-template-columns:auto 3rem minmax(0,1fr)}.tmain .exr .chips{grid-column:3}}

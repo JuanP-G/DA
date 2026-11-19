@@ -743,25 +743,26 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
         track = f'<track kind="subtitles" srclang="es" label="Español" src="{(MEDIA_BASE + quote(vtt)) if MEDIA_BASE else "../" + quote(vtt)}" default>' if vtt else ""
         lista_caps = ("<div class='vcaps'><b>Capítulos</b>" + "".join(f'<button type="button" data-vt="{t:.2f}"><span>{mmss(t)}</span>{esc(ti)}</button>' for t, ti in caps) + "</div>") if caps else ""
         vhero = (f'<section class="vhero" id="video-tema" aria-label="Vídeo del tema"><div class="vh"><span class="vtag">@@i:video@@ Empieza por aquí</span><h2>Vídeo del tema</h2>'
-                 f'<span class="hint">{tam_legible((RAIZ / tv["video"]).stat().st_size)} · subtítulos con el botón CC</span></div>'
+                 f'</div>'
                  f'<div class="vbody{" conc" if caps else ""}"><video controls preload="metadata" playsinline{" crossorigin=anonymous" if MEDIA_BASE else ""} src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div></section>')
     # --- Barra lateral: progreso, aprender (teoría, vídeo, herramienta) y recursos ---
     docs = TEORIA.get(t) or []
-    aprender = []
+    principales, pdfs = [], []
     for i, e in teo:
         s_ = slugs[i]
-        aprender.append(f'<a class="arow" href="../ej/{s_}.html"><span class="pic">@@i:book@@</span><span class="at"><b>Apuntes del tema</b><small>Apuntes escritos</small></span>@@i:arrow@@</a>')
-    for k, (r, nom, tam) in enumerate(docs):
-        aprender.append(f'<div class="arow"><span class="pic">@@i:pdf@@</span><span class="at"><b>{esc(nom)}</b><small>PDF · {tam_legible(tam)}</small></span>'
-                        f'<button class="mb" type="button" data-teo="{k}" title="Abrir aquí" aria-label="Abrir {esc(nom)} aquí">@@i:book@@</button>'
-                        f'<a class="mb" href="{url_teoria(t, r, "../")}" download title="Descargar" aria-label="Descargar {esc(nom)}">@@i:download@@</a></div>')
+        principales.append(f'<a class="arow main" href="../ej/{s_}.html"><span class="pic">@@i:book@@</span><span class="at"><b>Apuntes del tema</b><small>Explicación escrita paso a paso</small></span>@@i:arrow@@</a>')
     if herr_ok:
-        aprender.append(f'<a class="arow" href="../herramientas/{info["herr"]}"><span class="pic">@@i:tool@@</span><span class="at"><b>Herramienta interactiva</b><small>Pruébalo paso a paso</small></span>@@i:arrow@@</a>')
+        principales.append(f'<a class="arow main" href="../herramientas/{info["herr"]}"><span class="pic">@@i:tool@@</span><span class="at"><b>Herramienta interactiva</b><small>Pruébalo paso a paso</small></span>@@i:arrow@@</a>')
+    for k, (r, nom, tam) in enumerate(docs):
+        pdfs.append(f'<div class="arow"><span class="pic">@@i:pdf@@</span><span class="at"><b>{esc(nom)}</b><small>PDF · {tam_legible(tam)}</small></span>'
+                    f'<button class="mb" type="button" data-teo="{k}" title="Abrir aquí" aria-label="Abrir {esc(nom)} aquí">@@i:book@@</button>'
+                    f'<a class="mb" href="{url_teoria(t, r, "../")}" download title="Descargar" aria-label="Descargar {esc(nom)}">@@i:download@@</a></div>')
+    aprender = principales + pdfs
     recursos = [f'<a class="chip" href="../estructuras/{quote(c)}.html">@@i:code@@ {esc(c)}</a>' for c in info["cab"] if c in cabs]
     lateral = (f'<aside class="tside">'
                f'<div class="sbox prog-box" data-ids="{ids}" style="--c:{color}"><div class="ph"><small>Tu progreso</small><b data-pct>0%</b></div><div class="prog"><i data-bar></i></div>'
                f'<span class="pt" data-hechos>0 de {n} hechos</span><a class="btn prim sig" data-sig href="#ejercicios">Empezar con {esc(lista[0][1]["id"]) if lista else ""} →</a></div>'
-               + (f'<details class="sbox aprende" data-aprende><summary><h2>Aprende <span class="cnt">{len(aprender)}</span></h2></summary><div class="alist">{"".join(aprender)}</div></details>' if aprender else '')
+               + (f'<details class="sbox aprende" data-aprende><summary><h2>Aprende</h2></summary><div class="alist main">{"".join(principales)}</div>{('<h3 class="sub">PDFs de teoría</h3><div class="alist">' + "".join(pdfs) + '</div>') if pdfs else ""}</details>' if aprender else '')
                + (f'<div class="sbox"><h2>Plantillas y código</h2><div class="rec">{"".join(recursos)}</div></div>' if recursos else '')
                + '</aside>')
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas" data-back>← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>Tema {t}</span></div>'
