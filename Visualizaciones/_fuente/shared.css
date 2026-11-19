@@ -1,50 +1,8 @@
-/* Sistema visual común de las visualizaciones de DA (cuaderno de laboratorio de algoritmos).
-   Cada página añade su CSS propio DESPUÉS de este bloque. */
-:root {
-  --bg: #f3f4f8;
-  --panel: #ffffff;
-  --panel-2: #eceef4;
-  --ink: #1a2133;
-  --muted: #5d667b;
-  --line: #d9deea;
-  --accent: #b86e00;        /* nodo activo / raíz / resultado */
-  --accent-soft: #fbeccd;
-  --blue: #1f6fb8;          /* comparando / visitando */
-  --blue-soft: #d9eafa;
-  --red: #c4372d;           /* intercambio / rotación / ciclo */
-  --red-soft: #fbdcd8;
-  --green: #1e7f57;         /* terminado / correcto */
-  --green-soft: #d6f1e4;
-  --purple: #6c4bc1;
-  --purple-soft: #e6dffa;
-  --node: #ffffff;
-  --code-bg: #121a2b;
-  --code-ink: #dce4f5;
-  --code-dim: #6f7b95;
-  --code-hl: #3a3010;
-  --code-hl-bar: #f5a623;
-  --kw: #ff79c6; --ty: #8be9fd; --nu: #bd93f9; --co: #7e8aa8; --st: #f1fa8c;
-  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
-    --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
-    --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
-    --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
-    --code-bg: #0a0f1c; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0e1424; --panel: #151d31; --panel-2: #1c2640; --ink: #e7ecf7; --muted: #94a0ba; --line: #2a3556;
-  --accent: #f5a623; --accent-soft: #3a2c0c; --blue: #58b2f2; --blue-soft: #14304a;
-  --red: #ff7468; --red-soft: #46201f; --green: #4fd1a0; --green-soft: #123a2c;
-  --purple: #a58cf2; --purple-soft: #2c2350; --node: #1f2a45;
-  --code-bg: #0a0f1c; color-scheme: dark;
-}
-* { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; margin: 0; }
+/* Tokens, base y modo oscuro: sitio/estilo/apuntes.css (se antepone al construir). Aquí solo lo propio de las visualizaciones. */
+:root { --node: #ffffff; --code-hl: #3a3010; --code-hl-bar: #f5a623; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --node: #1f2a45; } }
+:root[data-theme="dark"] { --node: #1f2a45; }
+body { font-size: 15px; line-height: 1.5; }
 .wrap { max-width: 1120px; margin: 0 auto; padding: 22px 16px 56px; display: flex; flex-direction: column; gap: 16px; }
 .wrap > * { min-width: 0; }
 header.top { display: flex; flex-direction: column; gap: 6px; }
@@ -62,16 +20,14 @@ h1 { font-size: clamp(1.45rem, 3.2vw, 2rem); line-height: 1.2; margin: 0; font-w
   border-radius: 8px; padding: 7px 12px; cursor: pointer; }
 .btn:hover { border-color: var(--blue); }
 .btn:focus-visible, .field:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-:root[data-theme="dark"] .btn.primary { color: #1b1400; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #1b1400; } }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .btn.on { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
 .btn:disabled { opacity: .45; cursor: default; }
 .field { font: inherit; font-family: var(--mono); font-size: .9rem; width: 5.2em; color: var(--ink); background: var(--bg);
   border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
 select.field { width: auto; font-family: var(--sans); }
 .stage { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
-@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr) !important; } }
 .canvas-scroll { overflow-x: auto; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); }
 svg.viz { display: block; width: 100%; height: auto; }
 svg.viz text { font-family: var(--mono); fill: var(--ink); }
@@ -102,3 +58,45 @@ table.t th, table.t td { text-align: left; padding: 5px 8px; border-bottom: 1px 
 table.t th { color: var(--muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
 footer.foot { color: var(--muted); font-size: .82rem; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* tipografía y fondo del sistema de StudIA */
+body { --sans: "Inter", system-ui, sans-serif; font-family: var(--sans); }
+h1 { font-weight: 800; letter-spacing: -.03em; }
+/* nodos y fondos de las herramientas con la paleta premium (oscura por defecto) */
+:root[data-paleta="premium"]:not([data-theme="light"]) { --node: #1f2a45; }
+:root[data-paleta="premium"][data-theme="light"] { --node: #ffffff; }
+
+/* botones y paneles al estilo de StudIA (cristal, píldoras) */
+.btn { display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 7px 15px; font-weight: 600; text-decoration: none;
+  background: color-mix(in srgb, var(--panel-2) 75%, transparent); border: 1px solid var(--glass-b, var(--line)); box-shadow: inset 0 1px 0 var(--hi, transparent); transition: border-color .15s, box-shadow .15s; }
+.btn:hover { border-color: var(--accent); box-shadow: inset 0 1px 0 var(--hi, transparent), 0 10px 22px -12px var(--accent); }
+.btn.primary { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 82%, #fff), var(--accent)); border-color: color-mix(in srgb, var(--accent) 60%, #fff); color: var(--accent-ink); }
+.btn.on { background: color-mix(in srgb, var(--accent) 22%, transparent); border-color: var(--accent); color: var(--ink); }
+.back { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; padding: 7px 15px; border-radius: 999px; font-weight: 600; font-size: .88rem; text-decoration: none; color: var(--ink);
+  background: color-mix(in srgb, var(--panel-2) 75%, transparent); border: 1px solid var(--glass-b, var(--line)); box-shadow: inset 0 1px 0 var(--hi, transparent); }
+.back:hover { border-color: var(--accent); }
+.panel { background: var(--glass, var(--panel)); border-color: var(--glass-b, var(--line)); border-radius: 20px; box-shadow: inset 0 1px 0 var(--hi, transparent); }
+select.field { border-radius: 999px; padding-inline: 14px; }
+.field { border-radius: 12px; }
+.wrap { padding-bottom: 72px; }
+
+/* pie: texto corrido, con el primer enlace como botón */
+footer.foot { display: block; padding-block: 22px 12px; line-height: 2; }
+footer.foot > a:first-child { display: inline-flex; align-items: center; gap: 6px; padding: 7px 15px; margin: 0 12px 0 0; border-radius: 999px; font-weight: 600; font-size: .88rem; line-height: 1.4;
+  text-decoration: none; color: var(--ink); background: color-mix(in srgb, var(--panel-2) 75%, transparent); border: 1px solid var(--glass-b, var(--line)); box-shadow: inset 0 1px 0 var(--hi, transparent); }
+footer.foot > a:first-child:hover { border-color: var(--accent); }
+/* barras de controles: que envuelvan en pantallas estrechas */
+.bar, .bar .grp, .player .row { flex-wrap: wrap; }
+.panel { min-width: 0; }
+
+/* controles que no deben salirse del panel en móvil */
+label { flex-wrap: wrap; max-width: 100%; }
+select.field, input.field { max-width: 100%; min-width: 0; }
+.stage > *, .panel > *, .wrap > * { min-width: 0; }
+.note { overflow-wrap: anywhere; }
+span.note { display: block; }
+.listbox{flex-wrap:wrap;max-width:100%}
+.vec{max-width:100%;overflow-x:auto}
+.canvas-scroll { max-width: 100%; min-width: 0; }
+.stage, .stage > * > * { min-width: 0; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr) !important; } }

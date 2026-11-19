@@ -50,7 +50,42 @@ HERRAMIENTAS = [
     ("tema6-kruskal.html", "Tema 6", "Conjuntos disjuntos y ARM", "Las cuatro implementaciones de conjuntos disjuntos y Kruskal / Prim paso a paso."),
     ("tema7-dijkstra.html", "Tema 7", "Dijkstra", "Relajación de aristas, Dijkstra con cola y con vector, ulti[] y contar caminos mínimos."),
 ]
+ESTILO = AQUI / "estilo"
+ESTILO_BASE = (ESTILO / "apuntes.css").read_text(encoding="utf-8")
+TEMA_INI = (ESTILO / "tema-inicial.js").read_text(encoding="utf-8")
+TEMA_JS = (ESTILO / "apuntes.js").read_text(encoding="utf-8")
+SPRITE = (ESTILO / "iconos.html").read_text(encoding="utf-8")
+ICON_RE = re.compile(r"@@i:(\w+)@@")
+GLIFOS = {"📄": "pdf", "💻": "code", "🧩": "tool", "🔗": "link", "📥": "download", "🎬": "video", "📘": "book", "⚠": "warn", "⬇": "download", "↗": "external"}
+GLIFO_RE = re.compile("(" + "|".join(GLIFOS) + ")\ufe0f?")
+PALETAS = (ESTILO / "paletas.css").read_text(encoding="utf-8")
+GLOSSY = (ESTILO / "glossy.css").read_text(encoding="utf-8")
+DA_CSS = (ESTILO / "da.css").read_text(encoding="utf-8")
+PROGRESO_JS = (ESTILO / "progreso.js").read_text(encoding="utf-8")
+PORTAL_URL = os.environ.get("PORTAL_URL", "https://studia-one-flax.vercel.app")   # URL del portal; si está vacía no se enseña el enlace
+BLOQUES = [("Estructuras de datos", [1, 2, 3], "var(--s1)"), ("Grafos", [4, 5, 6, 7], "var(--s2)"), ("Algoritmos voraces", [8, 9], "var(--s3)"),
+           ("Programación dinámica", [10, 11], "var(--s4)"), ("Evaluación", [12], "var(--muted)")]
+DECO = ('<div class="deco" aria-hidden="true"><svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"><defs>'
+        '<linearGradient id="dg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff" stop-opacity=".55"/><stop offset="1" stop-color="#4f6bff" stop-opacity="0"/></linearGradient>'
+        '<linearGradient id="dg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d5cff" stop-opacity=".5"/><stop offset="1" stop-color="#2a3cff" stop-opacity="0"/></linearGradient>'
+        '<radialGradient id="dg3" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#3b6bff" stop-opacity=".28"/><stop offset="1" stop-color="#3b6bff" stop-opacity="0"/></radialGradient></defs>'
+        '<path d="M0 0H470C360 130 190 150 0 380Z" fill="url(#dg1)"/><path d="M1440 0V760C1330 540 1220 300 1010 0Z" fill="url(#dg2)"/>'
+        '<ellipse cx="260" cy="860" rx="520" ry="260" fill="url(#dg3)"/>'
+        '<path d="M0 560C260 520 420 640 640 900" fill="none" stroke="#9a8cff" stroke-opacity=".09" stroke-width="2"/>'
+        '<path d="M820 0C980 180 1200 220 1440 300" fill="none" stroke="#9a8cff" stroke-opacity=".08" stroke-width="2"/></svg></div>')
+SITE_URL = os.environ.get("SITE_URL", "https://studia-one-flax.vercel.app").rstrip("/")   # dominio donde vive la web (StudIA); DA cuelga de «/da/»
+BASE_DA = SITE_URL + "/da/"
+MEDIA_BASE = os.environ.get("MEDIA_BASE", "")   # si se indica (p. ej. https://juanp-g.github.io/DA/), los vídeos se sirven desde ahí en vez de pasar por el proxy
+PAGINAS = []   # rutas de todas las páginas, para el sitemap
 COPIAR = set()   # rutas relativas (posix) de ficheros del repo que hay que copiar a _site
+
+
+def _icono(m):
+    return f'<svg class="i" aria-hidden="true"><use href="#i-{m.group(1)}"/></svg>'
+
+
+def es_teoria(e):
+    return re.search(r"-0$", e["id"]) is not None
 
 
 def esc(s):
@@ -128,23 +163,12 @@ def descubrir(ej):
 
 
 # ---------------------------------------------------------------- páginas
-CSS = """
-:root{--bg:#f3f4f8;--panel:#fff;--panel2:#eceef4;--ink:#1a2133;--muted:#5d667b;--line:#d9deea;--accent:#b86e00;--accent-soft:#fbeccd;--blue:#1f6fb8;--blue-soft:#d9eafa;--green:#1e7f57;--green-soft:#d6f1e4;--code-bg:#121a2b;--code-ink:#dce4f5;--code-dim:#6f7b95;--kw:#ff79c6;--ty:#8be9fd;--nu:#bd93f9;--co:#7e8aa8;--st:#f1fa8c;
---sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1424;--panel:#151d31;--panel2:#1c2640;--ink:#e7ecf7;--muted:#94a0ba;--line:#2a3556;--accent:#f5a623;--accent-soft:#3a2c0c;--blue:#58b2f2;--blue-soft:#14304a;--green:#4fd1a0;--green-soft:#123a2c;--code-bg:#0a0f1c;color-scheme:dark}}
-:root[data-theme=dark]{--bg:#0e1424;--panel:#151d31;--panel2:#1c2640;--ink:#e7ecf7;--muted:#94a0ba;--line:#2a3556;--accent:#f5a623;--accent-soft:#3a2c0c;--blue:#58b2f2;--blue-soft:#14304a;--green:#4fd1a0;--green-soft:#123a2c;--code-bg:#0a0f1c;color-scheme:dark}
-*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:70px}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
-a{color:var(--blue)}code{font-family:var(--mono);font-size:.9em;background:var(--panel2);padding:1px 5px;border-radius:4px}
-.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
-.nav{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
-.nav .wrap{display:flex;gap:6px 14px;align-items:center;flex-wrap:wrap;padding-block:9px}
-.nav b{font-family:var(--mono);font-size:.82rem;letter-spacing:.06em;margin-right:auto;white-space:nowrap}
-.nav a{font-size:.88rem;text-decoration:none;color:var(--muted);padding:3px 8px;border-radius:6px}.nav a:hover{background:var(--panel2);color:var(--ink)}
+CSS_VIEJO = """
+body{font-size:15px;line-height:1.55}
 .tag{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:4px;display:inline-block}
 .hero .tag,.ejhead .tag{align-self:flex-start}
 .hero{padding-block:34px 18px;display:flex;flex-direction:column;gap:10px}
-h1{font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.15;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1{font-size:clamp(1.7rem,4vw,2.5rem);letter-spacing:-.02em}
 h2{font-size:1.45rem;margin:0 0 4px;letter-spacing:-.01em}.lede{color:var(--muted);max-width:68ch;margin:0}
 .stats{display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--mono);font-size:.85rem;color:var(--muted)}.stats b{color:var(--ink);font-size:1.15rem}
 .search{font:inherit;width:100%;max-width:420px;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink)}
@@ -168,8 +192,7 @@ footer{color:var(--muted);font-size:.82rem;padding-block:30px 40px}
 /* página de ejercicio */
 .ejhead{padding-block:22px 8px;display:flex;flex-direction:column;gap:8px}.ejhead .acc{display:flex;flex-wrap:wrap;gap:8px}
 .btn{font:inherit;font-size:.9rem;font-weight:500;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 13px;text-decoration:none;cursor:pointer;display:inline-block}
-.btn:hover{border-color:var(--blue)}.btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
-:root[data-theme=dark] .btn.on{color:#1b1400}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .btn.on{color:#1b1400}}
+.btn:hover{border-color:var(--blue)}.btn.on,.btn.prim{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 12px}.pane{display:none}.pane.on{display:block}
 .md{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 20px 16px;overflow-x:auto}.md h1{font-size:1.5rem;margin-top:16px}.md h2{font-size:1.2rem;margin-top:20px}
 .md pre{background:var(--code-bg);color:var(--code-ink);padding:12px 14px;border-radius:10px;overflow-x:auto;font-size:12.5px;line-height:1.5}.md pre code{background:none;padding:0;color:inherit}
@@ -186,7 +209,6 @@ video{width:100%;max-width:960px;border-radius:10px;background:#000}iframe.pdf{w
 .tabs .btn .cnt{font-size:.75rem;color:var(--muted);margin-left:4px}.tabs .btn.off{opacity:.55}
 .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}.bar .grow{flex:1}
 .bar .hint{font-size:.85rem;color:var(--muted)}
-.btn.prim{background:var(--accent);border-color:var(--accent);color:#fff}:root[data-theme=dark] .btn.prim{color:#1b1400}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .btn.prim{color:#1b1400}}
 .acr{background:var(--green-soft);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:10px;padding:10px 14px;margin:0 0 12px;font-size:.92rem;line-height:1.5}.acr.rel{background:var(--blue-soft);border-left-color:var(--blue)}.acr b{display:block;margin-bottom:2px}.acr a{font-weight:600}
 .nada{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:26px;color:var(--muted);text-align:center}
 .vid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px;align-items:start}@media(max-width:860px){.vid{grid-template-columns:minmax(0,1fr)}}
@@ -200,7 +222,8 @@ a.vcard{display:flex;flex-direction:column;gap:4px;background:var(--panel);borde
 a.vcard:hover{border-color:var(--green)}a.vcard .n{font-family:var(--mono);font-size:.75rem;color:var(--green)}a.vcard .d{font-size:.84rem;color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none}.toast.on{opacity:1}
 """
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">'
+CSS = ESTILO_BASE + PALETAS + GLOSSY + CSS_VIEJO + DA_CSS
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap">'
 
 HIGHLIGHT_JS = r"""
 const KW=/^(for|if|else|while|return|const|class|struct|public|private|protected|void|bool|int|long|double|char|auto|true|false|template|typename|using|namespace|throw|new|delete|break|continue|static|nullptr|include|define|ifndef|endif|inline|unsigned|operator|switch|case|default|do)$/;
@@ -221,7 +244,7 @@ document.querySelectorAll('pre[data-code]').forEach(pre=>{
 
 COMUN_JS = r"""
 function toast(t){const e=document.getElementById('toast');if(!e)return;e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1600)}
-function copiar(txt,btn){const ok=()=>{toast('Copiado al portapapeles');if(btn){const o=btn.textContent;btn.textContent='¡Copiado!';setTimeout(()=>btn.textContent=o,1400)}};
+function copiar(txt,btn){const ok=()=>{toast('Copiado al portapapeles');if(btn){const o=btn.innerHTML;btn.textContent='¡Copiado!';setTimeout(()=>btn.innerHTML=o,1400)}};
  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(ok).catch(()=>viejo())}else viejo();
  function viejo(){const t=document.createElement('textarea');t.value=txt;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok()}catch(e){toast('No se ha podido copiar')}t.remove()}}
 // «Volver»: si se llegó desde esta misma web, vuelve exactamente a donde estabas; si no, a la página indicada
@@ -266,13 +289,25 @@ KATEX = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Ka
 JSZIP = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>'
 
 
-def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head=""):
-    nav = (f'<nav class="nav"><div class="wrap"><b>DA · DISEÑO DE ALGORITMOS</b>'
-           f'<a href="{prefijo}index.html">Inicio</a><a href="{prefijo}index.html#herramientas">Herramientas</a>'
-           + "".join(f'<a href="{prefijo}index.html#tema{t}">Tema {t}</a>' for t in TEMAS)
-           + f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a href="{prefijo}videos.html">Vídeos</a></div></nav>')
-    return (f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{FONTS}<style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{nav}{cuerpo}<div class="toast" id="toast"></div><script>{COMUN_JS}{extra_js}</script></body></html>')
+def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head="", ruta=None):
+    portal = f'<a href="{esc(PORTAL_URL)}/#asignaturas">Asignaturas</a>' if PORTAL_URL else ""
+    nav = (f'<header class="nav"><div class="nav-pill"><a class="brand" href="{prefijo}index.html" aria-label="Diseño de Algoritmos, inicio"><img src="{prefijo}estilo/marca/mark.png" alt="" width="201" height="242"><b>StudIA</b><span class="subj">DA</span></a>'
+           f'<nav aria-label="Principal">{portal}<a class="keep" href="{prefijo}index.html#temas">Temas</a><a href="{prefijo}index.html#herramientas">Herramientas</a>'
+           f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a class="keep" href="{prefijo}videos.html">Vídeos</a></nav>'
+           f'<button id="tema" class="icon-btn" type="button" aria-label="Cambiar tema claro/oscuro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></div></header>')
+    iconos = (f'<link rel="icon" href="{prefijo}estilo/marca/favicon.ico" sizes="any"><link rel="icon" href="{prefijo}estilo/marca/favicon-32.png" type="image/png" sizes="32x32">'
+              f'<link rel="apple-touch-icon" href="{prefijo}estilo/marca/apple-touch-icon.png"><meta name="theme-color" content="#080a1c">')
+    seo = ""
+    if ruta is not None:
+        PAGINAS.append(ruta)
+        canon = BASE_DA + quote(ruta)
+        seo = (f'<link rel="canonical" href="{esc(canon)}"><meta property="og:type" content="website"><meta property="og:site_name" content="StudIA"><meta property="og:locale" content="es_ES">'
+               f'<meta property="og:title" content="{esc(titulo)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{esc(canon)}">'
+               f'<meta property="og:image" content="{SITE_URL}/assets/marca/og.png"><meta name="twitter:card" content="summary_large_image">')
+    pag = (f'<!doctype html><html lang="es" data-paleta="premium" data-estilo="glossy"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}">{iconos}{seo}{FONTS}<script>{TEMA_INI}</script><style>{CSS}</style>{head}{KATEX if 'class="math"' in cuerpo else ""}</head><body>{DECO}{SPRITE}{nav}{cuerpo}<div class="toast" id="toast"></div><script>{TEMA_JS}{COMUN_JS}{PROGRESO_JS}{extra_js}</script></body></html>')
+    pag = GLIFO_RE.sub(lambda m: f'@@i:{GLIFOS[m.group(1)]}@@', pag)
+    return ICON_RE.sub(_icono, pag)
 
 
 def render_md(ruta_rel):
@@ -400,11 +435,11 @@ def acepta_caja(x, fichero=None):
     envio = ""
     if fichero:
         txt = leer_texto(fichero)
-        envio = (f'<div class="bar" style="margin:8px 0 0"><button class="btn prim" data-copy="acr-src">⧉ Copiar código para Acepta el Reto</button>'
-                 f'{descargar(fichero, "⬇ Descargar " + esc(posixpath.basename(fichero)))}'
+        envio = (f'<div class="bar" style="margin:8px 0 0"><button class="btn prim" data-copy="acr-src">@@i:copy@@ Copiar código para Acepta el Reto</button>'
+                 f'{descargar(fichero, "@@i:download@@ Descargar " + esc(posixpath.basename(fichero)))}'
                  f'<span class="hint">un solo fichero, con las cabeceras dentro y su formato de entrada · {txt.count(chr(10)) + 1} líneas</span></div>'
                  f'<script type="text/plain" id="acr-src">{esc(txt)}</script>')
-    return (f'<div class="acr{" rel" if x["tipo"] == "relacionado" else ""}"><b>🔗 {cab}</b>'
+    return (f'<div class="acr{" rel" if x["tipo"] == "relacionado" else ""}"><b>@@i:link@@ {cab}</b>'
             f'<a href="{acepta_url(x)}" target="_blank" rel="noopener">#{x["num"]} · {esc(x["problema"])} ↗</a> · {ACR_ETQ[x["tipo"]]}. {esc(x.get("nota", ""))}{envio}</div>')
 
 
@@ -436,7 +471,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     # 1 · Enunciado
     if e["pdf"]:
         pdf = href_sitio(e["pdf"], True)
-        p_enun = (f'<div class="bar">{descargar(e["pdf"], "⬇ Descargar PDF")}<a class="btn" href="{pdf}" target="_blank" rel="noopener">↗ Abrir en otra pestaña</a>'
+        p_enun = (f'<div class="bar">{descargar(e["pdf"], "@@i:download@@ Descargar PDF")}<a class="btn" href="{pdf}" target="_blank" rel="noopener">@@i:external@@ Abrir en otra pestaña</a>'
                   f'<span class="hint">{tam_legible((RAIZ / e["pdf"]).stat().st_size)}</span></div>'
                   f'<iframe class="pdf" src="{pdf}" title="Enunciado {esc(e["id"])}"></iframe>'
                   f'<p class="hint" style="color:var(--muted);font-size:.85rem">¿No se ve? En el móvil los PDF no se muestran dentro de la página: usa «Abrir en otra pestaña» o «Descargar PDF».</p>')
@@ -458,8 +493,8 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
             txt = leer_texto(r)
             nombre = posixpath.basename(r)
             tipo = "solución" if r.endswith(".cpp") else "estructura de datos"
-            cods.append(f'<div data-subpane="c{i}" style="display:{"block" if i == 0 else "none"}"><div class="bar"><button class="btn" data-copy="src{i}">⧉ Copiar código</button>'
-                        f'{descargar(r, "⬇ Descargar " + esc(nombre))}<span class="hint">{tipo} · {txt.count(chr(10)) + 1} líneas</span></div>'
+            cods.append(f'<div data-subpane="c{i}" style="display:{"block" if i == 0 else "none"}"><div class="bar"><button class="btn" data-copy="src{i}">@@i:copy@@ Copiar código</button>'
+                        f'{descargar(r, "@@i:download@@ Descargar " + esc(nombre))}<span class="hint">{tipo} · {txt.count(chr(10)) + 1} líneas</span></div>'
                         f'<pre data-code="{esc(nombre)}" id="src{i}">{esc(txt)}</pre></div>')
             ficheros_zip.append((href_sitio(r, True), ("codigo/" if r.endswith(".cpp") else "estructuras/") + nombre))
         p_cod = f'<div class="sub">{subs if len(codigos) > 1 else ""}</div>{"".join(cods)}'
@@ -469,7 +504,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     # 3 · Explicación
     if e["readme"]:
         crudo = (RAIZ / e["readme"]).read_text(encoding="utf-8")
-        p_exp = (f'<div class="bar"><button class="btn" data-copy="md-src">⧉ Copiar (Markdown)</button>{descargar(e["readme"], "⬇ Descargar .md", "")}</div>'
+        p_exp = (f'<div class="bar"><button class="btn" data-copy="md-src">@@i:copy@@ Copiar (Markdown)</button>{descargar(e["readme"], "@@i:download@@ Descargar .md", "")}</div>'
                  f'<div class="md">{render_md(e["readme"])}</div><script type="text/plain" id="md-src">{esc(crudo)}</script>')
         ficheros_zip.append((href_sitio(e["readme"], True), "explicacion.md"))
     else:
@@ -478,56 +513,58 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     # 4 · Vídeo
     if e["video"]:
         vurl = href_sitio(e["video"], True)
+        if MEDIA_BASE:
+            vurl = MEDIA_BASE + quote(e["video"])
         vtt, caps = media_video(e["video"])
-        track = f'<track kind="subtitles" srclang="es" label="Español" src="../{quote(vtt)}" default>' if vtt else ""
+        track = f'<track kind="subtitles" srclang="es" label="Español" src="{(MEDIA_BASE + quote(vtt)) if MEDIA_BASE else "../" + quote(vtt)}" default>' if vtt else ""
         lista_caps = ("<div class='caps'><b>Capítulos</b>" + "".join(f'<button data-t="{t:.2f}"><span>{mmss(t)}</span>{esc(ti)}</button>' for t, ti in caps) + "</div>") if caps else ""
-        p_vid = (f'<div class="bar">{descargar(e["video"], "⬇ Descargar vídeo")}<span class="hint">{tam_legible((RAIZ / e["video"]).stat().st_size)} · subtítulos con el botón CC del reproductor</span></div>'
-                 f'<div class="{"vid" if caps else ""}"><video controls preload="metadata" playsinline src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div>')
+        p_vid = (f'<div class="bar">{descargar(e["video"], "@@i:download@@ Descargar vídeo")}<span class="hint">{tam_legible((RAIZ / e["video"]).stat().st_size)} · subtítulos con el botón CC del reproductor</span></div>'
+                 f'<div class="{"vid" if caps else ""}"><video controls preload="metadata" playsinline{" crossorigin=anonymous" if MEDIA_BASE else ""} src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div>')
         ficheros_zip.append((vurl, "video.mp4"))
     else:
         p_vid = '<div class="nada">Este ejercicio todavía no tiene vídeo.</div>'
 
-    tabs = [("enunciado", "📄 Enunciado", bool(e["pdf"]), p_enun), ("codigo", "💻 Código", bool(codigos), p_cod),
-            ("explicacion", "📘 Explicación", bool(e["readme"]), p_exp), ("video", "🎬 Vídeo", bool(e["video"]), p_vid)]
+    tabs = [("enunciado", "@@i:pdf@@ Enunciado", bool(e["pdf"]), p_enun), ("codigo", "@@i:code@@ Código", bool(codigos), p_cod),
+            ("explicacion", "@@i:book@@ Explicación", bool(e["readme"]), p_exp), ("video", "@@i:video@@ Vídeo", bool(e["video"]), p_vid)]
     pref = "explicacion" if e["readme"] else ("codigo" if codigos else "enunciado")
     botones = "".join(f'<button class="btn{"" if hay else " off"}{" pref" if i == pref else ""}" data-tab="{i}">{t}</button>' for i, t, hay, _ in tabs)
     panes = "".join(f'<div class="pane" id="p-{i}">{c}</div>' for i, _, _, c in tabs)
 
-    acc = []
+    acc = [f'<button class="btn okb-ej" data-ok="{slug}" aria-pressed="false">@@i:check@@ <span class="lab">Marcar como hecho</span></button>']
     if ficheros_zip:
         total = 0
         for url, _ in ficheros_zip:
             pass
-        acc.append(f'<button class="btn prim" id="zip" data-name="{esc(e["id"] + " " + e["titulo"])}" data-files="{esc(json.dumps(ficheros_zip, ensure_ascii=False))}">⬇ Descargar todo (.zip)</button>')
+        acc.append(f'<button class="btn prim" id="zip" data-name="{esc(e["id"] + " " + e["titulo"])}" data-files="{esc(json.dumps(ficheros_zip, ensure_ascii=False))}">@@i:download@@ Descargar todo (.zip)</button>')
     if acr:
-        acc.append(f'<a class="btn" href="{acepta_url(acr)}" target="_blank" rel="noopener">🔗 Probar en Acepta el Reto #{acr["num"]}</a>')
+        acc.append(f'<a class="btn" href="{acepta_url(acr)}" target="_blank" rel="noopener">@@i:link@@ Probar en Acepta el Reto #{acr["num"]}</a>')
     if herr and (RAIZ / "Visualizaciones" / herr).exists():
-        acc.append(f'<a class="btn" href="../herramientas/{herr}">🧩 Herramienta interactiva del tema</a>')
+        acc.append(f'<a class="btn" href="../herramientas/{herr}">@@i:tool@@ Herramienta interactiva del tema</a>')
     contenido_zip = ", ".join(x for x, ok in (("enunciado", e["pdf"]), ("código", codigos), ("explicación", e["readme"]), ("vídeo", e["video"]), ("versión para Acepta el Reto", acr_fich)) if ok)
 
     pager = '<div class="pager">' + (f'<a class="btn" href="{ant[0]}.html">← {esc(ant[1])}</a>' if ant else "<span></span>") + \
             (f'<a class="btn" href="{sig[0]}.html">{esc(sig[1])} →</a>' if sig else "<span></span>") + "</div>"
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#tema{tema}" data-back>← Volver</a>'
-              f'<a href="../index.html">Inicio</a>›<a href="../index.html#tema{tema}">Tema {tema}</a>›<span>{esc(e["id"])}</span></div>'
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../tema/{tema}.html" data-back>← Volver</a>'
+              f'<a href="../index.html">Inicio</a>›<a href="../tema/{tema}.html">Tema {tema}</a>›<span>{esc(e["id"])}</span></div>'
               f'<div class="ejhead"><span class="tag">Tema {tema} · {esc(TEMAS[tema]["nombre"])}</span>'
               f'<h1>{esc(e["id"])} · {esc(e["titulo"])}</h1><p class="lede">{md_inline(e["idea"])}</p>'
               f'<div class="acc">{"".join(acc)}</div>'
               + (f'<p class="hint" style="margin:0;color:var(--muted);font-size:.85rem">El zip incluye: {contenido_zip}.</p>' if ficheros_zip else "")
-              + f'</div><div class="tabs">{botones}</div>{panes}{pager}</div>')
-    return pagina(f'{e["id"]} {e["titulo"]}', cuerpo, "../", HIGHLIGHT_JS + TABS_JS, e["idea"], JSZIP)
+              + f'</div><div class="tabs">{botones}</div>{panes}{pager}</div>{teoria_panel(tema, "../")}')
+    return pagina(f'{e["id"]} {e["titulo"]} | Diseño de Algoritmos UCM', cuerpo, "../", HIGHLIGHT_JS + TABS_JS + (TEORIA_JS if TEORIA.get(tema) else ""), e["idea"], JSZIP, ruta=f"ej/{slug}.html")
 
 
 def pagina_cabecera(nombre):
     rel = f"Estructuras de datos/{nombre}"
     herr = next((TEMAS[t]["herr"] for t in TEMAS if nombre in TEMAS[t]["cab"]), None)
-    extra = f'<a class="btn" href="../herramientas/{herr}">🧩 Herramienta interactiva</a>' if herr and (RAIZ / "Visualizaciones" / herr).exists() else ""
+    extra = f'<a class="btn" href="../herramientas/{herr}">@@i:tool@@ Herramienta interactiva</a>' if herr and (RAIZ / "Visualizaciones" / herr).exists() else ""
     txt = leer_texto(rel)
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#estructuras" data-back>← Volver</a>'
               f'<a href="../index.html">Inicio</a>›<a href="../index.html#estructuras">Estructuras</a>›<span>{esc(nombre)}</span></div>'
               f'<div class="ejhead"><span class="tag">Estructura de datos</span><h1>{esc(nombre)}</h1>'
-              f'<div class="acc"><button class="btn" data-copy="src0">⧉ Copiar código</button>{descargar(rel, "⬇ Descargar " + esc(nombre))}{extra}</div></div>'
+              f'<div class="acc"><button class="btn" data-copy="src0">@@i:copy@@ Copiar código</button>{descargar(rel, "@@i:download@@ Descargar " + esc(nombre))}{extra}</div></div>'
               f'<pre data-code="{esc(nombre)}" id="src0">{esc(txt)}</pre></div>')
-    return pagina(nombre, cuerpo, "../", HIGHLIGHT_JS)
+    return pagina(f"{nombre} | Estructuras de datos de DA", cuerpo, "../", HIGHLIGHT_JS, f"Código de {nombre}, la cabecera de la asignatura de Diseño de Algoritmos, con visor, copiar y descargar.", ruta=f"estructuras/{nombre}.html")
 
 
 def pagina_videos(ej, slugs):
@@ -543,21 +580,171 @@ def pagina_videos(ej, slugs):
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="index.html" data-back>← Volver</a><a href="index.html">Inicio</a>›<span>Vídeos</span></div>'
               f'<div class="hero"><span class="tag">Vídeos</span><h1>Vídeos explicativos</h1><p class="lede">Se ven aquí mismo, con subtítulos y, en los largos, capítulos. Cada uno abre la página de su ejercicio, donde también se puede descargar.</p></div>'
               f'{"".join(bloques)}</div>')
-    return pagina("Vídeos · DA", cuerpo, "", "")
+    return pagina("Vídeos de Diseño de Algoritmos UCM | StudIA", cuerpo, "", "", "Vídeos paso a paso de todos los ejercicios de Diseño de Algoritmos de la FDI UCM, con subtítulos.", ruta="videos.html")
 
 
 VOLVER_HERR = ('<a href="../index.html#herramientas" onclick="try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){history.back();return false}}catch(e){}" '
                'style="position:fixed;left:12px;bottom:12px;z-index:99;font:600 14px system-ui,sans-serif;background:#151d31;color:#e7ecf7;border:1px solid #2a3556;'
-               'padding:8px 12px;border-radius:9px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.25)">← Volver a la web</a>')
+               'padding:9px 16px;border-radius:999px;text-decoration:none;box-shadow:0 8px 22px rgba(0,0,0,.35)">← Volver a la web</a>')
 
 
-def chips(e, slug):
+def chips(e, slug, pre=""):
     c = []
-    if e["pdf"]: c.append(f'<a class="chip p" href="ej/{slug}.html#enunciado">Enunciado</a>')
-    if e["sols"]: c.append(f'<a class="chip" href="ej/{slug}.html#codigo">Código</a>')
-    if e["readme"]: c.append(f'<a class="chip" href="ej/{slug}.html#explicacion">Explicación</a>')
-    if e["video"]: c.append(f'<a class="chip v" href="ej/{slug}.html#video">Vídeo</a>')
+    if e["pdf"]: c.append(f'<a class="chip p" href="{pre}ej/{slug}.html#enunciado">Enunciado</a>')
+    if e["sols"]: c.append(f'<a class="chip" href="{pre}ej/{slug}.html#codigo">Código</a>')
+    if e["readme"]: c.append(f'<a class="chip" href="{pre}ej/{slug}.html#explicacion">Explicación</a>')
+    if e["video"]: c.append(f'<a class="chip v" href="{pre}ej/{slug}.html#video">Vídeo</a>')
     return "".join(c)
+
+
+def color_de(t):
+    for _, ts, col in BLOQUES:
+        if t in ts:
+            return col
+    return "var(--muted)"
+
+
+def plural(n, uno, varios):
+    return f"{n} {uno if n == 1 else varios}"
+
+
+def tarjeta_tema(t, info, lista, slugs, hay_herr):
+    """Tarjeta de la portada: soluciones disponibles, progreso personal (lo pinta progreso.js) y tests."""
+    teo = [x for x in lista if es_teoria(x[1])]
+    lista = [x for x in lista if not es_teoria(x[1])]
+    n = len(lista)
+    n_sol = sum(1 for _, e in lista if e["sols"]); n_vid = sum(1 for _, e in lista if e["video"])
+    ids = ",".join(slugs[i] for i, _ in lista)
+    pct_sol = round(n_sol / n * 100) if n else 0
+    herr = '<span class="chip">@@i:tool@@ Herramienta</span>' if hay_herr else ""
+    herr += '<span class="chip p">@@i:book@@ Teoría</span>' if teo else ""
+    vid = f'<span class="chip v">@@i:video@@ {plural(n_vid, "vídeo", "vídeos")}</span>' if n_vid else ""
+    return (f'<a class="tcard" href="tema/{t}.html" data-ids="{ids}" data-tema="{t}" style="--b:{color_de(t)}">'
+            f'<div class="th"><div><span class="n">{t:02d}</span><b>{esc(info["nombre"])}</b></div><span class="est" data-est>Sin empezar</span></div>'
+            f'<div class="met"><div class="sol"><div class="l"><span>Con solución</span><b>{n_sol}/{n}</b></div><div class="prog"><i style="width:{pct_sol}%"></i></div></div>'
+            f'<div><div class="l"><span>Tu progreso</span><b data-txt>0/{n} · 0%</b></div><div class="prog"><i data-bar></i></div></div></div>'
+            f'<div class="tcf"><span class="chip">@@i:code@@ {plural(n, "ejercicio", "ejercicios")}</span>{herr}{vid}<span class="chip mute">@@i:check@@ Tests pronto</span></div></a>')
+
+
+FILTRO_JS = r"""
+(function(){var f={f:'todos',v:false};
+function hechos(){try{return JSON.parse(localStorage.getItem('studia-da-hechos')||'{}')}catch(e){return{}}}
+function ap(){var h=hechos(),filas=document.querySelectorAll('#p-ejercicios .exr'),vis=0;
+ filas.forEach(function(r){var b=r.querySelector('[data-ok]');if(!b){r.style.display='';return}var k=b.dataset.ok,d=!!h[k];var ok=(f.f==='todos'||(f.f==='hechos'?d:!d))&&(!f.v||r.dataset.v==='1');r.style.display=ok?'':'none';if(ok)vis++});
+ var n=document.getElementById('sin');if(n)n.style.display=vis?'none':'block'}
+document.querySelectorAll('[data-f]').forEach(function(b){b.onclick=function(){f.f=b.dataset.f;document.querySelectorAll('[data-f]').forEach(function(x){x.classList.toggle('on',x===b)});ap()}});
+var fv=document.querySelector('[data-fv]');if(fv)fv.onclick=function(){f.v=!f.v;fv.classList.toggle('on',f.v);ap()};
+document.addEventListener('click',function(){setTimeout(ap,0)});window.addEventListener('storage',ap);window.addEventListener('pageshow',ap);ap()})();
+"""
+
+
+
+# ---------- Teoría en PDF (carpeta Teoria/ del repo) ----------
+def teoria_pdfs():
+    """{tema: [(ruta_relativa, nombre_legible, bytes)]}. El tema sale del primer número
+    de la ruta (Teoria/tema6/Kruskal.pdf, Teoria/6/..., Teoria/Tema6_Kruskal.pdf)."""
+    res = {}
+    base = RAIZ / "Teoria"
+    if not base.is_dir():
+        return res
+    for f in sorted(base.rglob("*.pdf"), key=lambda x: [int(c) if c.isdigit() else c.lower() for c in re.split(r"(\d+)", x.name)]):
+        rel = f.relative_to(base)
+        m = re.search(r"(\d+)", "/".join(rel.parts[:-1])) or re.search(r"(\d+)", rel.name)
+        if not m:
+            continue
+        nombre = re.sub(r"^((tema\s*)?\d+\s*[-_.:]*\s*)", "", f.stem, flags=re.I).replace("_", " ").strip() or f.stem
+        res.setdefault(int(m.group(1)), []).append((f.relative_to(RAIZ).as_posix(), nombre, f.stat().st_size))
+    return res
+
+TEORIA = {}
+
+def url_teoria(t, rel, prefijo):
+    return f'{prefijo}teoria/{t}/{quote(posixpath.basename(rel))}'
+
+def teoria_cards(t, prefijo):
+    docs = TEORIA.get(t)
+    if not docs:
+        return ""
+    cards = "".join(
+        f'<div class="pcard"><span class="pic">@@i:pdf@@</span><div><b>{esc(n)}</b><small>PDF · {tam_legible(b)}</small></div>'
+        f'<div class="acc"><button class="btn primary" type="button" data-teo="{i}">@@i:book@@ Abrir aquí</button>'
+        f'<a class="btn" href="{url_teoria(t, r, prefijo)}" download>@@i:download@@ Descargar</a></div></div>'
+        for i, (r, n, b) in enumerate(docs))
+    return f'<section class="teoria-bloque" aria-label="Teoría del tema"><h2>Teoría del tema</h2><div class="pcards">{cards}</div></section>'
+
+def teoria_panel(t, prefijo):
+    """Botón flotante + panel lateral con visor PDF; disponible en el tema y en cada ejercicio."""
+    docs = TEORIA.get(t)
+    if not docs:
+        return ""
+    opts = "".join(f'<option value="{esc(url_teoria(t, r, prefijo))}">{esc(n)}</option>' for r, n, b in docs)
+    return (f'<button class="btn primary teo-fab" type="button" id="teoAbrir" aria-controls="teoPanel" aria-expanded="false">@@i:book@@ Teoría</button>'
+            f'<aside class="teo-panel" id="teoPanel" aria-label="Teoría del tema {t}" hidden><div class="teo-bar"><b>Teoría · Tema {t}</b>'
+            f'<select id="teoSel" aria-label="Documento">{opts}</select>'
+            f'<a class="btn mini" id="teoTab" target="_blank" rel="noopener" href="#">Abrir en pestaña</a>'
+            f'<button class="btn mini" type="button" id="teoCerrar">Cerrar</button></div>'
+            f'<iframe id="teoFrame" title="Visor de PDF" loading="lazy"></iframe></aside>')
+
+TEORIA_JS = r"""
+(function(){var b=document.getElementById('teoAbrir');if(!b)return;
+var P=document.getElementById('teoPanel'),S=document.getElementById('teoSel'),F=document.getElementById('teoFrame'),T=document.getElementById('teoTab');
+function key(){return 'studia-da-teoria-'+location.pathname.replace(/[^0-9]/g,'').slice(0,0)+(document.title.match(/Tema (\d+)/)||[0,''])[1]}
+function cargar(){F.src=S.value+'#view=FitH';T.href=S.value}
+function abrir(i){if(typeof i==='number')S.selectedIndex=i;P.hidden=false;document.body.classList.add('teo-on');b.setAttribute('aria-expanded','true');cargar();try{localStorage.setItem('studia-da-teo-open','1')}catch(e){}}
+function cerrar(){P.hidden=true;document.body.classList.remove('teo-on');b.setAttribute('aria-expanded','false');F.removeAttribute('src');try{localStorage.removeItem('studia-da-teo-open')}catch(e){}}
+b.onclick=function(){P.hidden?abrir():cerrar()};
+document.getElementById('teoCerrar').onclick=cerrar;S.onchange=cargar;
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!P.hidden)cerrar()});
+document.querySelectorAll('[data-teo]').forEach(function(x){x.onclick=function(){abrir(+x.dataset.teo)}});
+})();
+"""
+
+
+def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
+    color = color_de(t)
+    teo = [x for x in lista if es_teoria(x[1])]
+    lista = [x for x in lista if not es_teoria(x[1])]
+    n = len(lista)
+    n_sol = sum(1 for _, e in lista if e["sols"])
+    ids = ",".join(slugs[i] for i, _ in lista)
+    filas = []
+    for i, e in teo:
+        s_ = slugs[i]
+        filas.append(f'<div class="exr teoria" style="--c:{color}"><span class="okb th0" aria-hidden="true">@@i:book@@</span><span class="id">Teoría</span>'
+                     f'<span class="t"><a href="../ej/{s_}.html">Teoría del tema</a></span><span class="idea">{md_inline(e["idea"])}</span><span class="chips">{chips(e, s_, "../")}</span></div>')
+    for i, e in lista:
+        s_ = slugs[i]
+        filas.append(f'<div class="exr" data-v="{1 if e["video"] else 0}" style="--c:{color}"><button class="okb" data-ok="{s_}" aria-label="Marcar {esc(e["id"])} como hecho" aria-pressed="false">@@i:check@@</button>'
+                     f'<span class="id">{esc(e["id"])}</span><span class="t"><a href="../ej/{s_}.html">{esc(e["titulo"])}</a></span>'
+                     f'<span class="idea">{md_inline(e["idea"])}</span><span class="chips">{chips(e, s_, "../")}</span></div>')
+    acc = []
+    if herr_ok:
+        acc.append(f'<a class="btn" href="../herramientas/{info["herr"]}">@@i:tool@@ Herramienta interactiva</a>')
+    for c in info["cab"]:
+        if c in cabs:
+            acc.append(f'<a class="btn" href="../estructuras/{quote(c)}.html">@@i:code@@ {esc(c)}</a>')
+    bloque = next((b[0] for b in BLOQUES if t in b[1]), "")
+    prev_t = t - 1 if t - 1 in nombres_temas else None
+    next_t = t + 1 if t + 1 in nombres_temas else None
+    pager = ('<div class="pager">' + (f'<a class="btn" href="{prev_t}.html">← Tema {prev_t} · {esc(nombres_temas[prev_t])}</a>' if prev_t else "<span></span>")
+             + (f'<a class="btn" href="{next_t}.html">Tema {next_t} · {esc(nombres_temas[next_t])} →</a>' if next_t else "<span></span>") + "</div>")
+    sin_tests = lambda tipo: (f'<div class="nada"><b>Aún no hay {tipo} en este tema</b>Aquí irán los {tipo}. Cuando se publiquen verás cuántos has hecho y tu mejor nota.</div>')
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas" data-back>← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>Tema {t}</span></div>'
+              f'<div class="thead" data-ids="{ids}"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="tag">{esc(bloque)}</span><span class="est" data-est>Sin empezar</span></div>'
+              f'<h1>Tema {t} · {esc(info["nombre"])}</h1><p class="lede">{esc(info["resumen"])}</p><div class="acc">{"".join(acc)}</div></div>'
+              f'<div class="sm" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))"><div class="box hi" data-ids="{ids}" style="background:linear-gradient(135deg,color-mix(in srgb,{color} 60%,#0a0b1c),color-mix(in srgb,{color} 25%,#0a0b1c));border-color:color-mix(in srgb,{color} 55%,transparent)"><small>Tu progreso</small><b data-pct>0%</b><span data-hechos>0 de {n} hechos</span><div class="prog"><i data-bar></i></div></div>'
+              f'<div class="box"><small>Con solución</small><b>{round(n_sol / n * 100) if n else 0}%</b><span>{n_sol} de {n} ejercicios</span></div>'
+              f'<div class="box"><small>Tests</small><b>0</b><span>del profe y propios · próximamente</span></div></div>'
+              f'{teoria_cards(t, "../")}'
+              f'<div class="tabs"><button class="btn" data-tab="ejercicios">@@i:code@@ Ejercicios <span class="cnt">{n}</span></button>'
+              f'<button class="btn" data-tab="tp">@@i:check@@ Tests del profe <span class="cnt">0</span></button><button class="btn" data-tab="tn">@@i:check@@ Tests propios <span class="cnt">0</span></button></div>'
+              f'<div class="pane" id="p-ejercicios"><div class="filters"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="pend">Pendientes</button><button class="chip" data-f="hechos">Hechos</button><button class="chip" data-fv>@@i:video@@ Con vídeo</button></div>'
+              f'{"".join(filas)}<p class="vacio" id="sin">Ningún ejercicio coincide con el filtro.</p></div>'
+              f'<div class="pane" id="p-tp">{sin_tests("tests del profe")}</div><div class="pane" id="p-tn">{sin_tests("tests propios")}</div>{pager}</div>{teoria_panel(t, "../")}')
+    titulo = f'Tema {t} · {info["nombre"]} | Diseño de Algoritmos UCM'
+    desc = f'{info["resumen"]} Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++ con explicación.'
+    return pagina(titulo, cuerpo, "../", TABS_JS + FILTRO_JS + (TEORIA_JS if TEORIA.get(t) else ""), desc, ruta=f"tema/{t}.html")
+
 
 
 def commit_info():
@@ -571,6 +758,8 @@ def commit_info():
 
 
 def main():
+    global TEORIA
+    TEORIA = teoria_pdfs()
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / "ej").mkdir(parents=True); (OUT / "estructuras").mkdir()
@@ -604,39 +793,77 @@ def main():
             h = re.sub(r"(<body[^>]*>)", lambda m: m.group(1) + VOLVER_HERR, h, count=1)
             (OUT / "herramientas" / p.name).write_text(h, encoding="utf-8")
 
-    # portada
-    n_pdf = sum(1 for e in ej if e["pdf"]); n_vid = sum(1 for e in ej if e["video"]); n_sol = sum(1 for e in ej if e["sols"])
-    tema_html = []
+    # páginas de tema
+    (OUT / "tema").mkdir()
+    herr_nombres = {x[0] for x in herr}
+    nombres_temas = {t: info["nombre"] for t, info in TEMAS.items()}
+    por_tema = {t: [(i, e) for i, e in enumerate(ej) if e["tema"] == t] for t in TEMAS}
     for t, info in TEMAS.items():
-        filas = []
-        for i, e in enumerate(ej):
-            if e["tema"] != t: continue
-            busq = esc(f'{e["id"]} {e["titulo"]} {e["idea"]}'.lower())
-            filas.append(f'<div class="fila" data-q="{busq}"><span class="id">{esc(e["id"])}</span><span class="t"><a href="ej/{slugs[i]}.html">{esc(e["titulo"])}</a></span>'
-                         f'<span class="i">{md_inline(e["idea"])}</span><span class="chips">{chips(e, slugs[i])}</span></div>')
-        if not filas: continue
-        h = (f'<a class="chip" href="herramientas/{info["herr"]}">🧩 Herramienta interactiva</a>' if info["herr"] in [x[0] for x in herr] else "")
-        tema_html.append(f'<section class="tema" id="tema{t}"><header><h2>Tema {t} · {esc(info["nombre"])}</h2>{h}<p>{esc(info["resumen"])}</p></header><div class="lista">{"".join(filas)}</div></section>')
+        if por_tema[t]:
+            (OUT / "tema" / f"{t}.html").write_text(pagina_tema(t, info, por_tema[t], slugs, cabs, info["herr"] in herr_nombres, nombres_temas), encoding="utf-8")
+    shutil.copytree(ESTILO / "marca", OUT / "estilo" / "marca")
+
+    # portada
+    solo_ej = [e for e in ej if not es_teoria(e)]
+    n_pdf = sum(1 for e in ej if e["pdf"]); n_vid = sum(1 for e in ej if e["video"]); n_sol = sum(1 for e in solo_ej if e["sols"])
+    todos_ids = ",".join(slugs[i] for i in range(len(ej)))
+    bloques_html = []
+    for nombre_b, temas_b, col in BLOQUES:
+        tarjetas, ids_b = [], []
+        for t in temas_b:
+            if not por_tema.get(t):
+                continue
+            tarjetas.append(tarjeta_tema(t, TEMAS[t], por_tema[t], slugs, TEMAS[t]["herr"] in herr_nombres))
+            ids_b += [slugs[i] for i, _ in por_tema[t]]
+        if tarjetas:
+            bloques_html.append(f'<section class="blk"><div class="bh" data-ids="{",".join(ids_b)}" style="--c:{col}"><h2><i></i>{esc(nombre_b)}</h2><span class="m" data-txt>0/{len(ids_b)} hechos · 0%</span><div class="prog"><i data-bar></i></div></div><div class="grid">{"".join(tarjetas)}</div></section>')
     tools_html = "".join(f'<a class="tool" href="herramientas/{f}"><span class="n">{esc(a)}</span><b>{esc(b)}</b><span class="d">{esc(c)}</span></a>' for f, a, b, c in herr)
     est_html = "".join(f'<a class="chip" href="estructuras/{quote(c)}.html">{esc(c)}</a>' for c in cabs)
     sha = commit_info()
     ahora = datetime.now(timezone.utc).strftime("%d/%m/%Y %H:%M UTC")
+    n_temas = sum(1 for t in TEMAS if por_tema.get(t))
     cuerpo = f"""<div class="wrap">
-<div class="hero"><span class="tag">Universidad Complutense · Ingeniería Informática</span>
-<h1>Diseño de Algoritmos: ejercicios, soluciones y herramientas</h1>
-<p class="lede">Todos los problemas del juez con su enunciado, la solución en C++, la explicación del planteamiento, un vídeo paso a paso y herramientas interactivas para entender cada estructura de datos.</p>
-<div class="stats"><span><b>{len(ej)}</b> ejercicios</span><span><b>{n_sol}</b> con solución</span><span><b>{n_pdf}</b> enunciados</span><span><b>{n_vid}</b> vídeos</span><span><b>{len(herr)}</b> herramientas</span></div>
-<input class="search" id="q" type="search" placeholder="Buscar ejercicio (nombre, número, técnica…)" aria-label="Buscar ejercicio"></div>
+<div class="hero"><p class="eyebrow">FDI UCM · Informática · Computadores · Software</p>
+<h1>Diseño de Algoritmos: ejercicios resueltos, vídeos y herramientas</h1>
+<p class="lede">Todos los problemas del juez con su enunciado, la solución en C++, la explicación del planteamiento, el vídeo paso a paso de cada uno y herramientas interactivas para entender cada estructura de datos.</p>
+<label class="search">@@i:arrow@@<input id="q" type="search" placeholder="Buscar ejercicio (nombre, número, técnica…)" aria-label="Buscar ejercicio"><kbd>/</kbd></label></div>
+<div class="sm" data-resumen>
+<div class="box hi"><small>Tu progreso</small><b data-r="pct">0%</b><span data-r="txt"></span><div class="prog"><i data-r="bar"></i></div></div>
+<div class="box"><small>Temas completados</small><b><u data-r="comp">0</u><em> / {n_temas}</em></b><span data-r="curso">0 en curso</span></div>
+<div class="box"><small>Con solución</small><b>{round(n_sol / len(solo_ej) * 100)}%</b><span>{n_sol} de {len(solo_ej)} ejercicios</span></div>
+<div class="box"><small>Tests</small><b>0</b><span>del profe y propios · pronto</span></div></div>
+<section id="resultados" hidden><h2 id="res-t" style="margin-bottom:12px"></h2><div id="res-l"></div><p class="vacio" id="vacio">Ningún ejercicio coincide con la búsqueda.</p></section>
+<div id="temas">{"".join(bloques_html)}</div>
 <section class="bloque" id="herramientas"><h2>Herramientas interactivas</h2><p class="lede">Ejecutan la misma lógica que el C++ de la asignatura y resaltan el código línea a línea.</p><div class="tools">{tools_html}</div></section>
-<div id="temas">{"".join(tema_html)}<p class="vacio" id="vacio">Ningún ejercicio coincide con la búsqueda.</p></div>
 <section class="bloque" id="estructuras"><h2>Estructuras de datos</h2><p class="lede">Las cabeceras que da la asignatura, con visor de código, copiar y descargar.</p><div class="cabs">{est_html}</div></section>
-<section class="bloque" id="videos"><h2>Vídeos</h2><p class="lede">{n_vid} vídeos explicativos que se ven aquí mismo, con subtítulos. <a href="videos.html">Ver todos los vídeos →</a></p></section>
-<footer>Web generada automáticamente desde el repositorio{" · commit <code>" + esc(sha) + "</code>" if sha else ""} · {ahora}</footer></div>"""
-    js = """const q=document.getElementById('q');function filtra(){const v=q.value.trim().toLowerCase();let any=0;
-document.querySelectorAll('.tema').forEach(s=>{let vis=0;s.querySelectorAll('.fila').forEach(f=>{const ok=!v||f.dataset.q.includes(v);f.style.display=ok?'':'none';if(ok)vis++});s.style.display=vis?'':'none';any+=vis});
-document.getElementById('vacio').style.display=any?'none':'block';try{sessionStorage.setItem('q',q.value)}catch(e){}}
-q.oninput=filtra;window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');if(g&&!q.value){q.value=g}}catch(e){}if(q.value)filtra()});"""
-    (OUT / "index.html").write_text(pagina("DA · Diseño de Algoritmos", cuerpo, "", js, "Ejercicios, soluciones, vídeos y herramientas interactivas de Diseño de Algoritmos"), encoding="utf-8")
+<section class="bloque" id="videos"><h2>Vídeos</h2><p class="lede">Un vídeo paso a paso por cada ejercicio y por cada tema ({n_vid} en total), que se ven aquí mismo, con subtítulos.</p><p><a class="btn primary" href="videos.html">Ver todos los vídeos →</a></p></section>
+<footer>Material de estudio independiente, no afiliado a la UCM{" · commit <code>" + esc(sha) + "</code>" if sha else ""} · actualizado {ahora}</footer></div>"""
+    datos = json.dumps([{"s": slugs[i], "i": e["id"], "t": e["titulo"], "d": re.sub(r"`", "", e["idea"]), "k": color_de(e["tema"]),
+                         "h": 1 if es_teoria(e) else 0, "v": 1 if e["video"] else 0, "c": 1 if e["sols"] else 0, "e": 1 if e["readme"] else 0, "p": 1 if e["pdf"] else 0} for i, e in enumerate(ej)], ensure_ascii=False)
+    js = ("const EJ=" + datos.replace("</", "<\\/") + r""";
+const q=document.getElementById('q');
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function fila(x){const ch=[];if(x.p)ch.push('<a class="chip p" href="ej/'+x.s+'.html#enunciado">Enunciado</a>');if(x.c)ch.push('<a class="chip" href="ej/'+x.s+'.html#codigo">Código</a>');if(x.e)ch.push('<a class="chip" href="ej/'+x.s+'.html#explicacion">Explicación</a>');if(x.v)ch.push('<a class="chip v" href="ej/'+x.s+'.html#video">Vídeo</a>');
+ const ok=x.h?'<span class="okb th0" aria-hidden="true"><svg class="i"><use href="#i-book"/></svg></span>':'<button class="okb" data-ok="'+x.s+'" aria-label="Marcar '+esc(x.i)+' como hecho" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></button>';
+ return '<div class="exr'+(x.h?' teoria':'')+'" style="--c:'+x.k+'">'+ok+'<span class="id">'+(x.h?'Teoría':esc(x.i))+'</span><span class="t"><a href="ej/'+x.s+'.html">'+esc(x.t)+'</a></span><span class="idea">'+esc(x.d)+'</span><span class="chips">'+ch.join('')+'</span></div>'}
+function filtra(){const v=q.value.trim().toLowerCase(),r=document.getElementById('resultados'),t=document.getElementById('temas');
+ try{sessionStorage.setItem('q',q.value)}catch(e){}
+ if(!v){r.hidden=true;t.hidden=false;return}
+ const l=EJ.filter(x=>(x.i+' '+x.t+' '+x.d).toLowerCase().includes(v));
+ document.getElementById('res-t').textContent=l.length+(l.length==1?' resultado':' resultados')+' para «'+q.value.trim()+'»';
+ document.getElementById('res-l').innerHTML=l.map(fila).join('');document.getElementById('vacio').style.display=l.length?'none':'block';
+ r.hidden=false;t.hidden=true;if(window.pintarProgreso)window.pintarProgreso()}
+q.oninput=filtra;
+document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus()}});
+window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');if(g&&!q.value){q.value=g}}catch(e){}if(q.value)filtra()});""")
+    (OUT / "index.html").write_text(pagina("Diseño de Algoritmos UCM: ejercicios resueltos, vídeos y herramientas | StudIA", cuerpo, "", js,
+                                           "Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++, con explicación, vídeo paso a paso de cada uno y visualizadores de AVL, grafos y Dijkstra.", ruta=""), encoding="utf-8")
+    sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    hoy = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    for r in dict.fromkeys(PAGINAS):
+        sm.append(f"  <url><loc>{esc(BASE_DA + quote(r))}</loc><lastmod>{hoy}</lastmod></url>")
+    sm.append("</urlset>")
+    (OUT / "sitemap.xml").write_text("\n".join(sm) + "\n", encoding="utf-8")
     (OUT / ".nojekyll").write_text("")
 
     # copiar ficheros referenciados + código de cada ejercicio
@@ -648,6 +875,9 @@ q.oninput=filtra;window.addEventListener('pageshow',()=>{try{const g=sessionStor
                     COPIAR.add(p.relative_to(RAIZ).as_posix())
     for c in cabs:
         COPIAR.add(f"Estructuras de datos/{c}")
+    for t_, docs in TEORIA.items():
+        for r_, _n, _b in docs:
+            d = OUT / 'teoria' / str(t_) / posixpath.basename(r_); d.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(RAIZ / r_, d)
     for rel in sorted(COPIAR):
         if existe(rel):
             d = OUT / rel; d.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(RAIZ / rel, d)

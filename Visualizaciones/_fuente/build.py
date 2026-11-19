@@ -11,9 +11,9 @@ marcador /*SHARED_JS*/ donde se inserta shared.js. El marcador /*SHARED_CSS*/ de
 import pathlib, re, sys
 
 AQUI = pathlib.Path(__file__).parent
-CSS = (AQUI / "shared.css").read_text(encoding="utf-8")
+CSS = ((AQUI.parent.parent / "sitio" / "estilo" / "apuntes.css").read_text(encoding="utf-8") + "\n" + (AQUI.parent.parent / "sitio" / "estilo" / "paletas.css").read_text(encoding="utf-8") + "\n" + (AQUI.parent.parent / "sitio" / "estilo" / "glossy.css").read_text(encoding="utf-8") + "\n" + (AQUI / "shared.css").read_text(encoding="utf-8"))
 JS = (AQUI / "shared.js").read_text(encoding="utf-8")
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">'
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">'
 
 def main():
     out_art = AQUI / "_artifact"
@@ -24,7 +24,7 @@ def main():
         title = re.search(r"<title>(.*?)</title>", s, re.S).group(1).strip()
         cuerpo = re.sub(r"<title>.*?</title>", "", s, count=1, flags=re.S)
         (out_art / f"{nombre}.html").write_text(f"<title>{title}</title>\n{FONTS}\n{cuerpo}", encoding="utf-8")
-        pagina = ('<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n'
+        pagina = ('<!doctype html>\n<html lang="es" data-paleta="premium" data-estilo="glossy">\n<head>\n<meta charset="utf-8">\n'
                   '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
                   f'<title>{title}</title>\n{FONTS}\n</head>\n<body>\n{cuerpo}\n</body>\n</html>\n')
         (AQUI.parent / f"{nombre}.html").write_text(pagina, encoding="utf-8")
