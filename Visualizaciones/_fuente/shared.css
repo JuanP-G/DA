@@ -1,5 +1,6 @@
 /* Tokens, base y modo oscuro: sitio/estilo/apuntes.css (se antepone al construir). Aquí solo lo propio de las visualizaciones. */
-:root { --node: #ffffff; --code-hl: #3a3010; --code-hl-bar: #f5a623; }
+:root { --node: #ffffff; --code-hl: rgba(13,148,136,.14); --code-hl-bar: #0d9488; }
+:root:not([data-theme="light"]) { --code-hl: rgba(45,212,191,.15); --code-hl-bar: #2dd4bf; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --node: #1f2a45; } }
 :root[data-theme="dark"] { --node: #1f2a45; }
 body { font-size: 15px; line-height: 1.5; }
@@ -100,3 +101,15 @@ span.note { display: block; }
 .canvas-scroll { max-width: 100%; min-width: 0; }
 .stage, .stage > * > * { min-width: 0; }
 @media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr) !important; } }
+
+/* la línea de código en ejecución se ve en verde azulado y el texto se aclara */
+.codebox .ln.on { color: var(--ink); }
+:root[data-theme="dark"] { --code-hl: rgba(45,212,191,.15); --code-hl-bar: #2dd4bf; }
+:root[data-theme="light"] { --code-hl: rgba(13,148,136,.14); --code-hl-bar: #0d9488; }
+/* enlaces con aspecto de botón nunca subrayados */
+a.back, a.btn, .btn, footer.foot > a:first-child { text-decoration: none !important; }
+/* modo incrustado en la página del laboratorio: sin cabecera, pie ni fondo propio */
+html.embed, html.embed body { background: transparent; }
+html.embed .noembed { display: none !important; }
+html.embed .wrap { padding: 0; max-width: none; }
+html.embed .volver-tema { display: none !important; }

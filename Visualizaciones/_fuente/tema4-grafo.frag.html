@@ -50,23 +50,41 @@
 .hint { font-size: .82rem; color: var(--muted); margin: 0; }
 .back { font-size: .9rem; }
 a { color: var(--blue); }
-.colstack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.colstack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+/* F1: barra de herramientas compacta */
+.tb { padding: 12px 16px; }
+.tb > h2 { display: none; }
+.tb .hint { min-height: 1.3em; margin-top: 8px; color: var(--amber, #f3c34a); }
+.tb .grp label { white-space: nowrap; }
+/* adyacencias en dos columnas, más pequeñas */
+.adj { grid-template-columns: auto 1fr auto 1fr; gap: 4px 8px; font-size: .8rem; }
+.adj .lst { padding: 1px 5px; min-height: 22px; }
+.adj .chip { padding: 0 5px; min-width: 1.5em; }
+details.mas > summary { cursor: pointer; font-size: .85rem; color: var(--muted); margin-top: 8px; }
+details.mas[open] > summary { color: var(--ink); }
+.runbar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-bottom: 10px; }
+.runbar label { font-size: .85rem; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+#msgHost .msg { min-height: 3.6em; }
+#state:empty::before { content: ''; }
+.panel.compact { padding: 12px 16px; }
+.panel.compact > h2 { margin-bottom: 8px; }
 </style>
 <div class="wrap">
-  <header class="top">
+  <header class="top noembed">
     <span class="tag">Tema 4</span>
     <h1>Grafo: listas de adyacencia y recorridos</h1>
     <p class="lede">Un <code>Grafo</code> guarda para cada vértice la lista de sus adyacentes. Construye uno (o carga un ejemplo), mira cómo <code>ponArista</code> rellena las listas y ejecuta DFS o BFS paso a paso sobre el código real de los ejercicios.</p>
     <a class="back" href="index.html">← Todas las estructuras</a>
   </header>
 
-  <section class="panel">
+  <section class="panel tb">
     <h2>1 · Construye el grafo</h2>
     <div class="gtools">
       <div class="grp" role="group" aria-label="Herramienta">
         <button class="btn toolbtn on" id="tMove" title="Arrastra vértices">✥ Mover</button>
         <button class="btn toolbtn" id="tVert" title="Clic en el lienzo crea un vértice">＋ Vértice</button>
         <button class="btn toolbtn" id="tEdge" title="Clic en dos vértices para unirlos">⤳ Arista</button>
+        <button class="btn toolbtn" id="tDel" title="Clic en un vértice lo elimina, con sus aristas">✕ Borrar</button>
       </div>
       <span class="sep"></span>
       <div class="grp">
@@ -90,9 +108,9 @@ a { color: var(--blue); }
         <div class="canvas-scroll"><svg id="gsvg" class="viz" viewBox="0 0 640 420" role="img" aria-label="Grafo interactivo"></svg></div>
         <div class="legend" id="legend" style="margin-top:10px"></div>
       </section>
-      <section class="panel">
+      <section class="panel compact">
         <h2>2 · Ejecuta un algoritmo</h2>
-        <div class="bar" style="margin-bottom:10px">
+        <div class="runbar">
           <label>algoritmo <select class="field" id="algo"></select></label>
           <label id="lblSrc">desde <input class="field" id="src" type="number" min="0" value="0" style="width:3.6em"></label>
           <label id="lblDst">hasta <input class="field" id="dst" type="number" min="0" value="3" style="width:3.6em"></label>
@@ -102,20 +120,21 @@ a { color: var(--blue); }
       </section>
     </div>
     <div class="colstack">
-      <section class="panel">
-        <h2>Lo que guarda la clase</h2>
-        <dl class="kv" style="margin-bottom:10px"><dt>_V</dt><dd id="kV">0</dd><dt>_A</dt><dd id="kA">0</dd></dl>
-        <div class="adj" id="adj" aria-label="Listas de adyacencia"></div>
-        <p class="note" style="margin-top:8px" id="adjNote"></p>
-      </section>
-      <section class="panel" id="datos">
+      <div id="msgHost"></div>
+      <section class="panel compact" id="datos">
         <h2>Vectores y colas del algoritmo</h2>
         <div id="state" style="display:flex;flex-direction:column;gap:10px"></div>
       </section>
-      <section class="panel">
+      <section class="panel compact">
         <h2>Código C++</h2>
-        <div id="codeHost" style="max-height:420px;overflow:auto"></div>
+        <div id="codeHost" style="max-height:340px;overflow:auto"></div>
         <div class="bar" style="margin-top:8px" id="codeTabs"></div>
+      </section>
+      <section class="panel compact">
+        <h2>Lo que guarda la clase</h2>
+        <dl class="kv" style="margin-bottom:8px"><dt>_V</dt><dd id="kV">0</dd><dt>_A</dt><dd id="kA">0</dd></dl>
+        <div class="adj" id="adj" aria-label="Listas de adyacencia"></div>
+        <details class="mas"><summary>¿Cómo se guardan las aristas?</summary><p class="note" style="margin-top:6px" id="adjNote"></p></details>
       </section>
     </div>
   </div>
@@ -132,7 +151,7 @@ a { color: var(--blue); }
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel noembed">
     <h2>Ejercicios del repositorio que lo usan</h2>
     <table class="t">
       <thead><tr><th>Nº</th><th>Problema</th><th>Idea</th></tr></thead>
@@ -148,7 +167,7 @@ a { color: var(--blue); }
       </tbody>
     </table>
   </section>
-  <footer class="foot"><a href="index.html">← Todas las estructuras</a> · Código basado en <code>Grafo.h</code> (A. Verdejo) · el comportamiento de la página sigue exactamente ese código.</footer>
+  <footer class="foot noembed"><a href="index.html">← Todas las estructuras</a> · Código basado en <code>Grafo.h</code> (A. Verdejo) · el comportamiento de la página sigue exactamente ese código.</footer>
 </div>
 
 <script>
@@ -165,6 +184,12 @@ function gPon(v, w) {
   G.A++; G.ady[v].push(w); if (!DIR) G.ady[w].push(v);
 }
 function gHay(u, v) { return G.ady[u].includes(v); }
+function gDelV(x) {
+  G.ady.splice(x, 1); G.pos.splice(x, 1); G.n--;
+  G.ady = G.ady.map(l => l.filter(w => w !== x).map(w => (w > x ? w - 1 : w)));
+  const tot = G.ady.reduce((a, l) => a + l.length, 0);
+  G.A = DIR ? tot : Math.round(tot / 2);
+}
 function gInv() { const r = { n: G.n, ady: Array.from({ length: G.n }, () => []) }; for (let v = 0; v < G.n; v++) for (const w of G.ady[v]) r.ady[w].push(v); return r; }
 
 /* aristas “lógicas” (cada una una vez) para dibujar */
@@ -290,30 +315,34 @@ function drawAdj(f) {
 let tool = 'move', pendingEdge = -1;
 function setTool(t) {
   tool = t; pendingEdge = -1; visual.sel = -1;
-  $('#tMove').classList.toggle('on', t === 'move'); $('#tVert').classList.toggle('on', t === 'vert'); $('#tEdge').classList.toggle('on', t === 'edge');
-  $('#toolHint').textContent = { move: 'Arrastra los vértices para colocarlos como quieras.', vert: 'Haz clic en el lienzo para crear un vértice (hasta 14).', edge: DIR ? 'Haz clic en el vértice origen y luego en el destino: ponArista(v, w) añade v→w.' : 'Haz clic en dos vértices: ponArista(v, w) añade v-w.' }[t];
-  svg.style.cursor = t === 'vert' ? 'copy' : t === 'edge' ? 'pointer' : 'default';
+  $('#tMove').classList.toggle('on', t === 'move'); $('#tVert').classList.toggle('on', t === 'vert'); $('#tEdge').classList.toggle('on', t === 'edge'); $('#tDel').classList.toggle('on', t === 'del');
+  $('#toolHint').textContent = { move: 'Arrastra los vértices para colocarlos como quieras.', vert: 'Haz clic en el lienzo para crear un vértice (hasta 14).', edge: DIR ? 'Haz clic en el vértice origen y luego en el destino: ponArista(v, w) añade v→w.' : 'Haz clic en dos vértices: ponArista(v, w) añade v-w.', del: 'Haz clic en un vértice para eliminarlo (con todas sus aristas).' }[t];
+  svg.style.cursor = t === 'vert' ? 'copy' : (t === 'edge' || t === 'del') ? 'pointer' : 'default';
   applyVisual();
 }
-$('#tMove').onclick = () => setTool('move'); $('#tVert').onclick = () => setTool('vert'); $('#tEdge').onclick = () => setTool('edge');
+$('#tMove').onclick = () => setTool('move'); $('#tVert').onclick = () => setTool('vert'); $('#tEdge').onclick = () => setTool('edge'); $('#tDel').onclick = () => setTool('del');
 function svgPoint(e) { const r = svg.getBoundingClientRect(); const vb = svg.viewBox.baseVal; return [(e.clientX - r.left) * vb.width / r.width, (e.clientY - r.top) * vb.height / r.height]; }
 let drag = null;
 svg.addEventListener('pointerdown', e => {
   const g = e.target.closest('.node'); const [px, py] = svgPoint(e);
   if (tool === 'move' && g) { drag = { v: +g.dataset.v, dx: px - G.pos[+g.dataset.v][0], dy: py - G.pos[+g.dataset.v][1] }; svg.setPointerCapture(e.pointerId); }
   else if (tool === 'vert' && !g) { if (G.n >= 14) { flashHint('Máximo 14 vértices para que se vea bien.'); return; } gAddV(Math.max(R, Math.min(640 - R, px)), Math.max(R + 14, Math.min(420 - R, py))); afterEdit(); }
+  else if (tool === 'del' && g) { gDelV(+g.dataset.v); afterEdit(); }
   else if (tool === 'edge' && g) {
     const v = +g.dataset.v;
     if (pendingEdge < 0) { pendingEdge = v; visual.sel = v; applyVisual(); }
     else { addEdgeAnimated(pendingEdge, v); pendingEdge = -1; visual.sel = -1; }
   }
 });
+let dragRaf = 0;
 svg.addEventListener('pointermove', e => {
   if (!drag) return; const [px, py] = svgPoint(e);
   G.pos[drag.v] = [Math.max(R, Math.min(640 - R, px - drag.dx)), Math.max(R + 14, Math.min(420 - R, py - drag.dy))];
-  const keep = curFrame; drawGraph(); curFrame = keep; applyVisual();
+  if (dragRaf) return;
+  dragRaf = requestAnimationFrame(() => { dragRaf = 0; const keep = curFrame; drawGraph(); curFrame = keep; applyVisual(); });
 });
-svg.addEventListener('pointerup', () => { drag = null; });
+const endDrag = () => { drag = null; };
+svg.addEventListener('pointerup', endDrag); svg.addEventListener('pointercancel', endDrag); svg.addEventListener('lostpointercapture', endDrag);
 function flashHint(t) { const h = $('#toolHint'); const old = h.textContent; h.textContent = t; setTimeout(() => { h.textContent = old; }, 2200); }
 
 function afterEdit() {
@@ -485,7 +514,7 @@ ALGOS.bip = () => {
 
 
 /* ---------- código mostrado ---------- */
-const CODES = {"clase": {"f": "Grafo.h (resumen)", "tab": "Grafo.h", "lines": ["class Grafo {", "private:", "   int _V;  // número de vértices", "   int _A;  // número de aristas", "   std::vector<Adys> _ady;  // vector de listas de adyacentes", "public:", "   ", "   Grafo(int V) : _V(V), _A(0), _ady(_V) {}", "   ", "   // ... constructor desde un flujo de entrada omitido", "   ", "   int V() const { return _V; }", "   ", "   int A() const { return _A; }", "   ", "   void ponArista(int v, int w) {", "      if (v < 0 || v >= _V || w < 0 || w >= _V)", "         throw std::domain_error(\"Vertice inexistente\");", "      ++_A;", "      _ady[v].push_back(w);", "      _ady[w].push_back(v);", "   }", "   ", "   Adys const& ady(int v) const {", "      if (v < 0 || v >= _V)", "         throw std::domain_error(\"Vertice inexistente\");", "      return _ady[v];", "   }", "   ", "   // ... print() omitido", "};"]}, "comp": {"f": "EJ_04-2.cpp", "tab": "Componentes (DFS)", "lines": ["class MaximaCompConexa {", "public:", "    MaximaCompConexa(Grafo const& g) : visit(g.V(), false), maxim(0) {", "        for (int v = 0; v < g.V(); ++v) {", "            if (!visit[v]) {   // v empieza una componente nueva", "                int tam = dfs(g, v);", "                maxim = max(maxim, tam);", "            }", "        }", "    }", "", "    int maximo() const { return maxim; }", "", "private:", "    vector<bool> visit;   // visit[v] = ya contado en alguna componente", "    int maxim;            // tamano de la mayor componente encontrada", "", "    // devuelve el numero de vertices de la componente de v que aun no se habian visitado", "    int dfs(Grafo const& g, int v) {", "        visit[v] = true;", "        int tam = 1;   // el propio v", "        for (int w : g.ady(v))", "            if (!visit[w]) tam += dfs(g, w);", "        return tam;", "    }", "};"]}, "bfs": {"f": "EJ_04-L.cpp", "tab": "BFS", "lines": ["class CaminosBFS {", "public:", "    CaminosBFS(Grafo const& g, int origen) : dist(g.V(), -1) {", "        bfs(g, origen);", "    }", "", "    int distancia(int v) const { return dist[v]; }", "", "private:", "    vector<int> dist;   // dist[v] = aristas desde el origen (-1 = sin visitar)", "", "    void bfs(Grafo const& g, int origen) {", "        queue<int> q;", "        dist[origen] = 0;", "        q.push(origen);", "        while (!q.empty()) {", "            int v = q.front(); q.pop();", "            for (int w : g.ady(v)) {", "                if (dist[w] == -1) {", "                    dist[w] = dist[v] + 1;", "                    q.push(w);", "                }", "            }", "        }", "    }", "};"]}, "bip": {"f": "EJ_04-7.cpp", "tab": "Bipartito (DFS)", "lines": ["class Bipartito {", "public:", "    Bipartito(Grafo const& g) : visit(g.V(), false), color(g.V(), false), bipar(true) {", "        for (int v = 0; v < g.V() && bipar; ++v) {", "            if (!visit[v]) {   // nueva componente: su primer vertice puede ir de cualquier color", "                color[v] = false;", "                dfs(g, v);", "            }", "        }", "    }", "", "    bool esBipartito() const { return bipar; }", "", "private:", "    vector<bool> visit;   // visit[v] = v ya tiene color asignado", "    vector<bool> color;   // los dos colores: false / true", "    bool bipar;", "", "    void dfs(Grafo const& g, int v) {", "        visit[v] = true;", "        for (int w : g.ady(v)) {", "            if (!bipar) return;   // ya sabemos la respuesta, no seguimos", "            if (!visit[w]) {", "                color[w] = !color[v];   // el vecino lleva el color contrario", "                dfs(g, w);", "            }", "            else if (color[w] == color[v]) bipar = false;   // arista entre iguales", "        }", "    }", "};"]}};
+const CODES = {"clase": {"f": "Grafo.h (resumen)", "tab": "Grafo.h", "lines": ["class Grafo {", "private:", "   int _V;  // número de vértices", "   int _A;  // número de aristas", "   std::vector<Adys> _ady;  // vector de listas de adyacentes", "public:", "   ", "   Grafo(int V) : _V(V), _A(0), _ady(_V) {}", "   ", "   // ... constructor desde un flujo de entrada omitido", "   ", "   int V() const { return _V; }", "   ", "   int A() const { return _A; }", "   ", "   void ponArista(int v, int w) {", "      if (v < 0 || v >= _V || w < 0 || w >= _V)", "         throw std::domain_error(\"Vertice inexistente\");", "      ++_A;", "      _ady[v].push_back(w);", "      _ady[w].push_back(v);", "   }", "   ", "   Adys const& ady(int v) const {", "      if (v < 0 || v >= _V)", "         throw std::domain_error(\"Vertice inexistente\");", "      return _ady[v];", "   }", "   ", "   // ... print() omitido", "};"]}, "comp": {"f": "EJ_04-2.cpp", "tab": "Componentes (DFS)", "lines": ["class MaximaCompConexa {", "public:", "\t// construye el objeto y calcula el tamano de la mayor componente conexa", "    MaximaCompConexa(Grafo const& g) : visit(g.V(), false), maxim(0) {", "        for (int v = 0; v < g.V(); ++v) {", "            if (!visit[v]) {   // v empieza una componente nueva", "                int tam = dfs(g, v);", "                maxim = max(maxim, tam);", "            }", "        }", "    }", "", "    int maximo() const { return maxim; }", "", "private:", "    vector<bool> visit;   // visit[v] = ya contado en alguna componente", "    int maxim;            // tamano de la mayor componente encontrada", "", "    // devuelve el numero de vertices de la componente de v que aun no se habian visitado", "    int dfs(Grafo const& g, int v) {", "        visit[v] = true;", "        int tam = 1;   // el propio v", "        for (int w : g.ady(v))", "            if (!visit[w]) tam += dfs(g, w);", "        return tam;", "    }", "};"]}, "bfs": {"f": "EJ_04-L.cpp", "tab": "BFS", "lines": ["class CaminosBFS {", "public:", "    CaminosBFS(Grafo const& g, int origen) : dist(g.V(), -1) {", "        bfs(g, origen);", "    }", "", "    int distancia(int v) const { return dist[v]; }", "", "private:", "    vector<int> dist;   // dist[v] = saltos desde el origen (-1 = no alcanzado)", "    int alcanzados;     // vertices a distancia <= ttl (incluido el origen)", "", "    void bfs(Grafo const& g, int origen) {", "        queue<int> q;", "        dist[origen] = 0;", "        q.push(origen);", "        while (!q.empty()) {", "            int v = q.front(); q.pop();", "            for (int w : g.ady(v)) {", "                if (dist[w] == -1) {        // primera vez que llegamos --> camino mas corto", "                    dist[w] = dist[v] + 1;", "                    q.push(w);", "                }", "            }", "        }", "    }", "};"]}, "bip": {"f": "EJ_04-7.cpp", "tab": "Bipartito (DFS)", "lines": ["class Bipartito {", "public:", "    Bipartito(Grafo const& g) : visit(g.V(), false), color(g.V(), false), bipar(true) {", "        for (int v = 0; v < g.V() && bipar; ++v) {", "            if (!visit[v]) {   // nueva componente: su primer vertice puede ir de cualquier color", "                color[v] = false;", "                dfs(g, v);", "            }", "        }", "    }", "", "    bool esBipartito() const { return bipar; }", "", "private:", "    vector<bool> visit;   // visit[v] = v ya tiene color asignado", "    vector<bool> color;   // los dos colores: false / true", "    bool bipar;", "", "    void dfs(Grafo const& g, int v) {", "        visit[v] = true;", "        for (int w : g.ady(v)) {", "            if (!bipar) return;   // ya sabemos la respuesta, no seguimos", "            if (!visit[w]) {", "                color[w] = !color[v];   // el vecino lleva el color contrario", "                dfs(g, w);", "            }", "            else if (color[w] == color[v]) bipar = false;   // arista entre iguales", "        }", "    }", "};"]}};
 let markFn = null, curCode = null;
 function showCode(name) {
   if (curCode === name) return; curCode = name;
@@ -496,6 +525,7 @@ for (const k in CODES) { const b = document.createElement('button'); b.className
 
 /* ---------- arranque ---------- */
 $('#playerHost').innerHTML = PLAYER_HTML;
+$('#msgHost').appendChild($('#msg'));
 const player = new Player({
   render: f => { curFrame = f; applyVisual(); drawAdj(f); drawState(f); },
   mark: lines => { if (markFn) markFn(lines); }

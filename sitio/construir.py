@@ -298,8 +298,8 @@ def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head="", ruta=None)
     portal = f'<a href="{esc(PORTAL_URL)}/#asignaturas">Asignaturas</a>' if PORTAL_URL else ""
     marca = f'href="{prefijo}../" aria-label="StudIA, portal de asignaturas"' if PORTAL_URL else f'href="{prefijo}index.html" aria-label="Diseño de Algoritmos, inicio"'
     nav = (f'<header class="nav"><div class="nav-pill"><a class="brand" {marca}><img src="{prefijo}estilo/marca/mark.png" alt="" width="201" height="242"><b>StudIA</b><span class="subj">DA</span></a>'
-           f'<nav aria-label="Principal">{portal}<a class="keep" href="{prefijo}index.html#temas">Temas</a><a href="{prefijo}index.html#herramientas">Herramientas</a>'
-           f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a class="keep" href="{prefijo}videos.html">Vídeos</a><a href="{prefijo}guia.html">Guía</a></nav>'
+           f'<nav aria-label="Principal">{portal}<a class="keep" href="{prefijo}index.html#temas">Temas</a><a href="{prefijo}laboratorio.html">Laboratorio</a>'
+           f'<a class="keep" href="{prefijo}videos.html">Vídeos</a><a href="{prefijo}guia.html">Guía</a></nav>'
            f'<button id="tema" class="icon-btn" type="button" aria-label="Cambiar tema claro/oscuro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></div></header>')
     iconos = (f'<link rel="icon" href="{prefijo}estilo/marca/favicon.ico" sizes="any"><link rel="icon" href="{prefijo}estilo/marca/favicon-32.png" type="image/png" sizes="32x32">'
               f'<link rel="apple-touch-icon" href="{prefijo}estilo/marca/apple-touch-icon.png"><meta name="theme-color" content="#080a1c">')
@@ -576,7 +576,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
         cur = " cur" if apuntes[0] == slug else ""
         tarjetas.append(f'<a class="arow main{cur}" href="{apuntes[0]}.html"><span class="pic">@@i:book@@</span><span class="at"><b>Apuntes del tema</b><small>Teoría explicada paso a paso</small></span>@@i:arrow@@</a>')
     if herr and (RAIZ / "Visualizaciones" / herr).exists():
-        tarjetas.append(f'<a class="arow main alt" href="../herramientas/{herr}"><span class="pic">@@i:tool@@</span><span class="at"><b>Herramienta interactiva</b><small>Prueba el algoritmo paso a paso</small></span>@@i:arrow@@</a>')
+        tarjetas.append(f'<a class="arow main alt" href="{url_herr(herr, "../")}"><span class="pic">@@i:tool@@</span><span class="at"><b>Herramienta interactiva</b><small>Prueba el algoritmo paso a paso</small></span>@@i:arrow@@</a>')
     items = ""
     for s_, x in hermanos:
         actual = s_ == slug
@@ -629,7 +629,7 @@ def pagina_guia(n_temas, n_ej, n_herr, n_vid):
     donde = [
         ("index.html#temas", "Temas", f"Los {n_temas} temas con sus ejercicios, vídeo y apuntes. Empieza aquí."),
         ("index.html#herramientas", "Herramientas", f"Las {n_herr} herramientas interactivas para ver los algoritmos funcionando."),
-        ("index.html#estructuras", "Estructuras", "Las cabeceras .h (Grafo, Digrafo, IndexPQ…) para usar en tus soluciones."),
+        ("laboratorio.html", "Laboratorio", "Estructuras de datos: simulador paso a paso, código .h, coste de cada operación y ejercicios."),
         ("videos.html", "Vídeos", f"Todos los vídeos juntos ({n_vid} en total), por si quieres verlos de seguido."),
     ]
     h_pasos = "".join(f'<div class="gp"><span class="gn{ok}">{n}</span><b>{esc(t)}</b><span>{esc(d)}</span></div>' for n, t, d, ok in pasos)
@@ -649,14 +649,120 @@ def pagina_guia(n_temas, n_ej, n_herr, n_vid):
 def pagina_cabecera(nombre):
     rel = f"Estructuras de datos/{nombre}"
     herr = next((TEMAS[t]["herr"] for t in TEMAS if nombre in TEMAS[t]["cab"]), None)
-    extra = f'<a class="btn" href="../herramientas/{herr}">@@i:tool@@ Herramienta interactiva</a>' if herr and (RAIZ / "Visualizaciones" / herr).exists() else ""
+    extra = f'<a class="btn" href="{url_herr(herr, "../")}">@@i:tool@@ Herramienta interactiva</a>' if herr and (RAIZ / "Visualizaciones" / herr).exists() else ""
     txt = leer_texto(rel)
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#estructuras">← Volver</a>'
-              f'<a href="../index.html">Inicio</a>›<a href="../index.html#estructuras">Estructuras</a>›<span>{esc(nombre)}</span></div>'
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../laboratorio.html">← Volver</a>'
+              f'<a href="../index.html">Inicio</a>›<a href="../laboratorio.html">Laboratorio</a>›<span>{esc(nombre)}</span></div>'
               f'<div class="ejhead"><span class="tag">Estructura de datos</span><h1>{esc(nombre)}</h1>'
               f'<div class="acc"><button class="btn" data-copy="src0">@@i:copy@@ Copiar código</button>{descargar(rel, "@@i:download@@ Descargar " + esc(nombre))}{extra}</div></div>'
               f'<pre data-code="{esc(nombre)}" id="src0">{esc(txt)}</pre></div>')
     return pagina(f"{nombre} | Estructuras de datos de DA", cuerpo, "../", HIGHLIGHT_JS, f"Código de {nombre}, la cabecera de la asignatura de Diseño de Algoritmos, con visor, copiar y descargar.", ruta=f"estructuras/{nombre}.html")
+
+
+# ----------------------------------------------------------------------------------------------------------------
+#  LABORATORIO: una página por estructura con pestañas (Visualizar · Código · Operaciones y coste · Ejercicios)
+# ----------------------------------------------------------------------------------------------------------------
+LABS = {
+    "tema4-grafo.html": dict(
+        slug="grafo", titulo="Grafo", cab="Grafo.h",
+        lede="Un grafo no dirigido guarda, para cada vértice, la lista de sus adyacentes. Aquí lo ves funcionar paso a paso, construyes el tuyo, lees su código y practicas con los ejercicios.",
+        ops=[
+            ("Grafo(V)", "Crea un grafo con V vértices y ninguna arista", "O(V)", "Hay que crear V listas de adyacentes vacías (una por vértice). No depende de las aristas, solo de cuántos vértices pidas."),
+            ("ponArista(v, w)", "Añade la arista v–w", "O(1)", "Solo hace dos <code>push_back</code>: uno en la lista de v y otro en la de w, y sube <code>_A</code>. No recorre nada del grafo, así que tarda lo mismo con 10 vértices que con un millón."),
+            ("ady(v)", "Devuelve los adyacentes de v", "O(1)", "Devuelve una referencia a la lista que ya está guardada: no la copia ni busca nada. Ojo: <b>recorrerla</b> sí cuesta O(grado de v)."),
+            ("V() / A()", "Número de vértices / aristas", "O(1)", "Son dos enteros que la clase guarda al construir el grafo y actualiza en <code>ponArista</code>. Leerlos es instantáneo."),
+            ("¿Existe la arista v–w?", "Comprobarlo recorriendo ady(v)", "O(grado(v))", "Hay que mirar la lista de adyacentes de v hasta encontrar w. En el peor caso v está unido con todos los demás, y la lista tiene V − 1 elementos."),
+            ("DFS / BFS completo", "Recorrer todo el grafo", "O(V + A)", "Cada vértice se visita una sola vez (V). Al visitarlo se recorre su lista de adyacentes, y entre todos los vértices se recorren 2·A adyacentes (cada arista aparece en dos listas). Total: V + A. Con una matriz de adyacencia sería V², porque habría que mirar una fila entera por cada vértice."),
+            ("Componentes conexas", "DFS desde cada vértice sin visitar", "O(V + A)", "Es un recorrido completo: lanzas un DFS cada vez que encuentras un vértice sin visitar, pero ningún vértice ni arista se procesa dos veces."),
+            ("Camino mínimo (BFS)", "Distancia en aristas desde un origen", "O(V + A)", "BFS procesa cada vértice una vez y mira cada lista una vez. La cola garantiza que se llega a cada vértice por el camino con menos aristas."),
+            ("Bipartito", "Colorear con 2 colores con DFS", "O(V + A)", "Es otro recorrido completo: al visitar cada arista se comprueba si los dos extremos tienen el mismo color. No hay trabajo extra por encima de V + A."),
+        ]),
+    "tema5-digrafo.html": dict(
+        slug="digrafo", titulo="Digrafo", cab="Digrafo.h",
+        lede="En un grafo dirigido cada arista v→w tiene sentido. Construye uno, mira cómo se rellenan las listas de sucesores y ejecuta BFS, orden topológico o inverso() sobre el código real.",
+        ops=[
+            ("Digrafo(V)", "Crea un digrafo con V vértices y ninguna arista", "O(V)", "Hay que crear V listas de sucesores vacías. No depende de las aristas."),
+            ("ponArista(v, w)", "Añade la arista v→w", "O(1)", "Un único <code>push_back</code>: w entra solo en la lista de v. No se recorre nada, así que el coste es constante."),
+            ("ady(v)", "Devuelve los sucesores de v", "O(1)", "Devuelve una referencia a la lista guardada, sin copiarla. Recorrerla cuesta O(grado de salida de v)."),
+            ("V() / A()", "Número de vértices / aristas", "O(1)", "Dos enteros que la clase mantiene al día. Aquí cada arista se guarda una vez, así que la suma de las longitudes de las listas es exactamente <code>_A</code>."),
+            ("inverso()", "Crea el digrafo con todas las aristas invertidas", "O(V + A)", "Hay que recorrer todas las listas (V listas y A elementos en total) y meter cada arista v→w como w→v en el nuevo digrafo. Cada arista se toca una sola vez."),
+            ("BFS", "Distancias desde un origen", "O(V + A)", "Cada vértice entra una vez en la cola y se recorre su lista de sucesores una vez. Solo se llega a los vértices alcanzables desde el origen."),
+            ("Orden topológico", "DFS y postorden inverso", "O(V + A)", "Es un DFS completo: cada vértice y cada arista se procesan una vez. El orden sale de apilar los vértices cuando terminan; si aparece una arista hacia un vértice aún «en proceso», hay un ciclo."),
+            ("Detectar ciclos", "DFS con tres estados", "O(V + A)", "El mismo DFS del orden topológico: marcar cada vértice como sin visitar, en proceso o terminado no añade trabajo por encima de V + A."),
+        ]),
+}
+
+
+def url_herr(herr, pre=""):
+    """Dirección de la herramienta: la página del laboratorio si existe, y si no la herramienta suelta."""
+    lab = LABS.get(herr)
+    return f"{pre}lab/{lab['slug']}.html" if lab else f"{pre}herramientas/{herr}"
+
+
+def pagina_lab(herr, lab, tema, info, lista_ej, slugs, descr_herr):
+    rel = f"Estructuras de datos/{lab['cab']}"
+    txt = leer_texto(rel)
+    filas = []
+    for i, e in lista_ej:
+        if es_teoria(e):
+            continue
+        filas.append(f'<a class="labej" data-st="{slugs[i]}" href="../ej/{slugs[i]}.html"><span class="tk" aria-hidden="true">@@i:check@@</span><b>{esc(e["id"])}</b><span class="t">{esc(e["titulo"])}</span><span class="e">Hecho</span></a>')
+    ops = "".join(f'<details class="op"><summary><code>{o[0]}</code><span class="q">{o[1]}</span><b class="c">{o[2]}</b><i>¿Por qué?</i></summary><div class="why"><b>Por qué: </b>{o[3]}</div></details>' for o in lab["ops"])
+    tabs = [("vis", "Visualizar"), ("cod", f"Código ({lab['cab']})"), ("ops", "Operaciones y coste"), ("ej", "Ejercicios")]
+    botones = "".join(f'<button class="btn{" pref" if i == "vis" else ""}" data-tab="{i}">{t}</button>' for i, t in tabs)
+    panes = (f'<div class="pane" id="p-vis"><iframe id="labframe" class="labframe" src="../herramientas/{herr}?embed=1" title="Simulador de {esc(lab["titulo"])}" loading="eager"></iframe></div>'
+             f'<div class="pane" id="p-cod"><pre data-code="{esc(lab["cab"])}" id="src0">{esc(txt)}</pre></div>'
+             f'<div class="pane" id="p-ops"><p class="lede">El <b>coste</b> dice cómo crece el tiempo al crecer el grafo. <b>V</b> es el número de vértices y <b>A</b> el de aristas. Abre cualquier fila para ver el razonamiento.</p><div class="ops">{ops}</div></div>'
+             f'<div class="pane" id="p-ej"><p class="lede">Ejercicios del juez que usan esta estructura. Se marcan en verde cuando los das por hechos.</p><div class="labejs">{"".join(filas)}</div></div>')
+    cuerpo = (f'<div class="wrap lab"><div class="crumbs"><a class="back" href="../laboratorio.html">← Laboratorio</a>'
+              f'<a href="../index.html">Inicio</a>›<a href="../laboratorio.html">Laboratorio</a>›<span>{esc(lab["titulo"])}</span></div>'
+              f'<div class="ejhead"><span class="tag">Tema {tema} · Estructura de datos</span><h1>{esc(lab["titulo"])}</h1><p class="lede">{lab["lede"]}</p>'
+              f'<div class="acc"><button class="btn" data-copy="src0">@@i:copy@@ Copiar código</button>{descargar(rel, "@@i:download@@ Descargar " + esc(lab["cab"]))}'
+              f'<a class="btn" href="../tema/{tema}.html">@@i:book@@ Ver el tema {tema}</a></div></div>'
+              f'<div class="tabsbar"><div class="tabs">{botones}</div></div>{panes}</div>')
+    js = HIGHLIGHT_JS + TABS_JS + LAB_JS
+    return pagina(f"{lab['titulo']} · Laboratorio | Diseño de Algoritmos UCM", cuerpo, "../", js,
+                  f"Laboratorio de {lab['titulo']}: simulador paso a paso, código C++, coste de cada operación y ejercicios.", ruta=f"lab/{lab['slug']}.html")
+
+
+LAB_JS = r"""
+// el simulador (iframe) avisa de su alto; así no hay doble barra de desplazamiento
+(function(){var f=document.getElementById('labframe');if(!f)return;
+ window.addEventListener('message',function(e){if(e.source!==f.contentWindow||!e.data||e.data.tipo!=='da-lab-alto')return;if(e.data.alto>200)f.style.height=(e.data.alto+4)+'px'});
+ document.querySelectorAll('[data-tab]').forEach(function(b){b.addEventListener('click',function(){if(b.dataset.tab==='vis')setTimeout(function(){try{f.contentWindow.postMessage({tipo:'da-lab-medir'},'*')}catch(x){}},60)})});
+})();
+"""
+
+
+def pagina_laboratorio(labs_info, pendientes, solo_codigo, n_ej_por_tema):
+    """Catálogo del laboratorio: una tarjeta por estructura (con simulador o solo código)."""
+    tarjetas = []
+    for herr, lab, tema, desc in labs_info:
+        n = n_ej_por_tema.get(tema, 0)
+        tarjetas.append(f'<a class="labcard vis" data-f="vis t{tema}" href="lab/{lab["slug"]}.html"><span class="top"><b class="tm">Tema {tema}</b><span class="pill">@@i:tool@@ Simulador</span></span>'
+                        f'<b class="nm">{esc(lab["titulo"])}</b><span class="ds">{esc(desc)}</span><span class="bt"><span class="chip">@@i:code@@ {esc(lab["cab"])}</span><span class="chip">{plural(n, "ejercicio", "ejercicios")}</span></span></a>')
+    for herr, nombre, tema, desc in pendientes:
+        tarjetas.append(f'<a class="labcard vis" data-f="vis t{tema}" href="herramientas/{herr}"><span class="top"><b class="tm">Tema {tema}</b><span class="pill">@@i:tool@@ Simulador</span></span>'
+                        f'<b class="nm">{esc(nombre)}</b><span class="ds">{esc(desc)}</span><span class="bt"><span class="chip">{plural(n_ej_por_tema.get(tema, 0), "ejercicio", "ejercicios")}</span></span></a>')
+    for c in solo_codigo:
+        tarjetas.append(f'<a class="labcard code" data-f="code" href="estructuras/{quote(c)}.html"><span class="top"><b class="tm">Apoyo</b></span>'
+                        f'<b class="nm">{esc(c.replace(".h", ""))}</b><span class="ds">Cabecera de la asignatura: visor de código, copiar y descargar.</span><span class="bt"><span class="chip">@@i:code@@ {esc(c)}</span></span></a>')
+    filtros = [("all", "Todo"), ("vis", "Con simulador"), ("code", "Solo código"), ("t1", "Temas 1-3"), ("t4", "Temas 4-5"), ("t6", "Temas 6-7")]
+    chips = "".join(f'<button class="btn{" on" if k == "all" else ""}" data-lf="{k}">{t}</button>' for k, t in filtros)
+    cuerpo = (f'<div class="wrap lab"><div class="crumbs"><a class="back" href="index.html">← Volver</a><a href="index.html">Inicio</a>›<span>Laboratorio</span></div>'
+              f'<div class="hero"><p class="eyebrow">Laboratorio</p><h1>Estructuras de datos y simuladores</h1>'
+              f'<p class="lede">Cada estructura tiene su propio laboratorio: la ves funcionar paso a paso, lees el código que usa la asignatura, entiendes el coste de cada operación y practicas con ejercicios. Todo en una sola página.</p></div>'
+              f'<div class="labfil" role="group" aria-label="Filtrar">{chips}</div><div class="labgrid" id="labgrid">{"".join(tarjetas)}</div></div>')
+    js = r"""
+var fb=document.querySelectorAll('[data-lf]');
+function filtra(k){fb.forEach(function(b){b.classList.toggle('on',b.dataset.lf===k)});
+ document.querySelectorAll('.labcard').forEach(function(c){var f=(c.dataset.f||'').split(' ');
+  var t=k==='all'||f.indexOf(k)>=0||(k==='t1'&&/t[123]\b/.test(c.dataset.f))||(k==='t4'&&/t[45]\b/.test(c.dataset.f))||(k==='t6'&&/t[67]\b/.test(c.dataset.f));
+  c.style.display=t?'':'none'})}
+fb.forEach(function(b){b.onclick=function(){filtra(b.dataset.lf)}});
+"""
+    return pagina("Laboratorio: estructuras de datos y simuladores | Diseño de Algoritmos UCM", cuerpo, "", js,
+                  "Laboratorio de estructuras de datos de Diseño de Algoritmos: simuladores paso a paso, código C++, coste de las operaciones y ejercicios.", ruta="laboratorio.html")
 
 
 def pagina_videos(ej, slugs):
@@ -833,7 +939,7 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
                      f'<span class="idea">{md_inline(e["idea"])}</span></span><span class="chips">{chips(e, s_, "../")}</span></div>')
     acc = []
     if herr_ok:
-        acc.append(f'<a class="btn" href="../herramientas/{info["herr"]}">@@i:tool@@ Herramienta interactiva</a>')
+        acc.append(f'<a class="btn" href="{url_herr(info["herr"], "../")}">@@i:tool@@ Herramienta interactiva</a>')
     for c in info["cab"]:
         if c in cabs:
             acc.append(f'<a class="btn" href="../estructuras/{quote(c)}.html">@@i:code@@ {esc(c)}</a>')
@@ -860,7 +966,7 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
         s_ = slugs[i]
         principales.append(f'<a class="arow main" href="../ej/{s_}.html"><span class="pic">@@i:book@@</span><span class="at"><b>Apuntes del tema</b><small>Teoría explicada paso a paso</small></span>@@i:arrow@@</a>')
     if herr_ok:
-        principales.append(f'<a class="arow main alt" href="../herramientas/{info["herr"]}"><span class="pic">@@i:tool@@</span><span class="at"><b>Herramienta interactiva</b><small>Prueba el algoritmo paso a paso</small></span>@@i:arrow@@</a>')
+        principales.append(f'<a class="arow main alt" href="{url_herr(info["herr"], "../")}"><span class="pic">@@i:tool@@</span><span class="at"><b>Herramienta interactiva</b><small>Prueba el algoritmo paso a paso</small></span>@@i:arrow@@</a>')
     for k, (r, nom, tam) in enumerate(docs):
         pdfs.append(f'<div class="arow"><span class="pic">@@i:pdf@@</span><span class="at"><b>{esc(nom)}</b><small>PDF · {tam_legible(tam)}</small></span>'
                     f'<button class="mb" type="button" data-teo="{k}" title="Abrir aquí" aria-label="Abrir {esc(nom)} aquí">@@i:book@@</button>'
@@ -946,6 +1052,24 @@ def main():
             (OUT / "tema" / f"{t}.html").write_text(pagina_tema(t, info, por_tema[t], slugs, cabs, info["herr"] in herr_nombres, nombres_temas), encoding="utf-8")
     shutil.copytree(ESTILO / "marca", OUT / "estilo" / "marca")
 
+    # laboratorio
+    (OUT / "lab").mkdir()
+    n_ej_tema = {t: sum(1 for _, e in por_tema[t] if not es_teoria(e)) for t in TEMAS}
+    labs_info, pendientes = [], []
+    for f, a_, b_, c_ in herr:
+        t_ = next((t for t in TEMAS if TEMAS[t]["herr"] == f), None)
+        if t_ is None:
+            continue
+        if f in LABS and por_tema.get(t_):
+            lab = LABS[f]
+            labs_info.append((f, lab, t_, c_))
+            (OUT / "lab" / f"{lab['slug']}.html").write_text(pagina_lab(f, lab, t_, TEMAS[t_], por_tema[t_], slugs, c_), encoding="utf-8", newline="\n")
+        else:
+            pendientes.append((f, b_, t_, c_))
+    usadas = {l[1]["cab"] for l in labs_info}
+    solo_codigo = [c for c in cabs if c not in usadas]
+    (OUT / "laboratorio.html").write_text(pagina_laboratorio(labs_info, pendientes, solo_codigo, n_ej_tema), encoding="utf-8", newline="\n")
+
     # portada
     solo_ej = [e for e in ej if not es_teoria(e)]
     n_pdf = sum(1 for e in ej if e["pdf"]); n_vid = sum(1 for e in ej if e["video"]); n_sol = sum(1 for e in solo_ej if e["sols"])
@@ -960,7 +1084,7 @@ def main():
             ids_b += [slugs[i] for i, _ in por_tema[t]]
         if tarjetas:
             bloques_html.append(f'<section class="blk"><div class="bh" data-ids="{",".join(ids_b)}" style="--c:{col}"><h2><i></i>{esc(nombre_b)}</h2><span class="m" data-txt>0/{len(ids_b)} hechos · 0%</span><div class="prog"><i data-bar></i></div></div><div class="grid">{"".join(tarjetas)}</div></section>')
-    tools_html = "".join(f'<a class="tool" href="herramientas/{f}"><span class="n">{esc(a)}</span><b>{esc(b)}</b><span class="d">{esc(c)}</span></a>' for f, a, b, c in herr)
+    tools_html = "".join(f'<a class="tool" href="{url_herr(f)}"><span class="n">{esc(a)}</span><b>{esc(b)}</b><span class="d">{esc(c)}</span></a>' for f, a, b, c in herr)
     est_html = "".join(f'<a class="chip" href="estructuras/{quote(c)}.html">{esc(c)}</a>' for c in cabs)
     sha = commit_info()
     ahora = datetime.now(timezone.utc).strftime("%d/%m/%Y %H:%M UTC")
@@ -978,8 +1102,7 @@ def main():
 <div class="box"><small>Tests</small><b>0</b><span>del profe y propios · pronto</span></div></div>
 <section id="resultados" hidden><h2 id="res-t" style="margin-bottom:12px"></h2><div id="res-l"></div><p class="vacio" id="vacio">Ningún ejercicio coincide con la búsqueda.</p></section>
 <div id="temas">{"".join(bloques_html)}</div>
-<section class="bloque" id="herramientas"><h2>Herramientas interactivas</h2><p class="lede">Ejecutan la misma lógica que el C++ de la asignatura y resaltan el código línea a línea.</p><div class="tools">{tools_html}</div></section>
-<section class="bloque" id="estructuras"><h2>Estructuras de datos</h2><p class="lede">Las cabeceras que da la asignatura, con visor de código, copiar y descargar.</p><div class="cabs">{est_html}</div></section>
+<section class="bloque" id="laboratorio"><h2>Laboratorio</h2><p class="lede">Cada estructura de datos con su simulador paso a paso, el código de la asignatura, el coste de cada operación y ejercicios.</p><div class="tools">{tools_html}</div><p style="margin-top:12px"><a class="btn primary" href="laboratorio.html">Abrir el laboratorio →</a></p></section>
 <section class="bloque" id="videos"><h2>Vídeos</h2><p class="lede">Un vídeo paso a paso por cada ejercicio y por cada tema ({n_vid} en total), que se ven aquí mismo, con subtítulos.</p><p><a class="btn primary" href="videos.html">Ver todos los vídeos →</a></p></section>
 <footer>Material de estudio independiente, no afiliado a la UCM</footer></div>"""
     datos = json.dumps([{"s": slugs[i], "i": e["id"], "t": e["titulo"], "d": re.sub(r"`", "", e["idea"]), "k": color_de(e["tema"]),

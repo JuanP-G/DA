@@ -57,6 +57,8 @@ class Player {
     this.$last.onclick = () => { this.pause(); this.go(this.frames.length - 1); };
     this.$play.onclick = () => this.toggle();
     this.$seek.oninput = () => { this.pause(); this.go(+this.$seek.value); };
+    /* la velocidad se aplica al momento, también mientras se reproduce */
+    this.$speed.oninput = () => { if (this.timer && this._tick) { clearTimeout(this.timer); this.timer = setTimeout(this._tick, this.delay()); } };
     document.addEventListener('keydown', e => {
       if (/INPUT|SELECT|TEXTAREA/.test((e.target.tagName || ''))) return;
       if (e.key === 'ArrowRight') { this.pause(); this.go(this.i + 1); }
@@ -93,6 +95,7 @@ class Player {
       this.go(this.i + 1);
       if (this.timer !== null) this.timer = setTimeout(tick, this.delay());
     };
+    this._tick = tick;
     this.timer = setTimeout(tick, this.delay());
   }
   pause() { if (this.timer) clearTimeout(this.timer); this.timer = null; this.$play.textContent = '▶ Reproducir'; this.$play.classList.remove('on'); }
@@ -112,3 +115,16 @@ const PLAYER_HTML = `
   </div>
   <input type="range" id="pSeek" min="0" max="0" value="0" aria-label="Posición en la secuencia" style="width:100%">
 </div>`;
+
+/* Modo incrustado (?embed=1): la herramienta va dentro de la página del laboratorio. Copia el tema del padre y le avisa de su alto. */
+(function () {
+  if (!/[?&]embed=1/.test(location.search)) return;
+  const root = document.documentElement; root.classList.add('embed');
+  const sync = () => { try { const t = parent.document.documentElement.getAttribute('data-theme'); if (t) root.setAttribute('data-theme', t); else root.removeAttribute('data-theme'); } catch (e) {} };
+  sync();
+  try { new MutationObserver(sync).observe(parent.document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) {}
+  const post = () => { try { parent.postMessage({ tipo: 'da-lab-alto', alto: Math.ceil(document.body.getBoundingClientRect().height) }, '*'); } catch (e) {} };
+  addEventListener('load', post);
+  if (window.ResizeObserver) new ResizeObserver(post).observe(document.body);
+  addEventListener('message', e => { if (e.data && e.data.tipo === 'da-lab-medir') post(); });
+})();
