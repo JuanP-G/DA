@@ -647,12 +647,12 @@ def teoria_pdfs():
     base = RAIZ / "Teoria"
     if not base.is_dir():
         return res
-    for f in sorted(base.rglob("*.pdf")):
+    for f in sorted(base.rglob("*.pdf"), key=lambda x: [int(c) if c.isdigit() else c.lower() for c in re.split(r"(\d+)", x.name)]):
         rel = f.relative_to(base)
         m = re.search(r"(\d+)", "/".join(rel.parts[:-1])) or re.search(r"(\d+)", rel.name)
         if not m:
             continue
-        nombre = re.sub(r"^(tema\s*\d+\s*[-_.:]*\s*)", "", f.stem, flags=re.I).replace("_", " ").strip() or f.stem
+        nombre = re.sub(r"^((tema\s*)?\d+\s*[-_.:]*\s*)", "", f.stem, flags=re.I).replace("_", " ").strip() or f.stem
         res.setdefault(int(m.group(1)), []).append((f.relative_to(RAIZ).as_posix(), nombre, f.stat().st_size))
     return res
 
