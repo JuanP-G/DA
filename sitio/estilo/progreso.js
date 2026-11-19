@@ -14,6 +14,7 @@
       var f=b.closest('.exr');if(f)f.classList.toggle('hecho',on);
       var l=b.querySelector('.lab');if(l)l.textContent=on?'Hecho':'Marcar como hecho';
     });
+    document.querySelectorAll('[data-st]').forEach(function(a){a.classList.toggle('hecho',!!h[a.dataset.st])});
     document.querySelectorAll('.tcard[data-ids],.box[data-ids],.prog-box[data-ids],.thead[data-ids]').forEach(function(c){
       var l=ids(c),n=cuenta(l,h),t=l.length;
       var bar=c.querySelector('[data-bar]');if(bar)bar.style.width=pct(n,t)+'%';
@@ -39,6 +40,7 @@
     }
   }
   document.addEventListener('click',function(e){
+    var g=e.target.closest('[data-done-go]');if(g){var hh=leer();hh[g.dataset.doneGo]=1;guardar(hh);return}
     var b=e.target.closest('[data-ok]');if(!b)return;
     e.preventDefault();e.stopPropagation();
     var h=leer(),k=b.dataset.ok;if(h[k])delete h[k];else h[k]=1;guardar(h);pintar();

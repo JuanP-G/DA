@@ -257,7 +257,8 @@ document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',(
 TABS_JS = r"""
 // Pestañas: cada una tiene su #ancla. Cambiar de pestaña no llena el historial (replaceState),
 // así que «Atrás» del navegador te devuelve a la página anterior y no a la pestaña anterior.
-function show(id,scroll){if(!document.getElementById('p-'+id))return;
+function hasTab(id){return !!document.querySelector('[data-tab="'+id+'"]')}
+function show(id,scroll){if(!hasTab(id)||!document.getElementById('p-'+id))return;
  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+id));
  document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));
  document.querySelectorAll('.pane:not(.on) video').forEach(v=>v.pause());
@@ -265,7 +266,11 @@ function show(id,scroll){if(!document.getElementById('p-'+id))return;
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{show(b.dataset.tab);try{history.replaceState(null,'','#'+b.dataset.tab)}catch(e){}});
 document.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>{const g=b.dataset.group;document.querySelectorAll('[data-group="'+g+'"]').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('[data-subpane^="'+g+'"]').forEach(p=>p.style.display=p.dataset.subpane===b.dataset.sub?'block':'none')});
 window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
-const ini=location.hash.slice(1);show(document.getElementById('p-'+ini)?ini:(document.querySelector('[data-tab].pref')||document.querySelector('[data-tab]')).dataset.tab);
+const ini=location.hash.slice(1);show(hasTab(ini)?ini:(document.querySelector('[data-tab].pref')||document.querySelector('[data-tab]')).dataset.tab);
+// aviso de la guía: desaparece cuando ya la has visto
+(function(){var g=document.querySelector('[data-guia]');if(!g)return;try{if(localStorage.getItem('studia-da-guia'))g.hidden=true}catch(e){}g.addEventListener('click',function(){try{localStorage.setItem('studia-da-guia','1')}catch(e){}})})();
+// lista de ejercicios del tema: abierta en escritorio, plegada en móvil
+(function(){var d=document.querySelector('[data-det]');if(d&&window.innerWidth>960)d.open=true})();
 // capítulos del vídeo
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const v=document.querySelector('#p-video video');v.currentTime=+b.dataset.t;v.play()});
 const vv=document.querySelector('#p-video video');if(vv){vv.addEventListener('timeupdate',()=>{let cur=null;document.querySelectorAll('[data-t]').forEach(b=>{if(+b.dataset.t<=vv.currentTime+0.3)cur=b});document.querySelectorAll('[data-t]').forEach(b=>b.classList.toggle('on',b===cur))})}
@@ -293,7 +298,7 @@ def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head="", ruta=None)
     portal = f'<a href="{esc(PORTAL_URL)}/#asignaturas">Asignaturas</a>' if PORTAL_URL else ""
     nav = (f'<header class="nav"><div class="nav-pill"><a class="brand" href="{prefijo}index.html" aria-label="Diseño de Algoritmos, inicio"><img src="{prefijo}estilo/marca/mark.png" alt="" width="201" height="242"><b>StudIA</b><span class="subj">DA</span></a>'
            f'<nav aria-label="Principal">{portal}<a class="keep" href="{prefijo}index.html#temas">Temas</a><a href="{prefijo}index.html#herramientas">Herramientas</a>'
-           f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a class="keep" href="{prefijo}videos.html">Vídeos</a></nav>'
+           f'<a href="{prefijo}index.html#estructuras">Estructuras</a><a class="keep" href="{prefijo}videos.html">Vídeos</a><a href="{prefijo}guia.html">Guía</a></nav>'
            f'<button id="tema" class="icon-btn" type="button" aria-label="Cambiar tema claro/oscuro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></div></header>')
     iconos = (f'<link rel="icon" href="{prefijo}estilo/marca/favicon.ico" sizes="any"><link rel="icon" href="{prefijo}estilo/marca/favicon-32.png" type="image/png" sizes="32x32">'
               f'<link rel="apple-touch-icon" href="{prefijo}estilo/marca/apple-touch-icon.png"><meta name="theme-color" content="#080a1c">')
@@ -455,7 +460,12 @@ def acepta_caja(x, fichero=None):
             f'<a href="{acepta_url(x)}" target="_blank" rel="noopener">#{x["num"]} · {esc(x["problema"])} ↗</a> · {ACR_ETQ[x["tipo"]]}. {esc(x.get("nota", ""))}{envio}</div>')
 
 
-def pagina_ejercicio(e, slug, ant=None, sig=None):
+ACT = ' aria-current="page"'
+CHEV_L = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>'
+CHEV_R = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>'
+
+
+def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
     carpeta = posixpath.dirname(e["sols"][0][1]) if e["sols"] else (posixpath.dirname(e["readme"]) if e["readme"] else None)   # sin código aún: la carpeta del README
     # código: soluciones del README + .h de la carpeta
     codigos, vistos = [], set()
@@ -522,7 +532,8 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     else:
         p_exp = '<div class="nada">Todavía no hay explicación escrita para este ejercicio.</div>'
 
-    # 4 · Vídeo
+    # 4 · Vídeo (bloque principal, fuera de las pestañas)
+    p_vid = ""
     if e["video"]:
         vurl = href_sitio(e["video"], True)
         if MEDIA_BASE:
@@ -530,37 +541,108 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
         vtt, caps = media_video(e["video"])
         track = f'<track kind="subtitles" srclang="es" label="Español" src="{(MEDIA_BASE + quote(vtt)) if MEDIA_BASE else "../" + quote(vtt)}">' if vtt else ""
         lista_caps = ("<div class='caps'><b>Capítulos</b>" + "".join(f'<button data-t="{t:.2f}"><span>{mmss(t)}</span>{esc(ti)}</button>' for t, ti in caps) + "</div>") if caps else ""
-        p_vid = (f'<div class="bar">{descargar(e["video"], "@@i:download@@ Descargar vídeo")}<span class="hint">{tam_legible((RAIZ / e["video"]).stat().st_size)} · subtítulos con el botón CC del reproductor</span></div>'
-                 f'<div class="{"vid" if caps else ""}"><video controls preload="metadata" playsinline{" crossorigin=anonymous" if MEDIA_BASE else ""} src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div>')
+        p_vid = (f'<section class="evideo{" conc" if caps else ""}" id="video" aria-label="Vídeo del ejercicio"><div id="p-video" class="{"vid" if caps else "vid1"}">'
+                 f'<video controls preload="metadata" playsinline{" crossorigin=anonymous" if MEDIA_BASE else ""} src="{vurl}">{track}Tu navegador no puede reproducir el vídeo: <a href="{vurl}">descárgalo</a>.</video>{lista_caps}</div>'
+                 f'<div class="vlinks"><a class="xl" href="{vurl}" download="{esc(posixpath.basename(e["video"]))}">@@i:download@@ Descargar vídeo · {tam_legible((RAIZ / e["video"]).stat().st_size)}</a></div></section>')
         ficheros_zip.append((vurl, "video.mp4"))
-    else:
-        p_vid = '<div class="nada">Este ejercicio todavía no tiene vídeo.</div>'
 
-    tabs = [("enunciado", "@@i:pdf@@ Enunciado", bool(e["pdf"]), p_enun), ("video", "@@i:video@@ Vídeo", bool(e["video"]), p_vid),
+    tabs = [("enunciado", "@@i:pdf@@ Enunciado", bool(e["pdf"]), p_enun),
             ("explicacion", "@@i:book@@ Explicación", bool(e["readme"]), p_exp), ("codigo", "@@i:code@@ Código", bool(codigos), p_cod)]
-    pref = "video" if e["video"] else ("explicacion" if e["readme"] else ("codigo" if codigos else "enunciado"))
+    if e["readme"]:
+        pref = "explicacion"
+    elif codigos:
+        pref = "codigo"
+    else:
+        pref = "enunciado"
     botones = "".join(f'<button class="btn{"" if hay else " off"}{" pref" if i == pref else ""}" data-tab="{i}">{t}</button>' for i, t, hay, _ in tabs)
     panes = "".join(f'<div class="pane" id="p-{i}">{c}</div>' for i, _, _, c in tabs)
 
     acc = []   # extras discretos, a la derecha de las pestañas
     if acr:
         acc.append(f'<a class="xl" href="{acepta_url(acr)}" target="_blank" rel="noopener">@@i:link@@ Acepta el Reto #{acr["num"]}</a>')
-    if herr and (RAIZ / "Visualizaciones" / herr).exists():
-        acc.append(f'<a class="xl" href="../herramientas/{herr}">@@i:tool@@ Herramienta del tema</a>')
     contenido_zip = ", ".join(x for x, ok in (("enunciado", e["pdf"]), ("código", codigos), ("explicación", e["readme"]), ("vídeo", e["video"]), ("versión para Acepta el Reto", acr_fich)) if ok)
-
     if ficheros_zip:
         acc.append(f'<button class="xl" id="zip" data-name="{esc(e["id"] + " " + e["titulo"])}" data-files="{esc(json.dumps(ficheros_zip, ensure_ascii=False))}" title="El zip incluye: {esc(contenido_zip)}">@@i:download@@ Descargar todo .zip</button>')
-    pager = '<div class="pager">' + (f'<a class="btn" href="{ant[0]}.html">← {esc(ant[1])}</a>' if ant else "<span></span>") + \
-            (f'<a class="btn" href="{sig[0]}.html">{esc(sig[1])} →</a>' if sig else "<span></span>") + "</div>"
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../tema/{tema}.html" data-back>← Volver</a>'
-              f'<a href="../index.html">Inicio</a>›<a href="../tema/{tema}.html">Tema {tema}</a>›<span>{esc(e["id"])}</span></div>'
-              f'<div class="ejhead"><a class="tag" href="../tema/{tema}.html">Tema {tema} · {esc(TEMAS[tema]["nombre"])}</a>'
-              f'<div class="ejtit"><h1>{esc(e["id"])} · {esc(e["titulo"])}</h1>'
+
+    # --- barra lateral: volver, progreso del tema, apuntes y herramienta destacados, lista de ejercicios ---
+    ctx = ctx or []
+    hermanos = [(s_, x) for s_, x in ctx if not es_teoria(x)]
+    apuntes = next(((s_, x) for s_, x in ctx if es_teoria(x)), None)
+    ids = ",".join(s_ for s_, _ in hermanos)
+    color = color_de(tema)
+    tarjetas = []
+    if apuntes:
+        cur = " cur" if apuntes[0] == slug else ""
+        tarjetas.append(f'<a class="arow main{cur}" href="{apuntes[0]}.html"><span class="pic">@@i:book@@</span><span class="at"><b>Apuntes del tema</b><small>Teoría explicada paso a paso</small></span>@@i:arrow@@</a>')
+    if herr and (RAIZ / "Visualizaciones" / herr).exists():
+        tarjetas.append(f'<a class="arow main alt" href="../herramientas/{herr}"><span class="pic">@@i:tool@@</span><span class="at"><b>Herramienta interactiva</b><small>Prueba el algoritmo paso a paso</small></span>@@i:arrow@@</a>')
+    items = ""
+    for s_, x in hermanos:
+        actual = s_ == slug
+        items += (f'<a class="el{" actual" if actual else ""}" href="{s_}.html" data-st="{s_}"{ACT if actual else ""}><span class="dot">@@i:check@@</span>'
+                  f'<span class="et"><b>{esc(x["id"])}</b>{esc(x["titulo"])}</span></a>')
+    lateral = (f'<aside class="eside"><a class="volver" href="../tema/{tema}.html">{CHEV_L}<span>Volver al tema</span></a>'
+               f'<div class="etema"><small>Tema {tema}</small><b>{esc(TEMAS[tema]["nombre"])}</b></div>'
+               f'<div class="sbox prog-box" data-ids="{ids}" style="--c:{color}"><div class="ph"><small>Tu progreso</small><b data-pct>0%</b></div><div class="prog"><i data-bar></i></div>'
+               f'<span class="pt" data-hechos>0 de {len(hermanos)} hechos</span></div>'
+               + (f'<div class="atarj">{"".join(tarjetas)}</div>' if tarjetas else "")
+               + (f'<details class="elist" data-det><summary>Ejercicios del tema</summary><div class="elin">{items}</div></details>' if items else "")
+               + '</aside>')
+
+    # --- cierre: anterior / marcar como hecho y seguir ---
+    teoria_pag = es_teoria(e)
+    prev_b = (f'<a class="enav prev" href="{ant[0]}.html"><span class="ar">{CHEV_L}</span><span class="tx"><small>Anterior</small>{esc(ant[1])}</span></a>' if ant else "<span></span>")
+    if sig:
+        etq = "Siguiente" if teoria_pag else "Marcar como hecho y seguir"
+        done = "" if teoria_pag else f' data-done-go="{slug}"'
+        next_b = f'<a class="enav next"{done} href="{sig[0]}.html"><span class="tx"><small>{etq}</small>{esc(sig[1])}</span><span class="ar">{CHEV_R}</span></a>'
+    else:
+        next_b = f'<a class="enav next" href="../tema/{tema}.html"><span class="tx"><small>Has llegado al final</small>Volver al tema {tema}</span><span class="ar">{CHEV_R}</span></a>'
+    cierre = f'<div class="ecierre">{prev_b}{next_b}</div>'
+
+    aviso = (f'<a class="guiab" href="../guia.html" data-guia><b>¿Primera vez aquí?</b><span>Guía de 1 minuto: qué es cada cosa y por dónde empezar</span><em>Ver la guía →</em></a>')
+    etq_ej = ("Teoría" if teoria_pag else "Ejercicio") + " " + esc(e["id"])
+    cuerpo = (f'<div class="wrap"><div class="elay">{lateral}<main class="emain">{aviso}'
+              f'<div class="ejhead"><span class="eyebrow">{etq_ej}</span>'
+              f'<div class="ejtit"><h1>{esc(e["titulo"])}</h1>'
               f'<button class="btn okb-ej" data-ok="{slug}" aria-pressed="false">@@i:check@@ <span class="lab">Marcar como hecho</span></button></div>'
-              f'<p class="lede">{md_inline(e["idea"])}</p>'
-              f'</div><div class="tabsbar"><div class="tabs">{botones}</div><div class="xls">{"".join(acc)}</div></div>{panes}{pager}</div>{teoria_panel(tema, "../")}')
+              f'<p class="lede">{md_inline(e["idea"])}</p></div>'
+              f'{p_vid}'
+              f'<div class="tabsbar"><div class="tabs">{botones}</div><div class="xls">{"".join(acc)}</div></div>{panes}{cierre}</main></div></div>{teoria_panel(tema, "../")}')
     return pagina(f'{e["id"]} {e["titulo"]} | Diseño de Algoritmos UCM', cuerpo, "../", HIGHLIGHT_JS + TABS_JS + (TEORIA_JS if TEORIA.get(tema) else ""), e["idea"], JSZIP, ruta=f"ej/{slug}.html")
+
+
+def pagina_guia(n_temas, n_ej, n_herr, n_vid):
+    pasos = [
+        ("1", "Mira la teoría", "El vídeo del tema explica la idea general. Los apuntes la dejan resumida por escrito.", ""),
+        ("2", "Juega con el algoritmo", f"La herramienta interactiva del tema te deja ver paso a paso qué hace el algoritmo (temas con herramienta: {n_herr}).", ""),
+        ("3", "Haz los ejercicios en orden", "Lee el enunciado, inténtalo tú y, cuando te atasques, mira el vídeo y compara con la explicación y el código.", ""),
+        ("4", "Márcalo y sigue", "Pulsa «Marcar como hecho» al terminar. La barra del tema te muestra cuánto llevas.", " ok"),
+    ]
+    dentro = [
+        ("Vídeo", "El ejercicio resuelto y explicado. Es lo más útil para entenderlo."),
+        ("Enunciado", "El PDF original del juez, con los casos de ejemplo."),
+        ("Explicación", "Qué piden, cómo se plantea, por qué así y cuánto cuesta."),
+        ("Código", "La solución en C++ lista para copiar o descargar, con sus cabeceras."),
+    ]
+    donde = [
+        ("index.html#temas", "Temas", f"Los {n_temas} temas con sus ejercicios, vídeo y apuntes. Empieza aquí."),
+        ("index.html#herramientas", "Herramientas", f"Las {n_herr} herramientas interactivas para ver los algoritmos funcionando."),
+        ("index.html#estructuras", "Estructuras", "Las cabeceras .h (Grafo, Digrafo, IndexPQ…) para usar en tus soluciones."),
+        ("videos.html", "Vídeos", f"Todos los vídeos juntos ({n_vid} en total), por si quieres verlos de seguido."),
+    ]
+    h_pasos = "".join(f'<div class="gp"><span class="gn{ok}">{n}</span><b>{esc(t)}</b><span>{esc(d)}</span></div>' for n, t, d, ok in pasos)
+    h_dentro = "".join(f'<div class="gd"><b>{esc(t)}</b><span>{esc(d)}</span></div>' for t, d in dentro)
+    h_donde = "".join(f'<a href="{u}"><b>{esc(t)}</b><span>{esc(d)}</span></a>' for u, t, d in donde)
+    cuerpo = (f'<div class="wrap guia"><a class="volver" href="index.html">{CHEV_L}<span>Volver a Diseño de Algoritmos</span></a>'
+              f'<header><span class="eyebrow">Guía · 1 minuto</span><h1>Cómo usar esta web</h1>'
+              f'<p class="lede">Hay {n_temas} temas y {n_ej} ejercicios, cada uno con su vídeo, su explicación y su código. Esta guía te dice qué es cada cosa y por dónde empezar para no perderte.</p></header>'
+              f'<section><h2>La ruta recomendada para cada tema</h2><div class="gpasos">{h_pasos}</div></section>'
+              f'<section><h2>Qué hay dentro de cada ejercicio</h2><div class="gdentro">{h_dentro}</div></section>'
+              f'<section><h2>Dónde está cada cosa</h2><div class="gdonde">{h_donde}</div></section>'
+              f'<section class="gcta"><div><b>Tu progreso se guarda en este navegador</b><span>No hace falta cuenta. Si cambias de ordenador o borras los datos del navegador, empezará de cero.</span></div>'
+              f'<a class="btn prim" href="tema/1.html">Empezar por el Tema 1 →</a></section></div>')
+    return pagina("Cómo usar esta web | Diseño de Algoritmos UCM", cuerpo, "", "", "Guía de 1 minuto de Diseño de Algoritmos UCM: la ruta recomendada, qué hay en cada ejercicio y dónde está cada cosa.", ruta="guia.html")
 
 
 def pagina_cabecera(nombre):
@@ -811,10 +893,13 @@ def main():
         while s in usados:
             s = f'{e["id"].lower()}-{n}'; n += 1
         usados.add(s); slugs[i] = s
+    ctx_tema = {}
     for i, e in enumerate(ej):
-        ant = (slugs[i - 1], f'{ej[i - 1]["id"]} {ej[i - 1]["titulo"]}') if i > 0 else None
-        sig = (slugs[i + 1], f'{ej[i + 1]["id"]} {ej[i + 1]["titulo"]}') if i + 1 < len(ej) else None
-        (OUT / "ej" / f"{slugs[i]}.html").write_text(pagina_ejercicio(e, slugs[i], ant, sig), encoding="utf-8")
+        ctx_tema.setdefault(e["tema"], []).append((slugs[i], e))
+    for i, e in enumerate(ej):
+        ant = (slugs[i - 1], f'{ej[i - 1]["id"]} · {ej[i - 1]["titulo"]}') if i > 0 else None
+        sig = (slugs[i + 1], f'{ej[i + 1]["id"]} · {ej[i + 1]["titulo"]}') if i + 1 < len(ej) else None
+        (OUT / "ej" / f"{slugs[i]}.html").write_text(pagina_ejercicio(e, slugs[i], ant, sig, ctx_tema[e["tema"]]), encoding="utf-8", newline="\n")
     (OUT / "videos.html").write_text(pagina_videos(ej, slugs), encoding="utf-8")
 
     # estructuras de datos
@@ -866,7 +951,8 @@ def main():
 <div class="hero"><p class="eyebrow">FDI UCM · Informática · Computadores · Software</p>
 <h1>Diseño de Algoritmos: ejercicios resueltos, vídeos y herramientas</h1>
 <p class="lede">Todos los problemas del juez con su enunciado, la solución en C++, la explicación del planteamiento, el vídeo paso a paso de cada uno y herramientas interactivas para entender cada estructura de datos.</p>
-<label class="search">@@i:arrow@@<input id="q" type="search" placeholder="Buscar ejercicio (nombre, número, técnica…)" aria-label="Buscar ejercicio"><kbd>/</kbd></label></div>
+<label class="search">@@i:arrow@@<input id="q" type="search" placeholder="Buscar ejercicio (nombre, número, técnica…)" aria-label="Buscar ejercicio"><kbd>/</kbd></label>
+<a class="guiab" href="guia.html"><b>¿Primera vez aquí?</b><span>Guía de 1 minuto: qué es cada cosa y por dónde empezar</span><em>Ver la guía →</em></a></div>
 <div class="sm" data-resumen>
 <div class="box hi"><small>Tu progreso</small><b data-r="pct">0%</b><span data-r="txt"></span><div class="prog"><i data-r="bar"></i></div></div>
 <div class="box"><small>Temas completados</small><b><u data-r="comp">0</u><em> / {n_temas}</em></b><span data-r="curso">0 en curso</span></div>
@@ -896,6 +982,7 @@ function filtra(){const v=q.value.trim().toLowerCase(),r=document.getElementById
 q.oninput=filtra;
 document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus()}});
 window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');if(g&&!q.value){q.value=g}}catch(e){}if(q.value)filtra()});""")
+    (OUT / "guia.html").write_text(pagina_guia(n_temas, len(solo_ej), len(herr), n_vid), encoding="utf-8", newline="\n")
     (OUT / "index.html").write_text(pagina("Diseño de Algoritmos UCM: ejercicios resueltos, vídeos y herramientas | StudIA", cuerpo, "", js,
                                            "Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++, con explicación, vídeo paso a paso de cada uno y visualizadores de AVL, grafos y Dijkstra.", ruta=""), encoding="utf-8")
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
