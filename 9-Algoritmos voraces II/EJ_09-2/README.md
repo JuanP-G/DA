@@ -1,6 +1,6 @@
 # EJ 09-2 · El alienígena infiltrado
 
-📄 Enunciado: en el juez de la asignatura (`Ej09-2`) · 💻 [Solución](EJ_09-2.cpp)
+📄 [Enunciado](<../Enunciados/prob-El alienígena infiltrado.pdf>) · 💻 [Solución](EJ_09-2.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

@@ -1,6 +1,6 @@
 # EJ 08-2 · ¡Nos invaden!
 
-📄 Enunciado: en el juez de la asignatura (`Ej08-2`) · 💻 [Solución](EJ_08-2.cpp)
+📄 [Enunciado](<../Enunciados/prob-¡Nos invaden!.pdf>) · 💻 [Solución](EJ_08-2.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

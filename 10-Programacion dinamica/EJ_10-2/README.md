@@ -1,6 +1,6 @@
 # EJ 10-2 · Construyendo dianas
 
-📄 Enunciado: en el juez de la asignatura (`Ej10-2`) · 💻 [Solución](EJ_10-2.cpp)
+📄 [Enunciado](<../Enunciados/prob-Construyendo dianas.pdf>) · 💻 [Solución](EJ_10-2.cpp)
 
 🧩 Plantilla: [**casos ilimitados**](../../Plantillas/3.CasosIlimitados.cpp) — no hay número de casos; `bool resuelveCaso()` devuelve `false` cuando `cin` falla al leer el primer dato.
 

@@ -1,6 +1,6 @@
 # EJ 10-1 · La cuerda de la cometa
 
-📄 Enunciado: en el juez de la asignatura (`Ej10-1`) · 💻 [Solución](EJ_10-1.cpp)
+📄 [Enunciado](<../Enunciados/prob-La cuerda de la cometa.pdf>) · 💻 [Solución](EJ_10-1.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

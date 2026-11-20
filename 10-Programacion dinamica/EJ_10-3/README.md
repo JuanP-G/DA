@@ -1,6 +1,6 @@
 # EJ 10-3 · Esquivando las obras en los cruces
 
-📄 Enunciado: en el juez de la asignatura (`Ej10-3`) · 💻 [Solución](EJ_10-3.cpp)
+📄 [Enunciado](<../Enunciados/prob-Esquivando las obras en los cruces.pdf>) · 💻 [Solución](EJ_10-3.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

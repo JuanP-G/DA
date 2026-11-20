@@ -1,6 +1,6 @@
 # EJ 11-2 · Aibofobia
 
-📄 Enunciado: en el juez de la asignatura (`Ej11-2`) · 💻 [Solución](EJ_11-2.cpp)
+📄 [Enunciado](<../Enunciados/prob-Aibofobia.pdf>) · 💻 [Solución](EJ_11-2.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

@@ -1,6 +1,6 @@
 # EJ 08-4 · Maratón de cine de terror
 
-📄 Enunciado: en el juez de la asignatura (`Ej08-4`) · 💻 [Solución](EJ_08-4.cpp)
+📄 [Enunciado](<../Enunciados/prob-Maratón de cine de terror.pdf>) · 💻 [Solución](EJ_08-4.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

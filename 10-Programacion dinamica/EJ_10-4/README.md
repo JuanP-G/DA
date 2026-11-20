@@ -1,6 +1,6 @@
 # EJ 10-4 · ¿Por dónde hay que subir?
 
-📄 Enunciado: en el juez de la asignatura (`Ej10-4`) · 💻 [Solución](EJ_10-4.cpp)
+📄 [Enunciado](<../Enunciados/prob-¿Por dónde hay que subir_.pdf>) · 💻 [Solución](EJ_10-4.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

@@ -179,11 +179,11 @@ Carpeta [`8-Algoritmos voraces/`](8-Algoritmos%20voraces). No usan ninguna estru
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
 | 08-0 | Teoría de los temas 8 y 9 (explicación general) | — | [📘 Explicación del tema (receta, demostración por intercambio y patrones)](8-Algoritmos%20voraces/README.md) | [🎬 Vídeo](Videos/08-0_algoritmos_voraces_teoria.mp4) | Elegir lo mejor ahora sin volver atrás, contraejemplos, argumento de intercambio, los patrones del curso y voraz frente a dinámica |
-| 08-1 | Agujeros en la manguera | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-1/EJ_08-1.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-1/README.md) | [🎬 Vídeo](Videos/08-1_agujeros_en_la_manguera.mp4) | Cada parche empieza en el primer agujero sin tapar y llega hasta `p + L` |
-| 08-2 | ¡Nos invaden! | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-2/EJ_08-2.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-2/README.md) | [🎬 Vídeo](Videos/08-2_nos_invaden.mp4) | Ordenar ciudades y equipos; a cada ciudad, el equipo más pequeño que la gana (dos índices) |
-| 08-3 | Comienza la temporada | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-3/EJ_08-3.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-3/README.md) | [🎬 Vídeo](Videos/08-3_comienza_la_temporada.mp4) | Contar por tallas; de menor a mayor, primero su talla y luego una más |
-| 08-4 | Maratón de cine de terror | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-4/EJ_08-4.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-4/README.md) | [🎬 Vídeo](Videos/08-4_maraton_de_cine_de_terror.mp4) | Selección de actividades: ordenar por fin y coger si `inicio ≥ fin anterior + 10` |
-| 08-L | Planificación de conferencias | juez | [💻 Solución](8-Algoritmos%20voraces/EJ_08-L/EJ_08-L.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-L/README.md) | [🎬 Vídeo](Videos/08-L_planificacion_de_conferencias.mp4) | Por hora de comienzo, reutilizar la sala que queda libre antes (`priority_queue`) o abrir una nueva |
+| 08-1 | Agujeros en la manguera | [📄 PDF](8-Algoritmos%20voraces/Enunciados/prob-Agujeros%20en%20la%20manguera.pdf) | [💻 Solución](8-Algoritmos%20voraces/EJ_08-1/EJ_08-1.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-1/README.md) | [🎬 Vídeo](Videos/08-1_agujeros_en_la_manguera.mp4) | Cada parche empieza en el primer agujero sin tapar y llega hasta `p + L` |
+| 08-2 | ¡Nos invaden! | [📄 PDF](8-Algoritmos%20voraces/Enunciados/prob-%C2%A1Nos%20invaden%21.pdf) | [💻 Solución](8-Algoritmos%20voraces/EJ_08-2/EJ_08-2.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-2/README.md) | [🎬 Vídeo](Videos/08-2_nos_invaden.mp4) | Ordenar ciudades y equipos; a cada ciudad, el equipo más pequeño que la gana (dos índices) |
+| 08-3 | Comienza la temporada | [📄 PDF](8-Algoritmos%20voraces/Enunciados/prob-Comienza%20la%20temporada.pdf) | [💻 Solución](8-Algoritmos%20voraces/EJ_08-3/EJ_08-3.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-3/README.md) | [🎬 Vídeo](Videos/08-3_comienza_la_temporada.mp4) | Contar por tallas; de menor a mayor, primero su talla y luego una más |
+| 08-4 | Maratón de cine de terror | [📄 PDF](8-Algoritmos%20voraces/Enunciados/prob-Marat%C3%B3n%20de%20cine%20de%20terror.pdf) | [💻 Solución](8-Algoritmos%20voraces/EJ_08-4/EJ_08-4.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-4/README.md) | [🎬 Vídeo](Videos/08-4_maraton_de_cine_de_terror.mp4) | Selección de actividades: ordenar por fin y coger si `inicio ≥ fin anterior + 10` |
+| 08-L | Planificación de conferencias | [📄 PDF](8-Algoritmos%20voraces/Enunciados/prob-Planificaci%C3%B3n%20de%20conferencias.pdf) | [💻 Solución](8-Algoritmos%20voraces/EJ_08-L/EJ_08-L.cpp) · [📘 Explicación](8-Algoritmos%20voraces/EJ_08-L/README.md) | [🎬 Vídeo](Videos/08-L_planificacion_de_conferencias.mp4) | Por hora de comienzo, reutilizar la sala que queda libre antes (`priority_queue`) o abrir una nueva |
 
 ## Tema 9 · Algoritmos voraces II
 
@@ -191,11 +191,11 @@ Carpeta [`9-Algoritmos voraces II/`](9-Algoritmos%20voraces%20II). Más voraces 
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| 09-1 | ¡En primera línea de playa! | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-1/EJ_09-1.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-1/README.md) | [🎬 Vídeo](Videos/09-1_en_primera_linea_de_playa.mp4) | Pinchar intervalos: ordenar por extremo oriental y poner el pasadizo en `[E − 1, E]` |
-| 09-2 | El alienígena infiltrado | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-2/EJ_09-2.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-2/README.md) | [🎬 Vídeo](Videos/09-2_el_alienigena_infiltrado.mp4) | Cubrir `[C, F)`: entre los que empiezan antes de lo cubierto, el que llega más lejos |
-| 09-3 | Carreras de coches | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-3/EJ_09-3.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-3/README.md) | [🎬 Vídeo](Videos/09-3_carreras_de_coches.mp4) | Emparejar extremos: si la más débil y la más fuerte llegan a V, coche; si no, se descarta la débil |
-| 09-4 | El telesilla | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-4/EJ_09-4.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-4/README.md) | [🎬 Vídeo](Videos/09-4_el_telesilla.mp4) | Emparejar extremos: el más pesado sube con el más ligero si caben, si no solo |
-| 09-L | Necesitamos agua | juez | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-L/EJ_09-L.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-L/README.md) | [🎬 Vídeo](Videos/09-L_necesitamos_agua.mp4) | Dijkstra desde las dos plantas; todos al sur y se pasan al norte los de menor `dN − dS` |
+| 09-1 | ¡En primera línea de playa! | [📄 PDF](9-Algoritmos%20voraces%20II/Enunciados/prob-%C2%A1En%20primera%20l%C3%ADnea%20de%20playa%21.pdf) | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-1/EJ_09-1.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-1/README.md) | [🎬 Vídeo](Videos/09-1_en_primera_linea_de_playa.mp4) | Pinchar intervalos: ordenar por extremo oriental y poner el pasadizo en `[E − 1, E]` |
+| 09-2 | El alienígena infiltrado | [📄 PDF](9-Algoritmos%20voraces%20II/Enunciados/prob-El%20alien%C3%ADgena%20infiltrado.pdf) | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-2/EJ_09-2.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-2/README.md) | [🎬 Vídeo](Videos/09-2_el_alienigena_infiltrado.mp4) | Cubrir `[C, F)`: entre los que empiezan antes de lo cubierto, el que llega más lejos |
+| 09-3 | Carreras de coches | [📄 PDF](9-Algoritmos%20voraces%20II/Enunciados/prob-Carreras%20de%20coches.pdf) | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-3/EJ_09-3.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-3/README.md) | [🎬 Vídeo](Videos/09-3_carreras_de_coches.mp4) | Emparejar extremos: si la más débil y la más fuerte llegan a V, coche; si no, se descarta la débil |
+| 09-4 | El telesilla | [📄 PDF](9-Algoritmos%20voraces%20II/Enunciados/prob-El%20telesilla.pdf) | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-4/EJ_09-4.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-4/README.md) | [🎬 Vídeo](Videos/09-4_el_telesilla.mp4) | Emparejar extremos: el más pesado sube con el más ligero si caben, si no solo |
+| 09-L | Necesitamos agua | [📄 PDF](9-Algoritmos%20voraces%20II/Enunciados/prob-Necesitamos%20agua.pdf) | [💻 Solución](9-Algoritmos%20voraces%20II/EJ_09-L/EJ_09-L.cpp) · [📘 Explicación](9-Algoritmos%20voraces%20II/EJ_09-L/README.md) | [🎬 Vídeo](Videos/09-L_necesitamos_agua.mp4) | Dijkstra desde las dos plantas; todos al sur y se pasan al norte los de menor `dN − dS` |
 
 ## Tema 10 · Programación dinámica
 
@@ -204,10 +204,10 @@ Carpeta [`10-Programacion dinamica/`](10-Programacion%20dinamica). Recurrencias 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
 | 10-0 | Teoría de los temas 10 y 11 (explicación general) | — | [📘 Explicación del tema (resumen, patrones y formato de examen)](10-Programacion%20dinamica/README.md) | [🎬 Vídeo](Videos/10-0_programacion_dinamica_teoria.mp4) | Subproblemas repetidos, principio de optimalidad, la receta, ascendente vs descendente, ahorrar memoria (sentido del recorrido), reconstrucción y los cuatro patrones |
-| 10-1 | La cuerda de la cometa | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-1/EJ_10-1.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-1/README.md) | [🎬 Vídeo](Videos/10-1_la_cuerda_de_la_cometa.mp4) | Mochila 0/1 de suma exacta con tres tablas a la vez: formas, mínimo de cordeles y mínimo coste |
-| 10-2 | Construyendo dianas | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-2/EJ_10-2.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-2/README.md) | [🎬 Vídeo](Videos/10-2_construyendo_dianas.mp4) | Cambio de monedas ilimitadas con la tabla entera para reconstruir los dardos |
-| 10-3 | Esquivando las obras en los cruces | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-3/EJ_10-3.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-3/README.md) | [🎬 Vídeo](Videos/10-3_esquivando_las_obras.mp4) | Contar caminos sur/este: `caminos(i, j) = arriba + izquierda`, 0 en las obras |
-| 10-4 | ¿Por dónde hay que subir? | juez | [💻 Solución](10-Programacion%20dinamica/EJ_10-4/EJ_10-4.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-4/README.md) | [🎬 Vídeo](Videos/10-4_por_donde_hay_que_subir.mp4) | `mejor(i, j) = t(i, j) + máx` de las tres de encima; el máximo de la última fila, el de más a la izquierda |
+| 10-1 | La cuerda de la cometa | [📄 PDF](10-Programacion%20dinamica/Enunciados/prob-La%20cuerda%20de%20la%20cometa.pdf) | [💻 Solución](10-Programacion%20dinamica/EJ_10-1/EJ_10-1.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-1/README.md) | [🎬 Vídeo](Videos/10-1_la_cuerda_de_la_cometa.mp4) | Mochila 0/1 de suma exacta con tres tablas a la vez: formas, mínimo de cordeles y mínimo coste |
+| 10-2 | Construyendo dianas | [📄 PDF](10-Programacion%20dinamica/Enunciados/prob-Construyendo%20dianas.pdf) | [💻 Solución](10-Programacion%20dinamica/EJ_10-2/EJ_10-2.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-2/README.md) | [🎬 Vídeo](Videos/10-2_construyendo_dianas.mp4) | Cambio de monedas ilimitadas con la tabla entera para reconstruir los dardos |
+| 10-3 | Esquivando las obras en los cruces | [📄 PDF](10-Programacion%20dinamica/Enunciados/prob-Esquivando%20las%20obras%20en%20los%20cruces.pdf) | [💻 Solución](10-Programacion%20dinamica/EJ_10-3/EJ_10-3.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-3/README.md) | [🎬 Vídeo](Videos/10-3_esquivando_las_obras.mp4) | Contar caminos sur/este: `caminos(i, j) = arriba + izquierda`, 0 en las obras |
+| 10-4 | ¿Por dónde hay que subir? | [📄 PDF](10-Programacion%20dinamica/Enunciados/prob-%C2%BFPor%20d%C3%B3nde%20hay%20que%20subir_.pdf) | [💻 Solución](10-Programacion%20dinamica/EJ_10-4/EJ_10-4.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-4/README.md) | [🎬 Vídeo](Videos/10-4_por_donde_hay_que_subir.mp4) | `mejor(i, j) = t(i, j) + máx` de las tres de encima; el máximo de la última fila, el de más a la izquierda |
 
 ## Tema 11 · Programación dinámica II
 
@@ -215,8 +215,8 @@ Carpeta [`11-Programacion dinamica II/`](11-Programacion%20dinamica%20II). Progr
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| 11-1 | El cazatesoros | juez | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-1/EJ_11-1.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-1/README.md) | [🎬 Vídeo](Videos/11-1_el_cazatesoros.mp4) | Mochila 0/1 (peso 3p, capacidad T) y reconstrucción de los cofres desde `(N, T)` |
-| 11-2 | Aibofobia | juez | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-2/EJ_11-2.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-2/README.md) | [🎬 Vídeo](Videos/11-2_aibofobia.mp4) | `faltan(i, j)` sobre intervalos y reconstrucción del palíndromo por los dos extremos |
+| 11-1 | El cazatesoros | [📄 PDF](11-Programacion%20dinamica%20II/Enunciados/prob-El%20cazatesoros.pdf) | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-1/EJ_11-1.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-1/README.md) | [🎬 Vídeo](Videos/11-1_el_cazatesoros.mp4) | Mochila 0/1 (peso 3p, capacidad T) y reconstrucción de los cofres desde `(N, T)` |
+| 11-2 | Aibofobia | [📄 PDF](11-Programacion%20dinamica%20II/Enunciados/prob-Aibofobia.pdf) | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-2/EJ_11-2.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-2/README.md) | [🎬 Vídeo](Videos/11-2_aibofobia.mp4) | `faltan(i, j)` sobre intervalos y reconstrucción del palíndromo por los dos extremos |
 
 ## Tema 12 · Problemas de evaluación
 
@@ -224,7 +224,7 @@ Carpeta [`12-Evaluacion/`](12-Evaluacion). Problemas de evaluación del juez. Ma
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
-| Eval-1 | MasterHash | juez | [💻 Solución](12-Evaluacion/EJ_Eval-1/EJ_Eval-1.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-1/README.md) | [🎬 Vídeo](Videos/Eval-1_masterhash.mp4) | Lo que necesita P = alcanzables desde P en el **inverso**; NO si incluye S o hay ciclo (Kahn); si no, orden topológico |
+| Eval-1 | MasterHash | [📄 PDF](12-Evaluacion/Enunciados/prob-MasterHash.pdf) | [💻 Solución](12-Evaluacion/EJ_Eval-1/EJ_Eval-1.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-1/README.md) | [🎬 Vídeo](Videos/Eval-1_masterhash.mp4) | Lo que necesita P = alcanzables desde P en el **inverso**; NO si incluye S o hay ciclo (Kahn); si no, orden topológico |
 
 ---
 
