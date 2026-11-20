@@ -54,6 +54,62 @@ def diagnostico(meta, res):
     return json.loads(p.stdout)
 
 
+def revisar_comprobador(ej, m, meta):
+    """Comprobador propio: la versión Python (servidor) y la JavaScript (navegador) deben decir lo
+    mismo en la salida esperada, en una respuesta alternativa válida (ALTERNATIVA del módulo) y en
+    salidas estropeadas a propósito. Devuelve la lista de errores."""
+    errores = []
+    carpeta = RAIZ / "juez" / "tests" / ej
+    ns = {}
+    exec(compile((carpeta / "comprobador.py").read_text(encoding="utf-8"), "comprobador.py", "exec"), ns)
+    py = ns["comprobar"]
+    alt = getattr(m, "ALTERNATIVA", None)
+    trabajos, distinta = [], False
+    for x in meta:
+        ent = (carpeta / f"{x['n']}.in").read_text(encoding="utf-8")
+        esp = (carpeta / f"{x['n']}.out").read_text(encoding="utf-8")
+        lin = esp.splitlines()
+        cands = [("esperada", esp, True)]
+        if alt:
+            a = alt(ent)
+            distinta |= a != esp
+            cands.append(("alternativa válida", a, True))
+        if lin:
+            cands.append(("sin la última línea", "\n".join(lin[:-1]) + "\n", False))
+            cands.append(("con una línea de más", esp + "basura\n", False))
+            for k, l in enumerate(lin):
+                t = l.split()
+                if len(t) >= 3 and t[-1] != t[-2]:
+                    otra = lin[:k] + [" ".join(t[:-2] + [t[-1], t[-2]])] + lin[k + 1:]
+                    cands.append((f"dos datos cambiados en la línea {k + 1}", "\n".join(otra) + "\n", None))
+                    cands.append((f"espacios dobles en la línea {k + 1}", "\n".join(lin[:k] + [l.replace(" ", "  ")] + lin[k + 1:]) + "\n", False))
+                    break
+            for palabra in ("Imposible", "NO", "NO LLEGA"):
+                cands.append((f"primera línea «{palabra}»", "\n".join([palabra] + lin[1:]) + "\n", None))
+        for nombre, sal, debe in cands:
+            r = py(ent, esp, sal)
+            if debe is True and r is not None:
+                errores.append(f"comprobador (Python): rechaza la {nombre} de la prueba {x['n']}: {r.get('motivo')}")
+            if debe is False and r is None:
+                errores.append(f"comprobador (Python): acepta la prueba {x['n']} «{nombre}»")
+            trabajos.append({"n": x["n"], "caso": nombre, "ent": ent, "esp": esp, "sal": sal,
+                             "py": None if r is None else [r.get("linea"), bool(r.get("pe"))]})
+    if alt and not distinta:
+        errores.append("ALTERNATIVA da la misma salida que la esperada en todas las pruebas: no demuestra nada")
+    js = ("const fs=require('fs');const f=new Function('return (\\n'+fs.readFileSync(process.argv[1],'utf8')+'\\n)')();"
+          "const t=JSON.parse(fs.readFileSync(0,'utf8'));const o=t.map(j=>{const r=f(j.ent,j.esp,j.sal);"
+          "return r===null||r===undefined?null:[r.linea,!!r.pe]});console.log(JSON.stringify(o))")
+    p = subprocess.run(["node", "-e", js, str(carpeta / "comprobador.js")], input=json.dumps(trabajos),
+                       capture_output=True, text=True, timeout=300)
+    if p.returncode:
+        return errores + ["comprobador (JavaScript) falló: " + p.stderr[:300]]
+    for j, r in zip(trabajos, json.loads(p.stdout)):
+        if r != j["py"]:
+            errores.append(f"comprobadores distintos en la prueba {j['n']} «{j['caso']}»: Python {j['py']} y JavaScript {r}")
+    print(f"  comprobador: {len(trabajos)} salidas revisadas con Python y JavaScript")
+    return errores
+
+
 def resumen(res):
     if "tests" not in res:
         return f"{res.get('veredicto') or res.get('error')} {res.get('log', '')[:300]!r}"
@@ -99,6 +155,8 @@ def verificar(ej, rapido=False):
             avisos.append(f"prueba {x['n']}: salida esperada vacía")
     if total > MAX_TOTAL:
         errores.append(f"las pruebas ocupan {total / 1e6:.1f} MB (máx. {MAX_TOTAL / 1e6:.0f})")
+    if cfg.get("comprobador") or (RAIZ / "juez" / "tests" / ej / "comprobador.py").exists():
+        errores += revisar_comprobador(ej, m, meta)
     if errores:
         return errores, avisos
     preparar()

@@ -2,8 +2,10 @@
 
 Grafo NO dirigido valorado (puede haber varios tramos entre los mismos puntos). Para cada pedido,
 tiempo mínimo y el camino «t: a -> b -> c», o NO LLEGA; «---» tras cada caso.
-El enunciado admite cualquier camino mínimo, pero el juez compara el texto exacto: por eso TODAS
-las consultas de las pruebas tienen un único camino mínimo (lo comprueba el generador).
+El enunciado admite cualquier camino mínimo y el juez lo acepta: juez/ejercicios/comprobadores/07-3.py
+(servidor) y 07-3.js (navegador) comprueban que el camino existe, va del origen al destino y suma el
+tiempo mínimo. Aun así, las consultas de las pruebas tienen un único camino mínimo (lo comprueba el
+generador), para que la salida esperada que se enseña sea la única correcta.
 """
 import heapq
 from _comun import Prueba, Variante, rng

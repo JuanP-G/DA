@@ -7,5 +7,6 @@
  "fallo": [
   "valor[post[i]] = n - i;",
   "valor[post[i]] = i + 1;"
- ]
+ ],
+ "comprobador": true
 }

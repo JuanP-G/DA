@@ -1,14 +1,9 @@
 """05-6 · Sistema de inecuaciones: juez con pruebas pensadas para cada error típico.
 
-El enunciado admite cualquier asignación válida, pero el juez compara la salida exacta. Por eso se
-espera una asignación concreta, la de la solución de referencia (y la del tema): el valor de cada
-variable es su POSICIÓN (1…N) en el orden topológico. Además:
-  * casi todas las pruebas con solución tienen un único orden topológico (el DAG contiene un camino
-    por todas las variables), así que cualquier algoritmo que dé «posición en el orden, desde 1»
-    (o «nivel», empezando en 1) escribe lo mismo;
-  * solo el ejemplo 3 del PDF admite varios órdenes: ahí se espera el del DFS del tema (postorden
-    inverso, lanzando el DFS desde x1, x2, …, xN y recorriendo las inecuaciones en el orden de la
-    entrada), que da «SI 3 2 1».
+El enunciado admite cualquier asignación válida y el juez la acepta: juez/ejercicios/comprobadores/
+05-6.py (servidor) y 05-6.js (navegador) comprueban que la salida cumple todas las inecuaciones.
+La salida esperada (la posición de cada variable en el orden topológico, desde 1) es solo una de
+ellas. ALTERNATIVA da otra distinta y el verificador comprueba que también se acepta.
 El solucionador es propio (DFS iterativo con tres colores), validado contra fuerza bruta.
 """
 import random
@@ -82,8 +77,7 @@ def caso_a_texto(c):
     return f"{n}\n{len(aristas)}\n" + "".join(f"{a} {b}\n" for a, b in aristas)
 
 
-CONVENIO = ("El enunciado acepta cualquier asignación válida, pero este juez compara la salida exacta: espera que el "
-            "valor de cada variable sea su posición (1, 2, …, N) en el orden topológico.")
+CONVENIO = "Vale cualquier asignación que cumpla todas las inecuaciones: la salida esperada es solo una de ellas."
 
 
 def pruebas():
@@ -98,40 +92,39 @@ def pruebas():
 
     # ------------------------------------------------------------------ enunciado
     prueba("Ejemplo 1 del enunciado", "enunciado", [(4, [(1, 3), (3, 2), (2, 4), (3, 4), (1, 4)])],
-           "El primer ejemplo del PDF. Solo hay un orden posible (x1, x3, x2, x4), así que se espera «SI 1 3 2 4». " + CONVENIO,
-           {"wa": "Si escribes otra asignación válida (como «SI 2 5 3 7» del PDF), es correcta según el enunciado, pero no la que espera este juez. " + CONVENIO + " Si tu asignación no cumple alguna inecuación, revisa el orden.",
+           "El primer ejemplo del PDF: cinco inecuaciones. " + CONVENIO + " (por ejemplo «SI 2 5 3 7», la del PDF).",
+           {"wa": "Tu asignación no cumple alguna inecuación (el «Por qué» te dice cuál) o le falta el valor de alguna variable. Revisa el orden topológico y el sentido de cada inecuación.",
             "pe": "Los valores son correctos pero el formato no: «SI» y los N valores en UNA línea, separados por espacios.",
             "rte": "Se rompe con el ejemplo: las variables van de 1 a N; lee con Digrafo g(cin, 1) o resta 1."},
            ["Comprueba a mano que tu asignación cumple las cinco inecuaciones.",
-            "Calcula un orden topológico (postorden inverso del DFS) y da a cada variable su posición en él: la primera vale 1, la segunda 2…",
-            "Con el postorden post (en el orden en que terminan), valor[post[i]] = N − i."])
+            "Calcula un orden topológico (postorden inverso del DFS) y da a cada variable su posición en él: así se cumplen todas.",
+            "Con el postorden post (en el orden en que terminan), por ejemplo valor[post[i]] = N − i."])
     prueba("Ejemplo 2 del enunciado", "enunciado", [(3, [(1, 2), (2, 1)])],
            "El segundo ejemplo: x1 < x2 y x2 < x1 a la vez es imposible: «NO».",
            {"wa": "Con un ciclo hay que escribir «NO» (sin valores). Si escribes «SI…», no detectas los ciclos."},
            ["¿Hay algún par de valores que cumpla x1 < x2 y x2 < x1?",
             "En el DFS, un vecino que sigue en la pila (estado 1) cierra un ciclo."])
     prueba("Ejemplo 3 del enunciado", "enunciado", [(3, [(3, 1)])],
-           "El tercer ejemplo: x2 no aparece en ninguna inecuación y aun así necesita valor. Este caso admite varios órdenes; "
-           "se espera el del DFS del tema (lanzado desde x1, x2, x3 en ese orden): «SI 3 2 1».",
-           {"wa": "Si tu asignación cumple x3 < x1 y da valor a x2, es válida según el enunciado, pero no la que espera este juez. " + CONVENIO + " Aquí hay varios órdenes y se usa el del DFS del tema: postorden inverso lanzando el DFS desde x1, x2, …, xN (el de la solución de referencia). Si las demás pruebas salen bien, tu algoritmo es correcto.",
+           "El tercer ejemplo: x2 no aparece en ninguna inecuación y aun así necesita valor. " + CONVENIO,
+           {"wa": "Te falta el valor de alguna variable (x2 también lo necesita) o no se cumple x3 < x1.",
             "pe": "Formato: «SI» y los valores en una sola línea."},
            ["Toda variable, aparezca o no, lleva valor.",
-            "Con el DFS del tema: x1 termina la primera (vale 3), luego x2 (vale 2) y por último x3 (vale 1)."])
+            "Lanza el DFS desde cada variable sin visitar (también x2) y da a cada una su posición en el orden."])
 
     # ------------------------------------------------------------------ borde
     prueba("Dos variables", "borde", [(2, [(1, 2)]), (2, [(2, 1)]), (2, [(1, 2), (1, 2)])],
-           "Dos variables con una inecuación (una vez repetida): «SI 1 2», «SI 2 1» y «SI 1 2».",
-           {"wa": "Con dos variables solo hay un orden posible en cada caso: revisa el sentido (i j es xi < xj) y que el valor es la posición en el orden, desde 1."},
+           "Dos variables con una inecuación (una vez repetida).",
+           {"wa": "Revisa el sentido: «i j» significa xi < xj, así que xi necesita un valor MENOR que xj."},
            ["«2 1» significa x2 < x1: x2 va primero y vale 1.",
-            "El valor de cada variable es su posición en el orden topológico."])
+            "Si das a cada variable su posición en el orden topológico, se cumplen todas."])
 
     # ------------------------------------------------------------------ trampas
-    prueba("Los valores empiezan en 1", "trampa", [(1, [])],
-           "Una sola variable y ninguna inecuación: ocupa la posición 1 del orden, así que se espera «SI 1».",
-           {"wa": "Escribes «SI 0»: es válido, pero el juez espera posiciones desde 1. " + CONVENIO,
+    prueba("Una variable y ninguna inecuación", "trampa", [(1, [])],
+           "Una sola variable sin inecuaciones: siempre hay solución, «SI» y un valor cualquiera.",
+           {"wa": "Sin inecuaciones siempre hay solución: hay que escribir SI y un valor (por ejemplo «SI 1»). Si sale NO o falta el valor, revisa el caso M = 0.",
             "rte": "Con N = 1 y M = 0 algo se sale de rango: revisa los índices."},
-           ["La primera variable del orden vale 1, no 0.",
-            "Con el postorden post: valor[post[i]] = N − i (el primero en terminar vale N)."])
+           ["Sin inecuaciones, ¿puede no haber solución?",
+            "Escribe SI y un valor por cada variable, aunque no aparezca en ninguna inecuación."])
     prueba("El primero en terminar es el mayor", "trampa", [(3, [(1, 2), (2, 3)])],
            "x1 < x2 < x3: «SI 1 2 3».",
            {"wa": "Escribes «SI 3 2 1»: asignas los valores al revés (el primero en terminar el DFS recibe 1) o has puesto las aristas al revés. La arista de «i j» es i → j y j termina antes que i."},
@@ -229,7 +222,6 @@ def pruebas():
 
 
 VARIANTES = [
-    Variante("valores desde 0", [("valor[post[i]] = n - i;", "valor[post[i]] = n - 1 - i;")], prueba=5, v="wa"),
     Variante("valores al revés", [("valor[post[i]] = n - i;", "valor[post[i]] = i + 1;")], prueba=6, v="wa"),
     Variante("inecuaciones al revés", [("Digrafo g(cin, 1);", "Digrafo g0(cin, 1); Digrafo g = g0.inverso();")], prueba=6, v="wa"),
     Variante("cualquier visitado es un ciclo", [("if (estado[w] == 1) hayCiclo = true;", "if (estado[w] != 0) hayCiclo = true;")], prueba=7, v="wa"),
@@ -252,3 +244,34 @@ VARIANTES = [
     Variante("copia el grafo en cada llamada", [("void dfs(Digrafo const& g, int v) {", "void dfs(Digrafo g, int v) {")], prueba=[17, 18], v="tle"),
     Variante("un valor por línea", [("for (int v = 0; v < n; ++v) cout << ' ' << sis.valorDe(v);", "for (int v = 0; v < n; ++v) cout << '\\n' << sis.valorDe(v);")], prueba=1, v="pe"),
 ]
+
+
+# ---------------------------------------------------------------- respuesta alternativa
+def ALTERNATIVA(entrada):
+    """Otra respuesta correcta (vale cualquier asignación que cumpla todo): orden de Kahn eligiendo la
+    variable libre de número MAYOR y valores 7, 10, 13... El verificador comprueba que se acepta."""
+    import heapq
+    v = list(map(int, entrada.split()))
+    p, out = 1, []
+    for _ in range(v[0]):
+        n, m = v[p], v[p + 1]
+        p += 2
+        suc, grado = [[] for _ in range(n + 1)], [0] * (n + 1)
+        for _ in range(m):
+            a, b = v[p], v[p + 1]
+            p += 2
+            suc[a].append(b)
+            grado[b] += 1
+        libres = [-x for x in range(1, n + 1) if grado[x] == 0]
+        heapq.heapify(libres)
+        valor, k = [0] * (n + 1), 0
+        while libres:
+            x = -heapq.heappop(libres)
+            valor[x] = 7 + 3 * k
+            k += 1
+            for y in suc[x]:
+                grado[y] -= 1
+                if grado[y] == 0:
+                    heapq.heappush(libres, -y)
+        out.append("SI " + " ".join(map(str, valor[1:])) if k == n else "NO")
+    return "\n".join(out) + "\n"

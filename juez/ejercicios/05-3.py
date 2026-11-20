@@ -1,11 +1,9 @@
 """05-3 · Ordenando tareas: juez con pruebas pensadas para cada error típico.
 
-El enunciado admite cualquier orden válido, pero el juez compara la salida exacta. Por eso:
-  * casi todas las pruebas tienen UN ÚNICO orden válido (el DAG contiene un camino que pasa por
-    todas las tareas), así que cualquier algoritmo correcto (DFS, Kahn...) da la misma salida;
-  * solo el ejemplo 1 del PDF admite varios órdenes: ahí se espera el del DFS del tema (postorden
-    inverso, lanzando el DFS desde las tareas 1, 2, …, N y siguiendo las dependencias en el orden
-    de la entrada), que es lo que escribe la solución de referencia: «7 1 2 4 3 5 6».
+El enunciado admite cualquier orden válido y el juez lo acepta: juez/ejercicios/comprobadores/05-3.py
+(servidor) y 05-3.js (navegador) comprueban que la salida respeta todas las dependencias. La salida
+esperada (la del DFS del tema) es solo una de ellas; ALTERNATIVA da otra y el verificador comprueba
+que también se acepta. Casi todas las pruebas tienen además un único orden válido.
 El solucionador es propio (DFS iterativo con tres colores) y se ha validado contra fuerza bruta.
 """
 import random
@@ -76,9 +74,7 @@ def caso_a_texto(c):
     return f"{n}\n{len(aristas)}\n" + "".join(f"{a} {b}\n" for a, b in aristas)
 
 
-EXPLICA_ORDEN = ("Este caso admite varios órdenes. El enunciado acepta cualquiera, pero este juez compara la salida "
-                 "exacta y espera el del DFS del tema: postorden inverso, lanzando el DFS desde las tareas 1, 2, …, N "
-                 "y recorriendo las dependencias de cada tarea en el orden en que aparecen en la entrada.")
+EXPLICA_ORDEN = "Este caso admite varios órdenes y vale cualquiera que respete todas las dependencias."
 
 
 def pruebas():
@@ -94,13 +90,13 @@ def pruebas():
     # ------------------------------------------------------------------ enunciado
     prueba("Ejemplo 1 del enunciado", "enunciado",
            [(7, [(1, 2), (2, 3), (2, 4), (3, 5), (2, 5), (4, 5), (5, 6), (7, 4)])],
-           "El primer ejemplo del PDF (siete tareas). " + EXPLICA_ORDEN + " Aquí sale «7 1 2 4 3 5 6».",
-           {"wa": "Si tu orden respeta todas las dependencias, es correcto según el enunciado, pero no es el que espera este juez (que compara la salida exacta). " + EXPLICA_ORDEN + " Si las demás pruebas (que solo tienen un orden posible) salen bien, tu algoritmo está bien.",
+           "El primer ejemplo del PDF (siete tareas). " + EXPLICA_ORDEN,
+           {"wa": "Tu orden no respeta alguna dependencia, repite o se deja alguna tarea (el «Por qué» te dice cuál). Revisa cómo construyes el orden topológico.",
             "pe": "El orden es correcto pero el formato no: las tareas van en UNA línea, separadas por un espacio.",
             "rte": "Se rompe con el ejemplo: las tareas van de 1 a N; si tu grafo tiene N vértices, resta 1 al leer."},
            ["Comprueba primero a mano que tu orden respeta las ocho dependencias.",
-            "Si es válido pero distinto de «7 1 2 4 3 5 6», usa el DFS del tema: para v = 1…N, si v no está visitado, dfs(v); al terminar cada vértice, guárdalo en post.",
-            "Al final, escribe post al revés (postorden inverso). Recorre los adyacentes en el orden de la entrada (ponArista los añade al final de la lista)."])
+            "Con el DFS del tema: para v = 1…N, si v no está visitado, dfs(v); al terminar cada vértice, guárdalo en post.",
+            "Al final, escribe post al revés (postorden inverso): ese es un orden válido."])
     prueba("Ejemplo 2 del enunciado", "enunciado", [(2, [(1, 2), (2, 1)])],
            "El segundo ejemplo del PDF: 1 antes que 2 y 2 antes que 1, imposible.",
            {"wa": "Con un ciclo hay que escribir exactamente «Imposible» (con mayúscula inicial y sin tilde). Si escribes un orden, no detectas los ciclos."},
@@ -242,3 +238,33 @@ VARIANTES = [
     Variante("copia el grafo en cada llamada", [("void dfs(Digrafo const& g, int v) {", "void dfs(Digrafo g, int v) {")], prueba=[16, 17], v="tle"),
     Variante("una tarea por línea", [("if (!primero) cout << ' ';", "if (!primero) cout << '\\n';")], prueba=1, v="pe"),
 ]
+
+
+# ---------------------------------------------------------------- respuesta alternativa
+def ALTERNATIVA(entrada):
+    """Otra respuesta correcta (el enunciado admite cualquier orden válido): Kahn eligiendo siempre
+    la tarea libre de número MENOR. El verificador comprueba que el juez la acepta."""
+    import heapq
+    v = list(map(int, entrada.split()))
+    p, out = 1, []
+    for _ in range(v[0]):
+        n, m = v[p], v[p + 1]
+        p += 2
+        suc, grado = [[] for _ in range(n + 1)], [0] * (n + 1)
+        for _ in range(m):
+            a, b = v[p], v[p + 1]
+            p += 2
+            suc[a].append(b)
+            grado[b] += 1
+        libres = [x for x in range(1, n + 1) if grado[x] == 0]
+        heapq.heapify(libres)
+        orden = []
+        while libres:
+            x = heapq.heappop(libres)
+            orden.append(x)
+            for y in suc[x]:
+                grado[y] -= 1
+                if grado[y] == 0:
+                    heapq.heappush(libres, y)
+        out.append(" ".join(map(str, orden)) if len(orden) == n else "Imposible")
+    return "\n".join(out) + "\n"

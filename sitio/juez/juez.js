@@ -265,8 +265,16 @@
       }
       if (r.estado === 'rte') return { t, v: 'rte', ms: r.ms, detalle: explica(r.detalle) };
       if (r.ms > limite) return { t, v: 'tle', ms: r.ms };
-      const d = compara(esperada, r.salida);
-      return d.igual ? { t, v: 'ac', ms: r.ms } : { t, v: d.pe ? 'pe' : 'wa', ms: r.ms, dif: d };
+      let d;
+      if (this.m.comprobador) {                   // varias respuestas válidas: se comprueba la tuya
+        if (!this.fnComprobar) this.fnComprobar = new Function('return (\n' + await this.texto(this.m.comprobador) + '\n)')();
+        try { d = this.fnComprobar(entrada, esperada, r.salida); } catch (e) { d = { linea: 1, esperada: null, obtenida: null, total: 0, motivo: 'no se entiende la salida' }; }
+        if (!d) return { t, v: 'ac', ms: r.ms };
+      } else {
+        d = compara(esperada, r.salida);
+        if (d.igual) return { t, v: 'ac', ms: r.ms };
+      }
+      return { t, v: d.pe ? 'pe' : 'wa', ms: r.ms, dif: d };
     }
 
     veredicto(v, texto) { return h('div', { class: 'dj-ver dj-' + v }, texto); }
@@ -290,7 +298,9 @@
           li.append(h('div', { class: 'dj-dif' },
             `Primera diferencia en la línea ${f.dif.linea} de ${f.dif.total}` + ((f.t.casos || 0) > 1 && f.dif.linea > 1 ? ` (las ${f.dif.linea - 1} primeras están bien)` : '') + ':',
             h('div', {}, h('span', {}, 'esperado '), h('code', {}, corta(f.dif.esperada))),
-            h('div', {}, h('span', {}, 'tu salida '), h('code', {}, corta(f.dif.obtenida)))));
+            h('div', {}, h('span', {}, 'tu salida '), h('code', {}, corta(f.dif.obtenida))),
+            f.dif.motivo ? h('div', { class: 'dj-motivo' }, 'Por qué: ' + f.dif.motivo) : null,
+            this.m.comprobador && f.dif.esperada ? h('div', {}, 'La salida esperada es una de las respuestas válidas: vale cualquiera que cumpla el enunciado.') : null));
         } else if (f.v === 'rte' || f.v === 'mle' || f.v === 'ole') {
           li.append(h('div', { class: 'dj-dif' }, f.detalle || QUE_ES[f.v]));
         } else if (f.v === 'tle') {

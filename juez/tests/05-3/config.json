@@ -7,5 +7,6 @@
  "fallo": [
   "reverse(post.begin(), post.end());",
   ";"
- ]
+ ],
+ "comprobador": true
 }

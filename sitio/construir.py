@@ -1003,6 +1003,10 @@ def generar_juez(ej, slugs=None):
         manifest = {"id": ej_id, "titulo": e["titulo"], "limite_ms": c.get("limite_ms", 3000), "plantilla": plantilla,
                     "cabeceras": cab, "tests": tests,
                     "demo": {"solucion": "solucion.cpp", "fallo": "fallo.cpp"}}
+        comp = RAIZ / "juez" / "tests" / ej_id / "comprobador.js"
+        if c.get("comprobador") and comp.exists():    # admite varias respuestas: se comprueba, no se compara
+            escribe_lf(d / "comprobador.js", comp.read_text(encoding="utf-8"))
+            manifest["comprobador"] = "comprobador.js"
         escribe_lf(d / "manifest.json", json.dumps(manifest, ensure_ascii=False, indent=1) + "\n")
         cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../ej/{ej_id.lower()}.html">← Volver al ejercicio</a>'
                   f'<a href="../index.html">Inicio</a>›<a href="../tema/{e["tema"]}.html">Tema {e["tema"]}</a>›<span>{esc(ej_id)} · probar</span></div>'

@@ -464,6 +464,21 @@ def filtro(codigo):
     return None
 
 
+_comprobadores = {}
+
+
+def comprobador(ej_id):
+    """Comprobador propio del ejercicio (juez/tests/<id>/comprobador.py), para los que admiten
+    varias respuestas correctas. Se recarga si cambia el fichero."""
+    p = RAIZ / "juez" / "tests" / ej_id / "comprobador.py"
+    clave = (str(p), p.stat().st_mtime)
+    if _comprobadores.get(ej_id, (None,))[0] != clave:
+        ns = {}
+        exec(compile(p.read_text(encoding="utf-8"), str(p), "exec"), ns)
+        _comprobadores[ej_id] = (clave, ns["comprobar"])
+    return _comprobadores[ej_id][1]
+
+
 def juzgar(ej_id, codigo):
     cfg = config().get(ej_id)
     if not cfg:
@@ -491,7 +506,15 @@ def juzgar(ej_id, codigo):
                 fila, out = ejecutar(carp, fh, limite_ms)
             fila["n"] = int(fin.stem)
             if "v" not in fila:
-                d = compara(leer(fin.with_suffix(".out")), out.decode("utf-8", "replace"))
+                esperada, obtenida = leer(fin.with_suffix(".out")), out.decode("utf-8", "replace")
+                if cfg.get("comprobador"):
+                    try:
+                        d = comprobador(ej_id)(leer(fin), esperada, obtenida)
+                    except Exception as e:              # salida tan rara que el comprobador no la entiende
+                        d = {"linea": 1, "esperada": None, "obtenida": None, "total": 0,
+                             "motivo": f"no se entiende la salida ({type(e).__name__})"}
+                else:
+                    d = compara(esperada, obtenida)
                 if d: fila["v"] = "pe" if d.get("pe") else "wa"; fila["dif"] = d
                 else: fila["v"] = "ac"
             filas.append(fila)

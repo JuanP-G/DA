@@ -51,7 +51,20 @@ def generar(ej, silencio=False):
         if not silencio:
             print(f"{ej} {k:2} {p['tipo']:11} {len(ent.encode()):>9} B  {p['nombre']}")
     escribe(carpeta / "pruebas.json", json.dumps(meta, ensure_ascii=False, indent=1) + "\n")
-    escribe(carpeta / "config.json", json.dumps(m.CONFIG, ensure_ascii=False, indent=1) + "\n")
+    cfg = dict(m.CONFIG)
+    # Comprobador propio (ejercicios que admiten varias respuestas): juez/ejercicios/comprobadores/<id>.py
+    # para el servidor y <id>.js para el navegador. Se copian junto a las pruebas.
+    comp = EJS / "comprobadores" / ej
+    for ext in ("py", "js"):
+        destino = carpeta / f"comprobador.{ext}"
+        if comp.with_suffix(f".{ext}").exists():
+            escribe(destino, comp.with_suffix(f".{ext}").read_text(encoding="utf-8"))
+        elif destino.exists():
+            destino.unlink()
+    if comp.with_suffix(".py").exists():
+        assert comp.with_suffix(".js").exists(), f"falta {comp}.js (el comprobador del navegador)"
+        cfg["comprobador"] = True
+    escribe(carpeta / "config.json", json.dumps(cfg, ensure_ascii=False, indent=1) + "\n")
     return m, meta, total
 
 

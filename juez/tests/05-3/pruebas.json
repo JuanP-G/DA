@@ -4,16 +4,16 @@
   "nombre": "Ejemplo 1 del enunciado",
   "tipo": "enunciado",
   "casos": 1,
-  "comprueba": "El primer ejemplo del PDF (siete tareas). Este caso admite varios órdenes. El enunciado acepta cualquiera, pero este juez compara la salida exacta y espera el del DFS del tema: postorden inverso, lanzando el DFS desde las tareas 1, 2, …, N y recorriendo las dependencias de cada tarea en el orden en que aparecen en la entrada. Aquí sale «7 1 2 4 3 5 6».",
+  "comprueba": "El primer ejemplo del PDF (siete tareas). Este caso admite varios órdenes y vale cualquiera que respete todas las dependencias.",
   "si": {
-   "wa": "Si tu orden respeta todas las dependencias, es correcto según el enunciado, pero no es el que espera este juez (que compara la salida exacta). Este caso admite varios órdenes. El enunciado acepta cualquiera, pero este juez compara la salida exacta y espera el del DFS del tema: postorden inverso, lanzando el DFS desde las tareas 1, 2, …, N y recorriendo las dependencias de cada tarea en el orden en que aparecen en la entrada. Si las demás pruebas (que solo tienen un orden posible) salen bien, tu algoritmo está bien.",
+   "wa": "Tu orden no respeta alguna dependencia, repite o se deja alguna tarea (el «Por qué» te dice cuál). Revisa cómo construyes el orden topológico.",
    "pe": "El orden es correcto pero el formato no: las tareas van en UNA línea, separadas por un espacio.",
    "rte": "Se rompe con el ejemplo: las tareas van de 1 a N; si tu grafo tiene N vértices, resta 1 al leer."
   },
   "pistas": [
    "Comprueba primero a mano que tu orden respeta las ocho dependencias.",
-   "Si es válido pero distinto de «7 1 2 4 3 5 6», usa el DFS del tema: para v = 1…N, si v no está visitado, dfs(v); al terminar cada vértice, guárdalo en post.",
-   "Al final, escribe post al revés (postorden inverso). Recorre los adyacentes en el orden de la entrada (ponArista los añade al final de la lista)."
+   "Con el DFS del tema: para v = 1…N, si v no está visitado, dfs(v); al terminar cada vértice, guárdalo en post.",
+   "Al final, escribe post al revés (postorden inverso): ese es un orden válido."
   ]
  },
  {

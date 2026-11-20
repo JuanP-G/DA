@@ -8,5 +8,6 @@
  "fallo": [
   "camino.push_front(v);",
   "camino.push_back(v);"
- ]
+ ],
+ "comprobador": true
 }
