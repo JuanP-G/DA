@@ -499,3 +499,21 @@ body.cine-on{overflow:hidden}
 .vsala .btn.lnk:hover{transform:translateY(-1px)}.vsala .btn.lnk:active{transform:scale(.97)}
 .pw .nx .btn.go{background:linear-gradient(135deg,#8b7bff,#5a7bff)!important;border:0!important;color:#fff;font-weight:700}
 .pw .nx .btn.ghost{background:none!important;border:1px solid var(--line)!important;color:var(--muted)}
+
+/* vídeos: controles propios (pantalla completa dentro del reproductor, menú ⋮) */
+.pw .vc{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;align-items:center;gap:8px;padding:26px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.78));color:#fff;opacity:0;transition:opacity .2s}
+.pw:hover .vc,.pw.paused .vc,.pw:focus-within .vc{opacity:1}
+.pw .vc .ic{all:unset;cursor:pointer;display:inline-grid;place-items:center;min-width:32px;height:32px;border-radius:8px;font-size:15px;transition:background-color .15s,transform .12s}
+.pw .vc .ic:hover{background:rgba(255,255,255,.18)}.pw .vc .ic:active{transform:scale(.92)}.pw .vc .ic:focus-visible{outline:2px solid #2dd4bf}
+.pw .vc .tm{font:600 .75rem var(--mono,monospace);font-variant-numeric:tabular-nums;white-space:nowrap;opacity:.9}
+.pw .vc #sk{flex:1;min-width:60px;accent-color:#2dd4bf;cursor:pointer;height:4px}
+.pw .vc .mn{position:relative}
+.pw .vc .pop{position:absolute;right:0;bottom:40px;min-width:230px;padding:8px;border-radius:12px;background:rgba(10,12,32,.96);border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.5);animation:nxIn .15s ease both}
+.pw .vc .pop[hidden]{display:none}
+.pw .vc .pop .r{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 8px;font-size:.82rem;cursor:pointer}
+.pw .vc .pop .spd{display:flex;gap:3px}
+.pw .vc .pop .spd button{all:unset;cursor:pointer;padding:3px 7px;border-radius:6px;font-size:.75rem;color:var(--muted)}
+.pw .vc .pop .spd button:hover{color:#fff}.pw .vc .pop .spd button.on{background:#2dd4bf;color:#06251f;font-weight:700}
+.pw .vc .pop input[type=checkbox]{accent-color:#2dd4bf;width:16px;height:16px}
+.pw video{cursor:pointer}
+.pw.cine .vc{padding-bottom:18px}

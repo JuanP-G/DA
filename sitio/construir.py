@@ -906,13 +906,14 @@ function sala(s){
  const lista=Object.keys(byT).map(t=>{const xs=byT[t].filter(x=>!q||(x.id+' '+x.t+' '+x.idea).toLowerCase().includes(q));if(!xs.length)return'';const n=byT[t].filter(x=>vistos[x.s]).length;
   return '<details '+(q||t==v.tema?'open':'')+'><summary><span>Tema '+t+' · '+esc(byT[t][0].tn)+'</span><small>'+n+'/'+byT[t].length+'</small></summary>'+xs.map(x=>'<a class="it'+(x.s===s?' act':'')+(vistos[x.s]?' vist':'')+(x.teoria?' teo':' ej')+'" href="#'+x.s+'">'+thumb(x)+'<div><b>'+esc(x.id)+' · '+esc(x.t)+'</b><span>'+(x.teoria?'Resumen del tema':'Ejercicio')+'</span></div></a>').join('')+'</details>'}).join('');
  root.className='vsala';$('.vv').classList.add('ensala');
- root.innerHTML='<div class="vtop"><a class="vback" href="#">← Todos los vídeos</a></div><div class="sala"><div class="main"><div class="pw" id="pw"><video id="vid" controls controlsList="nofullscreen" preload="metadata" playsinline'+(v.p?' poster="'+v.p+'"':'')+' src="'+v.v+'">'+(v.vtt?'<track kind="subtitles" srclang="es" label="Español" src="'+v.vtt+'">':'')+'</video>'
+ root.innerHTML='<div class="vtop"><a class="vback" href="#">← Todos los vídeos</a></div><div class="sala"><div class="main"><div class="pw" id="pw"><video id="vid" preload="metadata" playsinline'+(v.p?' poster="'+v.p+'"':'')+' src="'+v.v+'">'+(v.vtt?'<track kind="subtitles" srclang="es" label="Español" src="'+v.vtt+'">':'')+'</video>'
+ +'<div class="vc" id="vc"><button type="button" class="ic" id="pp" aria-label="Reproducir">▶</button><span class="tm" id="tm">0:00 / 0:00</span><input type="range" id="sk" min="0" max="1000" value="0" aria-label="Progreso"><button class="ic" id="mu" type="button" aria-label="Silenciar">🔊</button><div class="mn"><button class="ic" id="mb" type="button" aria-label="Más opciones">⋮</button><div class="pop" id="pop" hidden><div class="r"><span>Velocidad</span><div class="spd">'+[.75,1,1.25,1.5,2].map(x=>'<button type="button" data-v="'+x+'"'+(x===1?' class="on"':'')+'>'+x+'×</button>').join('')+'</div></div>'+(v.vtt?'<label class="r"><span>Subtítulos</span><input type="checkbox" id="cc" checked></label>':'')+'<label class="r"><span>Pasar al siguiente</span><input type="checkbox" id="auto" '+(window._auto===false?'':'checked')+'></label></div></div><button class="ic" id="fs" type="button" aria-label="Pantalla completa"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>'
  +'<button class="xit" id="xit" type="button">✕ Salir de pantalla completa</button>'
  +(sg?'<div class="nx" id="nx" hidden><span>Siguiente en <b id="cd">5</b> s</span><b class="nt">'+esc(sg.id)+' · '+esc(sg.t)+'</b><div><button class="btn go" id="nxgo" type="button">Ver ahora</button><button class="btn ghost" id="nxno" type="button">Cancelar</button></div></div>':'')+'</div>'
  +'<div class="info"><span class="etq '+(v.teoria?'teo':'ej')+'">'+(v.teoria?'Resumen del tema '+v.tema:'Ejercicio '+esc(v.id))+' · '+esc(v.tn)+'</span><h2>'+esc(v.t)+'</h2><p>'+esc(v.idea)+'</p>'
  +(v.caps.length?'<div class="caps" role="group" aria-label="Capítulos">'+v.caps.map(c=>'<button class="cap" type="button" data-t="'+c[0]+'"><i>'+fmt(c[0])+'</i>'+esc(c[1])+'</button>').join('')+'</div>':'')
  +'<div class="ctl"><div class="seg"><button class="btn nav" id="prev" type="button"'+(i?'':' disabled')+'>← Anterior</button><button class="btn nav" id="next" type="button"'+(sg?'':' disabled')+'>Siguiente →</button></div>'
- +'<button class="btn fs" id="fs" type="button">⛶ Pantalla completa</button><label class="auto"><input type="checkbox" id="auto" '+(window._auto===false?'':'checked')+'> pasar al siguiente</label>'
+ +''
  +'<span class="sp"></span><button class="btn act" id="mk" type="button">'+(vistos[s]?'✓ Visto':'Marcar como visto')+'</button>'
  +'<a class="btn lnk '+(v.teoria?'teo':'ej')+'" href="'+(v.teoria?'tema/'+v.tema+'.html':'ej/'+v.s+'.html')+'">'+(v.teoria?'Ver el tema '+v.tema:'Ver el ejercicio')+' →</a></div></div></div>'
  +'<aside class="side"><input id="q" type="search" placeholder="Buscar vídeo…" value="'+esc(window._q||'')+'" aria-label="Buscar vídeo">'+lista+'</aside></div>';
@@ -936,8 +937,22 @@ function sala(s){
   if(!f){cine(true);return}
   try{const p=f.call(pw);if(p&&p.catch)p.catch(()=>cine(true))}catch(e){cine(true)}
   setTimeout(()=>{if(!document.fullscreenElement&&!pw.classList.contains('cine'))cine(true)},350)};
- $('#fs').onclick=toggleFs;$('#xit').onclick=()=>cine(false);vid.ondblclick=toggleFs;
- window._key=e=>{if(e.target.closest('input,textarea'))return;if(e.key==='f'||e.key==='F')toggleFs();else if(e.key==='Escape'&&pw.classList.contains('cine'))cine(false)};
+ $('#fs').onclick=toggleFs;
+ const pp=$('#pp'),sk=$('#sk'),tm=$('#tm'),mu=$('#mu'),pop=$('#pop');
+ const upd=()=>{const d=vid.duration||0;sk.value=d?vid.currentTime/d*1000:0;tm.textContent=fmt(Math.floor(vid.currentTime))+' / '+fmt(Math.floor(d))};
+ const est=()=>{pp.textContent=vid.paused?'▶':'❚❚';pw.classList.toggle('paused',vid.paused)};
+ ['timeupdate','loadedmetadata','durationchange'].forEach(n=>vid.addEventListener(n,upd));
+ ['play','pause','ended'].forEach(n=>vid.addEventListener(n,est));est();upd();
+ const tgl=()=>vid.paused?vid.play():vid.pause();
+ pp.onclick=tgl;vid.onclick=tgl;
+ sk.oninput=()=>{if(vid.duration)vid.currentTime=sk.value/1000*vid.duration};
+ mu.onclick=()=>{vid.muted=!vid.muted;mu.textContent=vid.muted?'🔇':'🔊'};
+ $('#mb').onclick=e=>{e.stopPropagation();pop.hidden=!pop.hidden};
+ document.onclick=e=>{if(!e.target.closest('.mn'))pop.hidden=true};
+ pop.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{vid.playbackRate=+b.dataset.v;pop.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x===b))});
+ const tt=vid.textTracks[0];if(tt)tt.mode='showing';
+ const cc=$('#cc');if(cc)cc.onchange=()=>{tt.mode=cc.checked?'showing':'hidden'};$('#xit').onclick=()=>cine(false);vid.ondblclick=toggleFs;
+ window._key=e=>{if(e.target.closest('input,textarea'))return;if(e.key==='f'||e.key==='F')toggleFs();else if(e.key==='m'||e.key==='M')mu.click();else if(e.key==='k'||(e.key===' '&&!e.target.closest('button'))){e.preventDefault();tgl()}else if(e.key==='ArrowRight')vid.currentTime+=5;else if(e.key==='ArrowLeft')vid.currentTime-=5;else if(e.key==='Escape'&&pw.classList.contains('cine'))cine(false)};
  $('#mk').onclick=()=>{vistos[s]?delete vistos[s]:vistos[s]=1;save();const t=vid.currentTime;sala(s);$('#vid').currentTime=t;$('#vid').pause()};
  const qi=$('#q');qi.oninput=()=>{window._q=qi.value;const p=qi.selectionStart,t=vid.currentTime,pl=!vid.paused;sala(s);const n=$('#q');n.focus();n.setSelectionRange(p,p);$('#vid').currentTime=t;if(!pl)$('#vid').pause()};
  window.scrollTo({top:0});
