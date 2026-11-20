@@ -1,0 +1,280 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El primer ejemplo del PDF. Solo hay un orden posible (x1, x3, x2, x4), así que se espera «SI 1 3 2 4». El enunciado acepta cualquier asignación válida, pero este juez compara la salida exacta: espera que el valor de cada variable sea su posición (1, 2, …, N) en el orden topológico.",
+  "si": {
+   "wa": "Si escribes otra asignación válida (como «SI 2 5 3 7» del PDF), es correcta según el enunciado, pero no la que espera este juez. El enunciado acepta cualquier asignación válida, pero este juez compara la salida exacta: espera que el valor de cada variable sea su posición (1, 2, …, N) en el orden topológico. Si tu asignación no cumple alguna inecuación, revisa el orden.",
+   "pe": "Los valores son correctos pero el formato no: «SI» y los N valores en UNA línea, separados por espacios.",
+   "rte": "Se rompe con el ejemplo: las variables van de 1 a N; lee con Digrafo g(cin, 1) o resta 1."
+  },
+  "pistas": [
+   "Comprueba a mano que tu asignación cumple las cinco inecuaciones.",
+   "Calcula un orden topológico (postorden inverso del DFS) y da a cada variable su posición en él: la primera vale 1, la segunda 2…",
+   "Con el postorden post (en el orden en que terminan), valor[post[i]] = N − i."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El segundo ejemplo: x1 < x2 y x2 < x1 a la vez es imposible: «NO».",
+  "si": {
+   "wa": "Con un ciclo hay que escribir «NO» (sin valores). Si escribes «SI…», no detectas los ciclos."
+  },
+  "pistas": [
+   "¿Hay algún par de valores que cumpla x1 < x2 y x2 < x1?",
+   "En el DFS, un vecino que sigue en la pila (estado 1) cierra un ciclo."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El tercer ejemplo: x2 no aparece en ninguna inecuación y aun así necesita valor. Este caso admite varios órdenes; se espera el del DFS del tema (lanzado desde x1, x2, x3 en ese orden): «SI 3 2 1».",
+  "si": {
+   "wa": "Si tu asignación cumple x3 < x1 y da valor a x2, es válida según el enunciado, pero no la que espera este juez. El enunciado acepta cualquier asignación válida, pero este juez compara la salida exacta: espera que el valor de cada variable sea su posición (1, 2, …, N) en el orden topológico. Aquí hay varios órdenes y se usa el del DFS del tema: postorden inverso lanzando el DFS desde x1, x2, …, xN (el de la solución de referencia). Si las demás pruebas salen bien, tu algoritmo es correcto.",
+   "pe": "Formato: «SI» y los valores en una sola línea."
+  },
+  "pistas": [
+   "Toda variable, aparezca o no, lleva valor.",
+   "Con el DFS del tema: x1 termina la primera (vale 3), luego x2 (vale 2) y por último x3 (vale 1)."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Dos variables",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Dos variables con una inecuación (una vez repetida): «SI 1 2», «SI 2 1» y «SI 1 2».",
+  "si": {
+   "wa": "Con dos variables solo hay un orden posible en cada caso: revisa el sentido (i j es xi < xj) y que el valor es la posición en el orden, desde 1."
+  },
+  "pistas": [
+   "«2 1» significa x2 < x1: x2 va primero y vale 1.",
+   "El valor de cada variable es su posición en el orden topológico."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Los valores empiezan en 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una sola variable y ninguna inecuación: ocupa la posición 1 del orden, así que se espera «SI 1».",
+  "si": {
+   "wa": "Escribes «SI 0»: es válido, pero el juez espera posiciones desde 1. El enunciado acepta cualquier asignación válida, pero este juez compara la salida exacta: espera que el valor de cada variable sea su posición (1, 2, …, N) en el orden topológico.",
+   "rte": "Con N = 1 y M = 0 algo se sale de rango: revisa los índices."
+  },
+  "pistas": [
+   "La primera variable del orden vale 1, no 0.",
+   "Con el postorden post: valor[post[i]] = N − i (el primero en terminar vale N)."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "El primero en terminar es el mayor",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "x1 < x2 < x3: «SI 1 2 3».",
+  "si": {
+   "wa": "Escribes «SI 3 2 1»: asignas los valores al revés (el primero en terminar el DFS recibe 1) o has puesto las aristas al revés. La arista de «i j» es i → j y j termina antes que i."
+  },
+  "pistas": [
+   "¿Qué variable termina primero el DFS que empieza en x1?",
+   "La que termina primero es la última del orden: debe recibir el valor más alto, N.",
+   "Comprueba también el sentido: «i j» es xi < xj, arista i → j."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Llegar dos veces a una variable no es un ciclo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "x3 se alcanza desde x1 y desde x2, pero no hay ciclo: «SI 1 2 3».",
+  "si": {
+   "wa": "Escribes «NO»: tomas cualquier vecino ya visitado como un ciclo. Solo hay ciclo si el vecino sigue en la pila del DFS (estado 1)."
+  },
+  "pistas": [
+   "Cuando el DFS vuelve a x1, su vecino x3 ya ha terminado: no está en el camino actual.",
+   "Usa tres estados: 0 sin visitar, 1 en la pila, 2 terminado; ciclo solo con estado 1."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "El orden de visita (preorden) no sirve",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "x1 < x2, x1 < x3 y x3 < x2: «SI 1 3 2».",
+  "si": {
+   "wa": "Escribes «SI 1 2 3»: das valores crecientes en el orden en que el DFS ENTRA en las variables. Hay que usar el orden en que TERMINAN (postorden) e invertirlo."
+  },
+  "pistas": [
+   "El DFS desde x1 entra antes en x2 que en x3, pero x3 < x2.",
+   "Guarda cada variable al terminar su DFS; el postorden al revés es el orden topológico."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Variables a las que no se llega desde x1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "x3 < x2 < x1: «SI 3 2 1». Desde x1 no sale ninguna inecuación.",
+  "si": {
+   "wa": "Te faltan valores (salen 0 o basura): lanzas el DFS solo desde x1. Hay que lanzarlo desde CADA variable sin visitar."
+  },
+  "pistas": [
+   "¿Qué valor das a x2 y x3?",
+   "Recorre v = 1…N y lanza el DFS desde cada v no visitada."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Ciclo de dos que no incluye x1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "x2 < x3 y x3 < x2: «NO», aunque x1 no esté en el ciclo.",
+  "si": {
+   "wa": "Escribes «SI…»: no detectas el ciclo. Un vecino que sigue en la pila cierra un ciclo, sea cual sea la variable de partida."
+  },
+  "pistas": [
+   "Sigue el DFS: x1 → x2 → x3, y desde x3 se ve x2, que sigue en la pila.",
+   "Si hay ciclo, escribe solo «NO»."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Ciclo de tres variables",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "x2 < x3 < x4 < x2: «NO».",
+  "si": {
+   "wa": "Detectas ciclos de dos variables pero no los más largos: no basta con mirar si están «i j» y «j i». Usa el estado «en la pila»."
+  },
+  "pistas": [
+   "Un ciclo puede tener cualquier longitud.",
+   "Vecino en estado 1 ⇒ ciclo, mida lo que mida."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Inecuaciones repetidas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La misma inecuación puede aparecer varias veces (lo permite el enunciado): no es un ciclo. «SI 1 2 3».",
+  "si": {
+   "wa": "Una inecuación repetida no cambia nada: ¿la tomas por un ciclo, o tu algoritmo de Kahn resta mal los grados de entrada?"
+  },
+  "pistas": [
+   "Una arista repetida lleva a una variable ya terminada: no está en la pila.",
+   "Con Kahn, cada repetición suma 1 al grado de entrada y también resta 1 al procesarla."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 7,
+  "comprueba": "Sistemas con y sin solución alternados: nada de un caso (estados, «hay ciclo», el postorden, los valores) debe pasar al siguiente.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: algo no se reinicia entre casos (el indicador de ciclo, los estados o la lista del postorden).",
+   "rte": "Un vector del caso anterior con otro tamaño: créalos dentro de cada caso."
+  },
+  "pistas": [
+   "Tras un «NO», ¿vuelves a poner «no hay ciclo»?",
+   "Declara todo (grafo, estados, postorden, valores, indicador) dentro de resuelveCaso o en un objeto nuevo por caso."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Muchas inecuaciones sin ciclo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Nueve variables con todas las inecuaciones posibles hacia delante (y algunas repetidas): más inecuaciones que variables no implica ciclo.",
+  "si": {
+   "wa": "Hay muchas aristas hacia variables ya terminadas y ninguna cierra un ciclo: ¿deduces «NO» por el número de inecuaciones o por ver una variable ya visitada?"
+  },
+  "pistas": [
+   "Sin ciclos puede haber muchísimas aristas.",
+   "Solo hay ciclo con un vecino que está en la pila en ese momento."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Sistemas pequeños al azar (orden único)",
+  "tipo": "aleatorio",
+  "casos": 120,
+  "comprueba": "120 sistemas de hasta 8 variables; los que tienen solución admiten un único orden.",
+  "si": {
+   "wa": "Algún caso falla: localiza la línea, busca el sistema y compruébalo a mano."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso.",
+   "Comprueba si es un ciclo que no detectas o una inecuación que tu asignación no cumple."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Sistemas medianos al azar (orden único)",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 sistemas de 50 a 300 variables, con y sin solución.",
+  "si": {
+   "wa": "Algún caso falla: si debía ser «NO», revisa la detección de ciclos; si no, comprueba que cada xi < xj se cumple con tus valores."
+  },
+  "pistas": [
+   "Comprueba tu salida: para cada «i j», el valor de xi debe ser menor que el de xj.",
+   "Un ciclo largo solo se detecta con el estado «en la pila»."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "10.000 variables en cadena y 100.000 inecuaciones",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El caso más grande: un único orden posible y una recursión de 10.000 niveles.",
+  "si": {
+   "tle": "Debe ser O(N + M). ¿Matriz de adyacencia, Kahn buscando la siguiente variable recorriendo todas, o copiar el grafo en cada llamada?",
+   "mle": "Demasiada memoria: una matriz N × N o copiar el grafo en cada llamada recursiva. Pasa el grafo por referencia (const&).",
+   "rte": "Con 10.000 niveles de recursión no debería romperse aquí; revisa que no declaras vectores grandes dentro de la función recursiva.",
+   "wa": "En el caso grande falla algo: revisa el postorden y la asignación de posiciones."
+  },
+  "pistas": [
+   "Pasa el grafo por referencia (Digrafo const& g) a la función recursiva.",
+   "Cada variable y cada inecuación se procesan una vez: O(N + M)."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "50 sistemas de 10.000 variables con un ciclo",
+  "tipo": "rendimiento",
+  "casos": 50,
+  "comprueba": "La suma de N llega al máximo (500.000) con casi todas las variables sueltas: mide el coste por variable.",
+  "si": {
+   "tle": "Algo cuesta O(N²) por caso: una matriz N × N, Kahn buscando la siguiente variable libre recorriendo todas, o copiar el grafo en cada llamada al DFS."
+  },
+  "pistas": [
+   "Con 10.000 variables, O(N²) son 10⁸ operaciones por caso: demasiado con 50 casos.",
+   "Usa listas de adyacencia y pasa el grafo por referencia."
+  ]
+ },
+ {
+  "n": 19,
+  "nombre": "Ciclo que pasa por las 10.000 variables",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "x1 < x2 < … < x10.000 < x1: un ciclo enorme detectado en lo más profundo de la recursión.",
+  "si": {
+   "wa": "Un ciclo muy largo también hace el sistema imposible: «NO».",
+   "tle": "Detectar el ciclo debe costar O(N + M).",
+   "mle": "Demasiada memoria en una recursión de 10.000 niveles: ¿copias el grafo o vectores en cada llamada?"
+  },
+  "pistas": [
+   "El DFS llega a x10.000 y ve x1, que sigue en la pila.",
+   "Pasa todo por referencia en la recursión."
+  ]
+ }
+]

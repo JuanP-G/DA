@@ -1,0 +1,235 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos grafos del PDF: el primero tiene sumidero (el 2) y el segundo no.",
+  "si": {
+   "wa": "Si falla el ejemplo, revisa lo básico: que lees hasta el final del fichero (no hay número de casos), el sentido de las aristas (origen destino) y las dos condiciones: salida 0 y entrada V - 1.",
+   "pe": "La respuesta es correcta pero el formato no: «SI», un espacio y el vértice, en la misma línea; o «NO».",
+   "ole": "Escribes sin parar: no detectas el final del fichero y el bucle de casos no termina nunca."
+  },
+  "pistas": [
+   "La entrada no empieza con el número de casos: usa la plantilla de casos ilimitados (resuelveCaso devuelve false al no poder leer).",
+   "En el segundo grafo el 3 tiene salida 0, pero solo le llegan 2 aristas (no 3)."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un solo vértice",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "V = 1 y ninguna arista: el vértice 0 tiene salida 0 y entrada 0 = V - 1, así que es sumidero: «SI 0».",
+  "si": {
+   "wa": "Con un único vértice la respuesta es «SI 0»: su entrada es 0 = V - 1. ¿Exiges que tenga alguna arista de entrada?",
+   "rte": "Con V = 1 y A = 0 te sales de algún vector: revisa los bucles."
+  },
+  "pistas": [
+   "Aplica la definición: salida 0 y entrada V − 1. ¿Cuánto vale V − 1 si V = 1?",
+   "No hace falta tratar este caso aparte: si cuentas bien los grados, sale solo."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Dos vértices",
+  "tipo": "borde",
+  "casos": 4,
+  "comprueba": "Todos los grafos de dos vértices: «SI 1», «NO», «NO» y «SI 0».",
+  "si": {
+   "wa": "Con dos vértices falla algún caso: el sumidero necesita salida 0 y entrada 1."
+  },
+  "pistas": [
+   "Sin aristas, ningún vértice tiene entrada 1.",
+   "Con 0 → 1 y 1 → 0, ninguno tiene salida 0."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Nada más después del último caso",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un solo caso (un ciclo, sin sumidero): hay que escribir «NO» y terminar, sin líneas de más.",
+  "si": {
+   "wa": "Escribes una línea de más al final: compruebas el final del fichero DESPUÉS de procesar y escribir un caso. Hay que comprobarlo justo después de intentar leer V.",
+   "rte": "Al llegar al final del fichero la lectura de V falla y aun así usas el grafo: el Digrafo leído de un flujo que ha fallado no es válido (su V queda sin valor) y el programa se rompe. Comprueba «if (!cin) return false;» justo después de leer, antes de usarlo.",
+   "ole": "El bucle de casos no termina nunca: falta detectar el final del fichero."
+  },
+  "pistas": [
+   "Mira si tu salida tiene más líneas que casos.",
+   "El patrón correcto es: intentar leer V; si la lectura falla, devolver false SIN escribir nada.",
+   "Con Digrafo g(cin): justo después, «if (!cin) return false;» y solo entonces resolver y escribir."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Salida 0 no basta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los vértices 1, 2 y 3 no tienen aristas de salida, pero a ninguno le llegan aristas de todos los demás: «NO».",
+  "si": {
+   "wa": "Escribes «SI»: solo miras que la salida sea 0. El sumidero también necesita entrada V − 1 (todos los demás le apuntan)."
+  },
+  "pistas": [
+   "Al vértice 1 solo le llega una arista, y harían falta tres.",
+   "Comprueba las dos condiciones: ady(v).empty() y entrada[v] == V − 1."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Todos le apuntan, pero él apunta a otro",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Al 2 le llegan aristas de todos, pero tiene una de salida (2 → 0): «NO».",
+  "si": {
+   "wa": "Escribes «SI 2»: solo miras la entrada. Un sumidero no puede tener aristas de salida."
+  },
+  "pistas": [
+   "¿Qué grado de salida tiene el 2?",
+   "Las aristas v → s y s → v pueden existir a la vez (no son repetidas): hay que comprobar la salida."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Una fuente no es un sumidero",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El 0 apunta a todos y nadie le apunta: es lo contrario de un sumidero. La respuesta es «NO».",
+  "si": {
+   "wa": "Escribes «SI 0»: estás leyendo las aristas al revés (destino → origen) o intercambias salida y entrada. Cada línea es «origen destino»."
+  },
+  "pistas": [
+   "En «0 1», la arista va del 0 al 1: sale del 0 y entra en el 1.",
+   "El grado de salida de v es ady(v).size(); el de entrada se cuenta recorriendo las listas de todos."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "El sumidero es el último vértice",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El sumidero es el 3 = V − 1: «SI 3».",
+  "si": {
+   "wa": "No encuentras un sumidero en la última posición: revisa que el bucle que busca llega hasta V − 1 (v < V, no v < V − 1)."
+  },
+  "pistas": [
+   "Recorre todos los vértices: for (v = 0; v < V; ++v).",
+   "Si te sale «NO», mira los límites de tus bucles."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El sumidero es el vértice 0",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El sumidero es el 0: «SI 0».",
+  "si": {
+   "wa": "No encuentras el sumidero cuando es el 0: ¿empiezas a buscar en 1, o usas 0 para decir «no hay sumidero»? Usa -1 para «no hay»."
+  },
+  "pistas": [
+   "El vértice 0 es un vértice como los demás.",
+   "Si usas una variable «sumidero = 0» para decir que no hay, se confunde con el vértice 0: usa -1."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Le falta una arista para ser sumidero",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Al 4 le llegan aristas del 0, del 1 y del 2, pero no del 3: entrada 3 ≠ V − 1 = 4. «NO».",
+  "si": {
+   "wa": "Escribes «SI 4»: comparas la entrada con algo menor que V − 1 (¿V − 2?, ¿«al menos una»?) o cuentas mal los grados. Tienen que apuntarle TODOS los demás."
+  },
+  "pistas": [
+   "Cuenta a mano cuántas aristas llegan al 4.",
+   "La condición es exactamente entrada[v] == V − 1."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Grafo completo salvo el sumidero",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Todos los vértices apuntan a todos, excepto el sumidero, que no apunta a nadie: hay sumidero aunque haya muchísimas aristas.",
+  "si": {
+   "wa": "En un grafo denso no encuentras el sumidero: ¿te paras al ver muchas aristas, o cuentas como entrada las aristas que salen?"
+  },
+  "pistas": [
+   "Solo un vértice tiene salida 0; compruébale la entrada.",
+   "Cuenta la entrada recorriendo todas las listas: por cada v → w, entrada[w]++."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 7,
+  "comprueba": "Varios grafos seguidos, de tamaños distintos: los grados de un caso no deben sumarse al siguiente.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: el vector de grados de entrada (o el grafo) no se reinicia entre casos.",
+   "rte": "Un vector del caso anterior con otro tamaño: créalo dentro de cada caso con tamaño V."
+  },
+  "pistas": [
+   "Si el primer caso está bien y los demás no, mira qué variables viven fuera de resuelveCaso.",
+   "Crea el vector de grados de entrada dentro de cada caso, con V ceros."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Grafos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 grafos de hasta 7 vértices; muchos tienen sumidero o se quedan a una arista de tenerlo.",
+  "si": {
+   "wa": "Algún caso falla: cuenta qué línea es, busca ese grafo en la entrada y calcula a mano los grados."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso.",
+   "Para ese grafo, apunta salida y entrada de cada vértice en una tabla."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Grafos medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 grafos de 20 a 120 vértices, con y sin sumidero.",
+  "si": {
+   "wa": "Algún caso falla: localiza la línea y revisa las dos condiciones (salida 0 y entrada V − 1)."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso.",
+   "Comprueba que la entrada se cuenta con el destino de cada arista."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "10.000 vértices y 100.000 aristas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El caso más grande, con sumidero.",
+  "si": {
+   "tle": "Debe ser O(V + A). ¿Usas hayArista dentro de un doble bucle o calculas el inverso para cada vértice?",
+   "mle": "Una matriz de adyacencia de 10.000 × 10.000 enteros no cabe: usa listas (Digrafo).",
+   "wa": "En el caso grande falla la cuenta de grados: ¿usas el tipo adecuado y recorres todas las listas?"
+  },
+  "pistas": [
+   "Los grados de entrada se cuentan en una sola pasada por todas las listas: O(V + A).",
+   "No llames a g.inverso() ni recorras todos los vértices dentro del bucle que busca el sumidero."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "30 grafos con casi todos los vértices sin salida",
+  "tipo": "rendimiento",
+  "casos": 30,
+  "comprueba": "Grafos grandes donde casi todos los vértices tienen salida 0: cada uno es candidato a sumidero.",
+  "si": {
+   "tle": "Para cada candidato haces un trabajo de O(V) o más (hayArista desde todos, recorrer la columna de una matriz, calcular el inverso…): con 10.000 candidatos es O(V²). Cuenta los grados de entrada una sola vez."
+  },
+  "pistas": [
+   "Aquí casi todos los vértices tienen salida 0: el coste por candidato debe ser O(1).",
+   "Calcula antes el vector de grados de entrada (una pasada) y luego consulta entrada[v]."
+  ]
+ }
+]

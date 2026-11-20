@@ -1,0 +1,237 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres programas del PDF: NUNCA, SIEMPRE y A VECES.",
+  "si": {
+   "wa": "Si falla el ejemplo, revisa lo básico: el vértice «final» (detrás de la última instrucción), las aristas de cada tipo (A: siguiente; J: solo el salto; C: el salto Y la siguiente) y las tres respuestas.",
+   "pe": "La respuesta es correcta pero el formato no: una palabra por línea, y «A VECES» con un espacio.",
+   "rte": "Se rompe con el ejemplo: revisa los índices (instrucciones de 1 a L, el final es el vértice L si numeras desde 0)."
+  },
+  "pistas": [
+   "Construye un grafo con L + 1 vértices: el último representa «el programa ha terminado».",
+   "En el segundo programa hay un salto hacia atrás (C 3 en la 4), pero desde la 3 no se vuelve a la 4: no hay bucle.",
+   "Respuestas: el final no se alcanza ⇒ NUNCA; se alcanza y hay un ciclo alcanzable ⇒ A VECES; si no, SIEMPRE."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola instrucción",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Programas de una instrucción: A termina (SIEMPRE), J 1 se repite para siempre (NUNCA) y C 1 puede hacer las dos cosas (A VECES).",
+  "si": {
+   "wa": "Con una sola instrucción falla algún caso: «J 1» es un salto a sí misma (un lazo) y «C 1» puede repetirse o seguir hasta el final.",
+   "rte": "Con L = 1 te sales de rango: el final es la posición L (si numeras desde 0) y necesitas L + 1 vértices."
+  },
+  "pistas": [
+   "Dibuja el grafo de «C 1»: una arista de la instrucción 1 a sí misma y otra al final.",
+   "Un lazo (arista de un vértice a sí mismo) también es un ciclo."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Sin saltos",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Programas que avanzan siempre hacia delante: SIEMPRE.",
+  "si": {
+   "wa": "Sin saltos hacia atrás todos los caminos llegan al final: SIEMPRE. ¿Cuentas como ciclo un salto a la siguiente instrucción?"
+  },
+  "pistas": [
+   "Sigue el programa: cada instrucción lleva a una posterior.",
+   "J N con N = i + 1 es como una A."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Bucle con salida: A VECES",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La 1 puede seguir a la 2, que vuelve a la 1 (bucle), o saltar a la 3 y terminar: A VECES.",
+  "si": {
+   "wa": "Si te sale NUNCA: o crees que cualquier bucle impide terminar (hay que mirar si el final se alcanza), o tu C solo salta y no sigue a la siguiente. Si te sale SIEMPRE: el C no sigue a la siguiente instrucción, y sin esa arista no ves el bucle."
+  },
+  "pistas": [
+   "Un C tiene DOS sucesores: la instrucción N y la siguiente (i + 1).",
+   "NUNCA es solo cuando el final no se alcanza; si se alcanza y hay un bucle alcanzable, es A VECES."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Llegar dos veces a una instrucción no es un bucle",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "A la 3 se llega por el salto de la 1 y pasando por la 2, pero no hay ningún bucle: SIEMPRE.",
+  "si": {
+   "wa": "Escribes A VECES: tomas cualquier instrucción ya visitada como un ciclo. Solo hay ciclo si esa instrucción sigue en la pila del DFS (en el camino actual)."
+  },
+  "pistas": [
+   "Cuando el DFS llega a la 3 por segunda vez, la 3 ya ha terminado: no está en el camino actual.",
+   "Usa tres estados (sin visitar, en la pila, terminado) y declara ciclo solo con un vecino «en la pila»."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "J no sigue a la siguiente instrucción",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La 1 salta a la 3 y termina; la 2 (que volvería a la 1) nunca se ejecuta: SIEMPRE.",
+  "si": {
+   "wa": "Escribes A VECES: un salto J va SOLO a la instrucción N. Si le añades también la siguiente, la 2 se vuelve alcanzable y aparece un bucle falso."
+  },
+  "pistas": [
+   "Después de un J nunca se ejecuta la instrucción siguiente (salvo que otro salto lleve a ella).",
+   "J N: una sola arista, i → N. Solo C tiene las dos."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Un bucle al que no se llega no cuenta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La 2 salta a sí misma (un bucle), pero desde la 1 nunca se llega a ella: SIEMPRE.",
+  "si": {
+   "wa": "Escribes A VECES: buscas ciclos en todo el grafo. Solo cuentan los ciclos alcanzables desde la instrucción 1: haz el DFS solo desde ella, no desde todos los vértices."
+  },
+  "pistas": [
+   "¿Puede la ejecución llegar alguna vez a la instrucción 2?",
+   "Lanza un único DFS desde la instrucción 1 (no el bucle «para cada vértice» del orden topológico)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "El final está detrás de la última instrucción",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Se llega a la última instrucción (la 2), pero esta salta a la 1: nunca se pasa de ella. NUNCA.",
+  "si": {
+   "wa": "Te sale que termina: compruebas si se alcanza la ÚLTIMA instrucción, pero el programa termina al llegar DETRÁS de ella (vértice L + 1)."
+  },
+  "pistas": [
+   "Añade un vértice extra para «terminado»: con instrucciones 0…L−1, el final es el vértice L.",
+   "Al final solo se llega desde la última instrucción si es A o C (los saltos van como mucho a la L): mira si se alcanza ese vértice extra."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "NUNCA aunque haya un salto condicional",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "«C 2» en la 1 salta a la 2 o sigue a la 2: da igual. Y la 2 vuelve a la 1. NUNCA.",
+  "si": {
+   "wa": "Un salto condicional no garantiza que se pueda salir: aquí sus dos caminos van a la misma instrucción. Decide con la alcanzabilidad del final, no con el tipo de instrucciones."
+  },
+  "pistas": [
+   "Dibuja las aristas: 1 → 2 (dos veces) y 2 → 1. ¿Se alcanza el final?",
+   "La respuesta solo depende de: ¿se alcanza el final? ¿hay un ciclo alcanzable?"
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 7,
+  "comprueba": "Programas seguidos con y sin bucles: nada de un caso (estados, «hay ciclo») debe pasar al siguiente.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: algo no se reinicia entre casos (el indicador de ciclo, los estados o el grafo).",
+   "rte": "Un vector del caso anterior con otro tamaño: créalos dentro de cada caso con L + 1 posiciones."
+  },
+  "pistas": [
+   "Después de un programa con bucle, ¿vuelves a poner «no hay ciclo»?",
+   "Declara el grafo, los estados y los indicadores dentro de resuelveCaso o en un objeto nuevo por caso."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Saltos a la propia instrucción",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "«C 2» en la 2 puede repetirse o seguir (A VECES); «J 2» en la 2 se repite para siempre (NUNCA).",
+  "si": {
+   "wa": "Un salto a la propia instrucción es un lazo, que es un ciclo: con C se puede salir (A VECES); con J no (NUNCA)."
+  },
+  "pistas": [
+   "El DFS ve que el vecino de la 2 es la propia 2, que está en la pila: ciclo.",
+   "Con «J 2» la única arista de la 2 es el lazo: el final no se alcanza."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Programas pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 programas de hasta 8 instrucciones.",
+  "si": {
+   "wa": "Algún caso falla: localiza la línea, busca el programa y dibuja su grafo (son muy pequeños)."
+  },
+  "pistas": [
+   "Dibuja el grafo del programa que falla, con el vértice final.",
+   "Marca lo que se alcanza desde la instrucción 1 y busca bucles solo ahí."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Programas medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 programas de 50 a 300 instrucciones.",
+  "si": {
+   "wa": "Algún caso falla: revisa el vértice final, las aristas del C y que los ciclos se buscan solo en lo alcanzable."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso.",
+   "Comprueba los tres tipos de instrucción por separado."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "25 programas de 10.000 instrucciones",
+  "tipo": "rendimiento",
+  "casos": 25,
+  "comprueba": "Programas del tamaño máximo, con saltos casi siempre hacia delante.",
+  "si": {
+   "tle": "Debe costar O(L) por programa. ¿Lanzas un DFS desde cada instrucción, o reinicias los visitados para cada salto?",
+   "mle": "Demasiada memoria: ¿copias el grafo en cada llamada recursiva? Pásalo por referencia (const&)."
+  },
+  "pistas": [
+   "Un único DFS desde la instrucción 1 basta para responder todo.",
+   "Pasa el grafo por referencia a la función recursiva."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Un C hacia atrás en cada instrucción",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "10.000 instrucciones «C 1»: la recursión llega a 10.000 niveles y hay un bucle en cada paso. A VECES.",
+  "si": {
+   "wa": "Con 10.000 niveles algo falla: ¿limitas la profundidad?",
+   "tle": "Cada instrucción y arista se deben procesar una vez.",
+   "mle": "Recursión de 10.000 niveles: no copies el grafo ni vectores en cada llamada.",
+   "rte": "La recursión es profunda pero aquí cabe; revisa que no declaras arrays grandes dentro de la función recursiva."
+  },
+  "pistas": [
+   "Marca las instrucciones visitadas para no repetir trabajo.",
+   "Todo lo que pases a la función recursiva, por referencia."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Un único bucle por las 10.000 instrucciones",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Cada instrucción salta a la siguiente y la última vuelve a la primera: NUNCA, descubierto en lo más profundo de la recursión.",
+  "si": {
+   "wa": "El final no se alcanza nunca: NUNCA.",
+   "tle": "Debe costar O(L).",
+   "mle": "Recursión de 10.000 niveles: no copies el grafo en cada llamada."
+  },
+  "pistas": [
+   "El DFS recorre las 10.000 instrucciones y vuelve a la 1, que sigue en la pila.",
+   "El vértice final no se visita: NUNCA."
+  ]
+ }
+]

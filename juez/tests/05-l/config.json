@@ -1,0 +1,11 @@
+{
+ "solucion": "5-Grafos dirigidos/EJ_05-L/EJ_05-L.cpp",
+ "cabeceras": [
+  "5-Grafos dirigidos/EJ_05-L/Digrafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (tipo == 'C') g.ponArista(i, i + 1);",
+  ";"
+ ]
+}

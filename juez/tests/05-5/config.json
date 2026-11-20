@@ -1,0 +1,11 @@
+{
+ "solucion": "5-Grafos dirigidos/EJ_05-5/EJ_05-5.cpp",
+ "cabeceras": [
+  "5-Grafos dirigidos/EJ_05-5/Digrafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "for (int d = 1; d <= K && v + d < casillas; ++d)",
+  "for (int d = 1; d <= 6 && v + d < casillas; ++d)"
+ ]
+}

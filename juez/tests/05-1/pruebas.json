@@ -1,0 +1,273 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 4,
+  "comprueba": "Los cuatro casos del PDF: 11, 1, 2 y 0 pulsaciones.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa lo básico: la lectura (primero el número de casos, luego «inicial final»), los tres botones y que el recorrido sea un BFS.",
+   "pe": "Los números son correctos pero el formato no: escribe un número por línea, sin texto adicional.",
+   "rte": "El programa se rompe con el ejemplo: casi seguro un índice fuera del marcador (un número ≥ 10.000 o negativo)."
+  },
+  "pistas": [
+   "Ejecuta tu programa con este ejemplo y compara caso a caso: ¿cuál de los cuatro sale mal?",
+   "El segundo caso (5.000 → 0) necesita que ×2 «dé la vuelta»: 10.000 se ve como 0000. El tercero usa ÷3 y luego ×2.",
+   "El último caso pide llegar al número que ya está en el marcador: 0 pulsaciones."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Origen igual al destino",
+  "tipo": "borde",
+  "casos": 4,
+  "comprueba": "Si el número final ya está en el marcador, la respuesta es 0.",
+  "si": {
+   "wa": "Cuando inicial y final coinciden debe salir 0. Si sale otra cosa, compruebas el destino al meter en la cola (y nunca miras el propio origen) o cuentas mal la distancia del origen."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con «1 1»?",
+   "La distancia del origen a sí mismo es 0: ponla así antes de empezar el BFS.",
+   "Comprueba si has llegado al destino al SACAR cada número de la cola (así el origen también se comprueba)."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Una sola pulsación",
+  "tipo": "borde",
+  "casos": 5,
+  "comprueba": "Destinos a los que se llega pulsando un único botón: la respuesta es 1.",
+  "si": {
+   "wa": "Fallas casos de una sola pulsación: revisa que los tres botones están bien programados (+1, ×2 y ÷3 con división entera) y que la distancia del vecino es la del actual más 1."
+  },
+  "pistas": [
+   "Comprueba cada botón por separado: 100 +1 = 101, 100 ×2 = 200, 100 ÷3 = 33.",
+   "La distancia de un vecino recién descubierto es dist[actual] + 1, no un contador global de pasos."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Del 0 al 9.999 y vuelta",
+  "tipo": "borde",
+  "casos": 4,
+  "comprueba": "Los dos extremos del marcador.",
+  "si": {
+   "wa": "Algo falla en los extremos del marcador: del 9.999 se pasa al 0 con +1 (módulo 10.000), y desde el 0 solo sirve +1 al principio.",
+   "rte": "Te sales del marcador en un extremo: el 9.999 +1 debe dar 0, no 10.000."
+  },
+  "pistas": [
+   "Del 9.999 al 0 basta una pulsación (+1 da la vuelta).",
+   "Del 0 al 2 hacen falta dos: +1 y luego +1 o ×2 (en el 0, ×2 y ÷3 dejan 0)."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Se cuentan pulsaciones, no números",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Del 100 al 101 hay UNA pulsación (+1), aunque el camino tenga dos números.",
+  "si": {
+   "wa": "Te sale 2: cuentas los números del camino (vértices) en vez de las pulsaciones (aristas), o empiezas la distancia del origen en 1."
+  },
+  "pistas": [
+   "Una pulsación es una arista del grafo: el camino 100 → 101 tiene una arista.",
+   "La distancia del origen es 0 y la de cada vecino descubierto es la del actual más 1."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Del 0 al 0: los botones ×2 y ÷3 no mueven el 0",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "En el 0, ×2 y ÷3 vuelven al 0 (son lazos): del 0 al 0 hacen falta 0 pulsaciones, no 1.",
+  "si": {
+   "wa": "Del 0 al 0 debe salir 0. Si sale 1, el origen no está marcado como visitado al empezar y lo «redescubres» con ×2 o ÷3 (que llevan del 0 al 0); o miras el destino solo al meter vecinos en la cola."
+  },
+  "pistas": [
+   "En el 0, pulsar ×2 o ÷3 deja otra vez 0: es una arista del 0 a sí mismo.",
+   "Marca el origen como visitado (dist = 0) ANTES de empezar a sacar de la cola.",
+   "Si compruebas el destino al meter un vecino, el caso origen = destino nunca pasa por ahí: compruébalo al sacar de la cola."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "El mínimo exige un BFS (724 → 2.896)",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "724 ×2 ×2 = 2.896: dos pulsaciones. Un recorrido en profundidad (DFS) encuentra antes un camino mucho más largo.",
+  "si": {
+   "wa": "Te sale más de 2: tu recorrido no es en anchura. Con una pila (DFS) o con una recursión, la primera vez que llegas a un número no tiene por qué ser por el camino más corto.",
+   "tle": "Pruebas todos los caminos (vuelta atrás o recursión sin marcar visitados): el número de caminos crece de forma exponencial. Hace falta un BFS que visite cada número una sola vez."
+  },
+  "pistas": [
+   "Para «el mínimo número de pulsaciones» la herramienta es el BFS: visita los números por capas (1 pulsación, 2, 3…).",
+   "¿Usas una cola (queue) y sacas por delante? Una pila o una recursión dan un DFS.",
+   "En el BFS, la distancia de un número se fija la primera vez que se descubre: dist[y] = dist[x] + 1."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "+1 da la vuelta: 9.999 → 0",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con 9.999 en el marcador, +1 da 10.000, que en cuatro dígitos es 0000: una sola pulsación.",
+  "si": {
+   "wa": "Te sale más de 1: no permites pulsar +1 en el 9.999 o no aplicas el módulo. El marcador tiene 4 dígitos: (x + 1) mod 10.000.",
+   "rte": "Te sales del vector: 9.999 + 1 = 10.000 (o x·2 ≥ 10.000) no es un número del marcador. Aplica «% 10000» a +1 y a ×2."
+  },
+  "pistas": [
+   "El enunciado dice que TODAS las operaciones se hacen módulo 10.000.",
+   "El sucesor de x con +1 es (x + 1) % 10000, también cuando x = 9.999."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "×2 da la vuelta: 7.500 → 5.000",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "7.500 ×2 = 15.000, que en el marcador se ve como 5.000: una sola pulsación.",
+  "si": {
+   "wa": "Te sale más de 1: no aplicas el módulo a ×2 o prohíbes pulsarlo cuando el resultado pasa de 9.999. El marcador se queda con las cuatro últimas cifras.",
+   "rte": "x·2 puede llegar a 19.998: sin «% 10000» te sales del vector de distancias."
+  },
+  "pistas": [
+   "No es que el botón no funcione: el marcador muestra las cuatro últimas cifras.",
+   "El sucesor de x con ×2 es (x * 2) % 10000."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "÷3 con resto: 9.998 → 3.332",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "9.998 / 3 = 3.332,67: la división es entera (se queda en 3.332). Una sola pulsación.",
+  "si": {
+   "wa": "Te sale más de 1: falta el botón ÷3, o redondeas la división (hacia arriba o al más cercano) en vez de quedarte con la parte entera."
+  },
+  "pistas": [
+   "¿Tienes los tres botones? Es fácil olvidar el ÷3.",
+   "La división del marcador es entera: 9.998 / 3 = 3.332 (en C++, con enteros, x / 3 ya trunca).",
+   "No uses (x + 2) / 3, round ni ceil: el enunciado dice que la división es entera."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "El grafo es dirigido: del 0 al 5.000",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "5.000 ×2 = 0, pero del 0 no se llega al 5.000 con un botón: hacen falta 17 pulsaciones.",
+  "si": {
+   "wa": "Te sale menos de 17 (seguramente 1): estás recorriendo las aristas al revés o en los dos sentidos. Pulsar un botón no se puede deshacer: el grafo es DIRIGIDO."
+  },
+  "pistas": [
+   "De 5.000 se llega a 0 con ×2. ¿Se puede ir del 0 al 5.000 con un botón?",
+   "Usa la clase Digrafo (no Grafo): ponArista(v, w) añade solo v → w.",
+   "Los sucesores de x son (x+1) % 10000, (x*2) % 10000 y x/3, y nada más."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "El destino más lejano: 23 pulsaciones",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Del 0 al 6.015 hacen falta 23 pulsaciones, el máximo posible desde el 0.",
+  "si": {
+   "wa": "En distancias largas te equivocas: ¿limitas la profundidad de la búsqueda, o paras el BFS antes de vaciar la cola?",
+   "tle": "Exploras de más: cada número debe entrar en la cola una sola vez (márcalo al meterlo).",
+   "mle": "La cola crece sin control: marca cada número como visitado al meterlo en la cola, no al sacarlo."
+  },
+  "pistas": [
+   "No pongas un tope a la profundidad: el BFS termina solo cuando saca el destino.",
+   "Marca los números como visitados al meterlos en la cola; así la cola nunca tiene más de 10.000 elementos."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 8,
+  "comprueba": "Varios casos en la misma entrada: las distancias de un caso no deben servir para el siguiente.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: el vector de distancias (o de visitados) no se reinicia entre casos.",
+   "rte": "Algo de un caso anterior se reutiliza mal: crea el vector de distancias dentro de cada caso."
+  },
+  "pistas": [
+   "Si el primer caso está bien y los demás no, mira qué variables viven fuera de resuelveCaso.",
+   "El grafo SÍ se puede construir una vez para todos los casos (no depende del caso), pero las distancias y visitados son de cada BFS: créalos de nuevo en cada caso."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Los tres botones en el mismo camino",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "9.999 ÷3 = 3.333, ÷3 = 1.111, +1 = 1.112: el camino mínimo combina ÷3 y +1.",
+  "si": {
+   "wa": "El camino mínimo usa ÷3 dos veces y luego +1: revisa que los tres botones están en los sucesores de cada número."
+  },
+  "pistas": [
+   "Calcula a mano: 9.999 → 3.333 → 1.111 → 1.112.",
+   "Cada número tiene exactamente tres sucesores: x+1, 2x y x/3 (con el módulo)."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Parejas al azar",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 parejas de números al azar.",
+  "si": {
+   "wa": "Hay algún caso que no tratas bien: localiza la línea que falla, busca ese caso en la entrada y sigue tu BFS a mano."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso: mira qué pareja es.",
+   "Comprueba si el camino mínimo de ese caso usa la vuelta del marcador (+1 en 9.999, ×2 por encima de 5.000) o el ÷3."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Hacia el 0 y desde el 0",
+  "tipo": "aleatorio",
+  "casos": 80,
+  "comprueba": "80 casos que salen del 0 o llegan al 0.",
+  "si": {
+   "wa": "Fallas casos con el 0: recuerda que en el 0 ×2 y ÷3 no hacen nada y que al 0 se llega dando la vuelta (9.999 +1, 5.000 ×2) o dividiendo (1 ÷3, 2 ÷3)."
+  },
+  "pistas": [
+   "Al 0 se puede llegar de varias formas: 1 ÷3, 2 ÷3, 9.999 +1 o 5.000 ×2.",
+   "Desde el 0 el único botón útil al principio es +1."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "2.000 casos con destinos muy lejanos",
+  "tipo": "rendimiento",
+  "casos": 2000,
+  "comprueba": "El máximo de casos (2.000), todos con un destino entre los más lejanos: cada BFS recorre casi todo el marcador.",
+  "si": {
+   "tle": "Cada caso debería costar O(10.000). ¿Vuelves a construir el grafo en cada caso, copias estructuras grandes o no marcas los visitados al meterlos en la cola?",
+   "mle": "Demasiada memoria: no metas un número en la cola más de una vez y no guardes caminos completos.",
+   "wa": "Con muchos casos seguidos algo se arrastra de uno a otro: reinicia las distancias en cada caso."
+  },
+  "pistas": [
+   "El grafo no depende del caso: puedes construirlo una sola vez (por ejemplo, static) y hacer solo el BFS en cada caso.",
+   "Pasa el grafo por referencia (const&): copiarlo en cada caso o en cada llamada es muy caro.",
+   "Marca un número como visitado cuando lo metes en la cola; si lo marcas al sacarlo, puede entrar muchas veces."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "2.000 casos al azar",
+  "tipo": "rendimiento",
+  "casos": 2000,
+  "comprueba": "2.000 casos con destinos al azar.",
+  "si": {
+   "tle": "Tu solución es lenta con el máximo de casos: cada BFS debe visitar cada número como mucho una vez.",
+   "wa": "Con muchos casos aparece algún error: mira la línea que falla y reproduce ese caso."
+  },
+  "pistas": [
+   "Mide cuánto tarda un caso: con 2.000 casos, cada uno debe tardar muy poco (≈ 10⁴ operaciones).",
+   "Construye el grafo una sola vez, fuera del bucle de casos."
+  ]
+ }
+]

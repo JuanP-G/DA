@@ -1,0 +1,11 @@
+{
+ "solucion": "5-Grafos dirigidos/EJ_05-2/EJ_05-2.cpp",
+ "cabeceras": [
+  "5-Grafos dirigidos/EJ_05-2/Digrafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "cout << tm.jugadas(t) << '\\n';",
+  "cout << tm.jugadas(t) + 1 << '\\n';"
+ ]
+}
