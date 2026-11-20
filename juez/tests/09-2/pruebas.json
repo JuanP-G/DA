@@ -1,0 +1,272 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos ejemplos del PDF: uno se cubre con dos trabajos y otro es imposible.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la lectura (C, F y N en la misma línea), la idea voraz y que escribes «Imposible» tal cual.",
+   "tle": "Tu programa no termina: cuando hay un hueco que nadie cubre, el bucle no avanza. Detecta que ningún trabajo pasa del punto ya cubierto y para."
+  },
+  "pistas": [
+   "Ejecútalo en tu ordenador con este mismo ejemplo y compara línea a línea.",
+   "En el segundo caso hay un hueco entre 1 y 2: el programa debe darse cuenta y escribir «Imposible».",
+   "Si en una vuelta ningún trabajo llega más allá de lo ya cubierto, no tiene sentido seguir: es imposible."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ningún trabajo propuesto",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Con N = 0 no se puede cubrir nada: «Imposible».",
+  "si": {
+   "wa": "Con N = 0 debe salir «Imposible» (C < F siempre, así que hay algo que cubrir).",
+   "rte": "Con N = 0 accedes a un trabajo que no existe (por ejemplo trab[0])."
+  },
+  "pistas": [
+   "¿Qué hace tu programa si no hay ningún trabajo?",
+   "No accedas a trab[0] sin comprobar que N > 0."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Un trabajo que coincide con el intervalo",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Un único trabajo exactamente igual a [C, F): basta 1.",
+  "si": {
+   "wa": "Un trabajo [C, F) cubre todo: revisa las comparaciones con C y con F."
+  },
+  "pistas": [
+   "El trabajo [3, 9) empieza en C y acaba en F.",
+   "El intervalo es semiabierto: llegar a F ya es cubrir todo."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Trabajos que se tocan en un extremo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "[0, 5) y [5, 10) no dejan hueco: el segundo empieza justo donde acaba el primero.",
+  "si": {
+   "wa": "Exiges que el siguiente trabajo empiece ANTES de lo cubierto (<). Como los intervalos son [c, f), basta con que empiece justo ahí (≤)."
+  },
+  "pistas": [
+   "El instante 5 lo cubre el segundo trabajo: no hay hueco.",
+   "Un trabajo sirve para seguir si su comienzo es ≤ que el punto hasta el que ya está cubierto."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Hueco de una unidad",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "[0, 1) y [2, 3) dejan sin cubrir [1, 2): «Imposible».",
+  "si": {
+   "wa": "No detectas el hueco: o tratas los intervalos como cerrados (que [0, 1) cubre el instante 1) o, al no encontrar trabajo para seguir, escribes lo que llevas en vez de «Imposible».",
+   "tle": "Al encontrar el hueco tu bucle se queda dando vueltas: si ningún trabajo pasa de lo cubierto, hay que parar."
+  },
+  "pistas": [
+   "Los intervalos no incluyen su final: [0, 1) no cubre el instante 1.",
+   "Si en una vuelta ningún trabajo nuevo llega más allá de lo cubierto, el resultado es «Imposible»."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "El primer trabajo empieza después de C",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El trabajo [3, 8) no cubre [2, 3): «Imposible».",
+  "si": {
+   "wa": "Empiezas a cubrir desde el comienzo del primer trabajo en vez de desde C."
+  },
+  "pistas": [
+   "El intervalo a cubrir empieza en C = 2, y nadie cubre el instante 2.",
+   "El punto «cubierto hasta» empieza valiendo C, no el comienzo de ningún trabajo."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "No se llega hasta F",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los trabajos cubren [0, 9) pero no llegan a 10: «Imposible».",
+  "si": {
+   "wa": "Cuando se acaban los trabajos sin llegar a F, no lo detectas: el bucle debe seguir mientras lo cubierto sea < F."
+  },
+  "pistas": [
+   "Tras coger los dos trabajos solo está cubierto hasta 9.",
+   "Al terminar, comprueba que lo cubierto llega al menos a F; si no, «Imposible»."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Trabajos que empiezan antes de C",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un trabajo que empieza antes de C también sirve: [0, 7) y [6, 10) bastan.",
+  "si": {
+   "wa": "Descartas los trabajos que empiezan antes de C, pero también cubren el principio del intervalo."
+  },
+  "pistas": [
+   "[0, 7) cubre [5, 7) aunque empiece antes.",
+   "La condición para poder elegir un trabajo es solo c ≤ cubierto (y al principio cubierto = C)."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Elegir el que llega más lejos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Entre los que empiezan a tiempo hay que coger el que acaba más tarde: [0, 10) solo.",
+  "si": {
+   "wa": "Coges el primer trabajo que empieza a tiempo (o el que antes acaba) en vez del que llega más lejos."
+  },
+  "pistas": [
+   "Aquí basta un trabajo.",
+   "Mira TODOS los trabajos que empiezan como muy tarde en lo ya cubierto y quédate con el mayor final."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "El más largo no es el mejor",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Coger primero el trabajo más largo no es óptimo: [0, 5) y [4, 10) bastan.",
+  "si": {
+   "wa": "Eliges por longitud. El criterio correcto avanza desde C: de los que empiezan a tiempo, el que acaba más tarde."
+  },
+  "pistas": [
+   "[1, 8) es el más largo, pero con él hacen falta tres.",
+   "Recorre de izquierda a derecha: el trabajo que cubra el instante C y llegue más lejos."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Trabajos fuera del intervalo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Trabajos que acaban justo en C o empiezan justo en F no sirven; [10, 20) basta.",
+  "si": {
+   "wa": "Cuentas trabajos que no aportan nada: [0, 10) acaba justo en C y [20, 30) empieza en F."
+  },
+  "pistas": [
+   "Solo hace falta un trabajo.",
+   "Un trabajo solo cuenta si hace avanzar lo cubierto (su final es mayor que lo ya cubierto)."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Trabajo que se pasa de F",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Un trabajo que acaba después de F cubre todo lo que falta.",
+  "si": {
+   "wa": "Basta con llegar a F o más allá; no hace falta acabar exactamente en F."
+  },
+  "pistas": [
+   "[0, 100) cubre [0, 5) de sobra.",
+   "La condición para parar es cubierto ≥ F."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Trabajos repetidos y contenidos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Trabajos repetidos o metidos dentro de otros: no deben contarse.",
+  "si": {
+   "wa": "Cuentas trabajos de más: solo se elige uno por cada salto, el que llega más lejos."
+  },
+  "pistas": [
+   "Bastan [0, 6) y [6, 12).",
+   "En cada vuelta se cuenta UN trabajo, aunque se recorran varios."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Extremos hasta 10⁹",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Valores en el máximo que permite el enunciado.",
+  "si": {
+   "wa": "Con valores cerca de 10⁹ algo se sale de rango: revisa los tipos."
+  },
+  "pistas": [
+   "Bastan 2 trabajos.",
+   "10⁹ cabe en int, pero si sumas extremos o usas centinelas, usa long long."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Varios casos (posibles e imposibles) seguidos: nada del anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el contador, el vector o la marca de «imposible» no se reinician."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "Declara todo (vector, contador, índice, «cubierto») dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos pequeños al azar, posibles e imposibles.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; dibújalo en papel."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla.",
+   "Dibuja los intervalos sobre una recta y sigue tu algoritmo paso a paso."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos medianos con coordenadas variadas.",
+  "si": {
+   "wa": "Algo falla con más trabajos: revisa los empates y los trabajos que se tocan en un extremo."
+  },
+  "pistas": [
+   "Busca el caso que falla y redúcelo quitando trabajos mientras siga fallando.",
+   "Compara con: ordenar por comienzo y, desde C, coger siempre el que llega más lejos."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "Cadena de 150.000 trabajos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Hacen falta todos los trabajos, uno detrás de otro: mide que no vuelvas a recorrerlos desde el principio en cada paso.",
+  "si": {
+   "tle": "Tu solución es cuadrática: en cada paso vuelves a mirar los trabajos desde el principio. Con los trabajos ordenados, el índice solo debe avanzar."
+  },
+  "pistas": [
+   "¿Cuántas veces miras cada trabajo? Debería ser una.",
+   "Ordena una vez y recorre con un índice que no se reinicia entre una elección y la siguiente."
+  ]
+ },
+ {
+  "n": 19,
+  "nombre": "100.000 trabajos al azar",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Muchos trabajos en coordenadas grandes.",
+  "si": {
+   "tle": "Tu solución es lenta: debe ser O(N log N) (ordenar y una pasada)."
+  },
+  "pistas": [
+   "Usa sort de la biblioteca.",
+   "Tras ordenar, cada trabajo se mira una sola vez."
+  ]
+ }
+]

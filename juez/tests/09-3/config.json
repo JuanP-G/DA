@@ -1,0 +1,9 @@
+{
+ "solucion": "9-Algoritmos voraces II/EJ_09-3/EJ_09-3.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "pilas[i] + pilas[j] >= V",
+  "pilas[i] + pilas[j] > V"
+ ]
+}

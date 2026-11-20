@@ -1,0 +1,216 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos ejemplos del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la lectura (vértices numerados desde 1), que cuentas ida y vuelta (×2) y el reparto mitad y mitad."
+  },
+  "pistas": [
+   "Ejecútalo en tu ordenador con este mismo ejemplo y compara línea a línea.",
+   "En el segundo caso todos los pueblos están más cerca del norte, pero el norte solo puede servir a dos.",
+   "Calcula las distancias desde las dos plantas (dos Dijkstra) y reparte los pueblos según dN - dS."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Sin pueblos",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Solo las dos plantas (N = 2): no hay que servir a nadie, coste 0.",
+  "si": {
+   "wa": "Con N = 2 no hay pueblos: el coste es 0.",
+   "rte": "Con N = 2 no hay pueblos: no accedas a posiciones de un vector vacío."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa si (N - 2) / 2 = 0?",
+   "Los pueblos son los puntos 2..N-1: con N = 2 no hay ninguno."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ida y vuelta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cada camión va al pueblo y vuelve: el coste de cada trayecto cuenta dos veces.",
+  "si": {
+   "wa": "Te sale la mitad (o el doble): el camión hace la ida y la vuelta, así que el coste es 2 · (distancia)."
+  },
+  "pistas": [
+   "Aquí cada pueblo está a 3 de las dos plantas: 2 · (3 + 3) = 12.",
+   "Multiplica por 2 la suma de las distancias al final."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "La planta más cercana no basta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los dos pueblos prefieren el norte, pero el norte solo puede servir a uno.",
+  "si": {
+   "wa": "Mandas cada pueblo a su planta más cercana sin respetar que cada planta sirve exactamente a la mitad."
+  },
+  "pistas": [
+   "El norte tiene camiones para (N - 2) / 2 pueblos, ni uno más.",
+   "Coge exactamente (N - 2) / 2 pueblos para el norte: los de menor dN - dS."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Elegir por la diferencia, no por la distancia",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Darle al norte los pueblos más cercanos a él no es óptimo: importa cuánto se ahorra respecto al sur.",
+  "si": {
+   "wa": "Eliges para el norte los pueblos con menor distancia al norte. El criterio es la DIFERENCIA dN - dS: el pueblo 3 pierde mucho si va al sur."
+  },
+  "pistas": [
+   "El pueblo 2 está a 1 de las dos plantas; el 3 está a 2 del norte y a 4 del sur (dando la vuelta por el 1 y el 2).",
+   "Si todos fueran al sur, pasar el pueblo v al norte cambia el coste en dN[v] - dS[v].",
+   "Ordena los pueblos por dN - dS y da al norte los (N - 2) / 2 primeros."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "El camino corto da un rodeo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La distancia mínima no es la carretera directa: hay que hacer Dijkstra, no mirar solo las aristas.",
+  "si": {
+   "wa": "No calculas bien las distancias mínimas: el camino más barato puede pasar por otros pueblos (o por la otra planta)."
+  },
+  "pistas": [
+   "Del norte al pueblo 2 cuesta 2 yendo por el 3, no 50.",
+   "Usa Dijkstra desde cada planta; ni BFS (cuenta carreteras, no costes) ni solo las carreteras directas sirven."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Pasar por la otra planta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Todos los pueblos cuelgan de la planta sur; desde el norte hay que pasar por ella.",
+  "si": {
+   "wa": "Los caminos pueden atravesar la otra planta y otros pueblos: no la quites del grafo ni la trates distinto en Dijkstra."
+  },
+  "pistas": [
+   "Desde el norte, cada pueblo está a 2 (pasando por la sur).",
+   "Coste: dos pueblos al norte (2 + 2) y dos al sur (1 + 1), por 2: 12."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "La planta sur es el punto N",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una carretera en línea 1-2-3-4-5-6: el sur es el 6, no el 2 ni el N-1.",
+  "si": {
+   "wa": "Haces Dijkstra desde un punto equivocado: el norte es el 1 y el sur el N (en índices desde 0, el 0 y el N-1)."
+  },
+  "pistas": [
+   "Los pueblos 2 y 3 van al norte (1 + 2) y el 4 y 5 al sur (2 + 1): 2 · 6 = 12.",
+   "Si restas 1 a los vértices al leer, el sur es el N - 1."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Reparto al revés",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Pueblos claramente de un lado y del otro: el reparto debe darle al norte los suyos.",
+  "si": {
+   "wa": "Das al norte los pueblos de MAYOR dN - dS (o sumas las distancias cambiadas): ordena de menor a mayor."
+  },
+  "pistas": [
+   "Los pueblos 2 y 3 al norte y el 4 y 5 al sur: 2 · 4 = 8.",
+   "Al norte le convienen los de menor dN - dS (lo que más se ahorra)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Varios casos seguidos: nada del anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el vector de diferencias, las distancias o el total no se reinician."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "Crea el grafo, las distancias y el vector de diferencias dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Grafo completo pequeño",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Todas las carreteras posibles entre 6 puntos.",
+  "si": {
+   "wa": "Con muchas carreteras algo falla: revisa que Dijkstra relaja todas las aristas de cada vértice."
+  },
+  "pistas": [
+   "Hay N(N - 1)/2 = 15 carreteras.",
+   "Comprueba tus distancias a mano para un par de pueblos."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Distancias enormes (long long)",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una carretera en línea de 30.000 puntos con coste 100.000: las distancias y el total no caben en int.",
+  "si": {
+   "wa": "Algo se desborda: una distancia puede llegar a 100.000 · 200.000 y el total a mucho más. Usa long long para distancias y sumas."
+  },
+  "pistas": [
+   "Calcula el orden de magnitud: ¿cuánto puede valer la suma de todas las distancias?",
+   "Usa long long en las distancias, en las diferencias y en el total."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 islas pequeñas al azar.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; dibuja ese grafo."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla.",
+   "Calcula a mano dN y dS de cada pueblo y ordena las diferencias."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 20,
+  "comprueba": "20 islas medianas.",
+  "si": {
+   "wa": "Algo falla con grafos más grandes: revisa Dijkstra (la cola con prioridad) y la suma final."
+  },
+  "pistas": [
+   "Reduce el caso que falla si puedes.",
+   "Comprueba que Dijkstra actualiza la prioridad de un vértice cuando mejora su distancia."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "100.000 puntos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Una isla grande: mide la eficiencia de los dos Dijkstra y del reparto.",
+  "si": {
+   "tle": "Tu solución es lenta: los Dijkstra deben ser O(M log N) con cola con prioridad y el reparto O(N log N) (ordenar las diferencias)."
+  },
+  "pistas": [
+   "No busques el mínimo recorriendo todos los vértices (ni en Dijkstra ni al repartir): eso es cuadrático.",
+   "Usa IndexPQ (o priority_queue) en Dijkstra y sort para las diferencias.",
+   "Pasa el grafo por referencia constante a Dijkstra."
+  ]
+ }
+]

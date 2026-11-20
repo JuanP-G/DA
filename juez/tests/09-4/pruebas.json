@@ -1,0 +1,214 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres ejemplos del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la lectura (primero P y luego N), el criterio voraz y que escribes un número por caso."
+  },
+  "pistas": [
+   "Ejecútalo en tu ordenador con este mismo ejemplo y compara línea a línea.",
+   "Ojo al orden de la primera línea de cada caso: primero el peso máximo P y después N.",
+   "Ordena los pesos y mira a la vez el más ligero y el más pesado."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un único usuario",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con un solo usuario hace falta un viaje.",
+  "si": {
+   "wa": "El último usuario que queda solo no se cuenta: cuando los dos índices coinciden (i == j) todavía falta un viaje."
+  },
+  "pistas": [
+   "Con N = 1 la respuesta es 1.",
+   "El bucle debe seguir mientras i ≤ j; si i == j, ese usuario sube solo."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Peso justo el máximo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos usuarios que juntos pesan exactamente P pueden ir juntos.",
+  "si": {
+   "wa": "Usas < en vez de ≤: la silla soporta P, así que una pareja de peso P cabe."
+  },
+  "pistas": [
+   "10 + 10 = 20 = P: un viaje.",
+   "La condición para ir juntos es suma ≤ P."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Pesos de 10⁹",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Dos usuarios de 10⁹ con P = 10⁹: cada uno sube solo.",
+  "si": {
+   "wa": "Con los valores máximos algo falla: revisa los tipos (P y los pesos llegan a 10⁹) y la comparación ≤."
+  },
+  "pistas": [
+   "Aquí hacen falta 2 viajes.",
+   "La suma de dos pesos llega a 2·10⁹: cabe justo en un int, pero si sumas más cosas usa long long."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "El más pesado con el siguiente más pesado no",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Emparejar a los dos más pesados (o a los dos más ligeros) desperdicia sitio.",
+  "si": {
+   "wa": "Tu criterio de emparejamiento no es el bueno. Al más pesado le conviene ir con el MÁS LIGERO; si no cabe ni con él, sube solo."
+  },
+  "pistas": [
+   "1 + 4 y 2 + 3: bastan 2 viajes.",
+   "Mira el más pesado: ¿cabe con el más ligero?"
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "El que no cabe es el pesado",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Si el más ligero y el más pesado no caben juntos, el que sube solo es el pesado.",
+  "si": {
+   "wa": "Cuando no caben juntos mandas solo al ligero. Es el pesado el que no cabe con nadie."
+  },
+  "pistas": [
+   "9 sube solo; 2 y 3 van juntos: 2 viajes.",
+   "Si ligero + pesado > P, el pesado sube solo (j--) y el ligero sigue esperando pareja."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Nadie puede ir acompañado",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Todos tienen que subir solos (incluido P = 1 con pesos 1).",
+  "si": {
+   "wa": "Si ninguna pareja cabe, salen N viajes: no supongas que siempre basta con N / 2 redondeado."
+  },
+  "pistas": [
+   "Con P = 1 y pesos 1, 1 + 1 > 1.",
+   "Cada iteración del bucle es un viaje, con uno o con dos usuarios."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Usuarios desordenados",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los pesos no vienen ordenados en la entrada.",
+  "si": {
+   "wa": "Parece que no ordenas los pesos antes de emparejar."
+  },
+  "pistas": [
+   "La entrada no está ordenada.",
+   "Ordena el vector antes de usar los dos índices."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Todos caben de dos en dos (número impar)",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cinco usuarios que caben por parejas: 3 viajes (el último va solo).",
+  "si": {
+   "wa": "Con un número impar el último sube solo: revisa la condición del bucle cuando i == j."
+  },
+  "pistas": [
+   "Salen 3 viajes.",
+   "Cuando solo queda uno (i == j), cuenta su viaje sin emparejarlo consigo mismo."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Cada pesado con un ligero",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos pesados y dos ligeros: cada pesado debe llevarse un ligero (2 viajes).",
+  "si": {
+   "wa": "Juntas a los dos ligeros y dejas solos a los pesados. Al más pesado le toca el más ligero."
+  },
+  "pistas": [
+   "9 + 1 y 9 + 1: 2 viajes.",
+   "Empieza siempre por el más pesado que queda y búscale el más ligero."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Pesos grandes que sí caben",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Pesos cerca de 10⁹ que caben por parejas justas.",
+  "si": {
+   "wa": "Con pesos grandes algo falla: revisa el tipo de la suma y la comparación ≤."
+  },
+  "pistas": [
+   "Salen 2 viajes: 5·10⁸ + 5·10⁸ y 999999999 + 1.",
+   "Usa long long para P y para las sumas."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Varios casos seguidos: nada del anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el contador de viajes o el vector no se reinician."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "Declara el vector y el contador dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos pequeños al azar.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; pruébalo a mano."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla.",
+   "Ordena sus pesos en papel y sigue los dos índices."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios medianos con pesos grandes",
+  "tipo": "aleatorio",
+  "casos": 10,
+  "comprueba": "10 casos medianos, varios con pesos cerca de 10⁹.",
+  "si": {
+   "wa": "Algo falla con más usuarios o con pesos grandes: revisa el tipo de la suma y el movimiento de los índices."
+  },
+  "pistas": [
+   "Reduce el caso que falla quitando usuarios mientras siga fallando.",
+   "Si los pesos son grandes, la suma necesita long long."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "500.000 usuarios",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo de un caso: mide la eficiencia.",
+  "si": {
+   "tle": "Tu solución es lenta para 500.000 usuarios: debe ser O(N log N). ¿Buscas pareja para cada uno recorriendo a los demás?"
+  },
+  "pistas": [
+   "Ordenar cuesta O(N log N); emparejar con dos índices es una sola pasada.",
+   "Usa sort de la biblioteca, no una ordenación cuadrática.",
+   "No borres elementos del medio de un vector: cuesta O(N) cada vez."
+  ]
+ }
+]

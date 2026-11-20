@@ -1,0 +1,12 @@
+{
+ "solucion": "9-Algoritmos voraces II/EJ_09-L/EJ_09-L.cpp",
+ "cabeceras": [
+  "9-Algoritmos voraces II/EJ_09-L/GrafoValorado.h",
+  "9-Algoritmos voraces II/EJ_09-L/IndexPQ.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "cout << 2 * total << '\\n';",
+  "cout << total << '\\n';"
+ ]
+}

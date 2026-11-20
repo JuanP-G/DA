@@ -1,0 +1,9 @@
+{
+ "solucion": "9-Algoritmos voraces II/EJ_09-2/EJ_09-2.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "trab[i].first <= cubierto",
+  "trab[i].first < cubierto"
+ ]
+}

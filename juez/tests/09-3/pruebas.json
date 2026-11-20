@@ -1,0 +1,228 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos ejemplos del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la lectura (primero N y luego V), el criterio voraz y que escribes un número por caso."
+  },
+  "pistas": [
+   "Ejecútalo en tu ordenador con este mismo ejemplo y compara línea a línea.",
+   "En el primer caso juntar las dos más potentes (15 y 12) deja solo un coche.",
+   "Ordena las pilas y mira a la vez la más débil y la más fuerte."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola pila",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con una sola pila no hay ningún coche, aunque su voltaje doble llegue a V.",
+  "si": {
+   "wa": "Emparejas una pila consigo misma: cuando los dos índices se encuentran (i == j) ya no queda pareja."
+  },
+  "pistas": [
+   "Con N = 1 la respuesta es 0.",
+   "El bucle debe seguir mientras i < j, no i ≤ j."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Voltaje mínimo 0",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Con V = 0 cualquier pareja sirve, incluso de pilas de 0 µV.",
+  "si": {
+   "wa": "Con V = 0 todas las parejas valen: salen N / 2 coches. Revisa ≥ frente a > y el tratamiento de los voltajes 0."
+  },
+  "pistas": [
+   "0 + 0 ≥ 0: dos pilas gastadas también mueven el coche si V = 0.",
+   "La condición es suma ≥ V."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "La suma justa",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos pilas que suman exactamente V sirven.",
+  "si": {
+   "wa": "Usas > en vez de ≥: el enunciado dice que deben sumar AL MENOS V."
+  },
+  "pistas": [
+   "5 + 15 = 20 = V: es un coche.",
+   "Cambia la comparación a suma ≥ V."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Las dos más potentes juntas no",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Juntar las dos pilas más fuertes desperdicia voltaje.",
+  "si": {
+   "wa": "Emparejas la más fuerte con la siguiente más fuerte. A la más fuerte le conviene la pila MÁS DÉBIL con la que llegue a V."
+  },
+  "pistas": [
+   "15 + 8 y 12 + 10 dan dos coches; 15 + 12 deja solo uno.",
+   "Mira la más débil y la más fuerte: si juntas llegan, forman pareja."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Descartar la débil, no la fuerte",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Si la más débil y la más fuerte no llegan, la que sobra es la débil.",
+  "si": {
+   "wa": "Cuando la pareja (más débil, más fuerte) no llega, descartas la fuerte. Pero es la débil la que no sirve con nadie."
+  },
+  "pistas": [
+   "Aquí 10 + 10 forman un coche; la pila de 1 no sirve.",
+   "Si débil + fuerte < V, la débil tampoco llegará con ninguna otra: descártala (avanza i)."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Emparejar mitad débil con mitad fuerte en orden",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Emparejar la i-ésima débil con la i-ésima fuerte (en el mismo orden) no es óptimo.",
+  "si": {
+   "wa": "Emparejas las dos mitades en el mismo orden (la más débil con la más débil de la mitad fuerte). Hay que cruzarlas: la más débil con la más fuerte."
+  },
+  "pistas": [
+   "1 + 19 y 2 + 18 dan dos coches.",
+   "Usa dos índices que avanzan desde los extremos hacia el centro."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Voltajes máximos",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "V en su máximo (2·10⁶) y pilas de 10⁶ µV.",
+  "si": {
+   "wa": "Con los valores máximos algo falla: revisa los tipos y la comparación ≥."
+  },
+  "pistas": [
+   "Solo las dos pilas de 10⁶ llegan a 2·10⁶.",
+   "2·10⁶ cabe en int sin problema; revisa la condición."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Número impar de pilas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con tres pilas válidas, una se queda sin pareja.",
+  "si": {
+   "wa": "Cuentas una pila sola como coche o te sales del vector al emparejar: cada coche necesita dos pilas distintas."
+  },
+  "pistas": [
+   "Sale un coche, no dos.",
+   "Para cuando los índices se crucen o coincidan."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Pilas desordenadas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las pilas no vienen ordenadas en la entrada.",
+  "si": {
+   "wa": "Parece que no ordenas las pilas antes de emparejarlas."
+  },
+  "pistas": [
+   "La entrada no está ordenada.",
+   "Ordena el vector antes de usar los dos índices."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Ninguna pareja llega",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Ninguna pareja alcanza V: 0 coches.",
+  "si": {
+   "wa": "Si ninguna pareja llega debe salir 0."
+  },
+  "pistas": [
+   "49 + 3 < 100.",
+   "Revisa que solo cuentas un coche cuando la suma llega a V."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Muchas pilas iguales",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Pilas repetidas: con 10 + 10 ≥ 20 salen 3 coches; con V = 21 ninguno.",
+  "si": {
+   "wa": "Algo falla con valores repetidos: revisa cómo mueves los índices."
+  },
+  "pistas": [
+   "7 pilas de 10 y V = 20: 3 coches.",
+   "Con valores iguales no debe cambiar nada de tu bucle."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Varios casos seguidos: nada del anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el contador o el vector no se reinician."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "Declara el vector y el contador dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos pequeños al azar.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; pruébalo a mano."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla.",
+   "Ordena sus pilas en papel y sigue los dos índices."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos medianos.",
+  "si": {
+   "wa": "Algo falla con más pilas: revisa qué haces cuando la pareja no llega."
+  },
+  "pistas": [
+   "Reduce el caso que falla quitando pilas mientras siga fallando.",
+   "Si débil + fuerte llegan, pareja; si no, se descarta la débil."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "300.000 pilas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo de un caso: mide la eficiencia.",
+  "si": {
+   "tle": "Tu solución es lenta para 300.000 pilas: debe ser O(N log N). ¿Buscas pareja para cada pila recorriendo las demás?"
+  },
+  "pistas": [
+   "Ordenar cuesta O(N log N); emparejar con dos índices es una sola pasada.",
+   "Usa sort de la biblioteca, no una ordenación cuadrática.",
+   "No borres elementos del medio de un vector: cuesta O(N) cada vez."
+  ]
+ }
+]
