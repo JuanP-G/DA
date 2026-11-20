@@ -134,7 +134,7 @@ def pruebas():
     prueba("Un salto muy largo que no hace falta", "trampa",
            [(3, [(1, 2, 3), (2, 3, 4), (1, 3, 900)]), (4, [(1, 2, 5), (2, 3, 5), (3, 4, 5), (4, 1, 6), (1, 3, 1000000)])],
            "No vale la longitud del salto más largo de la selva: solo cuentan los que hacen falta.",
-           {"wa": "Te quedas con el salto más largo de todos (o con el último que miras), aunque una dos árboles que ya estaban unidos. Solo cuenta el último salto ACEPTADO."},
+           {"wa": "Te quedas con el salto más largo de todos (o con el último que miras), aunque una dos árboles que ya estaban unidos. Solo cuenta el último salto ACEPTADO. También pasa si no ordenas los saltos de menor a mayor: el salto largo puede aceptarse antes que los cortos."},
            ["En el primer caso el salto de 900 sobra: 1 y 3 ya se unen por 1–2–3. La cuerda mide 4.",
             "Actualiza la cuerda solo dentro del «if (!unidos(u, v))», o para en cuanto quede un solo grupo."])
     prueba("Saltos en cualquier orden", "trampa",
@@ -214,7 +214,7 @@ VARIANTES = [
     Variante("no resta 1 a los árboles", [("GrafoValorado<int> g(cin, 1);", "GrafoValorado<int> g(cin, 0);")], prueba=5, v="rte"),
     Variante("cuerda 0 como señal de imposible", [("if (cd.num_cjtos() == 1) cout << ultima << '\\n';", "if (ultima > 0) cout << ultima << '\\n';")], prueba=6, v="wa"),
     Variante("suma los saltos", [("ultima = s.valor();", "ultima += s.valor();")], prueba=7, v="wa"),
-    Variante("no ordena los saltos", [("sort(saltos.begin(), saltos.end());", "")], prueba=9, v="wa"),
+    Variante("no ordena los saltos", [("sort(saltos.begin(), saltos.end());", "")], prueba=[9, 8], v="wa"),
     Variante("salto más largo de todos", [("if (cd.num_cjtos() == 1) break;", "ultima = max(ultima, s.valor());")], prueba=8, v="wa"),
     Variante("para cuando se unen el 1 y el N", [("if (cd.num_cjtos() == 1) break;", "if (cd.unidos(0, g.V() - 1)) break;")], prueba=10, v="wa"),
     Variante("nunca escribe «Imposible»", [("if (cd.num_cjtos() == 1) cout << ultima << '\\n';\n    else cout << \"Imposible\\n\";", "cout << ultima << '\\n';")], prueba=11, v="wa"),

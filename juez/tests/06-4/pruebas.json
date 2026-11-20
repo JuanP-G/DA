@@ -107,7 +107,7 @@
   "casos": 2,
   "comprueba": "No vale la longitud del salto más largo de la selva: solo cuentan los que hacen falta.",
   "si": {
-   "wa": "Te quedas con el salto más largo de todos (o con el último que miras), aunque una dos árboles que ya estaban unidos. Solo cuenta el último salto ACEPTADO."
+   "wa": "Te quedas con el salto más largo de todos (o con el último que miras), aunque una dos árboles que ya estaban unidos. Solo cuenta el último salto ACEPTADO. También pasa si no ordenas los saltos de menor a mayor: el salto largo puede aceptarse antes que los cortos."
   },
   "pistas": [
    "En el primer caso el salto de 900 sobra: 1 y 3 ya se unen por 1–2–3. La cuerda mide 4.",
