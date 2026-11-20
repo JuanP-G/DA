@@ -218,13 +218,16 @@ Carpeta [`11-Programacion dinamica II/`](11-Programacion%20dinamica%20II). Progr
 | 11-1 | El cazatesoros | [📄 PDF](11-Programacion%20dinamica%20II/Enunciados/prob-El%20cazatesoros.pdf) | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-1/EJ_11-1.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-1/README.md) | [🎬 Vídeo](Videos/11-1_el_cazatesoros.mp4) | Mochila 0/1 (peso 3p, capacidad T) y reconstrucción de los cofres desde `(N, T)` |
 | 11-2 | Aibofobia | [📄 PDF](11-Programacion%20dinamica%20II/Enunciados/prob-Aibofobia.pdf) | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-2/EJ_11-2.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-2/README.md) | [🎬 Vídeo](Videos/11-2_aibofobia.mp4) | `faltan(i, j)` sobre intervalos y reconstrucción del palíndromo por los dos extremos |
 
-## Tema 12 · Problemas de evaluación
+## Pruebas evaluativas
 
-Carpeta [`12-Evaluacion/`](12-Evaluacion). Problemas de evaluación del juez. MasterHash es de **grafos dirigidos** (tema 5) y usa [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h). Los enunciados están en el juez de la asignatura.
+Carpeta [`12-Evaluacion/`](12-Evaluacion). Problemas de las pruebas evaluativas. MasterHash es de **grafos dirigidos** (tema 5) y usa [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h); Bollos preñaos, Cine romántico a raudales y El carpintero Ebanisto son de **programación dinámica** (temas 10 y 11).
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
 | Eval-1 | MasterHash | [📄 PDF](12-Evaluacion/Enunciados/prob-MasterHash.pdf) | [💻 Solución](12-Evaluacion/EJ_Eval-1/EJ_Eval-1.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-1/README.md) | [🎬 Vídeo](Videos/Eval-1_masterhash.mp4) | Lo que necesita P = alcanzables desde P en el **inverso**; NO si incluye S o hay ciclo (Kahn); si no, orden topológico |
+| Eval-2 | Bollos preñaos | [📄 PDF](12-Evaluacion/Enunciados/prob-Bollos%20pre%C3%B1aos.pdf) | [💻 Solución](12-Evaluacion/EJ_Eval-2/EJ_Eval-2.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-2/README.md) | — | Mochila con cantidades acotadas: la masa es la capacidad y el chorizo de cada tipo da el tope de bollos `g / c` |
+| Eval-3 | Cine romántico a raudales | [📄 PDF](12-Evaluacion/Enunciados/prob-Cine%20rom%C3%A1ntico%20a%20raudales.pdf) | [💻 Solución](12-Evaluacion/EJ_Eval-3/EJ_Eval-3.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-3/README.md) | — | Intervalos con pesos: `minutos(i) = max(minutos(i+1), dur + minutos(sig(i)))` con `sig` por búsqueda binaria (10 min de descanso) |
+| Eval-4 | El carpintero Ebanisto | [📄 PDF](12-Evaluacion/Enunciados/prob-El%20carpintero%20Ebanisto.pdf) | [💻 Solución](12-Evaluacion/EJ_Eval-4/EJ_Eval-4.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-4/README.md) | — | PD sobre intervalos: `esfuerzo(i, j) = 2·(p_j − p_i) + min_k esfuerzo(i, k) + esfuerzo(k, j)`, por longitud creciente |
 
 ---
 

@@ -39,7 +39,7 @@ TEMAS = {
     9: dict(nombre="Algoritmos voraces II", resumen="Más voraces: pinchar y cubrir intervalos, emparejar extremos de un vector ordenado y voraces sobre Dijkstra.", herr="", cab=[]),
     10: dict(nombre="Programación dinámica", resumen="Recurrencias con subproblemas repetidos rellenadas en tablas: mochila, cambio de monedas y caminos en cuadrículas.", herr="", cab=[]),
     11: dict(nombre="Programación dinámica II", resumen="Programación dinámica con reconstrucción de la solución: mochila 0/1 y palíndromos sobre intervalos.", herr="", cab=[]),
-    12: dict(nombre="Problemas de evaluación", resumen="Problemas de evaluación de la asignatura.", herr="", cab=[]),
+    12: dict(nombre="Pruebas evaluativas", resumen="Problemas de las pruebas evaluativas de la asignatura.", herr="", cab=[]),
 }
 HERRAMIENTAS = [
     ("tema1-avl.html", "Tema 1", "Árbol AVL", "Inserta, borra y pide el k-ésimo; mira el factor de equilibrio y cada rotación."),
@@ -122,6 +122,8 @@ def leer_readme():
         m = re.match(r"##\s+Tema\s+(\d+)\b", linea)
         if m:
             tema = int(m.group(1)); continue
+        if re.match(r"##\s+Pruebas evaluativas\b", linea):
+            tema = EVAL; continue
         if linea.startswith("## "):
             tema = None; continue
         if tema is None or not linea.startswith("|"):
@@ -287,6 +289,19 @@ KATEX = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Ka
          '{left:\'\\\\(\',right:\'\\\\)\',display:false}]})"></script>'
          '<style>.math{overflow-x:auto;overflow-y:hidden;padding:.2em 0}</style>')
 JSZIP = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>'
+
+
+EVAL = 12   # las pruebas evaluativas se guardan como «tema 12», pero en la web no llevan número
+
+
+def tema_corto(t):
+    """«Tema 4» o «Pruebas evaluativas»."""
+    return "Pruebas evaluativas" if t == EVAL else f"Tema {t}"
+
+
+def tema_largo(t, nombre):
+    """«Tema 4 · Grafos no dirigidos» o «Pruebas evaluativas»."""
+    return "Pruebas evaluativas" if t == EVAL else f"Tema {t} · {nombre}"
 
 
 def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head="", ruta=None):
@@ -560,8 +575,8 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
     pager = '<div class="pager">' + (f'<a class="btn" href="{ant[0]}.html">← {esc(ant[1])}</a>' if ant else "<span></span>") + \
             (f'<a class="btn" href="{sig[0]}.html">{esc(sig[1])} →</a>' if sig else "<span></span>") + "</div>"
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../tema/{tema}.html" data-back>← Volver</a>'
-              f'<a href="../index.html">Inicio</a>›<a href="../tema/{tema}.html">Tema {tema}</a>›<span>{esc(e["id"])}</span></div>'
-              f'<div class="ejhead"><a class="tag" href="../tema/{tema}.html">Tema {tema} · {esc(TEMAS[tema]["nombre"])}</a>'
+              f'<a href="../index.html">Inicio</a>›<a href="../tema/{tema}.html">{tema_corto(tema)}</a>›<span>{esc(e["id"])}</span></div>'
+              f'<div class="ejhead"><a class="tag" href="../tema/{tema}.html">{esc(tema_largo(tema, TEMAS[tema]["nombre"]))}</a>'
               f'<div class="ejtit"><h1>{esc(e["id"])} · {esc(e["titulo"])}</h1>'
               f'<button class="btn okb-ej" data-ok="{slug}" aria-pressed="false">@@i:check@@ <span class="lab">Marcar como hecho</span></button></div>'
               f'<p class="lede">{md_inline(e["idea"])}</p>'
@@ -593,7 +608,7 @@ def pagina_videos(ej, slugs):
                 mb = tam_legible((RAIZ / e["video"]).stat().st_size)
                 cards.append(f'<a class="vcard" href="ej/{slugs[i]}.html#video"><span class="n">▶ {esc(e["id"])} · {mb}</span><b>{esc(e["titulo"])}</b><span class="d">{md_inline(e["idea"])}</span></a>')
         if cards:
-            bloques.append(f'<section class="bloque"><h2>Tema {t} · {esc(info["nombre"])}</h2><div class="vlist">{"".join(cards)}</div></section>')
+            bloques.append(f'<section class="bloque"><h2>{esc(tema_largo(t, info["nombre"]))}</h2><div class="vlist">{"".join(cards)}</div></section>')
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="index.html" data-back>← Volver</a><a href="index.html">Inicio</a>›<span>Vídeos</span></div>'
               f'<div class="hero"><span class="tag">Vídeos</span><h1>Vídeos explicativos</h1><p class="lede">Se ven aquí mismo, con subtítulos y, en los largos, capítulos. Cada uno abre la página de su ejercicio, donde también se puede descargar.</p></div>'
               f'{"".join(bloques)}</div>')
@@ -639,11 +654,14 @@ def tarjeta_tema(t, info, lista, slugs, hay_herr):
     herr = '<span class="chip">@@i:tool@@ Herramienta</span>' if hay_herr else ""
     herr += '<span class="chip p">@@i:book@@ Teoría</span>' if teo else ""
     vid = f'<span class="chip v">@@i:video@@ {plural(n_vid, "vídeo", "vídeos")}</span>' if n_vid else ""
+    n_juez = sum(1 for i, _ in lista if slugs[i] in JUECES)
+    juez = (f'<span class="chip">@@i:check@@ Juez en {n_juez}/{n}</span>' if n_juez
+            else '<span class="chip mute">@@i:check@@ Juez pronto</span>')
     return (f'<a class="tcard" href="tema/{t}.html" data-ids="{ids}" data-tema="{t}" style="--b:{color_de(t)}">'
-            f'<div class="th"><div><span class="n">{t:02d}</span><b>{esc(info["nombre"])}</b></div><span class="est" data-est>Sin empezar</span></div>'
+            f'<div class="th"><div><span class="n">{"✎" if t == EVAL else f"{t:02d}"}</span><b>{esc(info["nombre"])}</b></div><span class="est" data-est>Sin empezar</span></div>'
             f'<div class="met"><div class="sol"><div class="l"><span>Con solución</span><b>{n_sol}/{n}</b></div><div class="prog"><i style="width:{pct_sol}%"></i></div></div>'
             f'<div><div class="l"><span>Tu progreso</span><b data-txt>0/{n} · 0%</b></div><div class="prog"><i data-bar></i></div></div></div>'
-            f'<div class="tcf"><span class="chip">@@i:code@@ {plural(n, "ejercicio", "ejercicios")}</span>{herr}{vid}<span class="chip mute">@@i:check@@ Tests pronto</span></div></a>')
+            f'<div class="tcf"><span class="chip">@@i:code@@ {plural(n, "ejercicio", "ejercicios")}</span>{herr}{vid}{juez}</div></a>')
 
 
 FILTRO_JS = r"""
@@ -706,7 +724,7 @@ def teoria_panel(t, prefijo):
         return ""
     opts = "".join(f'<option value="{esc(url_teoria(t, r, prefijo))}">{esc(n)}</option>' for r, n, b in docs)
     return (f'<button class="btn primary teo-fab" type="button" id="teoAbrir" aria-controls="teoPanel" aria-expanded="false">@@i:book@@ Teoría</button>'
-            f'<aside class="teo-panel" id="teoPanel" aria-label="Teoría del tema {t}" hidden><div class="teo-bar"><b>Teoría · Tema {t}</b>'
+            f'<aside class="teo-panel" id="teoPanel" aria-label="Teoría · {tema_corto(t)}" hidden><div class="teo-bar"><b>Teoría · {tema_corto(t)}</b>'
             f'<select id="teoSel" aria-label="Documento">{opts}</select>'
             f'<a class="btn mini" id="teoTab" target="_blank" rel="noopener" href="#">Abrir en pestaña</a>'
             f'<button class="btn mini" type="button" id="teoCerrar">Cerrar</button></div>'
@@ -749,8 +767,8 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     bloque = next((b[0] for b in BLOQUES if t in b[1]), "")
     prev_t = t - 1 if t - 1 in nombres_temas else None
     next_t = t + 1 if t + 1 in nombres_temas else None
-    pager = ('<div class="pager">' + (f'<a class="btn" href="{prev_t}.html">← Tema {prev_t} · {esc(nombres_temas[prev_t])}</a>' if prev_t else "<span></span>")
-             + (f'<a class="btn" href="{next_t}.html">Tema {next_t} · {esc(nombres_temas[next_t])} →</a>' if next_t else "<span></span>") + "</div>")
+    pager = ('<div class="pager">' + (f'<a class="btn" href="{prev_t}.html">← {esc(tema_largo(prev_t, nombres_temas[prev_t]))}</a>' if prev_t else "<span></span>")
+             + (f'<a class="btn" href="{next_t}.html">{esc(tema_largo(next_t, nombres_temas[next_t]))} →</a>' if next_t else "<span></span>") + "</div>")
     # --- Vídeo del tema: lo más útil para entender el tema, va arriba del todo ---
     vhero = ""
     tv = next((e for _, e in teo if e["video"]), None)
@@ -782,14 +800,14 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
                + (f'<details class="sbox aprende" data-aprende><summary><h2>Aprende</h2></summary><div class="alist main">{"".join(principales)}</div>{('<h3 class="sub">PDFs de teoría</h3><div class="alist">' + "".join(pdfs) + '</div>') if pdfs else ""}</details>' if aprender else '')
                + (f'<div class="sbox"><h2>Plantillas y código</h2><div class="rec">{"".join(recursos)}</div></div>' if recursos else '')
                + '</aside>')
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas" data-back>← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>Tema {t}</span></div>'
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas" data-back>← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>{tema_corto(t)}</span></div>'
               f'<div class="thead" data-ids="{ids}"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="tag">{esc(bloque)}</span><span class="est" data-est>Sin empezar</span></div>'
-              f'<h1>Tema {t} · {esc(info["nombre"])}</h1><p class="lede">{esc(info["resumen"])}</p></div>'
+              f'<h1>{esc(tema_largo(t, info["nombre"]))}</h1><p class="lede">{esc(info["resumen"])}</p></div>'
               f'<div class="tlay">{lateral}<main class="tmain">{vhero}<div class="mh" id="ejercicios"><h2>Ejercicios <span class="cnt">{n}</span></h2>'
               f'<div class="filters"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="pend">Pendientes</button><button class="chip" data-f="hechos">Hechos</button><button class="chip" data-fv>@@i:video@@ Con vídeo</button></div></div>'
               f'<div id="p-ejercicios">{"".join(filas)}<p class="vacio" id="sin">Ningún ejercicio coincide con el filtro.</p></div>'
               f'<p class="notas">Tests del profe y propios: próximamente.</p></main></div>{pager}</div>{teoria_panel(t, "../")}')
-    titulo = f'Tema {t} · {info["nombre"]} | Diseño de Algoritmos UCM'
+    titulo = f'{tema_largo(t, info["nombre"])} | Diseño de Algoritmos UCM'
     desc = f'{info["resumen"]} Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++ con explicación.'
     return pagina(titulo, cuerpo, "../", FILTRO_JS + (TEORIA_JS if TEORIA.get(t) else ""), desc, ruta=f"tema/{t}.html")
 
@@ -1034,7 +1052,7 @@ def generar_juez(ej, slugs=None):
             manifest["comprobador"] = "comprobador.js"
         escribe_lf(d / "manifest.json", json.dumps(manifest, ensure_ascii=False, indent=1) + "\n")
         cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../ej/{ej_id.lower()}.html">← Volver al ejercicio</a>'
-                  f'<a href="../index.html">Inicio</a>›<a href="../tema/{e["tema"]}.html">Tema {e["tema"]}</a>›<span>{esc(ej_id)} · probar</span></div>'
+                  f'<a href="../index.html">Inicio</a>›<a href="../tema/{e["tema"]}.html">{tema_corto(e["tema"])}</a>›<span>{esc(ej_id)} · probar</span></div>'
                   f'<div class="ejhead"><span class="tag">Prototipo del juez</span><h1>{esc(ej_id)} · {esc(e["titulo"])}</h1>'
                   f'<p class="lede">Pega o escribe tu solución y comprueba si pasa las {len(tests)} pruebas de este ejercicio.</p></div>'
                   f'<div id="juez"></div></div>'
