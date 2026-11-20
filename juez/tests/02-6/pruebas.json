@@ -1,0 +1,236 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF (la entrada acaba con el fin del fichero).",
+  "si": {
+   "wa": "Si fallan hasta los ejemplos, revisa la base: la cima de cada pila es el ÚLTIMO número de su línea, cada cliente se lleva el menor de las cimas, y el puesto se cuenta desde 1.",
+   "pe": "El puesto está bien pero no el formato: un número por línea.",
+   "rte": "Se rompe con los ejemplos: ¿miras la cima de una pila que se ha quedado vacía?"
+  },
+  "pistas": [
+   "Sigue las notas del enunciado: en el primer caso se venden 8, 7, 4, 13 y 20, y el puesto es el 6.",
+   "No hay número de casos ni centinela: lee hasta que falle la lectura de N (plantilla de casos ilimitados)."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "El mejor ya está a la vista (puesto 1)",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Si el mejor ejemplar ya está en una cima, basta con ser el primero: puesto 1 (no 0).",
+  "si": {
+   "wa": "Los puestos se numeran desde 1: si el mejor está a la vista, la respuesta es 1. Si escribes 0, empieza a contar en 1 (o suma 1 al final)."
+  },
+  "pistas": [
+   "Con una sola pila de un cómic, ¿qué puesto necesitas?",
+   "Cuenta el puesto del cliente que se lleva el mejor, no cuántos clientes van delante.",
+   "Inicializa el contador de puestos a 1 y súmale 1 por cada cliente que compra antes que tú."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "El mejor puede estar tapado",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El mejor ejemplar (el 1) está en el medio de la pila, bajo el 9: hay que buscarlo entre TODOS, no solo entre las cimas.",
+  "si": {
+   "wa": "Buscas el mejor solo entre los que están a la vista. El que quieres es el menor de toda la tienda, aunque esté tapado: calcúlalo al leer todos los identificadores.",
+   "rte": "Te quedas sin nada en la cola antes de llegar al mejor: después de vender el 9 tiene que asomar el 1. ¿Vuelves a meter en la cola la nueva cima de la pila tras cada venta?"
+  },
+  "pistas": [
+   "El mejor de la tienda es el 1; el primer cliente se lleva el 9 y tú eres el segundo.",
+   "¿Dónde calculas «mejor»: con las cimas o con todos los números leídos?",
+   "Actualiza mejor = min(mejor, id) con cada identificador que lees."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "La cima es el número de la derecha",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los cómics vienen del fondo a la cima: el último de la línea es el que está arriba.",
+  "si": {
+   "wa": "Has apilado al revés: el primer número de cada línea es el FONDO y el último la CIMA. Apila en el orden en que lees (el último apilado queda arriba)."
+  },
+  "pistas": [
+   "En la pila «1 5 3» la cima es el 3: se venden el 3 y el 5, y tú eres el tercero.",
+   "Si guardas cada pila en un vector, la cima es v.back(), no v[0].",
+   "Lee los K números y apílalos uno a uno: el último leído queda en la cima."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Cada cliente se lleva el menor de las cimas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Hay que vender siempre el MENOR de los que están a la vista: 10, 9 y 50, y luego asoma el 1.",
+  "si": {
+   "wa": "Sale primero el MAYOR de las cimas: priority_queue<pair<int,int>> a secas es de máximos. Usa greater<> para que la cima sea el menor identificador."
+  },
+  "pistas": [
+   "Las cimas son 50 y 10: el primer cliente se lleva el 10, no el 50.",
+   "¿Qué devuelve top() en una priority_queue por defecto?",
+   "priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>>, con pares (identificador, número de pila)."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Pilas que se agotan",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Antes de llegar al mejor, dos pilas se quedan vacías y dejan de ofrecer nada.",
+  "si": {
+   "rte": "Cuando una pila se vacía, intentas consultar su cima (o desapilar de ella): la Pila lanza una excepción. Antes de volver a meter su nueva cima en la cola, comprueba que no esté vacía.",
+   "wa": "Cuando una pila se vacía sigues contando con ella (por ejemplo, metiendo un valor basura en la cola). Si se vacía, simplemente no se vuelve a meter nada de ella."
+  },
+  "pistas": [
+   "Se venden 3 y 4: las dos primeras pilas se agotan.",
+   "Después de desapilar, ¿qué pasa si la pila ya no tiene nada?",
+   "if (!pilas[p].esVacia()) cola.push({pilas[p].cima(), p});"
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Tras cada venta asoma el siguiente",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Las ventas alternan entre pilas: cada vez que se vende una cima, el cómic de debajo pasa a competir.",
+  "si": {
+   "wa": "Después de vender una cima no vuelves a meter en la cola el cómic que queda al descubierto (o metes otro). Cada venta: pop de la cola, desapilar esa pila y, si queda algo, push de su nueva cima.",
+   "rte": "Te quedas sin nada en la cola antes de llegar al mejor: tras cada venta hay que meter la nueva cima de esa pila.",
+   "tle": "El bucle no termina: tras cada venta hay que meter la nueva cima de esa pila en la cola."
+  },
+  "pistas": [
+   "En el primer caso se venden 5, 6, 7, 20 (y asoma el 1): tu puesto es el 5.",
+   "La cola debe tener siempre exactamente una entrada por cada pila no vacía.",
+   "Guarda en la cola el par (cima, número de pila) para saber de qué pila reponer."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Identificadores grandes (hasta 10⁸)",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Todos los identificadores son mayores que 10⁶: el valor inicial del mínimo tiene que ser mayor que cualquiera.",
+  "si": {
+   "wa": "El mejor no se calcula bien con identificadores grandes: si inicializas el mínimo con un valor pequeño (10⁶, 100.000...), nunca se actualiza. Usa INT_MAX o el primer identificador leído.",
+   "rte": "Con identificadores grandes no encuentras nunca el mejor y vacías la cola: inicializa el mínimo con INT_MAX (o con el primer identificador).",
+   "tle": "No encuentras nunca el mejor y el bucle no termina: revisa el valor inicial del mínimo."
+  },
+  "pistas": [
+   "Los identificadores llegan hasta 100.000.000.",
+   "¿Con qué valor empieza tu variable «mejor»?",
+   "int mejor = INT_MAX; (de <climits>)."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Una sola pila",
+  "tipo": "borde",
+  "casos": 4,
+  "comprueba": "Una única pila (hasta 100 cómics): el puesto es la profundidad del mejor contando desde la cima.",
+  "si": {
+   "wa": "Con una sola pila la respuesta es la posición del mejor contando desde la cima (empezando en 1).",
+   "rte": "Con una sola pila la cola se queda vacía en algún momento: revisa la comprobación de pila vacía."
+  },
+  "pistas": [
+   "En «1 2 3» el mejor (1) está en el fondo: se venden 3 y 2 y tu puesto es el 3.",
+   "Con 100 cómics del 1 al 100 (el 100 en la cima) necesitas el puesto 100."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "El mejor, en el fondo de todo",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "El mejor está en el fondo de una pila y tapado por el mayor de todos: se vende toda la tienda menos él.",
+  "si": {
+   "wa": "Cuando hay que vender casi todo, el puesto es el número de cómics vendidos antes más 1: revisa el contador y las pilas que se agotan.",
+   "rte": "Se agotan muchísimas pilas: revisa la comprobación de pila vacía antes de mirar la cima."
+  },
+  "pistas": [
+   "En el primer caso hay 997 pilas de un cómic y una pila «2 1000»: se venden todos los demás y luego el 1000.",
+   "Cuenta un puesto por cada cómic vendido antes que el tuyo, y súmale 1."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Muchas pilas de un solo cómic",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Muchas pilas con un cómic cada una: el mejor siempre está a la vista.",
+  "si": {
+   "wa": "Si todas las pilas tienen un cómic, el mejor está en una cima y la respuesta es 1.",
+   "tle": "Con 100.000 pilas algo es lento: ¿recorres todas las cimas en cada turno?"
+  },
+  "pistas": [
+   "Con todos los cómics a la vista, el primero de la fila se lleva el mejor.",
+   "No hace falta simular nada si el mejor es la cima de la cola desde el principio."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Varios casos seguidos: el mínimo, las pilas y la cola empiezan de cero en cada caso.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: algo se arrastra entre casos (el mínimo, la cola o las pilas declarados fuera de resuelveCaso).",
+   "rte": "Restos del caso anterior: si el mínimo no se reinicia, puede que no lo encuentres nunca y vacíes la cola.",
+   "tle": "Si el mínimo del caso anterior no se reinicia, el bucle puede no terminar nunca."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y el segundo no, mira qué variables viven fuera de resuelveCaso.",
+   "Declara mejor, la cola y el vector de pilas dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 300,
+  "comprueba": "300 casos pequeños al azar (hasta 5 pilas de 6 cómics).",
+  "si": {
+   "wa": "Algún caso concreto falla: la línea que falla es el número de caso; búscalo en la entrada y simúlalo a mano.",
+   "rte": "Algún caso pequeño rompe el programa: casi seguro, una pila que se agota."
+  },
+  "pistas": [
+   "Localiza el caso por el número de línea.",
+   "Dibuja las pilas y ve quitando en cada turno el menor de las cimas."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 10,
+  "comprueba": "10 casos de hasta 2000 pilas de hasta 100 cómics.",
+  "si": {
+   "wa": "Con casos medianos falla algo que en los pequeños no: revisa el valor inicial del mínimo y las pilas que se agotan.",
+   "tle": "Ya con casos medianos va lento: ¿buscas el menor de las cimas recorriéndolas todas?"
+  },
+  "pistas": [
+   "Cada turno debe ser un pop y, como mucho, un push.",
+   "Comprueba la condición de parada: la cima de la cola es el mejor."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Grande: 50.000 pilas y casi todo se vende",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "250.000 cómics en 50.000 pilas; el mejor está tapado por el mayor de todos, así que antes se vende casi toda la tienda.",
+  "si": {
+   "tle": "Buscar el menor de las cimas recorriendo las N pilas en cada turno cuesta O(N·T) ≈ 10¹⁰: usa una cola de prioridad con una cima por pila.",
+   "mle": "Gastas demasiada memoria: ¿copias las pilas? Guarda cada una una sola vez.",
+   "rte": "Con tantas pilas se rompe algo: revisa las pilas que se agotan."
+  },
+  "pistas": [
+   "¿Cuánto cuesta cada turno? Puede haber cientos de miles.",
+   "Con una cola de mínimos de pares (cima, pila), cada turno es un pop y un push: O(log N)."
+  ]
+ }
+]

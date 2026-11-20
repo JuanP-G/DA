@@ -1,0 +1,260 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF, con su «---» detrás de cada uno.",
+  "si": {
+   "wa": "Si fallan hasta los ejemplos, revisa la base: cada usuario recibe su primer envío a los Periodo segundos y luego cada Periodo segundos; sale siempre el envío más próximo.",
+   "pe": "Los identificadores están bien pero no el formato: uno por línea y una línea «---» tras cada caso."
+  },
+  "pistas": [
+   "Haz a mano el primer ejemplo: envíos en 200 (9000), 300 (1234), 400 (9000), 600 (empate: 1234 y luego 9000).",
+   "Tras los K identificadores de cada caso va una línea con exactamente tres guiones.",
+   "La entrada termina con n = 0: usa la plantilla de centinela."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Separador «---» y fin con n = 0",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Casos de un único usuario (no hay nada que ordenar): solo se mira el separador y que el 0 final no se procese.",
+  "si": {
+   "wa": "Falla el formato de los separadores: tras cada caso va una línea con TRES guiones («---», no «----» como en Acepta el Reto), y tras el 0 final no se escribe nada (si sale un «---» de más al final, estás procesando el caso n = 0).",
+   "ole": "No te detienes al leer n = 0 y el programa sigue escribiendo.",
+   "tle": "El bucle de casos no termina al leer n = 0."
+  },
+  "pistas": [
+   "Compara las líneas de separación de tu salida con la esperada: ¿cuántos guiones tienen?",
+   "Mira el final de tu salida: después del último caso no debe aparecer otro «---».",
+   "«cin >> n; if (n == 0) return false;» antes de escribir nada; y al final de cada caso, cout << \"---\\n\"."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Un solo envío (K = 1)",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un usuario y K = 1: la salida es su identificador y el «---». Mira que se hacen exactamente K envíos.",
+  "si": {
+   "wa": "No haces exactamente K envíos: con K = 1 debe salir un identificador (si no sale ninguno, el bucle da una vuelta de menos; si salen dos, una de más).",
+   "pe": "Revisa que el identificador y el «---» van en líneas distintas."
+  },
+  "pistas": [
+   "Con K = 1 la salida es una línea con un identificador y otra con «---».",
+   "Cuenta las vueltas de tu bucle de envíos cuando K = 1.",
+   "El bucle de envíos debe ser for (int i = 0; i < K; ++i): K vueltas exactas."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Un solo usuario",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Un único usuario con el identificador y el periodo máximos: recibe todos los envíos.",
+  "si": {
+   "wa": "Con un solo usuario todos los envíos son suyos: si sale otra cosa, revisa cómo lees el identificador (llega hasta 10⁹, cabe en int) y que lo vuelves a meter en la cola tras cada envío.",
+   "rte": "Con un solo usuario la cola se queda vacía: después de sacar la cima hay que volver a meterla con su siguiente instante."
+  },
+  "pistas": [
+   "Con un solo usuario, después de cada envío la cola debe seguir teniendo un elemento.",
+   "Saca la cima, escribe su id, súmale el periodo a su instante y vuelve a meterla."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Primero el envío más próximo",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Usuarios con periodos distintos y un solo envío: sale el usuario cuyo primer envío ocurre antes.",
+  "si": {
+   "wa": "Sale primero el envío MÁS LEJANO: tu cola es de máximos. priority_queue usa operator< y pone arriba el mayor; para tener arriba el instante menor usa greater<> con operator> (o invierte la comparación)."
+  },
+  "pistas": [
+   "En el primer caso el 1000 recibe en t = 5 y el 2000 en t = 7: el primer envío es para el 1000.",
+   "¿Qué elemento deja arriba tu priority_queue: el de instante menor o el de instante mayor?",
+   "Define operator> comparando (t, id) y declara priority_queue<Envio, vector<Envio>, greater<Envio>>."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "El primer envío llega a los Periodo segundos",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "El primer envío a cada usuario es en el instante Periodo, no en el 0.",
+  "si": {
+   "wa": "Haces el primer envío en el instante 0 (y entonces salen todos a la vez, ordenados por id). El enunciado dice que el primero llega cuando han pasado Periodo segundos desde el registro."
+  },
+  "pistas": [
+   "En el primer caso el 2000 recibe en t = 3 y el 1000 no recibe nada hasta t = 10: el primer envío es para el 2000.",
+   "¿Con qué instante metes a cada usuario en la cola al principio?",
+   "Al registrar a un usuario, mételo con t = periodo, no con t = 0."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Los envíos se repiten cada Periodo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tras cada envío, el siguiente a ese usuario es Periodo segundos después del anterior.",
+  "si": {
+   "wa": "El siguiente envío no se calcula bien: tras enviar en el instante t, el usuario vuelve a la cola con t + periodo (no con periodo a secas, ni con 2·t)."
+  },
+  "pistas": [
+   "Aquí se alternan: 3 (1000), 4 (2000), 6 (1000), 8 (2000), 9 (1000).",
+   "Si siempre sale el mismo usuario, no estás acumulando su instante.",
+   "Copia la cima, haz pop(), suma e.t += e.periodo y vuelve a hacer push(e)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Empate: primero el identificador menor",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Envíos simultáneos: se hacen en orden creciente de identificador, aunque en la entrada vengan al revés.",
+  "si": {
+   "wa": "Los empates no salen por id creciente: o no desempatas (la priority_queue no respeta ningún orden entre iguales), o desempatas al revés, o por orden de entrada. A igual instante, va primero el identificador MENOR."
+  },
+  "pistas": [
+   "En el primer caso los dos reciben a la vez en t = 100: primero el 1234 y luego el 9000.",
+   "El orden de la cola tiene que ser (instante, identificador): si los instantes son iguales, decide el id.",
+   "En operator>: if (t != o.t) return t > o.t; return id > o.id;"
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Desempate por identificador, no por periodo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "En t = 6 coinciden los dos: va antes el 1000 (id menor) aunque su periodo sea mayor.",
+  "si": {
+   "wa": "En el empate de t = 6 escribes primero el 2000: desempatas por periodo (o por orden de entrada). El enunciado dice que a igual instante decide SOLO el identificador."
+  },
+  "pistas": [
+   "Envíos: 2 (2000), 3 (1000), 4 (2000) y en 6 coinciden los dos.",
+   "El periodo no interviene en el orden: solo el instante y, a igualdad, el identificador."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Muchos empates a la vez",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Doce usuarios con el mismo periodo: en cada instante hay doce envíos simultáneos.",
+  "si": {
+   "wa": "Con muchos empates seguidos la priority_queue los devuelve en cualquier orden si el comparador no desempata por id. Comprueba que el desempate está en el comparador, no en el orden de inserción."
+  },
+  "pistas": [
+   "Debe salir tres veces la lista de los doce identificadores ordenados de menor a mayor.",
+   "La priority_queue no es estable: el orden entre elementos «iguales» para el comparador no está garantizado.",
+   "Incluye el id en la comparación cuando los instantes coinciden."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Identificadores y periodos extremos",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Identificadores 1000 y 10⁹ y periodos 1 y 5000.",
+  "si": {
+   "wa": "Con valores extremos algo se lee o se compara mal: el id llega a 10⁹ (cabe en int, pero no en short ni en float) y el periodo puede ser 1."
+  },
+  "pistas": [
+   "Comprueba que lees el id y el periodo en el orden correcto (primero el id).",
+   "Usa int (o long long) para id y periodo; nada de float."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Periodo 1 frente a periodo 5000",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Un usuario recibe cada segundo y el otro solo en t = 5000, donde empatan.",
+  "si": {
+   "wa": "En t = 5000 coinciden los dos: va antes el 4444. Revisa el desempate y que el usuario de periodo 5000 aparece en el envío 5001.",
+   "tle": "Si simulas el tiempo segundo a segundo, con periodos grandes se hace eterno: salta directamente al próximo envío con la cola."
+  },
+  "pistas": [
+   "Los primeros 4999 envíos son del 4444; en t = 5000 reciben los dos (primero el 4444).",
+   "Los envíos 5000, 5001 y 5002 son 4444, 5555 y 4444."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Varios casos uno tras otro: la cola debe empezar vacía en cada caso.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: la cola (o algo) se arrastra de un caso al siguiente. Al terminar un caso la cola NO queda vacía (siguen todos los usuarios), así que debe ser local a resuelveCaso.",
+   "rte": "Algo del caso anterior se queda a medias: declara la cola dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Al final de cada caso en la cola siguen todos los usuarios con sus próximos envíos.",
+   "Si la cola es global, en el caso siguiente aparecen usuarios que no existen.",
+   "Declara la priority_queue dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 250,
+  "comprueba": "250 casos pequeños al azar, con periodos pequeños y muchos empates.",
+  "si": {
+   "wa": "Algún caso concreto falla: cuenta los «---» de la salida esperada hasta la línea que falla para saber qué caso es, y hazlo a mano.",
+   "rte": "Algún caso pequeño rompe el programa."
+  },
+  "pistas": [
+   "Localiza el caso por el número de «---» anteriores a la línea que falla.",
+   "Apunta los instantes de envío de cada usuario y ordénalos por (instante, id)."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 20,
+  "comprueba": "20 casos de hasta 2000 usuarios y 5000 envíos.",
+  "si": {
+   "wa": "Con casos medianos aparece un fallo que en los pequeños no: revisa el desempate y que cada usuario está una sola vez en la cola.",
+   "tle": "Algo es más lento de la cuenta incluso con casos medianos."
+  },
+  "pistas": [
+   "Cada usuario debe estar exactamente una vez en la cola en todo momento.",
+   "Comprueba que el comparador ordena por (instante, id)."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Grande: 25.000 usuarios y 100.000 envíos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo: mide la eficiencia (debe ser O((n + K) log n)).",
+  "si": {
+   "tle": "Buscar el próximo envío recorriendo los n usuarios cuesta O(n·K) = 2,5·10⁹: usa una cola de prioridad, así cada envío cuesta O(log n).",
+   "wa": "Con muchos usuarios falla algo que en los pequeños no: revisa el desempate por id."
+  },
+  "pistas": [
+   "¿Cuánto cuesta encontrar el próximo envío? Se hace K veces.",
+   "Con una cola de prioridad con un elemento por usuario, cada envío es un pop y un push: O(log n)."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Grande: 25.000 usuarios con el mismo periodo",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "25.000 envíos simultáneos en cada instante: todo el trabajo está en los empates.",
+  "si": {
+   "tle": "Con todos los envíos empatados tu solución se vuelve lenta: ¿simulas el tiempo segundo a segundo, o recorres todos los usuarios en cada envío?",
+   "wa": "Con 25.000 empates en cada instante el orden debe ser exactamente el de los identificadores crecientes."
+  },
+  "pistas": [
+   "Cada envío debe costar O(log n), haya o no empates.",
+   "No avances el tiempo de uno en uno: la cima de la cola ya te dice cuál es el próximo instante."
+  ]
+ }
+]

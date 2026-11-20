@@ -1,0 +1,248 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El primer ejemplo del PDF: todas las carreteras cuestan menos que un aeropuerto; «160 1».",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: la lectura («N M A» en la misma línea), el orden de la salida (primero el coste y luego los aeropuertos) o la idea de Kruskal.",
+   "pe": "Los números están bien pero el formato no: coste y aeropuertos en la misma línea, separados por un espacio."
+  },
+  "pistas": [
+   "Ejecútalo en tu ordenador con el ejemplo y compara.",
+   "Se construyen las carreteras de 10, 20 y 30 (la de 40 cerraría un ciclo) y un aeropuerto: 60 + 100.",
+   "Kruskal sobre las carreteras y un aeropuerto por cada grupo de localidades que quede."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El segundo ejemplo: dos grupos de localidades sin carretera entre ellos; «2060 2».",
+  "si": {
+   "wa": "Cada grupo de localidades que no se puede unir por carretera necesita su propio aeropuerto: el número de aeropuertos es el número de conjuntos que quedan."
+  },
+  "pistas": [
+   "Las localidades {1, 2, 3} y {4, 5} no se unen con ninguna carretera.",
+   "Al acabar Kruskal, aeropuertos = num_cjtos()."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El tercer ejemplo: una carretera cuesta lo mismo que un aeropuerto y otra más; «120 2».",
+  "si": {
+   "wa": "Una carretera que cuesta igual que un aeropuerto NO se construye: a igual coste se prefieren más aeropuertos. Y una más cara, nunca."
+  },
+  "pistas": [
+   "Construir la carretera de 50 y un aeropuerto cuesta lo mismo que dos aeropuertos: gana la opción con más aeropuertos.",
+   "Solo compensa una carretera si su coste es estrictamente menor que A."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Una sola localidad",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Con una localidad hace falta un aeropuerto y ninguna carretera: «A 1».",
+  "si": {
+   "wa": "Con N = 1 la respuesta es el coste de un aeropuerto y 1 aeropuerto."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con «1 0 7»? Debe ser «7 1».",
+   "Cada grupo (aquí, uno) lleva su aeropuerto."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Ninguna carretera posible",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Sin carreteras, cada localidad necesita su aeropuerto: «N·A N».",
+  "si": {
+   "wa": "Sin carreteras hay N grupos y N aeropuertos.",
+   "rte": "Con M = 0 algo se rompe: tras la línea «N 0 A» empieza el caso siguiente."
+  },
+  "pistas": [
+   "Con 3 localidades, M = 0 y A = 10 la respuesta es «30 3».",
+   "num_cjtos() empieza valiendo N."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Localidades numeradas desde 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una carretera que toca la localidad N: hay que pasar de 1..N a 0..N−1.",
+  "si": {
+   "rte": "Usas el número de localidad tal cual: la localidad N se sale del grafo. Resta 1 a X y a Y.",
+   "wa": "Las localidades se desplazan: resta 1 a las dos localidades de cada carretera."
+  },
+  "pistas": [
+   "La carretera «2 1 5» toca la última localidad: ¿existe el vértice 2 en tu grafo?",
+   "Al poner la arista, usa x − 1 e y − 1."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Cada grupo necesita su aeropuerto",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Si quedan varios grupos de localidades, hace falta un aeropuerto en cada uno.",
+  "si": {
+   "wa": "El número de aeropuertos no es siempre 1: es el número de grupos que quedan al acabar (num_cjtos())."
+  },
+  "pistas": [
+   "En el primer caso quedan {1, 2} y {3, 4}: dos aeropuertos, «22 2».",
+   "aeropuertos = cd.num_cjtos(); coste += aeropuertos · A."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Carretera más cara que un aeropuerto",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Si una carretera cuesta más que un aeropuerto, sale más barato poner otro aeropuerto.",
+  "si": {
+   "wa": "Construyes todas las carreteras del árbol de recubrimiento. Una carretera de coste C ahorra un aeropuerto de coste A: solo compensa si C < A."
+  },
+  "pistas": [
+   "En el primer caso: dos aeropuertos (20) son más baratos que la carretera y uno (21).",
+   "Recorre las carreteras por coste creciente y para (o sáltatelas) en cuanto C ≥ A."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Carretera que cuesta lo mismo que un aeropuerto",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Empate: construir la carretera cuesta lo mismo que el aeropuerto que ahorra, y se prefieren más aeropuertos.",
+  "si": {
+   "wa": "Construyes las carreteras con C = A. Con el mismo coste total, el enunciado pide la opción con MÁS aeropuertos: la condición es C < A, estricta."
+  },
+  "pistas": [
+   "En el primer caso, carretera + un aeropuerto = 20 = dos aeropuertos: la respuesta es «20 2».",
+   "Cambia C ≤ A por C < A (o para con C ≥ A)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Carreteras en cualquier orden",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Las carreteras no vienen ordenadas: hay que mirarlas de la más barata a la más cara.",
+  "si": {
+   "wa": "No ordenas las carreteras por coste (o paras al ver la primera cara sin haberlas ordenado). Kruskal necesita mirarlas de menor a mayor coste."
+  },
+  "pistas": [
+   "En el primer caso la carretera de 200 va primero, pero la de 5 sí compensa: «205 2».",
+   "Ordena las aristas por su valor antes del bucle."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Carretera que cerraría un ciclo",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Una carretera entre dos localidades ya comunicadas no hace falta, aunque sea barata.",
+  "si": {
+   "wa": "Construyes carreteras que cierran un ciclo: antes de construir una, comprueba que sus localidades no están ya unidas."
+  },
+  "pistas": [
+   "En el primer caso la carretera 1–3 (30) sobra: 1 y 3 ya se comunican por 2. «130 1».",
+   "Construye solo si !unidos(x, y); después, unir(x, y)."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varias carreteras entre las mismas localidades",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Puede haber varias carreteras posibles entre dos localidades: vale la más barata.",
+  "si": {
+   "wa": "Guardas una sola carretera por par de localidades (la primera o la última que lees). Guárdalas todas: Kruskal se queda con la más barata."
+  },
+  "pistas": [
+   "En el primer caso la carretera de 10 compensa (10 < 50): «60 1».",
+   "Con listas de aristas no tienes que hacer nada especial: la más barata se mira antes."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Coste total de 10⁹",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Los valores más grandes: 10.000 aeropuertos de 100.000 (10⁹), o 9.999 carreteras de 99.999 y un aeropuerto.",
+  "si": {
+   "wa": "Con valores grandes algo falla: el coste llega a 10⁹ (cabe en int, justo); revisa el tipo y las multiplicaciones (aeropuertos · A)."
+  },
+  "pistas": [
+   "10.000 · 100.000 = 1.000.000.000.",
+   "Si usas int para el coste vale, pero no multipliques en un tipo más pequeño; long long es lo más seguro."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso caro seguido de otros pequeños: nada del anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el coste o la partición se declaran fuera de resuelveCaso (o como static).",
+   "rte": "Un vector de un caso anterior con otro tamaño: crea el grafo y los conjuntos disjuntos en cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "El coste tiene que empezar en 0 en cada caso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 120,
+  "comprueba": "120 casos pequeños al azar, con muchas carreteras que cuestan justo lo mismo que un aeropuerto.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; búscalo y haz Kruskal a mano."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso: búscalo en la entrada.",
+   "Ordena sus carreteras, construye las que unan grupos distintos y cuesten menos que A, y cuenta los grupos."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Región grande con casi todas las carreteras baratas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "10.000 localidades y 100.000 carreteras, casi todas más baratas que un aeropuerto: hay que recorrerlas casi todas.",
+  "si": {
+   "tle": "Tu solución no es O(M log M): ¿llamas a g.aristas() (que crea un vector nuevo) dentro del bucle, o cuentas los grupos recorriendo todas las localidades en cada vuelta?",
+   "mle": "Gastas demasiada memoria: no copies el vector de carreteras ni uses matrices N × N."
+  },
+  "pistas": [
+   "Ordena las carreteras UNA vez y recórrelas en ese orden.",
+   "num_cjtos() da el número de grupos en O(1).",
+   "Pon ios::sync_with_stdio(false) y cin.tie(nullptr) para leer rápido."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Cadena larga de localidades",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Las carreteras baratas forman una fila de 10.000 localidades y después hay muchas que sobran entre las del principio.",
+  "si": {
+   "tle": "Tus conjuntos disjuntos forman árboles muy altos: usa unión por tamaños y compresión de caminos (como ConjuntosDisjuntos.h).",
+   "rte": "La búsqueda recursiva baja demasiado: con unión por tamaños la altura es como mucho log N."
+  },
+  "pistas": [
+   "Sin unión por tamaños, unir la fila localidad a localidad deja una cadena: buscar el representante cuesta N pasos.",
+   "Usa la clase ConjuntosDisjuntos de la asignatura."
+  ]
+ }
+]

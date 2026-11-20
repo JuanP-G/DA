@@ -1,0 +1,9 @@
+{
+ "solucion": "2-Colas de prioridad/EJ_02-4/EJ_02-4.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "return orden > o.orden;",
+  "return orden < o.orden;"
+ ]
+}

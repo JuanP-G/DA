@@ -1,0 +1,356 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El primer ejemplo del PDF: la rejilla del dibujo y tres celdas nuevas («10 10 12 16»).",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: la lectura, las 8 direcciones o cómo se actualiza el máximo.",
+   "pe": "Los números están bien pero el formato no: van todos en UNA línea por caso, separados por un espacio."
+  },
+  "pistas": [
+   "Ejecútalo en tu ordenador con este mismo ejemplo y compara número a número.",
+   "La primera cifra es la mancha mayor de la rejilla inicial, ANTES de añadir ninguna celda.",
+   "Usa la plantilla de número de casos y, por cada caso, una sola línea con N + 1 números."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El segundo ejemplo: rejilla sin petróleo y tres celdas nuevas, la última une dos manchas en diagonal («0 1 1 3»).",
+  "si": {
+   "wa": "Mira qué número no coincide: si es el primero, no tratas bien la rejilla vacía (debe ser 0); si es el último, la diagonal no une."
+  },
+  "pistas": [
+   "Sin ninguna celda negra la mayor mancha mide 0.",
+   "La celda (2, 3) toca a la (2, 2) en horizontal y a la (3, 4) en diagonal: las tres forman una mancha."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Rejilla de 1 × 1",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "La rejilla más pequeña: solo mar («0»), solo petróleo («1») y mar que se contamina («0 1»).",
+  "si": {
+   "wa": "Con una sola celda la respuesta es evidente: revisa cómo inicializas el máximo y si escribes el valor inicial.",
+   "rte": "Con una rejilla de 1 × 1 cualquier vecina está fuera: comprueba los límites ANTES de mirar la celda vecina."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con una rejilla «-» y N = 0? Debe ser solo «0».",
+   "Antes de mirar una vecina (i + di, j + dj), comprueba 0 ≤ i + di < F y 0 ≤ j + dj < C."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Sin celdas nuevas (N = 0)",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Si no hay imágenes adicionales, la línea tiene un único número: la mayor mancha inicial.",
+  "si": {
+   "wa": "Con N = 0 hay que escribir solo el tamaño inicial. Revisa que no te saltas el primer número ni lees de más.",
+   "pe": "Con N = 0 la línea es un solo número, sin nada más (ni líneas vacías entre casos)."
+  },
+  "pistas": [
+   "La salida de cada caso tiene N + 1 números: con N = 0, uno.",
+   "Escribe el máximo inicial antes del bucle de las celdas nuevas, y el salto de línea después del bucle."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Unir solo con vecinas que sean petróleo",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Una celda de mar al lado NO forma parte de la mancha.",
+  "si": {
+   "wa": "Unes la celda con sus vecinas aunque sean mar: el cardinal cuenta celdas azules. Comprueba que la vecina es petróleo antes de unir."
+  },
+  "pistas": [
+   "Con «##-» la mayor mancha mide 2, no 3.",
+   "Antes de unir con una vecina, mira si ya está marcada como petróleo."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Manchas de una sola celda",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Si todas las manchas son de una celda, la respuesta es 1 aunque no se haya unido nada.",
+  "si": {
+   "wa": "Solo actualizas el máximo cuando una celda se une con alguna vecina. Una celda sola ya es una mancha de tamaño 1: compara el máximo con su cardinal siempre."
+  },
+  "pistas": [
+   "Con «#-» la salida es «1», no «0».",
+   "Actualiza el máximo después del bucle de las vecinas, no dentro del «if» que une."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "La misma mancha tocada por varios lados",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Una celda cuyas vecinas son todas de la misma mancha: esa mancha no se cuenta varias veces.",
+  "si": {
+   "wa": "Sumas a mano los tamaños de las manchas vecinas y cuentas la misma mancha varias veces. Con conjuntos disjuntos basta unir y preguntar cardinal."
+  },
+  "pistas": [
+   "Un bloque 2 × 2 de petróleo es una mancha de 4.",
+   "En el segundo caso, la celda (2, 2) tiene 8 vecinas de la misma mancha de 8: el resultado es «8 9», no 1 + 8·8.",
+   "Si quieres sumar a mano, quédate solo con los representantes distintos; es más fácil unir y luego preguntar cardinal(celda)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Las diagonales también unen",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Celdas que solo se tocan por una esquina son de la MISMA mancha (8 direcciones).",
+  "si": {
+   "wa": "Solo unes en 4 direcciones (o te falta alguna diagonal). El enunciado dice 8: horizontal, vertical y las dos diagonales."
+  },
+  "pistas": [
+   "En «-#» / «#-» hay una sola mancha de tamaño 2.",
+   "Fíjate también en la diagonal «hacia arriba a la derecha»: si solo miras las vecinas ya vistas, son cuatro (arriba-izquierda, arriba, arriba-derecha e izquierda).",
+   "Recorre di y dj de −1 a 1 (salvo los dos a 0) para tener las 8 vecinas."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El máximo nunca baja",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "La mancha más grande no tiene por qué ser la de la última celda que se mira.",
+  "si": {
+   "wa": "Escribes el tamaño de la mancha de la última celda en vez del de la MAYOR. El máximo es max(máximo, tamaño de la mancha de la celda)."
+  },
+  "pistas": [
+   "En el primer caso la mancha de arriba mide 3; la celda (3, 3) forma otra de 1 y la respuesta es 3.",
+   "No sustituyas el máximo: quédate con el mayor de los dos."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Rejilla no cuadrada",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Rejillas de 3 × 2, 5 × 1 y 3 × 5: si cruzas F y C al numerar las celdas se nota aquí.",
+  "si": {
+   "rte": "Con F ≠ C te sales del vector: el número de la celda (i, j) es i·C + j (C = columnas), no i·F + j.",
+   "wa": "Funciona con cuadradas pero no con rectangulares: casi seguro numeras con i·F + j en vez de i·C + j, o has cruzado F y C al leer."
+  },
+  "pistas": [
+   "La entrada da primero las FILAS y luego las COLUMNAS.",
+   "Busca cada «F» y cada «C» de tu código y comprueba que no están cambiadas (por ejemplo i*F + j)."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Fin de una fila y principio de la siguiente",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "La última celda de una fila y la primera de la siguiente NO son vecinas, aunque i·C + j dé números seguidos.",
+  "si": {
+   "wa": "Te falta comprobar la COLUMNA de la vecina: con j = C − 1, la vecina «j + 1» cae al principio de la fila siguiente (y con j = 0, «j − 1» al final de la anterior).",
+   "rte": "Te sales de la rejilla al mirar una vecina: comprueba 0 ≤ j + dj < C además de la fila."
+  },
+  "pistas": [
+   "En «--#» / «#--» hay dos manchas de una celda: la respuesta es 1.",
+   "Comprobar solo que el número i·C + j está entre 0 y F·C − 1 no basta.",
+   "Comprueba fila y columna por separado: 0 ≤ a < F y 0 ≤ b < C."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Las celdas nuevas se numeran desde 1",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Celdas nuevas en la última fila y la última columna: hay que restar 1 a la fila y a la columna.",
+  "si": {
+   "rte": "Usas la fila y la columna tal cual: la celda (F, C) se sale de la rejilla. Resta 1 a las dos.",
+   "wa": "La celda nueva cae en otro sitio: resta 1 a la fila y a la columna (la entrada cuenta desde 1)."
+  },
+  "pistas": [
+   "La celda (2, 2) de una rejilla 2 × 2 es la de abajo a la derecha: en base 0, (1, 1).",
+   "Haz «f − 1» y «c − 1» justo al leerlas."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Primero la fila, luego la columna",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Cada celda nueva viene como «fila columna» (no «x y»).",
+  "si": {
+   "wa": "Has cruzado la fila y la columna de la celda nueva: la celda (1, 3) está en la PRIMERA fila, tercera columna.",
+   "rte": "Has cruzado fila y columna de la celda nueva y en una rejilla rectangular se sale."
+  },
+  "pistas": [
+   "En el primer caso, (1, 3) está pegada a la mancha «##» de la fila 1: el resultado es «2 3».",
+   "Lee «f c» y usa f como fila (i) y c como columna (j)."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "La celda nueva se une con vecinas de abajo y de la derecha",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Una celda nueva tiene que mirar sus 8 vecinas, también las de filas posteriores.",
+  "si": {
+   "wa": "Para la rejilla inicial basta mirar las vecinas ya vistas (arriba e izquierda), pero una celda NUEVA puede tocar petróleo por abajo o por la derecha: mira las 8."
+  },
+  "pistas": [
+   "En el primer caso, la celda (1, 1) toca en diagonal a la (2, 2): la salida es «1 2».",
+   "Si reutilizas la función de la rejilla inicial, haz que recorra di y dj de −1 a 1."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Celdas nuevas que se tocan entre sí",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Una celda nueva tiene que quedar marcada como petróleo para que las siguientes se unan a ella.",
+  "si": {
+   "wa": "Las celdas nuevas no se marcan como petróleo (solo las de la rejilla inicial): la siguiente celda nueva no se une con ellas."
+  },
+  "pistas": [
+   "La salida del primer caso es «0 1 2 3 4».",
+   "Marca la celda como petróleo al añadirla, igual que las de la rejilla inicial."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Celda nueva aislada",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Una celda nueva que no toca a nadie es una mancha de tamaño 1 y también cuenta para el máximo.",
+  "si": {
+   "wa": "Solo actualizas el máximo cuando la celda nueva se une con alguna vecina. Hay que compararlo siempre con el tamaño de su mancha."
+  },
+  "pistas": [
+   "Con la rejilla vacía y la celda (1, 1) la salida es «0 1».",
+   "Actualiza el máximo después del bucle de las vecinas, no dentro."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "La celda nueva funde dos manchas",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Una celda nueva que une dos manchas: el tamaño es la suma de las dos más ella.",
+  "si": {
+   "wa": "El tamaño se mira ANTES de unir, o no se unen las dos manchas. Primero une con todas las vecinas y después pregunta el cardinal."
+  },
+  "pistas": [
+   "En «#-#» con la celda (1, 2) la salida es «1 3».",
+   "El orden importa: une con las 8 vecinas y solo al final consulta cardinal(celda)."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "Celdas nuevas en las cuatro esquinas",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Celdas en las esquinas: algunas vecinas quedan fuera de la rejilla.",
+  "si": {
+   "rte": "Te sales de la rejilla al mirar las vecinas de una esquina: comprueba los límites de fila Y de columna.",
+   "wa": "En las esquinas algo falla: revisa los límites (< F y < C, no ≤)."
+  },
+  "pistas": [
+   "Prueba a mano la celda (1, 1): solo tiene 3 vecinas dentro.",
+   "Comprueba 0 ≤ a < F y 0 ≤ b < C antes de acceder a la vecina."
+  ]
+ },
+ {
+  "n": 19,
+  "nombre": "Una sola fila y una sola columna",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Rejillas de 1 × C y F × 1.",
+  "si": {
+   "wa": "Con una sola fila o columna fallan los índices: revisa cómo pasas de (i, j) a número de celda.",
+   "rte": "Te sales de la rejilla al mirar vecinas en una fila o columna única."
+  },
+  "pistas": [
+   "En «#-##-#» la mayor mancha inicial mide 2; al añadir (1, 2) mide 4 y al añadir (1, 5), 6.",
+   "La celda (i, j) es la número i·C + j."
+  ]
+ },
+ {
+  "n": 20,
+  "nombre": "Toda la rejilla es petróleo",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Una sola mancha que ocupa toda la rejilla: F·C.",
+  "si": {
+   "wa": "Si sale menos de F·C, alguna celda no se une a la mancha: revisa las vecinas y los límites."
+  },
+  "pistas": [
+   "Con 3 × 4 todo «#» la respuesta es 12.",
+   "Cada celda se une con las vecinas ya vistas: todas acaban en el mismo conjunto."
+  ]
+ },
+ {
+  "n": 21,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso con una mancha grande seguido de otros pequeños: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el máximo, la rejilla o la partición se crean fuera de resuelveCaso.",
+   "rte": "Un vector de un caso anterior con otro tamaño: crea la rejilla y los conjuntos disjuntos dentro de cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "El máximo debe empezar en 0 en cada caso."
+  ]
+ },
+ {
+  "n": 22,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 rejillas pequeñas al azar con celdas nuevas.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; busca esa rejilla y síguela a mano."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso: busca esa rejilla en la entrada.",
+   "Dibuja la rejilla en papel y añade las celdas nuevas una a una."
+  ]
+ },
+ {
+  "n": 23,
+  "nombre": "Muchos casos pequeños",
+  "tipo": "rendimiento",
+  "casos": 20000,
+  "comprueba": "20.000 rejillas de 3 × 3: el trabajo de cada caso debe depender de su tamaño, no del máximo posible.",
+  "si": {
+   "tle": "Reservas (o limpias) la rejilla o la partición con el tamaño máximo (1000 × 1000) en cada caso. Créalas con F·C elementos.",
+   "mle": "Reservas memoria del tamaño máximo en cada caso y no la liberas."
+  },
+  "pistas": [
+   "¿Cuánto cuesta preparar un caso de 3 × 3 en tu programa? Debería ser unas 9 operaciones, no 10⁶.",
+   "Crea ConjuntosDisjuntos(F * C) y el vector de la rejilla con F·C elementos dentro de cada caso."
+  ]
+ },
+ {
+  "n": 24,
+  "nombre": "Rejilla 800 × 800 con 100.000 celdas nuevas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Una rejilla grande y el máximo de celdas nuevas: cada celda nueva debe costar unas pocas operaciones.",
+  "si": {
+   "tle": "Recalculas algo de toda la rejilla tras cada celda nueva (un DFS/BFS completo o recorrer todos los conjuntos para buscar el máximo). Con conjuntos disjuntos cada celda nueva solo mira sus 8 vecinas.",
+   "mle": "Gastas demasiada memoria: con 10⁶ celdas no construyas listas de adyacencia ni copies la rejilla.",
+   "rte": "Con 10⁶ celdas se rompe: revisa los tamaños de los vectores y no uses recursión muy profunda."
+  },
+  "pistas": [
+   "Como las manchas solo crecen, la única que cambia es la de la celda nueva.",
+   "El máximo se actualiza con max(máximo, cardinal(celda)): no hace falta recorrer todas las manchas.",
+   "Pon ios::sync_with_stdio(false) y cin.tie(nullptr) para leer rápido."
+  ]
+ }
+]

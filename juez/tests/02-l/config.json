@@ -1,0 +1,9 @@
+{
+ "solucion": "2-Colas de prioridad/EJ_02-L/EJ_02-L.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "long long inicio = max(libre, minuto);",
+  "long long inicio = libre;"
+ ]
+}

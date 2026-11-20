@@ -1,0 +1,225 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 4,
+  "comprueba": "Los cuatro casos del PDF, terminados con «0 0».",
+  "si": {
+   "wa": "Si fallan hasta los ejemplos, revisa la idea: cada cliente va a la caja que ANTES queda libre (a igualdad, la de número menor), e Ismael es el cliente C + 1.",
+   "pe": "La caja está bien pero no el formato: un número por línea, sin texto extra."
+  },
+  "pistas": [
+   "Haz a mano el caso «2 2 / 10 5»: el primero va a la caja 1 (hasta 10), el segundo a la 2 (hasta 5); Ismael va a la 2.",
+   "Escribe solo el número de caja y un salto de línea por caso.",
+   "La entrada acaba con «0 0»: usa la plantilla de centinela."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola caja (la caja 1, no la 0)",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Con una sola caja Ismael siempre va a la caja 1: las cajas se numeran desde 1.",
+  "si": {
+   "wa": "Escribes un número de caja desplazado: las cajas van de 1 a N. Si numeras desde 0 en tu cola, suma 1 al escribir (o mete las cajas como 1..N).",
+   "rte": "Con una sola caja te sales de algún vector: revisa los índices (cajas 1..N)."
+  },
+  "pistas": [
+   "Con N = 1 la respuesta solo puede ser 1.",
+   "¿Con qué números metes las cajas en la cola al principio, 0..N−1 o 1..N?",
+   "Mete las cajas como (0, i) con i desde 1 hasta N, ambos incluidos."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Empate: va a la caja de número menor",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos cajas que quedan libres a la vez varias veces (en 0, en 2 y en 4): se elige siempre la de número menor.",
+  "si": {
+   "wa": "Los empates no se resuelven a favor de la caja de número menor: o desempatas al revés, o tu comparador solo mira el instante y la priority_queue elige cualquiera de las empatadas."
+  },
+  "pistas": [
+   "Al principio las dos cajas están libres: el primer cliente va a la 1. En el instante 2 se liberan las dos a la vez y el tercer cliente va otra vez a la 1.",
+   "El par (instante en que se libera, número de caja) se compara primero por instante y luego por caja: con greater<> sale antes el de caja menor.",
+   "Usa priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> con pares (instante, caja); no inviertas la caja ni compares solo el instante."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Cada cliente va a la caja que antes se libera",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La cima de la cola debe ser la caja que ANTES queda libre, no la que más tarde.",
+  "si": {
+   "wa": "Eliges la caja que MÁS TARDE se libera: priority_queue<pair<int,int>> a secas es de máximos. Necesitas una cola de mínimos (greater<>)."
+  },
+  "pistas": [
+   "El 6 va a la caja 1, 2 a la 2, 5 a la 3, y el 1 va a la 2 (libre en el instante 2).",
+   "¿Qué devuelve top() en una priority_queue por defecto, el mayor o el menor?",
+   "Declárala con greater<pair<int,int>> para que top() sea la caja que antes se libera."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Ismael va detrás del último cliente",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Se pide la caja de Ismael (el cliente C + 1), no la del último cliente de la fila.",
+  "si": {
+   "wa": "Escribes la caja del último cliente (el C-ésimo). Ismael va DETRÁS de él: su caja es la que está en la cima de la cola después de atender a los C clientes."
+  },
+  "pistas": [
+   "Los dos clientes ocupan las cajas 1 y 2; Ismael, que va detrás, va a la 3, que sigue libre.",
+   "Cuando acabas de repartir los C clientes, ¿qué caja quedará libre la primera?",
+   "Tras el bucle de clientes, la respuesta es cola.top().second."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "La fila no va por turnos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las cajas no se van ocupando en orden 1, 2, ..., N, 1, 2...: depende de cuándo se libera cada una.",
+  "si": {
+   "wa": "Repartes los clientes por turnos (o calculas la caja con un módulo). Hay que simular: cada cliente va a la caja que antes se libera, según los tiempos."
+  },
+  "pistas": [
+   "La caja 2 se libera en 5 y la 1 en 10: Ismael va a la 2 aunque «por turno» le tocaría la 1.",
+   "Los tiempos de cada cliente importan: guárdalos sumándolos al instante en que se libera su caja."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Más empates y desempates",
+  "tipo": "trampa",
+  "casos": 10,
+  "comprueba": "Diez casos pequeños que mezclan empates, cajas sin usar y clientes de distinta duración.",
+  "si": {
+   "wa": "Alguno de estos casos pequeños falla: localízalo por la línea y simúlalo a mano apuntando cuándo se libera cada caja. Lo más habitual es el desempate (caja de número menor) o elegir la caja que más tarde se libera."
+  },
+  "pistas": [
+   "Con «3 3 / 4 4 4» las tres cajas se liberan a la vez en 4: Ismael va a la 1.",
+   "Para cada cliente: saca la caja que antes se libera (a igualdad, la de número menor), súmale su tiempo y vuelve a meterla."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Más cajas que clientes",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Sobran cajas: Ismael va a la primera caja que nadie ha usado.",
+  "si": {
+   "wa": "Si sobran cajas, Ismael va a la caja C + 1 (todas las libres empatan en el instante 0 y se elige la de número menor).",
+   "rte": "Con N mayor que C te sales de algún vector: ¿dimensionas algo con C en lugar de N?"
+  },
+  "pistas": [
+   "Con 5 cajas y 2 clientes, las cajas 3, 4 y 5 siguen libres en el instante 0: Ismael va a la 3.",
+   "Todas las cajas deben estar en la cola desde el principio, aunque no se usen."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Un cliente muy lento bloquea una caja",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Un cliente con 100 segundos ocupa una caja mientras los demás pasan por las otras.",
+  "si": {
+   "wa": "Las cajas con clientes lentos no deben recibir a nadie hasta que se liberen: revisa que sumas el tiempo del cliente al instante de SU caja (cajero.first += tiempo)."
+  },
+  "pistas": [
+   "En el primer caso la caja 1 está ocupada hasta 100 y los 30 clientes de 1 segundo pasan por la caja 2.",
+   "Cada cliente se suma al instante de la caja que saca de la cola, no a un reloj global."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Tiempos máximos y todas a la vez",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Todos los clientes tardan lo mismo: las cajas se liberan siempre en bloque.",
+  "si": {
+   "wa": "Con todos los tiempos iguales se empata continuamente: comprueba el desempate por número de caja."
+  },
+  "pistas": [
+   "Con 4 cajas y 4 clientes de 100, las cuatro se liberan en 100: Ismael va a la 1.",
+   "Revisa que el par es (instante, caja) y no (caja, instante)."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Varios casos uno tras otro: la cola debe empezar de cero en cada caso.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: la cola (o algo) se arrastra de un caso al siguiente. Al acabar un caso la cola tiene todas sus cajas: si es global, se mezclan con las del caso siguiente.",
+   "rte": "Algo del caso anterior se queda a medias: declara la cola dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y el segundo no, mira qué variables viven fuera de resuelveCaso.",
+   "Declara la priority_queue dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 300,
+  "comprueba": "300 casos pequeños al azar, con muchos empates.",
+  "si": {
+   "wa": "Algún caso concreto falla: la línea que falla es el número de caso; búscalo en la entrada y simúlalo a mano.",
+   "rte": "Algún caso pequeño rompe el programa."
+  },
+  "pistas": [
+   "Localiza el caso por el número de línea.",
+   "Apunta para cada caja el instante en que se libera y reparte los clientes uno a uno."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos de hasta 3000 cajas y 20.000 clientes.",
+  "si": {
+   "wa": "Con casos medianos falla algo que con los pequeños no: revisa el desempate y los tipos.",
+   "tle": "Ya con casos medianos va lento: ¿buscas la caja libre recorriéndolas todas?"
+  },
+  "pistas": [
+   "Comprueba que cada cliente hace un pop y un push, nada más.",
+   "Revisa que el par es (instante, caja)."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Grande: 250.000 cajas y 500.000 clientes",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo: mide la eficiencia (debe ser O((N + C) log N)).",
+  "si": {
+   "tle": "Buscar la caja que antes se libera recorriendo las N cajas cuesta O(N·C) ≈ 10¹¹: usa la cola de prioridad, así cada cliente cuesta O(log N).",
+   "wa": "Con el tamaño máximo falla algo: revisa el desempate por número de caja."
+  },
+  "pistas": [
+   "¿Cuánto cuesta atender a cada cliente? Hay 500.000.",
+   "Con una cola de mínimos de pares (instante, caja), cada cliente es un pop y un push."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Grande: pocas cajas y 500.000 clientes",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Muchos clientes repartidos en pocas cajas: los instantes crecen hasta millones.",
+  "si": {
+   "wa": "Con muchos clientes los instantes llegan a ~10⁷: deben caber en int (caben), revisa que no usas short ni float.",
+   "tle": "Si simulas el reloj segundo a segundo, con instantes tan grandes es demasiado lento: salta de evento en evento con la cola."
+  },
+  "pistas": [
+   "No avances el tiempo de uno en uno: la cola ya te dice qué caja se libera antes.",
+   "Cada cliente: pop, sumar su tiempo, push."
+  ]
+ }
+]

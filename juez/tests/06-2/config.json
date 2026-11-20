@@ -1,0 +1,11 @@
+{
+ "solucion": "6-Conjuntos disjuntos y grafos valorados/EJ_06-2/EJ_06-2.cpp",
+ "cabeceras": [
+  "6-Conjuntos disjuntos y grafos valorados/EJ_06-2/GrafoValorado.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (a.valor() >= ancho && !visitado[w]) dfs(g, w);",
+  "if (a.valor() > ancho && !visitado[w]) dfs(g, w);"
+ ]
+}

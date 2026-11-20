@@ -1,0 +1,247 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El primer ejemplo del PDF: 4 árboles y 4 saltos; la cuerda debe medir 8.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: la respuesta es el salto MÁS LARGO que hace falta, no la suma ni el mínimo.",
+   "rte": "Se rompe con el ejemplo: revisa la lectura (la entrada no empieza con el número de casos: se lee hasta el final del fichero)."
+  },
+  "pistas": [
+   "Ejecútalo en tu ordenador con el ejemplo y compara.",
+   "Con una cuerda de 8 se pueden hacer los saltos de 5, 7 y 8, que unen los 4 árboles.",
+   "Es Kruskal: mete saltos de menor a mayor y quédate con la longitud del último que une dos grupos."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El segundo ejemplo: un solo árbol y ningún salto; la cuerda mide 0.",
+  "si": {
+   "wa": "Con un solo árbol no hace falta saltar: la respuesta es 0, no «Imposible»."
+  },
+  "pistas": [
+   "Con N = 1 ya se puede ir de cualquier árbol a cualquier otro.",
+   "Comprueba «queda un solo grupo», no «he elegido algún salto»."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El tercer ejemplo: los saltos no llegan a todos los árboles («Imposible»).",
+  "si": {
+   "wa": "Si los saltos no unen todos los árboles hay que escribir exactamente «Imposible» (con mayúscula inicial)."
+  },
+  "pistas": [
+   "Con los saltos 1–2 y 4–3 quedan dos grupos.",
+   "Al acabar, si num_cjtos() > 1, escribe «Imposible»."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Dos árboles y un salto",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "La selva más pequeña que necesita cuerda.",
+  "si": {
+   "wa": "Con dos árboles y un salto, la cuerda mide lo que ese salto."
+  },
+  "pistas": [
+   "Con dos árboles basta el único salto que hay.",
+   "Revisa la condición de parada: hay que llegar a un solo grupo."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Árboles numerados desde 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Saltos que tocan el árbol N: hay que pasar de 1..N a 0..N−1.",
+  "si": {
+   "rte": "Usas el número de árbol tal cual: el árbol N se sale del grafo. Lee con GrafoValorado<int>(cin, 1) o resta 1 a cada árbol.",
+   "wa": "Los árboles se desplazan: resta 1 a los dos árboles de cada salto."
+  },
+  "pistas": [
+   "El salto «2 1 7» toca el último árbol: ¿existe el vértice 2 en tu grafo?",
+   "GrafoValorado<int>(cin, 1) resta 1 al leer: los vértices van de 0 a N − 1."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Un solo árbol",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Con un árbol la cuerda mide 0 y es una respuesta válida, no «Imposible».",
+  "si": {
+   "wa": "Usas «cuerda == 0» o «no he elegido ningún salto» como señal de imposible. Con N = 1 ya hay un solo grupo: la respuesta es 0."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con «1 0»? Debe ser «0».",
+   "Decide con num_cjtos() == 1 (o con N − 1 saltos elegidos), no con el valor de la cuerda."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "La cuerda es el salto más largo, no la suma",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Tarzán usa la misma cuerda en cada salto: basta con que llegue al más largo.",
+  "si": {
+   "wa": "Sumas las longitudes de los saltos (como en el archipiélago, 06-3). Aquí la cuerda tiene que llegar al salto más largo: es un máximo, no una suma."
+  },
+  "pistas": [
+   "En el primer caso, con una cuerda de 6 se hacen los saltos de 4 y de 6: la respuesta es 6, no 10.",
+   "Guarda la longitud del último salto que Kruskal acepta (es el mayor de los aceptados)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Un salto muy largo que no hace falta",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "No vale la longitud del salto más largo de la selva: solo cuentan los que hacen falta.",
+  "si": {
+   "wa": "Te quedas con el salto más largo de todos (o con el último que miras), aunque una dos árboles que ya estaban unidos. Solo cuenta el último salto ACEPTADO."
+  },
+  "pistas": [
+   "En el primer caso el salto de 900 sobra: 1 y 3 ya se unen por 1–2–3. La cuerda mide 4.",
+   "Actualiza la cuerda solo dentro del «if (!unidos(u, v))», o para en cuanto quede un solo grupo."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Saltos en cualquier orden",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Los saltos no vienen ordenados: hay que meterlos de menor a mayor longitud.",
+  "si": {
+   "wa": "No ordenas los saltos por longitud creciente (o los ordenas al revés). Kruskal necesita mirarlos de más corto a más largo."
+  },
+  "pistas": [
+   "En el primer caso bastan los saltos de 1 y 40: la cuerda mide 40, no 50.",
+   "Ordena las aristas: sort(v.begin(), v.end()) con Arista ya compara por valor."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Hay que unir todos los árboles, no solo el primero y el último",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Tarzán quiere ir de CUALQUIER árbol a cualquier otro: hay que conectarlos todos.",
+  "si": {
+   "wa": "Paras cuando el árbol 1 y el N quedan unidos (eso es otro problema, el de las minas, 06-5). Aquí hay que seguir hasta que quede un solo grupo."
+  },
+  "pistas": [
+   "En el primer caso los árboles 1 y 3 se unen con 1, pero falta el 2: la cuerda mide 5.",
+   "La condición de parada es num_cjtos() == 1."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Selva partida en dos con muchos saltos",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Hay más saltos que árboles, pero forman dos grupos separados: «Imposible».",
+  "si": {
+   "wa": "Escribes una longitud aunque queden árboles inalcanzables: al acabar, comprueba que queda un solo grupo."
+  },
+  "pistas": [
+   "En el primer caso los árboles {1, 2, 3} y {4, 5} no se pueden unir con ninguna cuerda.",
+   "Que haya M ≥ N − 1 saltos no garantiza nada: mira num_cjtos() al terminar."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Saltos repetidos entre los mismos árboles",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Puede haber varios saltos entre los mismos dos árboles con distinta longitud: vale el más corto.",
+  "si": {
+   "wa": "Guardas un solo salto por par de árboles (el primero o el último que lees). Guárdalos todos: Kruskal se queda con el más corto y descarta los demás."
+  },
+  "pistas": [
+   "En el primer caso hay dos saltos entre 1 y 2 (9 y 4): la cuerda mide 4.",
+   "Con listas de aristas no tienes que hacer nada especial: el más corto se mira antes."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Longitudes extremas",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Saltos de longitud 1.000.000 y de longitud 1.",
+  "si": {
+   "wa": "Con los valores extremos algo falla: ¿inicializas la cuerda o un máximo con un valor que no llega a 1.000.000?"
+  },
+  "pistas": [
+   "La cuerda puede medir 1.000.000.",
+   "Si usas un valor «infinito», que sea mayor que 1.000.000."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Varias selvas seguidas",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Una selva con cuerda larga seguida de otras pequeñas: nada de la anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de una selva a la siguiente: la cuerda o la partición se declaran fuera de la función de cada caso (o como static).",
+   "rte": "Un vector de una selva anterior con otro tamaño: crea el grafo y los conjuntos disjuntos para cada selva."
+  },
+  "pistas": [
+   "Fíjate en la tercera selva (un solo árbol): debe salir 0, no la cuerda de la selva anterior.",
+   "La cuerda tiene que empezar en 0 en cada selva."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 100,
+  "comprueba": "100 selvas pequeñas al azar, con saltos repetidos y empates.",
+  "si": {
+   "wa": "Hay alguna selva concreta que no tratas: la línea que falla es el número de selva; búscala y haz Kruskal a mano."
+  },
+  "pistas": [
+   "La línea que falla es el número de selva: búscala en la entrada.",
+   "Ordena sus saltos a mano y ve aceptando los que unen grupos distintos."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Selva grande con un salto largo imprescindible",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "10.000 árboles y 100.000 saltos; el último árbol solo se alcanza con el salto más largo, así que hay que mirarlos todos.",
+  "si": {
+   "tle": "Tu solución no es O(M log M): ¿llamas a g.aristas() (que crea un vector nuevo) dentro del bucle, o compruebas la conexión con un recorrido después de cada salto?",
+   "mle": "Gastas demasiada memoria: no copies el vector de saltos ni uses matrices N × N."
+  },
+  "pistas": [
+   "Ordena los saltos UNA vez y recórrelos en ese orden.",
+   "Para saber si ya está todo unido usa num_cjtos() (es O(1)), no un recorrido.",
+   "Pon ios::sync_with_stdio(false) y cin.tie(nullptr) para leer rápido."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Cadena larga de árboles",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Los saltos cortos forman una fila de 10.000 árboles y después hay muchos saltos que sobran entre árboles del principio.",
+  "si": {
+   "tle": "Tus conjuntos disjuntos forman árboles muy altos: usa unión por tamaños y compresión de caminos (como ConjuntosDisjuntos.h).",
+   "rte": "La búsqueda recursiva baja demasiado: con unión por tamaños la altura es como mucho log N."
+  },
+  "pistas": [
+   "Sin unión por tamaños, unir la fila árbol a árbol deja una cadena: buscar el representante cuesta N pasos.",
+   "Usa la clase ConjuntosDisjuntos de la asignatura."
+  ]
+ }
+]

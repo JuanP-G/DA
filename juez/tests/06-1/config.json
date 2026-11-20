@@ -1,0 +1,11 @@
+{
+ "solucion": "6-Conjuntos disjuntos y grafos valorados/EJ_06-1/EJ_06-1.cpp",
+ "cabeceras": [
+  "6-Conjuntos disjuntos y grafos valorados/EJ_06-1/ConjuntosDisjuntos.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (di == 0 && dj == 0) continue;",
+  "if (di == dj || di == -dj) continue;"
+ ]
+}

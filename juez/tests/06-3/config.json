@@ -1,0 +1,12 @@
+{
+ "solucion": "6-Conjuntos disjuntos y grafos valorados/EJ_06-3/EJ_06-3.cpp",
+ "cabeceras": [
+  "6-Conjuntos disjuntos y grafos valorados/EJ_06-3/GrafoValorado.h",
+  "6-Conjuntos disjuntos y grafos valorados/EJ_06-3/ConjuntosDisjuntos.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (!cd.unidos(u, v)) {",
+  "if (true) {"
+ ]
+}
