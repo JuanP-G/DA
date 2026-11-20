@@ -397,3 +397,14 @@ a.labej:hover{transform:translateX(2px)}
 @media(max-width:720px){details.op>summary{grid-template-columns:1fr auto;gap:6px 10px}details.op .q{grid-column:1/-1;order:0;grid-row:2}details.op summary i{grid-column:1/-1;justify-self:start;grid-row:3}details.op summary b.c{grid-row:1;grid-column:2}}
 details.op summary code{justify-self:start}
 .lab .tabs:not(.listo) .ind{transition:none}
+/* catálogo: toda la tarjeta es un enlace al laboratorio; las cabeceras y los ejercicios siguen siendo enlaces propios */
+.labcard{position:relative;cursor:pointer}
+.labcard a.nm::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:0}
+.labcard .bt,.labcard .bt .chip{position:relative;z-index:1}
+.labcard:hover,.labcard:focus-within{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.28)}
+.labcard:hover a.nm .go{text-decoration:underline}
+.labcard a.nm:focus-visible{outline:none}
+.labcard:has(a.nm:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.labcard .bt .chip:hover{border-color:var(--accent);color:var(--ink)}
+.labcard a.nm .go{transition:gap .15s}.labcard:hover a.nm .go{gap:8px}
+.labcard:active{transform:translateY(0) scale(.99)}
