@@ -1,0 +1,9 @@
+{
+ "solucion": "8-Algoritmos voraces/EJ_08-2/EJ_08-2.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (equipos[j] >= enemigos[i]) {",
+  "if (equipos[j] > enemigos[i]) {"
+ ]
+}

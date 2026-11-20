@@ -1,0 +1,9 @@
+{
+ "solucion": "8-Algoritmos voraces/EJ_08-1/EJ_08-1.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (p > finParche) {",
+  "if (p >= finParche) {"
+ ]
+}

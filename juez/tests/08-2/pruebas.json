@@ -1,0 +1,218 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: ordenar ciudades y equipos y dar a cada ciudad, de la más fácil a la más difícil, el equipo más pequeño que la gane.",
+   "pe": "Los números están bien pero el formato no: un número por línea, uno por caso."
+  },
+  "pistas": [
+   "Sigue a mano el primer caso con los dos vectores ordenados: 20 30 40 80 y 25 35 40 50.",
+   "La primera línea del caso es N; luego vienen los N enemigos y después los N equipos.",
+   "Con dos índices: si el equipo j gana a la ciudad i, victoria y avanzan los dos; si no, solo avanza j."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ninguna victoria posible",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Todos los equipos son más pequeños que la ciudad más fácil: 0 victorias.",
+  "si": {
+   "wa": "Si no puedes ganar en ninguna ciudad, la respuesta es 0. ¿Cuentas alguna victoria sin comprobar que el equipo gana?"
+  },
+  "pistas": [
+   "¿Hay algún equipo con al menos 50 efectivos?",
+   "Solo cuenta una victoria cuando equipo ≥ enemigo."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Valores en los extremos (1 y 10⁶)",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Efectivos de 1 y de 1.000.000: el 1 gana al 1 y el 10⁶ a uno de los 10⁶ (2 victorias).",
+  "si": {
+   "wa": "Con los valores extremos algo falla: revisa la comparación (≥) y que lees todos los valores."
+  },
+  "pistas": [
+   "El equipo de 999.999 no puede con 10⁶.",
+   "Ordena los dos vectores y compáralos con ≥."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Empate: tantos efectivos como el enemigo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una ciudad con 5 enemigos y un equipo de 5: la victoria está garantizada (1).",
+  "si": {
+   "wa": "Sale 0: usas > en lugar de ≥. Basta con tener TANTOS efectivos como el enemigo."
+  },
+  "pistas": [
+   "Relee el enunciado: «al menos tantos efectivos de defensa como el enemigo».",
+   "La condición de victoria es equipo ≥ enemigo."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Ciudades desordenadas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Enemigos 9 1 y equipos 1 9 (ya ordenados): 2 victorias. Hay que ordenar también las ciudades.",
+  "si": {
+   "wa": "Sale 1: no ordenas las ciudades. El recorrido con dos índices solo funciona si los DOS vectores están ordenados."
+  },
+  "pistas": [
+   "¿Qué pasa si recorres las ciudades en el orden de la entrada?",
+   "Ordena el vector de enemigos además del de equipos."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Equipos desordenados",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Enemigos 1 9 (ya ordenados) y equipos 9 1: 2 victorias. Hay que ordenar los equipos de menor a mayor.",
+  "si": {
+   "wa": "Sale 1: no ordenas los equipos (o los ordenas de mayor a menor) y gastas el equipo grande en la ciudad fácil."
+  },
+  "pistas": [
+   "El equipo de 9 debe ir a la ciudad de 9; el de 1, a la de 1.",
+   "Ordena los equipos de MENOR a MAYOR, igual que las ciudades."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Un equipo que no gana a la más fácil no sirve",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Enemigos 2 3 y equipos 1 3: el equipo de 1 no gana en ninguna parte, pero el de 3 sí (1 victoria).",
+  "si": {
+   "wa": "Sale 0: cuando un equipo pierde contra la ciudad más fácil, descartas la CIUDAD. Hay que descartar el EQUIPO (si no gana a la más fácil, no gana a ninguna)."
+  },
+  "pistas": [
+   "Si el equipo de 1 no gana a la ciudad de 2, ¿puede ganar a la de 3?",
+   "Cuando equipo[j] < enemigo[i], avanza j (el equipo no sirve), no i.",
+   "La ciudad i solo avanza cuando la ganas."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Emparejar posición a posición no basta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Enemigos 2 3 9 y equipos 1 2 3: el 2 gana al 2 y el 3 al 3 (2 victorias), aunque al emparejar por posiciones no gane ninguno.",
+  "si": {
+   "wa": "Sale 0: comparas equipo[i] con enemigo[i] tras ordenar. Los equipos pequeños que no sirven hay que saltarlos para que los demás se desplacen."
+  },
+  "pistas": [
+   "Tras ordenar, el equipo 1 no gana a nadie; el 2 debería ir a la ciudad de 2.",
+   "Usa dos índices distintos: uno para la ciudad más fácil sin ganar y otro para el equipo."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "No gastar el equipo grande en la ciudad fácil",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Enemigos 1 10 y equipos 2 10: el 2 a la ciudad de 1 y el 10 a la de 10 (2 victorias).",
+  "si": {
+   "wa": "Sale 1: usas el equipo más grande para la ciudad más fácil. Para cada ciudad hay que usar el equipo MÁS PEQUEÑO que la gane."
+  },
+  "pistas": [
+   "Si el equipo de 10 va a la ciudad de 1, ¿quién defiende la de 10?",
+   "Para la ciudad más fácil, elige el equipo más pequeño que gane allí."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Ciudades y equipos repetidos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Enemigos 5 5 5 3 y equipos 5 4 5 2: el 4 gana al 3 y los dos de 5 a dos ciudades de 5 (3 victorias).",
+  "si": {
+   "wa": "Con valores repetidos falla: cada equipo solo puede usarse una vez y cada ciudad solo se gana una vez. Revisa que avanzas los dos índices tras una victoria."
+  },
+  "pistas": [
+   "Cuenta a mano: ¿cuántas ciudades de 5 pueden defender dos equipos de 5?",
+   "Tras una victoria avanzan la ciudad y el equipo; tras una derrota, solo el equipo."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Varios casos con tamaños distintos: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: el contador de victorias o los vectores no se reinician en cada caso.",
+   "rte": "Un vector de un caso anterior con otro tamaño: créalos dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Mira qué variables están fuera de la función de cada caso.",
+   "Declara los vectores y el contador dentro de resuelveCaso (sin static)."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos de hasta 7 ciudades, con muchos empates.",
+  "si": {
+   "wa": "Algún caso falla: localiza la línea, busca el caso y prueba a mano con los dos vectores ordenados."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso.",
+   "Comprueba los empates (≥) y qué índice avanzas cuando el equipo pierde."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Casos medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos de 100 a 3.000 ciudades.",
+  "si": {
+   "wa": "Algún caso mediano falla: prueba primero los pequeños al azar, que son más fáciles de seguir."
+  },
+  "pistas": [
+   "Compara con un caso pequeño parecido.",
+   "Revisa que ordenas los dos vectores de menor a mayor."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "300.000 ciudades con valores pequeños",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo (N = 300.000): la solución debe ser O(N log N).",
+  "si": {
+   "tle": "Algo cuesta O(N²): ¿buscas para cada ciudad el mejor equipo recorriendo todos los equipos (y marcando los usados)?"
+  },
+  "pistas": [
+   "Con N = 300.000, O(N²) son 9·10¹⁰ operaciones: demasiado.",
+   "Ordenar cuesta O(N log N) y después basta un recorrido con dos índices.",
+   "Si prefieres buscar, usa un multiset con lower_bound, nunca un recorrido lineal por ciudad."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "100.000 ciudades con valores grandes",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un caso grande con efectivos hasta 10⁶.",
+  "si": {
+   "tle": "Debe ser O(N log N): ordenar y un recorrido con dos índices.",
+   "wa": "En el caso grande falla: revisa qué índice avanzas cuando un equipo pierde."
+  },
+  "pistas": [
+   "Ordena los dos vectores con sort.",
+   "Un solo recorrido con dos índices basta."
+  ]
+ }
+]

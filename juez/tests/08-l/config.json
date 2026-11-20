@@ -1,0 +1,10 @@
+{
+ "solucion": "8-Algoritmos voraces/EJ_08-L/EJ_08-L.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (!salas.empty() && salas.top().first <= ini[c]) {",
+  "if (!salas.empty() && salas.top().first < ini[c]) {"
+ ],
+ "comprobador": true
+}

@@ -1,0 +1,217 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la regla: a un jugador de talla t le vale una equipación de talla t o de talla t + 1, nada más.",
+   "pe": "Los números están bien pero el formato no: un número por línea, uno por caso."
+  },
+  "pistas": [
+   "Sigue a mano el primer caso: a los de talla 12 solo les valen la 12 y la 13.",
+   "La primera línea del caso trae N (jugadores) y M (equipaciones): la lista de jugadores tiene N tallas y la de equipaciones M.",
+   "Como solo hay 100 tallas, cuenta cuántos jugadores y equipaciones hay de cada una y recórrelas de menor a mayor."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Cada jugador tiene la suya",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Tres jugadores y una equipación exacta para cada uno (en otro orden): no hay que comprar ninguna.",
+  "si": {
+   "wa": "Con una equipación de su talla para cada jugador la respuesta es 0: ¿comparas posición a posición sin ordenar ni contar por tallas?"
+  },
+  "pistas": [
+   "El orden de la entrada no importa: lo que cuenta es cuántos hay de cada talla.",
+   "Cuenta jugadores y equipaciones por talla."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Tallas 1 y 100",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Las tallas de los extremos: el de talla 1 usa la 2 y solo uno de los de 100 tiene equipación (hay que comprar 1).",
+  "si": {
+   "wa": "Algo falla en las tallas de los extremos: ¿recorres de 1 a 100, ambas incluidas?",
+   "rte": "Con talla 100 miras la talla 101: el vector de contadores necesita al menos 102 posiciones."
+  },
+  "pistas": [
+   "Revisa el bucle de tallas: t = 1 … 100 incluidos.",
+   "Para mirar la talla t + 1 con t = 100, el vector de contadores debe tener tamaño 102."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Una talla menos no sirve",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos jugadores de talla 12 y equipaciones de talla 11: les quedan pequeñas, hay que comprar 2.",
+  "si": {
+   "wa": "Sale menos de 2: dejas usar una equipación de una talla MENOS. Solo valen la propia y la de una talla MÁS (t + 1)."
+  },
+  "pistas": [
+   "«Se les llega a caer como ocurriría con las tallas más pequeñas…»: ¿le vale la 11 a uno de la 12?",
+   "Al jugador de talla t solo le valen equipaciones[t] y equipaciones[t + 1]."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Dos tallas más no sirven",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un jugador de talla 12 y una equipación de talla 14: le queda grande, hay que comprar 1.",
+  "si": {
+   "wa": "Sale 0: dejas usar equipaciones de dos (o más) tallas más. Solo vale UNA talla más."
+  },
+  "pistas": [
+   "¿Puede un jugador de la 12 usar la 14? Relee la nota del primer ejemplo.",
+   "Mira solo las tallas t y t + 1."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Primero la de su propia talla",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Jugadores 12 y 13 con equipaciones 12 y 13: cada uno la suya (0). Si el de 12 coge la 13, el de 13 se queda sin nada.",
+  "si": {
+   "wa": "Sale 1: el jugador de talla t coge antes la de t + 1 que la suya. Primero hay que gastar las de su talla, que nadie más puede usar."
+  },
+  "pistas": [
+   "La equipación de talla 12 solo le vale a los de la 12 (y a los de la 11).",
+   "Para la talla t: primero min(jugadores, equipaciones[t]); solo a los que falten, las de t + 1."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Cada equipación la usa un solo jugador",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Jugadores 12 y 13 y una sola equipación de talla 13: uno de los dos se queda sin ella (comprar 1).",
+  "si": {
+   "wa": "Sale 0: la misma equipación de talla t + 1 la usan un jugador de t y otro de t + 1. Al darla, hay que descontarla."
+  },
+  "pistas": [
+   "¿Cuántas equipaciones hay en total? ¿Y cuántos jugadores?",
+   "Cuando los de talla t usan equipaciones de t + 1, réstalas de equipaciones[t + 1]."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Hay que ir de la talla menor a la mayor",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Jugadores 12 y 13 con equipaciones 13 y 14: el de 12 usa la 13 y el de 13 la 14 (0).",
+  "si": {
+   "wa": "Sale 1: recorres las tallas de mayor a menor y el de la 13 se queda la 13, que era la única que le valía al de la 12. Hay que empezar por la talla más pequeña."
+  },
+  "pistas": [
+   "Al jugador de la 12 solo le vale la 13; al de la 13, la 13 o la 14.",
+   "Recorre t = 1, 2, …, 100 (de menor a mayor): así los de talla t + 1 aún pueden tirar de t + 2."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Sobran equipaciones pero no valen",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos jugadores de talla 5 y tres equipaciones de talla 1: hay más equipaciones que jugadores, pero hay que comprar 2.",
+  "si": {
+   "wa": "Sale 0: no basta con comparar cuántos jugadores y cuántas equipaciones hay. Cada equipación tiene que valerle al jugador."
+  },
+  "pistas": [
+   "¿Le vale a alguien de talla 5 una de talla 1?",
+   "Empareja por tallas, no por cantidades totales."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Jugadores de una talla que tiran de la siguiente",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tres de la 10 (usan la 10 y dos de la 11), dos de la 11 (la 11 que queda y la 12): no hay que comprar ninguna.",
+  "si": {
+   "wa": "Con varias tallas encadenadas falla: revisa cuántas equipaciones de t + 1 se descuentan y que los de t + 1 usan después las que quedan."
+  },
+  "pistas": [
+   "Sigue la cuenta talla a talla: tras los de la 10, ¿cuántas de la 11 quedan?",
+   "Los que no consigan equipación con t ni con t + 1 se suman a «comprar»."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Casos con las mismas tallas seguidos: nada del caso anterior (contadores por talla) debe quedar.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: los contadores por talla o el total a comprar no se reinician en cada caso."
+  },
+  "pistas": [
+   "Si los vectores de contadores son globales, ¿los pones a cero al empezar cada caso?",
+   "Declara los contadores dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos de hasta 7 jugadores y 7 equipaciones con tallas muy parecidas.",
+  "si": {
+   "wa": "Algún caso falla: localiza la línea, busca el caso y empareja a mano talla a talla."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso.",
+   "Revisa el orden de preferencia (primero su talla) y que descuentas las de t + 1."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Casos medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos con todas las tallas de 1 a 100.",
+  "si": {
+   "wa": "Algún caso mediano falla: suele ser una talla de los extremos o el orden del recorrido."
+  },
+  "pistas": [
+   "Comprueba las tallas 1 y 100.",
+   "Recorre las tallas de menor a mayor."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "100.000 jugadores sin ninguna equipación que les valga",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "N = M = 100.000: buscar una equipación para cada jugador recorriendo todas cuesta 10¹⁰.",
+  "si": {
+   "tle": "Algo cuesta O(N·M): ¿buscas para cada jugador una equipación recorriendo la lista entera?"
+  },
+  "pistas": [
+   "Con 100.000 jugadores y 100.000 equipaciones, O(N·M) es demasiado.",
+   "Solo hay 100 tallas: cuenta cuántos hay de cada una y trabaja con los contadores (O(N + M + 100)).",
+   "Otra opción es ordenar las dos listas y recorrerlas con dos índices."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Tres casos de 100.000 jugadores y equipaciones",
+  "tipo": "rendimiento",
+  "casos": 3,
+  "comprueba": "Casos grandes al azar con todas las tallas.",
+  "si": {
+   "tle": "Debe ser lineal (o N log N) por caso.",
+   "wa": "En los casos grandes falla: revisa el orden de preferencia y el descuento de las equipaciones de t + 1."
+  },
+  "pistas": [
+   "Cuenta por tallas: dos vectores de 102 enteros.",
+   "Un recorrido de la talla 1 a la 100 basta."
+  ]
+ }
+]

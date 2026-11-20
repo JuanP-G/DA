@@ -1,0 +1,218 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: recorrer las conferencias por hora de COMIENZO y reutilizar una sala que ya esté libre o abrir una nueva. El «Por qué» te dice qué línea está mal.",
+   "pe": "Las salas son correctas pero el formato no: por cada caso, una línea con R y otra con las N salas separadas por un espacio."
+  },
+  "pistas": [
+   "Sigue a mano el primer caso: la de 6 a 12 puede ir a la sala de la de 1 a 5.",
+   "Escribe dos líneas por caso: el número de salas y luego la sala de cada conferencia EN EL ORDEN DE LA ENTRADA.",
+   "Guarda en una cola de prioridad de mínimos (hora en que queda libre, sala) y mira solo la que queda libre antes."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola conferencia",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "N = 1 con los tiempos extremos (0 y 10⁹): una sala. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "Con una conferencia basta una sala: «1» y luego «1».",
+   "rte": "Con N = 1 algo se sale de rango: revisa la cola de prioridad vacía (no hagas top() sin comprobar empty())."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con una única conferencia?",
+   "Comprueba que la cola no está vacía antes de mirar su cima."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Todas a la vez",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Cuatro conferencias idénticas: hacen falta 4 salas, una para cada una. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "Conferencias idénticas se solapan entre sí: cada una necesita su sala. ¿Reutilizas una sala que todavía está ocupada?"
+  },
+  "pistas": [
+   "Una sala solo se puede reutilizar si su última conferencia acabó como muy tarde cuando empieza la nueva.",
+   "Compara la hora en que queda libre con la hora de COMIENZO de la conferencia."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Una empieza justo cuando acaba otra",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tres conferencias encadenadas (1-5, 5-10, 10-15): no se solapan y cabe todo en una sala. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "Usas más salas de la cuenta: tratas como solapadas dos conferencias que se tocan. Una que empieza justo cuando acaba otra puede ir en la misma sala: la condición es libre ≤ comienzo, no <."
+  },
+  "pistas": [
+   "Relee el enunciado: «Una conferencia que empieza justo cuando termina otra no se solapa con ella».",
+   "Reutiliza la sala si queda libre en un instante ≤ que el comienzo de la nueva."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Conferencias desordenadas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tres conferencias encadenadas dadas al revés (9-12, 6-9, 2-6): caben todas en una sala. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "Usas más salas: recorres las conferencias en el orden de la entrada. Hay que recorrerlas por hora de comienzo."
+  },
+  "pistas": [
+   "Si colocas primero la de 9 a 12, ¿puede ir después la de 6 a 9 en la misma sala?",
+   "Ordena (los índices de) las conferencias por hora de comienzo antes de repartir salas."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Hay que mirar la sala que queda libre antes",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Al llegar la de 3 a 4, la sala de 1-2 está libre aunque la de 1-10 no: bastan 2 salas. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "Abres una sala nueva aunque hay una libre: miras solo la que queda libre MÁS TARDE (cola de máximos) o una sala cualquiera. Hay que mirar la que queda libre antes."
+  },
+  "pistas": [
+   "¿Qué sala está libre a las 3?",
+   "La cola de prioridad debe ser de MÍNIMOS: priority_queue<…, vector<…>, greater<…>>."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Las salas se escriben en el orden de la entrada",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con 2 salas: 1-5 y 10-20 juntas y 3-15 en la otra. La línea de salas debe seguir el orden de la entrada. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "El número de salas está bien, pero la asignación pone juntas dos conferencias que se solapan: escribes las salas en el orden ORDENADO, no en el de la entrada."
+  },
+  "pistas": [
+   "La i-ésima sala que escribes es la de la i-ésima conferencia de la entrada.",
+   "Ordena un vector de índices, guarda sala[c] para cada índice y al final escribe sala[0], sala[1], …"
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Ordenar por hora de fin no sirve",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "0-3 con 3-9 en una sala y 0-4 con 6-7 en otra: bastan 2. Recorriendo por hora de fin salen 3. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "Usas 3 salas: recorres las conferencias por hora de FIN. Para este problema el orden correcto es por hora de COMIENZO."
+  },
+  "pistas": [
+   "Prueba a mano recorriendo por fin: 0-3, 0-4, 6-7 y… ¿dónde va la 3-9?",
+   "Ordena por hora de comienzo: así, cuando abres una sala nueva, todas las abiertas están ocupadas en ese instante."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Muchos solapes no implican muchas salas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La de 1 a 10 se solapa con otras cuatro, pero esas cuatro caben en una sala: bastan 2. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "El mínimo de salas es el máximo de conferencias que coinciden EN UN MISMO INSTANTE, no el número de conferencias con las que se solapa una."
+  },
+  "pistas": [
+   "¿En algún momento hay tres conferencias a la vez?",
+   "Reparte con el voraz por comienzo: el número de salas que abre es el mínimo."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Una sala libre sirve una sola vez",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La sala de 1-2 la reutiliza la de 3-10; la de 4-6 necesita otra sala (2). Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "Das la misma sala a dos conferencias que se solapan: cuando reutilizas una sala, hay que sacarla de la cola (pop) antes de volver a meterla con su nueva hora."
+  },
+  "pistas": [
+   "Tras dar la sala 1 a la conferencia de 3 a 10, ¿cuándo vuelve a quedar libre?",
+   "Al reutilizar: pop() de la cima y push() con (fin de la nueva conferencia, sala)."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Casos con distinto número de salas seguidos: nada del caso anterior (salas abiertas, cola) debe quedar. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: el contador de salas o la cola de prioridad no se reinician en cada caso."
+  },
+  "pistas": [
+   "Si en el segundo caso escribes «4» o más, el contador viene del caso anterior.",
+   "Declara la cola, el contador de salas y el vector de salas dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos de hasta 8 conferencias con muchos extremos que se tocan. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "Algún caso falla: el «Por qué» dice qué conferencias se solapan o cuántas salas sobran; busca el caso y dibújalo."
+  },
+  "pistas": [
+   "La línea mala te dice el caso: cada caso ocupa dos líneas.",
+   "Revisa el orden (por comienzo), la comparación ≤ y que la cola es de mínimos."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Casos medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 20,
+  "comprueba": "20 casos de 100 a 2.000 conferencias con tiempos hasta 10⁹. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "wa": "Algún caso mediano falla: suele ser la cola de prioridad (de mínimos, con pop al reutilizar) o el orden de salida."
+  },
+  "pistas": [
+   "Comprueba que escribes las salas en el orden de la entrada.",
+   "Comprueba que la cola guarda (hora en que queda libre, sala)."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "150.000 conferencias que coinciden todas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Conferencias anidadas que coinciden todas en un instante: hacen falta 150.000 salas. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "tle": "Algo cuesta O(N·R): ¿buscas una sala libre recorriendo todas las salas abiertas? Con una cola de prioridad cada paso es O(log N).",
+   "mle": "Gastas demasiada memoria: con 150.000 salas, guarda solo una entrada por sala en la cola."
+  },
+  "pistas": [
+   "Con 150.000 salas, recorrerlas todas por cada conferencia son ~10¹⁰ pasos.",
+   "Solo necesitas saber cuál queda libre antes: una cola de prioridad de mínimos.",
+   "Ordena una vez (O(N log N)) y usa la cola: O(N log N) en total."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "100.000 conferencias al azar",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un caso grande al azar. Vale cualquier asignación válida con el mínimo número de salas.",
+  "si": {
+   "tle": "Debe ser O(N log N): ordenar y una cola de prioridad.",
+   "wa": "En el caso grande falla la asignación: revisa el pop al reutilizar y el orden de salida."
+  },
+  "pistas": [
+   "Ordena índices por comienzo con sort.",
+   "Cola de prioridad de mínimos con (libre, sala)."
+  ]
+ }
+]
