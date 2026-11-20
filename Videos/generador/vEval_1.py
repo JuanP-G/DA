@@ -6,7 +6,7 @@ from pd_comun import AZUL, NARANJA, flecha, aparece, texto, codigo, portada, cie
 from vor_comun import caja, mueve, paso_idx, tick, args_preview, etiqueta
 
 CPP = "../../12-Evaluacion/EJ_Eval-1/EJ_Eval-1.cpp"
-TEMA = "Tema 12 · Problemas de evaluación"
+TEMA = "Pruebas evaluativas"
 ARI = [(2, 4), (3, 4), (4, 5), (5, 6), (6, 7), (7, 6), (1, 7)]
 S, P = 1, 5
 POS = {2: (250, 220), 3: (250, 440), 4: (470, 330), 5: (690, 330), 6: (910, 220), 7: (910, 440), 1: (690, 540)}
