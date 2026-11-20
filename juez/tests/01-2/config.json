@@ -1,8 +1,8 @@
 {
- "solucion": "1-Arboles AVL/EJ_01-2/EJ 01-2.cpp",
+ "solucion": "juez/soluciones/01-2.cpp",
+ "plantilla": "juez/plantillas/01-2.cpp",
  "cabeceras": [
-  "1-Arboles AVL/EJ_01-2/bintree.h",
-  "1-Arboles AVL/EJ_01-2/TreeSet_AVL_plantilla.h"
+  "1-Arboles AVL/EJ_01-2/bintree.h"
  ],
  "limite_ms": 3000,
  "fallo": [

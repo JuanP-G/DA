@@ -5,8 +5,12 @@ import random
 from _comun import Prueba, Variante
 
 CONFIG = {
-    "solucion": "1-Arboles AVL/EJ_01-2/EJ 01-2.cpp",
-    "cabeceras": ["1-Arboles AVL/EJ_01-2/bintree.h", "1-Arboles AVL/EJ_01-2/TreeSet_AVL_plantilla.h"],
+    # El ejercicio consiste en ampliar la clase Set (tami y kesimo). En el juez la clase va en el mismo
+    # fichero: la solución de referencia lleva TreeSet_AVL_plantilla.h incrustada y la plantilla del
+    # alumno trae la versión de clase SIN tami ni kesimo. Así no se puede incluir la cabecera resuelta.
+    "solucion": "juez/soluciones/01-2.cpp",
+    "plantilla": "juez/plantillas/01-2.cpp",
+    "cabeceras": ["1-Arboles AVL/EJ_01-2/bintree.h"],
     "limite_ms": 3000,
     "fallo": ["cout << \"??\\n\";", "cout << \"?\\n\";"],
 }
@@ -184,19 +188,16 @@ def pruebas():
 
 
 # ---------------------------------------------------------------- variantes
-# Muchos fallos típicos están en el .h (tami en inserta, en las rotaciones, en kesimo). Para
-# probarlos, la variante sustituye el #include por una copia del .h con el fallo.
-_INCLUDE = '#include "TreeSet_AVL_plantilla.h"  // estructuras de datos de clase'
+# Muchos fallos típicos están en la clase (tami en inserta, en las rotaciones, en kesimo). Como la
+# solución de referencia lleva la cabecera incrustada, la variante cambia directamente ese texto.
 _H = (pathlib.Path(__file__).resolve().parents[2] / "1-Arboles AVL" / "EJ_01-2" / "TreeSet_AVL_plantilla.h"
       ).read_bytes().decode("latin-1")
 
 
 def con_h(*cambios):
-    h = _H
-    for a, b in cambios:
-        assert h.count(a) == 1, a
-        h = h.replace(a, b)
-    return (_INCLUDE, h)
+    for a, _ in cambios:
+        assert _H.count(a) == 1, a
+    return list(cambios)
 
 
 _MULTI_A = _H[_H.index("        else if (menor(a->elem, e)) {\n            crece = inserta(e, a->dr);"):
@@ -213,18 +214,18 @@ VARIANTES = [
     Variante("no escribe --- tras cada caso", [("cout << \"---\\n\";  // separador entre casos", "")], prueba=5, v="wa"),
     Variante("trata el 0 final como un caso", [("if (!cin || nValores == 0)", "if (!cin)")], prueba=5, v="wa"),
     Variante("posiciones desde 0", [("arbol.kesimo(posValor)", "arbol.kesimo(posValor - 1)")], prueba=6, v="wa"),
-    Variante("el conjunto admite repetidos", [con_h((_MULTI_A, _MULTI_B))], prueba=[5, 7], v="wa"),
+    Variante("el conjunto admite repetidos", con_h((_MULTI_A, _MULTI_B)), prueba=[5, 7], v="wa"),
     Variante("baja por la derecha sin restar tami",
-             [con_h(("else return kesimo(k - a->tami, a->dr);", "else return kesimo(k, a->dr);"))], prueba=8, v="wa"),
+             con_h(("else return kesimo(k - a->tami, a->dr);", "else return kesimo(k, a->dr);")), prueba=8, v="wa"),
     Variante("suma tami aunque el valor esté repetido",
-             [con_h(("            crece = inserta(e, a->iz);\n            if (crece) {\n                a->tami += 1;",
-                     "            crece = inserta(e, a->iz);\n            a->tami += 1;\n            if (crece) {"))], prueba=9, v="wa"),
-    Variante("rotaDer no actualiza tami", [con_h(("r2->tami -= r1->tami;", ""))], prueba=10, v="wa"),
-    Variante("rotaIzq no actualiza tami", [con_h(("r2->tami += r1->tami;", ""))], prueba=11, v="wa"),
+             con_h(("            crece = inserta(e, a->iz);\n            if (crece) {\n                a->tami += 1;",
+                     "            crece = inserta(e, a->iz);\n            a->tami += 1;\n            if (crece) {")), prueba=9, v="wa"),
+    Variante("rotaDer no actualiza tami", con_h(("r2->tami -= r1->tami;", "")), prueba=10, v="wa"),
+    Variante("rotaIzq no actualiza tami", con_h(("r2->tami += r1->tami;", "")), prueba=11, v="wa"),
     Variante("Set global que no se vacía entre casos", [("    Set<int> arbol;\n", "    static Set<int> arbol;\n")], prueba=14, v="wa"),
     Variante("no reequilibra (árbol de búsqueda simple)",
-             [con_h(("if (altura(a->dr) - altura(a->iz) > 1) {", "if (false) {"),
-                    ("if (altura(a->iz) - altura(a->dr) > 1) {", "if (false) {"))], prueba=17, v="tle"),
+             con_h(("if (altura(a->dr) - altura(a->iz) > 1) {", "if (false) {"),
+                    ("if (altura(a->iz) - altura(a->dr) > 1) {", "if (false) {")), prueba=17, v="tle"),
     Variante("k-ésimo recorriendo en inorden (lineal)",
              [("cout << arbol.kesimo(posValor) << '\\n';", LINEAL)], prueba=17, v="tle"),
 ]

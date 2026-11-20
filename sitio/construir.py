@@ -943,6 +943,18 @@ def config_juez():
     return cfg
 
 
+def sin_planteamiento(codigo):
+    """Las soluciones traen, tras «Nombre y Apellidos», un comentario /*@ <answer> ... */ con el
+    planteamiento completo. En la plantilla del juez se deja solo su primera línea (el título):
+    el planteamiento lo dan las pistas, de una en una."""
+    bloques = list(re.finditer(r"/\*@ <answer>.*?@ </answer> \*/", codigo, flags=re.S))
+    for m in reversed(bloques[1:]):
+        lineas_ = [l.strip() for l in m.group(0).splitlines()[1:-1] if l.strip()]
+        titulo = lineas_[0] if lineas_ else ""
+        codigo = codigo[:m.start()] + f"/*\n {titulo}\n*/" + codigo[m.end():]
+    return codigo
+
+
 def generar_juez(ej, slugs=None):
     """Juez en el navegador (prototipo). Lee juez/juez.json y juez/tests/<ej>/N.in|N.out.
     Genera _site/juez/<ej>.html (página independiente) y _site/juez/<ej>/ (manifest, tests, cabeceras).
@@ -961,8 +973,12 @@ def generar_juez(ej, slugs=None):
             continue
         d = OUT / "juez" / ej_id
         sol = leer_texto(c["solucion"])
-        vacio = "//@ <answer>\n\n    // Escribe aquí tu solución\n\n//@ </answer>"
-        plantilla = re.sub(r"//@ <answer>.*?//@ </answer>", lambda m: vacio, sol, count=1, flags=re.S)
+        if c.get("plantilla"):           # plantilla propia (p. ej. 01-2: la clase sin tami ni kesimo)
+            plantilla = leer_texto(c["plantilla"])
+        else:
+            vacio = "//@ <answer>\n\n    // Escribe aquí tu solución\n\n//@ </answer>"
+            plantilla = re.sub(r"//@ <answer>.*?//@ </answer>", lambda m: vacio, sol, count=1, flags=re.S)
+        plantilla = sin_planteamiento(plantilla)
         escribe_lf(d / "solucion.cpp", sol)
         a, b = c["fallo"]
         assert a in sol, f"juez {ej_id}: no encuentro «{a}» para fabricar el fallo de demostración"
