@@ -517,3 +517,12 @@ body.cine-on{overflow:hidden}
 .pw .vc .pop input[type=checkbox]{accent-color:#2dd4bf;width:16px;height:16px}
 .pw video{cursor:pointer}
 .pw.cine .vc{padding-bottom:18px}
+
+/* vídeos: volumen con deslizador, iconos SVG, hora legible, pantalla completa sin franjas */
+.pw.cine video{max-width:none!important;max-height:none!important;width:100vw;height:100vh;object-fit:contain}
+.pw:fullscreen video{max-width:none!important;max-height:none!important;width:100%;height:100%;object-fit:contain}
+.pw .vc .tm{font:600 .8rem Inter,system-ui,sans-serif!important;letter-spacing:.01em}
+.pw .vc .vol{display:inline-flex;align-items:center}
+.pw .vc .vol input{width:0;opacity:0;margin:0;accent-color:#2dd4bf;cursor:pointer;transition:width .2s,opacity .2s,margin .2s}
+.pw .vc .vol:hover input,.pw .vc .vol:focus-within input{width:72px;opacity:1;margin:0 6px 0 2px}
+.pw .vc .ic svg{display:block}

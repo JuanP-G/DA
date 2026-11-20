@@ -899,6 +899,12 @@ function menu(){
  +(sig?'<a class="vcont" href="#'+sig.s+'">'+thumb(sig)+'<div><span class="etq">'+(hay?'Continuar':'Empezar por aquí')+'</span><b>'+esc(sig.id)+' · '+esc(sig.t)+'</b><small>Tema '+sig.tema+' · '+esc(sig.tn)+'</small></div><span class="go">Ver →</span></a>':'')+sec;
 }
 function sala(s){
+ const sv=p=>'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
+ const SP='<path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor"/>';
+ const I={play:sv('<path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="none"/>'),pause:sv('<rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor" stroke="none"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor" stroke="none"/>'),
+  vol:sv(SP+'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>'),vol1:sv(SP+'<path d="M15.5 9a4 4 0 010 6"/>'),mute:sv(SP+'<path d="M16 9.5l5 5M21 9.5l-5 5"/>'),
+  more:sv('<circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/>'),
+  fs:sv('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'),fso:sv('<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>')};
  clearInterval(window._nxt);document.body.classList.remove('cine-on');
  const i=idx(s),v=V[i];if(!v){location.hash='';return}
  document.title=v.id+' · '+v.t+' | Vídeos StudIA';
@@ -907,7 +913,7 @@ function sala(s){
   return '<details '+(q||t==v.tema?'open':'')+'><summary><span>Tema '+t+' · '+esc(byT[t][0].tn)+'</span><small>'+n+'/'+byT[t].length+'</small></summary>'+xs.map(x=>'<a class="it'+(x.s===s?' act':'')+(vistos[x.s]?' vist':'')+(x.teoria?' teo':' ej')+'" href="#'+x.s+'">'+thumb(x)+'<div><b>'+esc(x.id)+' · '+esc(x.t)+'</b><span>'+(x.teoria?'Resumen del tema':'Ejercicio')+'</span></div></a>').join('')+'</details>'}).join('');
  root.className='vsala';$('.vv').classList.add('ensala');
  root.innerHTML='<div class="vtop"><a class="vback" href="#">← Todos los vídeos</a></div><div class="sala"><div class="main"><div class="pw" id="pw"><video id="vid" preload="metadata" playsinline'+(v.p?' poster="'+v.p+'"':'')+' src="'+v.v+'">'+(v.vtt?'<track kind="subtitles" srclang="es" label="Español" src="'+v.vtt+'">':'')+'</video>'
- +'<div class="vc" id="vc"><button type="button" class="ic" id="pp" aria-label="Reproducir">▶</button><span class="tm" id="tm">0:00 / 0:00</span><input type="range" id="sk" min="0" max="1000" value="0" aria-label="Progreso"><button class="ic" id="mu" type="button" aria-label="Silenciar">🔊</button><div class="mn"><button class="ic" id="mb" type="button" aria-label="Más opciones">⋮</button><div class="pop" id="pop" hidden><div class="r"><span>Velocidad</span><div class="spd">'+[.75,1,1.25,1.5,2].map(x=>'<button type="button" data-v="'+x+'"'+(x===1?' class="on"':'')+'>'+x+'×</button>').join('')+'</div></div>'+(v.vtt?'<label class="r"><span>Subtítulos</span><input type="checkbox" id="cc" checked></label>':'')+'<label class="r"><span>Pasar al siguiente</span><input type="checkbox" id="auto" '+(window._auto===false?'':'checked')+'></label></div></div><button class="ic" id="fs" type="button" aria-label="Pantalla completa"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>'
+ +'<div class="vc" id="vc"><button type="button" class="ic" id="pp" aria-label="Reproducir">'+I.play+'</button><span class="vol"><button class="ic" id="mu" type="button" aria-label="Silenciar">'+I.vol+'</button><input type="range" id="vl" min="0" max="1" step="0.02" value="1" aria-label="Volumen"></span><span class="tm" id="tm">0:00 / 0:00</span><input type="range" id="sk" min="0" max="1000" value="0" aria-label="Progreso"><div class="mn"><button class="ic" id="mb" type="button" aria-label="Más opciones">'+I.more+'</button><div class="pop" id="pop" hidden><div class="r"><span>Velocidad</span><div class="spd">'+[.75,1,1.25,1.5,2].map(x=>'<button type="button" data-v="'+x+'"'+(x===1?' class="on"':'')+'>'+x+'×</button>').join('')+'</div></div>'+(v.vtt?'<label class="r"><span>Subtítulos</span><input type="checkbox" id="cc" checked></label>':'')+'<label class="r"><span>Pasar al siguiente</span><input type="checkbox" id="auto" '+(window._auto===false?'':'checked')+'></label></div></div><button class="ic" id="fs" type="button" aria-label="Pantalla completa">'+I.fs+'</button></div>'
  +'<button class="xit" id="xit" type="button">✕ Salir de pantalla completa</button>'
  +(sg?'<div class="nx" id="nx" hidden><span>Siguiente en <b id="cd">5</b> s</span><b class="nt">'+esc(sg.id)+' · '+esc(sg.t)+'</b><div><button class="btn go" id="nxgo" type="button">Ver ahora</button><button class="btn ghost" id="nxno" type="button">Cancelar</button></div></div>':'')+'</div>'
  +'<div class="info"><span class="etq '+(v.teoria?'teo':'ej')+'">'+(v.teoria?'Resumen del tema '+v.tema:'Ejercicio '+esc(v.id))+' · '+esc(v.tn)+'</span><h2>'+esc(v.t)+'</h2><p>'+esc(v.idea)+'</p>'
@@ -929,7 +935,9 @@ function sala(s){
  vid.ontimeupdate=marca;vid.onseeked=marca;marca();
  $('#prev').onclick=()=>{if(i)location.hash=V[i-1].s};$('#next').onclick=()=>{if(sg)location.hash=sg.s};
  $('#auto').onchange=e=>{window._auto=e.target.checked};
- const cine=on=>{pw.classList.toggle('cine',on);document.body.classList.toggle('cine-on',on)};
+ const fsi=()=>{$('#fs').innerHTML=(document.fullscreenElement||pw.classList.contains('cine'))?I.fso:I.fs};
+ const cine=on=>{pw.classList.toggle('cine',on);document.body.classList.toggle('cine-on',on);fsi()};
+ document.addEventListener('fullscreenchange',fsi);
  const toggleFs=()=>{
   if(document.fullscreenElement){document.exitFullscreen();return}
   if(pw.classList.contains('cine')){cine(false);return}
@@ -939,14 +947,20 @@ function sala(s){
   setTimeout(()=>{if(!document.fullscreenElement&&!pw.classList.contains('cine'))cine(true)},350)};
  $('#fs').onclick=toggleFs;
  const pp=$('#pp'),sk=$('#sk'),tm=$('#tm'),mu=$('#mu'),pop=$('#pop');
- const upd=()=>{const d=vid.duration||0;sk.value=d?vid.currentTime/d*1000:0;tm.textContent=fmt(Math.floor(vid.currentTime))+' / '+fmt(Math.floor(d))};
- const est=()=>{pp.textContent=vid.paused?'▶':'❚❚';pw.classList.toggle('paused',vid.paused)};
+ const ff=t=>{t=Math.floor(t||0);return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
+ const upd=()=>{const d=vid.duration||0;sk.value=d?vid.currentTime/d*1000:0;tm.textContent=ff(vid.currentTime)+' / '+ff(d)};
+ const est=()=>{pp.innerHTML=vid.paused?I.play:I.pause;pp.setAttribute('aria-label',vid.paused?'Reproducir':'Pausar');pw.classList.toggle('paused',vid.paused)};
  ['timeupdate','loadedmetadata','durationchange'].forEach(n=>vid.addEventListener(n,upd));
  ['play','pause','ended'].forEach(n=>vid.addEventListener(n,est));est();upd();
  const tgl=()=>vid.paused?vid.play():vid.pause();
  pp.onclick=tgl;vid.onclick=tgl;
  sk.oninput=()=>{if(vid.duration)vid.currentTime=sk.value/1000*vid.duration};
- mu.onclick=()=>{vid.muted=!vid.muted;mu.textContent=vid.muted?'🔇':'🔊'};
+ const vl=$('#vl');
+ const vi=()=>{const m=vid.muted||vid.volume===0;mu.innerHTML=m?I.mute:vid.volume<.5?I.vol1:I.vol;vl.value=m?0:vid.volume;window._vol=vid.volume;window._mut=vid.muted};
+ if(window._vol!=null){vid.volume=window._vol;vid.muted=!!window._mut}
+ vid.addEventListener('volumechange',vi);vi();
+ mu.onclick=()=>{if(vid.muted||vid.volume===0){vid.muted=false;if(vid.volume===0)vid.volume=.5}else vid.muted=true};
+ vl.oninput=()=>{vid.volume=+vl.value;vid.muted=vid.volume===0};
  $('#mb').onclick=e=>{e.stopPropagation();pop.hidden=!pop.hidden};
  document.onclick=e=>{if(!e.target.closest('.mn'))pop.hidden=true};
  pop.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{vid.playbackRate=+b.dataset.v;pop.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x===b))});
