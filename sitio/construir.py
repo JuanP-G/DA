@@ -538,6 +538,12 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
 
     tabs = [("enunciado", "@@i:pdf@@ Enunciado", bool(e["pdf"]), p_enun), ("video", "@@i:video@@ Vídeo", bool(e["video"]), p_vid),
             ("explicacion", "@@i:book@@ Explicación", bool(e["readme"]), p_exp), ("codigo", "@@i:code@@ Código", bool(codigos), p_cod)]
+    hay_juez = slug in JUECES
+    if hay_juez:
+        p_juez = (f'<div class="dj-host" data-manifest="../juez/{slug}/manifest.json" '
+                  f'data-wasm="{esc(os.environ.get("JUEZ_WASM_BASE", "https://binji.github.io/wasm-clang/"))}" '
+                  f'data-servidor="{esc(os.environ.get("JUEZ_SERVIDOR", ""))}"><p class="hint">Cargando el juez…</p></div>')
+        tabs.append(("probar", "@@i:check@@ Probar", True, p_juez))
     pref = "video" if e["video"] else ("explicacion" if e["readme"] else ("codigo" if codigos else "enunciado"))
     botones = "".join(f'<button class="btn{"" if hay else " off"}{" pref" if i == pref else ""}" data-tab="{i}">{t}</button>' for i, t, hay, _ in tabs)
     panes = "".join(f'<div class="pane" id="p-{i}">{c}</div>' for i, _, _, c in tabs)
@@ -560,7 +566,9 @@ def pagina_ejercicio(e, slug, ant=None, sig=None):
               f'<button class="btn okb-ej" data-ok="{slug}" aria-pressed="false">@@i:check@@ <span class="lab">Marcar como hecho</span></button></div>'
               f'<p class="lede">{md_inline(e["idea"])}</p>'
               f'</div><div class="tabsbar"><div class="tabs">{botones}</div><div class="xls">{"".join(acc)}</div></div>{panes}{pager}</div>{teoria_panel(tema, "../")}')
-    return pagina(f'{e["id"]} {e["titulo"]} | Diseño de Algoritmos UCM', cuerpo, "../", HIGHLIGHT_JS + TABS_JS + (TEORIA_JS if TEORIA.get(tema) else ""), e["idea"], JSZIP, ruta=f"ej/{slug}.html")
+    return pagina(f'{e["id"]} {e["titulo"]} | Diseño de Algoritmos UCM', cuerpo, "../",
+                  HIGHLIGHT_JS + TABS_JS + (TEORIA_JS if TEORIA.get(tema) else "") + (JUEZ_JS if hay_juez else ""), e["idea"],
+                  JSZIP + ('<link rel="stylesheet" href="../juez/juez.css">' if hay_juez else ""), ruta=f"ej/{slug}.html")
 
 
 def pagina_cabecera(nombre):
@@ -797,9 +805,26 @@ def commit_info():
     return sha[:7]
 
 
+JUECES = set()   # slugs de los ejercicios con juez (pestaña «Probar»)
+
+JUEZ_JS = r"""
+// Pestaña «Probar»: el juez se carga solo cuando se abre (no pesa en el resto de la página).
+(function(){const host=document.querySelector('.dj-host');if(!host)return;let hecho=false;
+ const cargar=s=>new Promise((ok,ko)=>{const e=document.createElement('script');e.src=s;e.onload=ok;e.onerror=ko;document.head.appendChild(e)});
+ function montar(){if(hecho)return;hecho=true;
+  cargar('../juez/diagnostico.js').then(()=>cargar('../juez/juez.js'))
+   .then(()=>DAJuez.mount(host,{manifest:host.dataset.manifest,wasmBase:host.dataset.wasm,servidor:host.dataset.servidor}))
+   .catch(()=>{host.textContent='No se ha podido cargar el juez. Recarga la página.'})}
+ document.querySelectorAll('[data-tab="probar"]').forEach(b=>b.addEventListener('click',montar));
+ if(location.hash==='#probar')montar();
+ window.addEventListener('hashchange',()=>{if(location.hash==='#probar')montar()});})();
+"""
+
+
 def main():
-    global TEORIA
+    global TEORIA, JUECES
     TEORIA = teoria_pdfs()
+    JUECES = {k.lower() for k in config_juez()}
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / "ej").mkdir(parents=True); (OUT / "estructuras").mkdir()

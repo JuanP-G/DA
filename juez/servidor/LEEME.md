@@ -68,9 +68,29 @@ su primer caso y las que tienen explicación para ese veredicto), detecta patron
 formato, estado que no se reinicia entre casos, solo fallan las grandes...) y ofrece «Dame una pista»:
 las pistas de esa prueba de menos a más y, al final, su entrada y la salida esperada (si es pequeña).
 
-Hoy lo tiene el 04-3 (16 pruebas, comprobadas con 7 soluciones con fallos típicos: cada una cae en
-la prueba pensada para su error). Para añadir otro ejercicio: su generador en
+Hoy lo tienen los 44 ejercicios de los temas 1–7 (15–25 pruebas cada uno y 7–12 soluciones con
+fallos típicos que demuestran que cada error cae en la prueba pensada para él). Para añadir otro ejercicio: su generador en
 `generar_tests_juez.py`, su entrada en `juez/juez.json` y volver a construir la web.
+
+## Ejercicios con varias respuestas válidas
+05-3, 05-6 y 07-3 aceptan cualquier orden topológico, asignación o camino mínimo correcto. Llevan un
+comprobador propio en `juez/ejercicios/comprobadores/<id>.py` (servidor) y `<id>.js` (navegador),
+que se copian a `juez/tests/<id>/`. El verificador comprueba que las dos versiones dicen lo mismo en
+cientos de salidas y que se acepta una respuesta alternativa (función `ALTERNATIVA` del módulo).
+
+## Plantilla del alumno
+Sale de la solución: se vacía la zona `//@ <answer> … //@ </answer>` y el comentario con el
+PLANTEAMIENTO se reduce al título (lo dan las pistas). Un ejercicio puede traer su propia plantilla
+(`"plantilla"` en CONFIG): 01-2 da la clase `Set` sin `tami` ni `kesimo`, que es lo que se pide.
+
+## En la web
+Cada ejercicio con juez tiene la pestaña «Probar» (el juez se carga al abrirla). La página suelta
+`juez/<id>.html` sigue existiendo.
+
+## Verificar
+`PYTHONUTF8=1 python3 juez/verificar.py [ids]`: genera las pruebas, revisa sus datos, exige AC de la
+solución con margen para la Pi, que la demo falle, que cada variante caiga en su prueba según la guía
+de la web (diagnostico.js) y, si hay comprobador, que Python y JavaScript coincidan.
 
 ## Raspberry Pi OS: activar el cgroup de memoria (recomendado)
 Viene desactivado. Sin él, el límite de memoria por programa es `prlimit --as` (funciona, pero
