@@ -1,0 +1,288 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del ejemplo del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: la lectura (N únicas con 2 números, M periódicas con 3), el orden de las apariciones o la ventana [0, T).",
+   "pe": "Los resultados están bien pero no el formato: «SI» o «NO» (sin tilde), uno por línea.",
+   "tle": "No termina ni con el ejemplo: ¿el bucle avanza siempre? Cada vuelta debe sacar la tarea única o pasar la periódica a su siguiente aparición."
+  },
+  "pistas": [
+   "En el tercer caso hay un choque en el minuto 16, pero solo interesan los conflictos que empiezan antes de T = 10.",
+   "Escribe «SI» o «NO» en mayúsculas y sin tilde, una línea por caso.",
+   "La entrada empieza con el número de casos: usa la plantilla de número de casos."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola tarea",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Con una sola tarea nunca hay conflicto (una periódica no choca consigo misma).",
+  "si": {
+   "wa": "Con una sola tarea sale «SI»: o comparas la tarea consigo misma o empiezas el «fin de la anterior» con un valor que no es neutro.",
+   "rte": "Con una sola tarea (N = 0 o M = 0) te sales: revisa los tamaños de los vectores y de la cola (N + M)."
+  },
+  "pistas": [
+   "Una tarea sola nunca está en conflicto: la respuesta es «NO» en los tres casos.",
+   "El «fin de la última aparición» debe empezar en 0 (o en algo que no choque con nada)."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ventanas mínimas (T = 0 y T = 1)",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Ventanas de un minuto o vacías: solo cuentan los conflictos que empiezan antes de T.",
+  "si": {
+   "wa": "Con ventanas mínimas te equivocas en el borde: el conflicto debe EMPEZAR en un minuto < T. Con T = 0 no hay ningún minuto que mirar."
+  },
+  "pistas": [
+   "Primer caso: las dos tareas ocupan el minuto 0 (< 1): «SI». Segundo: chocan desde el minuto 1, que ya no cuenta: «NO».",
+   "Para la apariciones, la condición de seguir es «empieza antes de T» (ini < T)."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Intervalos que se tocan no chocan",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "[2, 8), [8, 10) y [10, 11) van seguidos: el final no está incluido, así que no hay conflicto.",
+  "si": {
+   "wa": "Consideras conflicto que una tarea empiece justo cuando acaba otra. Los intervalos son [c, f): f no está incluido. Usa < y no ≤."
+  },
+  "pistas": [
+   "[2, 8) acaba en 8 y [8, 10) empieza en 8: no se pisan. La respuesta es «NO».",
+   "Hay conflicto solo si el comienzo es ESTRICTAMENTE menor que el fin de la anterior: ini < fin."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Mismo instante de comienzo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos tareas que empiezan a la vez siempre chocan (todas duran al menos un minuto).",
+  "si": {
+   "wa": "Dos tareas que empiezan en el mismo minuto no las ves como conflicto: tras procesar la primera, la segunda empieza antes de que esta acabe."
+  },
+  "pistas": [
+   "[3, 5) y [3, 4) comparten el minuto 3: «SI».",
+   "No compares los comienzos entre sí: compara el comienzo de cada aparición con el FIN de la anterior."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Una tarea dentro de otra",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una tarea corta completamente dentro de una larga.",
+  "si": {
+   "wa": "No detectas una tarea contenida en otra: compara el comienzo de cada una con el fin de la anterior, no los finales entre sí."
+  },
+  "pistas": [
+   "[2, 3) está dentro de [0, 10): «SI».",
+   "Ordena por comienzo y guarda el fin de la anterior: 2 < 10, conflicto."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Tareas desordenadas en la entrada",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las tareas no vienen ordenadas: hay que compararlas por orden de comienzo, no en el orden de la entrada.",
+  "si": {
+   "wa": "Comparas cada tarea con la anterior en el orden en que llegan. Hay que procesarlas por orden de comienzo (con una cola de mínimos)."
+  },
+  "pistas": [
+   "[0, 5) y [4, 6) se pisan aunque entre ellas venga [10, 12) en la entrada: «SI».",
+   "Mete todas las tareas en una cola de mínimos por (comienzo, fin) y ve sacándolas en orden."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Conflicto que empieza justo en T",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La zona común empieza en el minuto T, que ya está fuera de [0, T).",
+  "si": {
+   "wa": "Cuentas un conflicto que empieza en el minuto T: la ventana es [0, T), así que T no está incluido. La condición es ini < T."
+  },
+  "pistas": [
+   "Las tareas chocan a partir del minuto 5, y T = 5: «NO».",
+   "Deja de sacar apariciones cuando la siguiente empiece en T o más tarde (sigue solo mientras ini < T)."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Conflicto que empieza antes de T y sigue después",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Ninguna de las dos tareas acaba antes de T, pero chocan en el minuto 4 < T.",
+  "si": {
+   "wa": "Solo miras las tareas que terminan antes de T. Una tarea cuenta si EMPIEZA antes de T, aunque acabe mucho después."
+  },
+  "pistas": [
+   "[0, 10) y [4, 6) se pisan en el minuto 4, dentro de [0, 5): «SI».",
+   "La condición para seguir procesando es que la aparición empiece antes de T, no que acabe antes."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "La periódica se repite",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La tarea periódica no choca en su primera aparición, sino en la tercera ([20, 22)).",
+  "si": {
+   "wa": "Tratas las periódicas como si aparecieran una sola vez: después de cada aparición hay que pasar a la siguiente (ini + p, fin + p)."
+  },
+  "pistas": [
+   "La periódica ocupa [0, 2), [10, 12), [20, 22)…; [20, 22) se pisa con [19, 25): «SI».",
+   "Una periódica no se saca de la cola: se actualiza su prioridad a la siguiente aparición."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "La repetición avanza entera (comienzo y fin)",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La segunda aparición de la periódica es [10, 13): hay que sumar el periodo al comienzo Y al fin.",
+  "si": {
+   "wa": "Al pasar a la siguiente aparición solo sumas el periodo al comienzo (o solo al fin). Las dos marcas se desplazan p minutos."
+  },
+  "pistas": [
+   "La periódica ocupa [0, 3), [10, 13)…; [11, 12) está dentro de [10, 13): «SI».",
+   "La siguiente aparición de (ini, fin) es (ini + p, fin + p)."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Periódica con apariciones pegadas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una periódica que dura tanto como su periodo: [0, 5), [5, 10)… van seguidas y no chocan.",
+  "si": {
+   "wa": "La periódica choca consigo misma: sus apariciones se tocan pero no se pisan ([0, 5) y [5, 10)). Revisa el < frente al ≤."
+  },
+  "pistas": [
+   "Con c = 0, f = 5 y p = 5 las apariciones van una detrás de otra: «NO».",
+   "El enunciado garantiza que una periódica no se solapa consigo misma: no hace falta comprobarlo aparte."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Dos periódicas que chocan tarde",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Dos periódicas que se cruzan sin tocarse durante más de cien repeticiones: el primer conflicto empieza en el minuto 126125.",
+  "si": {
+   "wa": "Solo miras unas pocas repeticiones (o calculas mal la siguiente). Hay que seguir avanzando apariciones mientras empiecen antes de T."
+  },
+  "pistas": [
+   "El primer choque empieza en el minuto 126125: con T = 126126 hay conflicto y con T = 126125 todavía no.",
+   "No hay atajos: repite «saca la que empieza antes, compara, avanza su siguiente aparición» hasta T o hasta el primer conflicto."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso que acaba con el «fin de la última aparición» muy alto seguido de otros: cada caso empieza de cero.",
+  "si": {
+   "wa": "Algo se arrastra de un caso a otro: el fin de la última aparición, el indicador de conflicto o la cola deben inicializarse en cada caso."
+  },
+  "pistas": [
+   "El primer caso deja el último fin en 100: en el segundo, [5, 6) no choca con nada.",
+   "Declara la cola, el vector de periodos, el último fin y el indicador dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 casos pequeños al azar (tiempos hasta 30).",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; dibuja sus intervalos en papel."
+  },
+  "pistas": [
+   "Busca el caso que falla (una línea por caso) y escribe las apariciones de cada tarea hasta T.",
+   "Comprueba los bordes: [c, f) no incluye f, y la ventana [0, T) no incluye T."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 casos con decenas de tareas y periodos variados.",
+  "si": {
+   "wa": "Falla algún caso mediano: busca entre las pruebas pequeñas uno parecido que también falle; es más fácil de seguir."
+  },
+  "pistas": [
+   "Si los pequeños salen bien, revisa lo que solo pasa con muchas tareas: varias periódicas a la vez, empates en el comienzo…",
+   "La cola debe ordenar por (comienzo, fin) de la próxima aparición de cada tarea."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "10.000 tareas únicas sin conflicto",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El máximo de tareas, todas únicas, desordenadas y sin conflicto.",
+  "si": {
+   "tle": "Comparar cada tarea con todas las demás es O(n²): ordénalas por comienzo (con la cola) y compara solo con la anterior."
+  },
+  "pistas": [
+   "Con 10.000 tareas, comparar todas las parejas son 5·10⁷ comparaciones por caso.",
+   "Basta comparar cada tarea con la que acabó justo antes en orden de comienzo."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "10.000 periódicas y un millón de apariciones",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "10.000 periódicas que se turnan sin chocar: hay un millón de apariciones antes de T.",
+  "si": {
+   "tle": "Para encontrar la siguiente aparición recorres todas las tareas: O(N + M) por aparición. Con una cola de mínimos es O(log(N + M)).",
+   "mle": "Generar todas las apariciones de antemano gasta demasiada memoria: genera cada una cuando haga falta (update de la periódica)."
+  },
+  "pistas": [
+   "Hay 10⁶ apariciones: si cada una cuesta recorrer 10⁴ tareas, son 10¹⁰ operaciones.",
+   "Guarda en una IndexPQ la próxima aparición de cada tarea; al procesarla, update a (ini + p, fin + p)."
+  ]
+ },
+ {
+  "n": 19,
+  "nombre": "Conflicto al principio y T enorme",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Dos periódicas chocan en el minuto 0 y T = 10⁸: hay que parar en el primer conflicto.",
+  "si": {
+   "tle": "Sigues procesando apariciones después de encontrar el conflicto: en cuanto hay uno, la respuesta es «SI» y se puede parar."
+  },
+  "pistas": [
+   "Aquí hay 10⁸ apariciones antes de T, pero el conflicto está en el minuto 0.",
+   "Añade a la condición del bucle «mientras no haya conflicto»."
+  ]
+ },
+ {
+  "n": 20,
+  "nombre": "Una periódica de periodo 4 y T = 10⁸",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Una periódica con 2,5·10⁷ apariciones antes de T y un único conflicto al final del todo.",
+  "si": {
+   "tle": "Cada aparición debe costar muy poco (un update en la cola): evita estructuras que crecen con T.",
+   "mle": "No guardes un vector del tamaño de T ni todas las apariciones a la vez: 10⁸ posiciones no caben en memoria."
+  },
+  "pistas": [
+   "No reserves un vector de T minutos ni generes todas las apariciones de golpe.",
+   "Con la cola solo hay N + M elementos en cada momento: la periódica se va actualizando."
+  ]
+ }
+]

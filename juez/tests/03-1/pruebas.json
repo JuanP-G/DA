@@ -1,0 +1,242 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 4,
+  "comprueba": "Los cuatro casos del ejemplo del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: la lectura (N, A, B y luego A horas de 9 V y B de 1,5 V), las colas o el bucle de sábados.",
+   "pe": "Los números están bien pero no el formato: los totales de los sábados van en UNA línea por caso, separados por un espacio.",
+   "tle": "El programa no termina: casi seguro el bucle de sábados no acaba nunca. ¿Vuelves a meter en la caja pilas gastadas (0 horas)? Un dron con una pila a 0 vuela 0 horas y nada cambia."
+  },
+  "pistas": [
+   "Haz a mano el segundo caso: el primer sábado vuelan 15 + 12 = 27 horas y el segundo 7 + 5 = 12.",
+   "Cada caso es UNA línea con los totales de todos los sábados separados por espacios.",
+   "La entrada no dice cuántos casos hay: lee hasta que falle la lectura de N (plantilla de casos ilimitados)."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un dron y una pila de cada tipo",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "El mínimo: un dron, una pila de 9 V y una de 1,5 V; solo hay un sábado.",
+  "si": {
+   "wa": "Con una pila de cada tipo el dron vuela min(h9, h1) horas una sola vez. Si sale otra cosa, revisa el mínimo y que paras cuando una caja queda vacía.",
+   "rte": "Con una pila de cada tipo te sales: ¿consultas la cola vacía después del primer vuelo?",
+   "tle": "Con una pila de cada tipo no termina: tras el primer vuelo una caja queda vacía y hay que parar."
+  },
+  "pistas": [
+   "Con 5 y 3 horas el dron vuela 3 y la pila de 9 V vuelve con 2, pero ya no hay pilas de 1,5 V: se acabó.",
+   "El bucle de sábados sigue solo mientras las DOS cajas tienen pilas."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Más drones que parejas de pilas",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "N es mayor que las pilas que hay: vuelan los drones que se puedan y el resto se queda en tierra.",
+  "si": {
+   "rte": "Sacas pilas de una caja vacía: dentro del bucle de drones hay que comprobar también que quedan pilas de los dos tipos.",
+   "wa": "Cuando hay menos parejas que drones, el sábado termina al vaciarse una caja, no al llegar a N drones."
+  },
+  "pistas": [
+   "En el primer caso hay 1000 drones pero solo 2 parejas de pilas: vuelan 2 drones y se acabó («6»).",
+   "La condición del bucle de drones necesita tres cosas: quedan drones, quedan pilas de 9 V y quedan pilas de 1,5 V."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Todas las pilas iguales",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Pilas que se agotan a la vez: no vuelve ninguna a la caja.",
+  "si": {
+   "wa": "Si las dos pilas de un dron se agotan a la vez, ninguna vuelve. Revisa que solo devuelves las que tienen MÁS de 0 horas.",
+   "tle": "Si vuelves a meter pilas con 0 horas, los drones vuelan 0 horas para siempre y el bucle no termina.",
+   "ole": "Escribes sin parar: el bucle de sábados no termina porque vuelves a meter pilas gastadas (0 horas) y los drones vuelan 0 horas una y otra vez."
+  },
+  "pistas": [
+   "Con 4 y 4 pilas de 5 horas y 2 drones: dos sábados de 10 horas, «10 10».",
+   "Una pila con 0 horas va al reciclaje: no la devuelvas a la caja."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Horas grandes (total de 10⁹)",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Pilas con muchísimas horas: el total de un sábado llega a 10⁹ y cabe justo en int.",
+  "si": {
+   "wa": "Con valores grandes algo se corta: revisa que lees y sumas con int (o long long) y no con un tipo más pequeño."
+  },
+  "pistas": [
+   "El enunciado garantiza que cada total es como mucho 10⁹: int basta, pero no uses short ni float.",
+   "Comprueba el segundo caso a mano: el primer sábado vuelan 500000000 + 400000000."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Las pilas sobrantes no vuelven el mismo sábado",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una pila que sobra se guarda al volver al club: ese mismo sábado ya no puede ir en otro dron.",
+  "si": {
+   "wa": "Devuelves la pila sobrante a la caja en cuanto aterriza el dron, y otro dron la usa ese mismo sábado. Las sobrantes deben esperar al final del sábado."
+  },
+  "pistas": [
+   "Solo hay una pila de 9 V: el primer sábado vuela un único dron (3 horas), aunque haya dos. La respuesta es «3 3».",
+   "Las pilas se colocan en el club antes de salir: cada pila va como mucho en un dron cada sábado.",
+   "Guarda las sobrantes en un vector aparte y mételas en las colas cuando acabe el bucle de drones de ese sábado."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Se cogen las pilas más cargadas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cada dron lleva la pila MÁS cargada de cada caja: hacen falta colas de máximos.",
+  "si": {
+   "wa": "Estás cogiendo las pilas menos cargadas: la IndexPQ (o priority_queue) que usas es de mínimos. Con IndexPQ hace falta greater<int>."
+  },
+  "pistas": [
+   "El dron debe llevar la pila de 9 horas, no la de 2: vuela 5 horas y se acaba la única pila de 1,5 V.",
+   "IndexPQ<int> por defecto saca el MENOR. Para sacar el mayor: IndexPQ<int, greater<int>>."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Solo vuelan N drones cada sábado",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Hay pilas para más drones de los que tenemos: cada sábado vuelan exactamente N.",
+  "si": {
+   "wa": "Vuelan más drones de los que hay: o no limitas el bucle de drones a N, o el contador llega a N incluido (≤ en vez de <)."
+  },
+  "pistas": [
+   "Hay 3 parejas pero solo 2 drones: «10 5», no «15».",
+   "Cuenta los drones que despegan: el bucle del sábado debe parar cuando el contador llegue a N (condición contador < N)."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "La pila de 9 V que sobra vuelve con lo que le queda",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tras volar, a la pila que sobra hay que restarle las horas voladas.",
+  "si": {
+   "wa": "La pila sobrante vuelve a la caja con las horas que tenía al principio (o no vuelve): hay que restarle lo que ha volado el dron."
+  },
+  "pistas": [
+   "La pila de 9 V pasa de 10 a 6 y luego a 2: «4 4 2».",
+   "Resta min(h9, h1) a LAS DOS pilas del dron, y la que quede con horas vuelve a su caja."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "La pila de 1,5 V que sobra también vuelve",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La pila sobrante puede ser la de 1,5 V: también vuelve a su caja.",
+  "si": {
+   "wa": "Solo devuelves a la caja las pilas de 9 V que sobran. Las de 1,5 V también pueden sobrar."
+  },
+  "pistas": [
+   "La pila de 1,5 V tiene 10 horas: vuela 4, 4 y 2 en tres sábados seguidos.",
+   "Trata las dos cajas igual: las sobrantes de cualquiera de los dos tipos vuelven al final del sábado."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Un tipo de pila se acaba antes que el otro",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Quedan muchas pilas de un tipo pero ninguna del otro: ya no se puede volar.",
+  "si": {
+   "wa": "Sigues contando sábados cuando una caja está vacía, o paras demasiado pronto. Se vuela mientras queden pilas de LOS DOS tipos.",
+   "pe": "Revisa los espacios: entre sábados un espacio, y al final del caso un salto de línea (sin espacio ni línea en blanco extra)."
+  },
+  "pistas": [
+   "La única pila de 1,5 V (9 horas) se gasta 1 hora cada sábado: nueve sábados de 1 hora.",
+   "El bucle de sábados es «mientras ninguna de las dos colas esté vacía»."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso que deja pilas sin usar seguido de otros: nada del caso anterior debe quedar en las cajas.",
+  "si": {
+   "wa": "Algo se arrastra de un caso a otro: las colas, los vectores de sobrantes o los contadores deben crearse dentro de resuelveCaso.",
+   "rte": "Una estructura de un caso anterior (con otro tamaño o con pilas que aún estaban dentro) se reutiliza en el siguiente.",
+   "pe": "A partir del segundo caso hay un espacio de más al principio de la línea: la variable que controla el primer número debe reiniciarse en cada caso."
+  },
+  "pistas": [
+   "Tras el primer caso quedan dos pilas de 9 V con 9 horas: el segundo caso no debe verlas.",
+   "Declara las colas, los vectores y los contadores dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 casos pequeños al azar.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: busca qué caso es (una línea por caso) y simúlalo a mano.",
+   "rte": "Algún caso pequeño hace que consultes una caja vacía."
+  },
+  "pistas": [
+   "La línea que falla es el número del caso: búscalo en la entrada.",
+   "Simula los sábados en papel con dos listas ordenadas de mayor a menor."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos medianos al azar, con muchos drones y sábados.",
+  "si": {
+   "wa": "Falla algún caso mediano: busca entre las pruebas pequeñas cuál falla también, es más fácil de seguir."
+  },
+  "pistas": [
+   "Si las pequeñas salen bien, revisa lo que solo pasa con muchos drones: límite de N, sobrantes que se repiten…",
+   "Comprueba que cada pila va como mucho en un dron por sábado."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Un dron y 200.000 sábados",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un solo dron y 200.000 pilas pequeñas: hay 200.000 sábados, cada uno debe costar poco.",
+  "si": {
+   "tle": "Haces demasiado trabajo cada sábado (ordenar las cajas, copiar las colas, recorrer todas las pilas…). Cada sábado debe costar O(drones · log P).",
+   "ole": "Escribes demasiado: un número por sábado, en una sola línea."
+  },
+  "pistas": [
+   "Hay 200.000 sábados: si cada uno recorre las 200.000 pilas, son 4·10¹⁰ operaciones.",
+   "No ordenes ni copies las cajas cada sábado: las colas de prioridad ya mantienen el orden.",
+   "Dentro de un sábado solo se tocan las pilas que se usan: top/pop al montarlas y push de las sobrantes."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Tamaño máximo (1000 drones y 200.000 pilas por caja)",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo con pilas al azar: mide la eficiencia de sacar la pila más cargada.",
+  "si": {
+   "tle": "Buscar la pila más cargada recorriendo todo el vector es O(P) por dron. Con una cola de prioridad es O(log P).",
+   "mle": "Gastas demasiada memoria: dos colas de 200.000 enteros caben de sobra; ¿copias estructuras grandes en cada vuelo?"
+  },
+  "pistas": [
+   "Cuenta las operaciones: hay hasta 400.000 vuelos; cada uno debe costar O(log P).",
+   "Usa una cola de máximos por tipo de pila (IndexPQ<int, greater<int>> o priority_queue<int>)."
+  ]
+ }
+]

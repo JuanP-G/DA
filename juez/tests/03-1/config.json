@@ -1,0 +1,11 @@
+{
+ "solucion": "3-Colas de prioridad variable (Heapsort)/EJ_03-1/EJ_03-1.cpp",
+ "cabeceras": [
+  "3-Colas de prioridad variable (Heapsort)/EJ_03-1/IndexPQ.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (p1.prioridad > 0) sobran1V.push_back({ p1.elem, p1.prioridad });",
+  "if (p1.prioridad > 0) cola1V.push(p1.elem, p1.prioridad);"
+ ]
+}

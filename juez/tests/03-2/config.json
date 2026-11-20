@@ -1,0 +1,11 @@
+{
+ "solucion": "3-Colas de prioridad variable (Heapsort)/EJ_03-2/EJ_03-2.cpp",
+ "cabeceras": [
+  "3-Colas de prioridad variable (Heapsort)/EJ_03-2/IndexPQ.h"
+ ],
+ "limite_ms": 4000,
+ "fallo": [
+  "return a.second < b.second;",
+  "return a.second > b.second;"
+ ]
+}
