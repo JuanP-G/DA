@@ -1,0 +1,260 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "La de las 12:30 empieza justo cuando acaba la de las 11:00: sin 10 minutos libres no se pueden ver las dos (150).",
+  "si": {
+   "wa": "Falla el primer ejemplo: entre una película y la siguiente hacen falta 10 minutos libres (inicio ≥ fin + 10).",
+   "pe": "Escribe solo el número de minutos, con un salto de línea por caso."
+  },
+  "pistas": [
+   "Pasa cada película a minutos: empieza en (D−1)·1440 + HH·60 + MM y acaba al sumar la duración.",
+   "minutos(i) = máximo de minutos(i+1) (no verla) y dur_i + minutos(sig(i)) (verla).",
+   "sig(i) es la primera película (ordenadas por inicio) que empieza en fin_i + 10 o después."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "Dos películas suman 150 minutos, pero compensa más la de 180 sola.",
+  "si": {
+   "wa": "Falla el segundo ejemplo: no se busca ver muchas películas sino estar más tiempo viéndolas."
+  },
+  "pistas": [
+   "Compara ver la de 90 y la de 60 con ver solo la de 180.",
+   "Para cada película decide verla o no con la recurrencia, sin reglas voraces."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "Películas en días distintos y desordenadas: se ven las dos (160).",
+  "si": {
+   "wa": "Falla el tercer ejemplo: el día cuenta (cada día son 1440 minutos) y las películas no vienen ordenadas."
+  },
+  "pistas": [
+   "¿Ordenas las películas antes de la programación dinámica?",
+   "El inicio absoluto es (D−1)·1440 + HH·60 + MM."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Ninguna es compatible con otra",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las tres se solapan entre sí: solo se puede ver una, la más larga (120).",
+  "si": {
+   "wa": "Sumas películas que se solapan: al ver la película i, lo siguiente que se puede ver es sig(i), no la i+1."
+  },
+  "pistas": [
+   "Si escribes 220, sumas las tres aunque se solapan.",
+   "En la opción «verla» se suma minutos(sig(i)), con sig(i) la primera que empieza en fin_i + 10 o después."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Empieza justo cuando acaba la otra",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La segunda empieza a la misma hora a la que acaba la primera: no hay 10 minutos libres (60).",
+  "si": {
+   "wa": "No dejas los 10 minutos libres entre película y película. La siguiente tiene que empezar en fin + 10 o después."
+  },
+  "pistas": [
+   "Si escribes 120, te falta el descanso.",
+   "Busca la primera película con inicio ≥ fin + 10, no inicio ≥ fin."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Exactamente 10 minutos libres",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La segunda empieza justo 10 minutos después de que acabe la primera: sí se pueden ver las dos (120).",
+  "si": {
+   "wa": "Con exactamente 10 minutos libres sí da tiempo: la condición es inicio ≥ fin + 10 (no >). Si usas upper_bound, cambia a lower_bound."
+  },
+  "pistas": [
+   "Si escribes 60, exiges más de 10 minutos.",
+   "lower_bound(fin + 10) da la primera con inicio ≥ fin + 10; upper_bound, la primera con inicio > fin + 10."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Nueve minutos no bastan",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Solo hay 9 minutos entre las dos: no se pueden ver juntas (60).",
+  "si": {
+   "wa": "Das por buenas películas con menos de 10 minutos libres: revisa el + 10 de la condición."
+  },
+  "pistas": [
+   "Si escribes 90, el descanso que exiges es menor de 10 minutos.",
+   "La condición es inicio ≥ fin + 10, con los minutos contados desde el principio del maratón."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Mismo horario en días distintos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tres películas a la misma hora en días distintos: se ven las tres (180).",
+  "si": {
+   "wa": "No tienes en cuenta el día: dos películas a la misma hora en días distintos no se solapan. Cada día son 1440 minutos."
+  },
+  "pistas": [
+   "Si escribes 60, comparas solo las horas.",
+   "El inicio absoluto es (D−1)·1440 + HH·60 + MM."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Una película pasa de medianoche",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La primera acaba a la 01:00 del día 2 y la segunda empieza a las 00:50: se solapan (120).",
+  "si": {
+   "wa": "Una película que pasa de medianoche ocupa también el día siguiente: con minutos absolutos (día incluido) sale sola."
+  },
+  "pistas": [
+   "¿A qué hora y qué día acaba la película de las 23:00 que dura 120 minutos?",
+   "Calcula fin = inicio + duración en minutos absolutos; no lo reduzcas a la hora del día."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Más películas no es más tiempo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Ver las dos cortas (la estrategia de «la que antes acaba») da 60 minutos; la larga sola da 200.",
+  "si": {
+   "wa": "Usas el voraz de «la que antes acaba» (el del maratón de terror): maximiza el número de películas, no los minutos. Hace falta programación dinámica."
+  },
+  "pistas": [
+   "Si escribes 60, eliges como en el 08-4.",
+   "Con pesos (duraciones) el voraz no sirve: minutos(i) = max(minutos(i+1), dur_i + minutos(sig(i)))."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Entrada desordenada",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las películas vienen al revés: hay que ordenarlas para buscar la siguiente (180).",
+  "si": {
+   "wa": "No ordenas las películas por inicio antes de la búsqueda binaria: lower_bound solo funciona sobre un vector ordenado."
+  },
+  "pistas": [
+   "¿Está ordenado el vector en el que haces lower_bound?",
+   "Ordena las películas por su inicio absoluto antes de rellenar la tabla."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Una sola película",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Una película por caso, con los valores mínimos y máximos.",
+  "si": {
+   "wa": "Con una sola película la respuesta es su duración.",
+   "rte": "Con N = 1 te sales del vector: la tabla tiene N + 1 posiciones."
+  },
+  "pistas": [
+   "La tabla minutos tiene N + 1 posiciones y minutos(N) = 0.",
+   "sig(i) puede ser N (no hay ninguna después)."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "El total más grande posible",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "144 películas de 10⁶ minutos, una tras otra con 80 minutos libres: el total es 1,44·10⁸.",
+  "si": {
+   "wa": "Con duraciones enormes el total es grande: revisa los tipos de los inicios, los finales y la tabla."
+  },
+  "pistas": [
+   "Cada película acaba 10⁶ minutos después de empezar, varios días más tarde.",
+   "Calcula los minutos absolutos con un tipo entero que no se quede corto (long long es lo más cómodo)."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Un caso grande y luego otros pequeños: nada del anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente (el vector de películas o la tabla): créalos dentro de la función de cada caso.",
+   "rte": "La tabla de un caso anterior tiene otro tamaño: créala en cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué vive fuera de resuelveCaso.",
+   "Declara el vector y la tabla dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 300,
+  "comprueba": "300 casos al azar con hasta 8 películas.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; pruébalo a mano."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla y hazlo en papel.",
+   "Revisa los 10 minutos, los días y el orden de las películas."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos al azar con hasta 1000 películas.",
+  "si": {
+   "wa": "Falla en casos más grandes: revisa la búsqueda de la siguiente película."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla.",
+   "Comprueba la búsqueda binaria sobre los inicios ordenados."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "150.000 películas muy largas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Todas las películas se solapan con casi todas las demás: buscar la siguiente recorriendo es O(N²).",
+  "si": {
+   "tle": "Buscas sig(i) recorriendo las películas siguientes (o comparas todas con todas): O(N²) no da tiempo. Usa búsqueda binaria (lower_bound) sobre los inicios ordenados.",
+   "wa": "Falla con películas que duran días: revisa que calculas los minutos absolutos con el día."
+  },
+  "pistas": [
+   "¿Cuántas películas miras para encontrar sig(i) cuando todas se solapan?",
+   "Los inicios están ordenados: la primera con inicio ≥ fin + 10 se encuentra con búsqueda binaria en O(log N)."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "150.000 películas al azar",
+  "tipo": "rendimiento",
+  "casos": 2,
+  "comprueba": "Un caso de 130.000 películas repartidas en 100.000 días y otro de 20.000 en 3 días.",
+  "si": {
+   "tle": "Es lento: debe ser O(N log N) (ordenar y una búsqueda binaria por película). Lee la entrada con cin sin cosas raras.",
+   "mle": "Gastas demasiada memoria: basta un vector de películas y otro de N + 1 para la tabla."
+  },
+  "pistas": [
+   "Ordenar es O(N log N); cada sig(i) con lower_bound, O(log N).",
+   "No copies vectores dentro del bucle."
+  ]
+ }
+]

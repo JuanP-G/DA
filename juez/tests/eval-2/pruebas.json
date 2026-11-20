@@ -1,0 +1,234 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "Un solo tipo: la masa da para 5 bollos pero el chorizo solo para 3 (30 €).",
+  "si": {
+   "wa": "Falla el primer ejemplo: el número de bollos de un tipo lo limitan a la vez su chorizo (g / c) y la masa (M / m).",
+   "pe": "Escribe solo el número de euros, con un salto de línea por caso."
+  },
+  "pistas": [
+   "Con 15 g de chorizo y 5 por bollo, ¿cuántos bollos salen?",
+   "bollos(i, j) = máximo de bollos(i−1, j − t·m_i) + t·p_i para t = 0..k_i con t·m_i ≤ j.",
+   "La respuesta es bollos(N, M)."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "Dos bollos del segundo tipo y cuatro del primero con la masa que queda (240 €).",
+  "si": {
+   "wa": "Falla el segundo ejemplo: hay que combinar tipos; prueba todas las cantidades de cada tipo con la masa que queda."
+  },
+  "pistas": [
+   "Del segundo tipo salen 7 / 3 = 2 bollos, que gastan 4 g de masa.",
+   "Con la tabla, para cada tipo y cada cantidad de masa j se prueba cuántos bollos t hacer de ese tipo."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "No da para ningún bollo",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Casos donde no llega la masa o el chorizo (0 €) y el caso más pequeño con un bollo (1 €).",
+  "si": {
+   "wa": "Cuando no se puede hacer ningún bollo la respuesta es 0: el chorizo (g < c) o la masa (m > M) no llegan.",
+   "rte": "Con M = 1 o k = 0 te sales de la tabla: revisa que j − t·m ≥ 0."
+  },
+  "pistas": [
+   "Con 2 g de chorizo y 3 por bollo, ¿cuántos bollos salen?",
+   "Si k = 0 o m > j, el único valor posible es no hacer ningún bollo de ese tipo (t = 0)."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Varios bollos del mismo tipo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Del mismo tipo se pueden hacer varios bollos: aquí 3, que gastan toda la masa (30 €).",
+  "si": {
+   "wa": "Solo haces un bollo de cada tipo (mochila 0/1). De cada tipo se pueden hacer hasta k = g / c bollos."
+  },
+  "pistas": [
+   "Con 6 g de chorizo, 2 por bollo y 9 g de masa, salen 3 bollos.",
+   "En la recurrencia, elige cuántos bollos t (de 0 a k) haces del tipo i, no solo si lo usas o no."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "El chorizo limita cuántos bollos salen",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El primer tipo vale mucho y gasta poca masa, pero su chorizo solo da para 2 bollos (2 · 50 + 8 · 1 = 108).",
+  "si": {
+   "wa": "Haces más bollos de un tipo de los que permite su chorizo (o cuentas dos veces bollos del mismo tipo al rellenar la fila). Como mucho k = g / c."
+  },
+  "pistas": [
+   "Con 10 g de chorizo y 5 por bollo, ¿cuántos bollos del primer tipo puedes hacer?",
+   "El bucle de t tiene que parar en k = g / c además de en t·m ≤ j.",
+   "Si actualizas la misma fila que lees, un bollo del tipo i se puede volver a usar: calcula la fila nueva a partir de una copia de la anterior."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Bollos por tipo: división entera",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con 7 g de chorizo y 3 por bollo salen 2 bollos, no 3 (20 + 8 = 28).",
+  "si": {
+   "wa": "Redondeas hacia arriba el número de bollos de un tipo. k = g / c es la división entera: el chorizo que sobra no da para otro bollo."
+  },
+  "pistas": [
+   "¿Cuántos bollos de 3 g salen con 7 g de chorizo?",
+   "Usa la división entera g / c, sin redondear hacia arriba."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Puede sobrar masa",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los bollos gastan 2 g de masa y hay 9: se hacen 4 y sobra 1 g (28 €).",
+  "si": {
+   "wa": "Exiges gastar toda la masa. La tabla debe guardar lo mejor con COMO MUCHO j gramos: empieza con 0 en todas las casillas, no con −∞."
+  },
+  "pistas": [
+   "Con 9 g y bollos de 2 g, ¿se puede gastar toda la masa?",
+   "bollos(0, j) = 0 para todo j: no hacer nada siempre vale."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Cada tipo tiene su propio chorizo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cada tipo gasta solo su chorizo: del primero y del segundo sale 1 bollo y del tercero 2 (120 €).",
+  "si": {
+   "wa": "El chorizo no es una segunda capacidad compartida: cada tipo tiene el suyo, que solo sirve para calcular su tope k = g / c."
+  },
+  "pistas": [
+   "¿Cuántos bollos salen de cada tipo por separado?",
+   "La única capacidad compartida es la masa; el chorizo se convierte en el tope k de cada tipo."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Lo más caro primero no siempre conviene",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El bollo más caro gasta toda la masa (100 €); dos del otro tipo dan 120 €.",
+  "si": {
+   "wa": "Haces primero los bollos más caros (voraz por precio): no da el óptimo. Hace falta la tabla de programación dinámica."
+  },
+  "pistas": [
+   "Compara un bollo de 100 € que gasta 10 g con dos de 60 € que gastan 5 g cada uno.",
+   "Ninguna regla de orden sirve: la tabla prueba todas las cantidades de cada tipo."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Lo de más euros por gramo de masa tampoco",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El primer tipo da 10 €/g y el segundo 9 €/g, pero tras el primero sobran 4 g inútiles: mejor dos del segundo (90 €).",
+  "si": {
+   "wa": "Eliges por euros por gramo de masa (voraz): la masa que sobra y el tope de chorizo lo estropean. Hace falta la tabla."
+  },
+  "pistas": [
+   "Con un bollo del primer tipo sobran 4 g, que no dan para nada.",
+   "La mochila con cantidades acotadas no se resuelve con un voraz: rellena la tabla bollos(i, j)."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Valores máximos",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "50 tipos con todos los valores a 100 (1000 €) y 50 tipos de 1 g de masa y 100 bollos cada uno (100.000 €).",
+  "si": {
+   "wa": "Con los valores máximos falla: revisa el tamaño de la tabla (M + 1) y que el bucle de t llegue a k."
+  },
+  "pistas": [
+   "En el segundo caso hay 5000 bollos posibles y masa para 1000: la respuesta es 1000 · 100.",
+   "Tabla de M + 1 posiciones, j de 0 a M incluido."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Un caso grande y luego otros pequeños: nada del anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente (la tabla): créala dentro de la función de cada caso con M + 1 posiciones.",
+   "rte": "La tabla de un caso anterior tiene otro tamaño: créala en cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué vive fuera de resuelveCaso.",
+   "Declara la tabla dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos al azar con hasta 5 tipos.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; pruébalo a mano."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla y hazlo en papel.",
+   "Revisa el tope k = g / c, que puede sobrar masa y que se prueban todas las cantidades t."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos al azar con hasta 50 tipos y 1000 g de masa.",
+  "si": {
+   "wa": "Falla en casos más grandes: revisa los bordes de la tabla.",
+   "tle": "Una recursión sin memoria no termina con 50 tipos: guarda bollos(i, j) en una tabla."
+  },
+  "pistas": [
+   "¿Calculas el mismo bollos(i, j) muchas veces? Apúntalo en una tabla.",
+   "Rellena la tabla tipo a tipo: cada fila solo necesita la anterior."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Muchos bollos posibles",
+  "tipo": "rendimiento",
+  "casos": 12,
+  "comprueba": "12 casos con 50 tipos de los que salen 100 bollos de 1 g de masa: el peor caso de la tabla.",
+  "si": {
+   "tle": "Es lento: la tabla tiene M + 1 columnas por tipo y en cada casilla se prueban hasta k cantidades; O(M · suma de k) por caso, unos 5·10⁶ pasos. ¿Haces algo más?",
+   "mle": "Basta una fila de M + 1 (o N + 1 filas): no hace falta una dimensión para el chorizo."
+  },
+  "pistas": [
+   "Cuenta las operaciones: tipos × masa × bollos posibles.",
+   "No añadas una dimensión de chorizo a la tabla: cada tipo tiene su propio tope k."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Casos grandes al azar",
+  "tipo": "rendimiento",
+  "casos": 41,
+  "comprueba": "40 casos grandes al azar y uno con todo al mínimo de precio.",
+  "si": {
+   "tle": "Es lento con muchos casos grandes: el coste por caso debe ser O(M · suma de k).",
+   "wa": "Falla algún caso grande: busca la línea que falla en la entrada."
+  },
+  "pistas": [
+   "Comprueba que no recorres más de lo necesario en el bucle de t (para cuando t·m > j).",
+   "Una fila de M + 1 enteros por tipo basta."
+  ]
+ }
+]

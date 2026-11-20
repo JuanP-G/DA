@@ -27,7 +27,8 @@ using namespace std;
  sig(i) = la primera pelicula que empieza en fin_i + 10 o despues (lower_bound: estan
  ordenadas por inicio). Respuesta: minutos(0).
  No vale un voraz: no se maximiza el numero de peliculas sino el tiempo (ejemplo 2).
- El total puede pasar de 2^31 (300.000 peliculas de hasta 10^6 minutos): long long.
+ Las peliculas vistas no se solapan: el total es como mucho 100.000*1440 + 10^6, que cabe
+ en int; se usa long long para los minutos absolutos por comodidad.
 
  Coste: O(N log N) por caso; espacio O(N).
 

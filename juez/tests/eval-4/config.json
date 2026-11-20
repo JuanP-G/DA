@@ -1,0 +1,9 @@
+{
+ "solucion": "12-Evaluacion/EJ_Eval-4/EJ_Eval-4.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "esfuerzo[i][j] = 2 * (p[j] - p[i]) + mejor;",
+  "esfuerzo[i][j] = (p[j] - p[i]) + mejor;"
+ ]
+}

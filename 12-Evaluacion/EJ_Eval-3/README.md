@@ -61,6 +61,6 @@ Ver A y C da 150 minutos, pero compensa más la película larga sola.
 
 ## Ojo con
 - Hacen falta **10 minutos libres**: una que empieza justo cuando acaba otra **no** se puede ver (ejemplo 1). La condición es $\text{ini} \ge \text{fin} + 10$.
-- El total puede pasar de $2^{31}$ (hasta 300.000 películas de 10⁶ minutos): `long long`.
+- El total cabe en `int`: las películas vistas no se solapan, así que como mucho suman los 100.000 días más la última película (≈ 1,45·10⁸ minutos). Los minutos absolutos se guardan en `long long` por comodidad.
 - Las películas no vienen ordenadas, y los días cuentan: no basta con la hora.
 - Recorrer todas las siguientes para buscar $\text{sig}(i)$ es $O(N^2)$: con N = 300.000 no da tiempo.
