@@ -439,7 +439,7 @@ details.op summary code{justify-self:start}
 .vcard.teo .etq{color:var(--vt)}.vcard.teo:hover{box-shadow:0 10px 30px rgba(45,212,191,.22)}.vcard.teo .thumb .pl i{background:var(--vt);color:#06251f}
 .vcard.teo b{font-size:1.05rem}
 .vcard.ej{border-color:rgba(139,123,255,.35)}.vcard.ej .etq{color:var(--ve)}.vcard.ej:hover{border-color:var(--ve);box-shadow:0 10px 26px rgba(139,123,255,.2)}
-.vsc{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x proximity}
+.vsc{display:flex;gap:12px;overflow-x:auto;padding:12px 10px 20px;margin:-10px -10px -12px;scroll-snap-type:x proximity}
 .vsc .vcard{flex:0 0 210px;scroll-snap-align:start}.vsc .vcard b{font-size:.85rem}
 /* sala */
 .vsala .vtop{margin:0 0 14px}
@@ -526,3 +526,12 @@ body.cine-on{overflow:hidden}
 .pw .vc .vol input{width:0;opacity:0;margin:0;accent-color:#2dd4bf;cursor:pointer;transition:width .2s,opacity .2s,margin .2s}
 .pw .vc .vol:hover input,.pw .vc .vol:focus-within input{width:72px;opacity:1;margin:0 6px 0 2px}
 .pw .vc .ic svg{display:block}
+
+/* portada: accesos rápidos a laboratorio y vídeos */
+.acc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 16px}
+.accb{position:relative;display:flex;flex-direction:column;gap:3px;padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:var(--glass,rgba(255,255,255,.04));text-decoration:none;color:inherit;transition:transform .15s,border-color .15s,box-shadow .15s}
+.accb b{font-size:1.1rem}.accb span{font-size:.82rem;color:var(--muted);line-height:1.35}.accb em{font-style:normal;font-weight:700;font-size:.85rem;margin-top:6px}
+.accb:hover{transform:translateY(-2px)}.accb:active{transform:scale(.99)}
+.accb.lab{border-color:rgba(245,185,66,.5);background:linear-gradient(160deg,rgba(245,185,66,.13),rgba(245,185,66,.02))}.accb.lab em,.accb.lab b{color:#f5b942}.accb.lab:hover{box-shadow:0 10px 26px rgba(245,185,66,.2)}
+.accb.vid{border-color:rgba(139,123,255,.5);background:linear-gradient(160deg,rgba(139,123,255,.15),rgba(139,123,255,.02))}.accb.vid em,.accb.vid b{color:#a99cff}.accb.vid:hover{box-shadow:0 10px 26px rgba(139,123,255,.22)}
+@media(max-width:560px){.acc{grid-template-columns:1fr}}

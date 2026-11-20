@@ -1304,6 +1304,7 @@ def main():
 <p class="lede">Todos los problemas del juez con su enunciado, la solución en C++, la explicación del planteamiento, el vídeo paso a paso de cada uno y herramientas interactivas para entender cada estructura de datos.</p>
 <label class="search">@@i:arrow@@<input id="q" type="search" placeholder="Buscar ejercicio (nombre, número, técnica…)" aria-label="Buscar ejercicio"><kbd>/</kbd></label>
 <a class="guiab" href="guia.html"><b>¿Primera vez aquí?</b><span>Guía de 1 minuto: qué es cada cosa y por dónde empezar</span><em>Ver la guía →</em></a></div>
+<div class="acc"><a class="accb lab" href="laboratorio.html"><b>Laboratorio</b><span>{len(LABS)} simuladores paso a paso con código y coste</span><em>Abrir →</em></a><a class="accb vid" href="videos.html"><b>Vídeos</b><span>{n_vid} vídeos paso a paso, con subtítulos</span><em>Ver →</em></a></div>
 <div class="sm" data-resumen>
 <div class="box hi"><small>Tu progreso</small><b data-r="pct">0%</b><span data-r="txt"></span><div class="prog"><i data-r="bar"></i></div></div>
 <div class="box"><small>Temas completados</small><b><u data-r="comp">0</u><em> / {n_temas}</em></b><span data-r="curso">0 en curso</span></div>
