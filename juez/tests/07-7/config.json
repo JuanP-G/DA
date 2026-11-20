@@ -1,0 +1,12 @@
+{
+ "solucion": "7-Digrafos valorados y caminos minimos/EJ_07-7/EJ_07-7.cpp",
+ "cabeceras": [
+  "7-Digrafos valorados y caminos minimos/EJ_07-7/DigrafoValorado.h",
+  "7-Digrafos valorados y caminos minimos/EJ_07-7/IndexPQ.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "dist[v] <= T) ++ratones;",
+  "dist[v] < T) ++ratones;"
+ ]
+}

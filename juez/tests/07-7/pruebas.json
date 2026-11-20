@@ -1,0 +1,233 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del PDF: 3 ratones y 0.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: hace falta el tiempo de cada celda HASTA la salida (no desde ella) y cuentan los que tardan como mucho T.",
+   "rte": "Error de ejecución con el ejemplo: las celdas van del 1 al N (resta 1 a S y a las celdas de cada pasadizo)."
+  },
+  "pistas": [
+   "En el primer caso el ratón de la celda 1 tarda exactamente 20 y cuenta.",
+   "La primera línea de cada caso trae N, S, T y P, en ese orden."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola celda",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "N = 1: solo está la celda de salida, que no tiene ratón. Sale 0.",
+  "si": {
+   "wa": "Con una sola celda no hay ningún ratón: la de salida no cuenta.",
+   "rte": "Con N = 1 y ningún pasadizo algo se sale del vector: revisa los índices."
+  },
+  "pistas": [
+   "Debe salir 0.",
+   "No se coloca ratón en la celda de salida."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Sin pasadizos",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Ningún pasadizo: ningún ratón puede salir.",
+  "si": {
+   "wa": "Sin pasadizos ningún ratón llega: 0. Revisa que solo cuentas las celdas con distancia finita ≤ T y que no cuentas la salida."
+  },
+  "pistas": [
+   "Debe salir 0.",
+   "Inicializa las distancias a infinito, salvo la de la salida."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Ningún ratón llega a tiempo",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Con T = 1 y pasadizos de 2 o más segundos, nadie sale.",
+  "si": {
+   "wa": "Ningún ratón tarda 1 segundo o menos: 0. Revisa la comparación con T y que no cuentas la salida."
+  },
+  "pistas": [
+   "Debe salir 0.",
+   "Cuenta las celdas v ≠ S con dist[v] ≤ T."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Todos los ratones salen",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Con T = 10⁶ todos los ratones llegan (el más lejano tarda 30.000).",
+  "si": {
+   "wa": "Todos llegan: debe salir N − 1 = 3. Si sale menos, algún ratón no encuentra su camino (¿usas el grafo inverso?); si sale N, cuentas la salida."
+  },
+  "pistas": [
+   "Debe salir 3.",
+   "Cada ratón sigue los pasadizos en su sentido hasta la salida."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "La celda de salida no tiene ratón",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos celdas y la salida en la 1: solo hay un ratón (el de la 2).",
+  "si": {
+   "wa": "Cuentas también la celda de salida (su distancia es 0 ≤ T). El enunciado coloca un ratón en cada celda EXCEPTO en la de salida."
+  },
+  "pistas": [
+   "Debe salir 1.",
+   "Al contar, salta la celda S."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Distancias hacia la salida, no desde ella",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las celdas 1 y 2 llegan a la salida en 5 s; desde la salida a la 3 hay un pasadizo, pero eso no le sirve al ratón de la 3.",
+  "si": {
+   "wa": "Calculas las distancias DESDE la salida a cada celda, pero los ratones van HACIA la salida. Haz el Dijkstra desde S en el grafo inverso (g.inverso())."
+  },
+  "pistas": [
+   "Debe salir 2.",
+   "El tiempo de v a S en el grafo es el tiempo de S a v en el grafo con las aristas al revés.",
+   "Un único Dijkstra desde S sobre g.inverso() da el tiempo de TODAS las celdas hasta la salida."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Pasadizos de un solo sentido",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La 1 no tiene ningún pasadizo hacia la salida (solo hay uno de la salida a ella): solo sale el ratón de la 2.",
+  "si": {
+   "wa": "Recorres los pasadizos en los dos sentidos. Cada uno va solo de A a B; para volver tendría que aparecer otra línea."
+  },
+  "pistas": [
+   "Debe salir 1.",
+   "Añade solo la arista A → B (y usa su inverso para el Dijkstra)."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Llegar justo a tiempo cuenta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El ratón de la celda 1 tarda exactamente T = 7 segundos: cuenta («en como mucho T segundos»).",
+  "si": {
+   "wa": "Cuentas solo los que tardan menos de T. El enunciado dice «como mucho T»: usa ≤."
+  },
+  "pistas": [
+   "Debe salir 1.",
+   "Compara con dist[v] <= T."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Mejorar un tiempo ya encontrado",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La celda 1 tiene un pasadizo directo de 10 s, pero pasando por la 2 tarda 2: hay que actualizar su tiempo.",
+  "si": {
+   "wa": "Fijas el tiempo de una celda la primera vez que la ves y no lo mejoras después: hay que relajar (si mejora, actualizar dist y la prioridad)."
+  },
+  "pistas": [
+   "Debe salir 3: las celdas 1 (2 s), 2 (1 s) y 3 (4 s).",
+   "Una distancia solo es definitiva cuando su celda sale de la cola de prioridad."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios pasadizos entre dos celdas y lazos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "De la 1 a la 2 hay dos pasadizos (9 y 2) y hay lazos: hay que usar el más rápido.",
+  "si": {
+   "wa": "Te quedas con un solo pasadizo entre dos celdas (el primero o el último que lees). Guarda todos: Dijkstra elige el mejor."
+  },
+  "pistas": [
+   "Debe salir 1 (la celda 1 tarda 2; la 3 tarda 6 > 5).",
+   "No compruebes si ya existe la arista antes de añadirla ni uses una matriz que se sobrescribe."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un caso con muchas celdas seguido de otros más pequeños: nada de un caso debe quedar para el siguiente.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: las distancias, el contador o el grafo no se crean de nuevo en cada caso.",
+   "rte": "Usas en un caso una estructura con el tamaño de otro caso anterior: créalas dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso (o son static).",
+   "Declara el grafo, dist, la cola y el contador dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 50,
+  "comprueba": "50 casos pequeños al azar.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas bien: la línea que falla es el número de caso; calcula a mano el tiempo de cada celda hasta la salida."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla.",
+   "Dibuja los pasadizos con flechas y sigue, desde cada celda, el camino más rápido hasta S."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios con lazos y pasadizos repetidos",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 casos con muchos lazos y pasadizos repetidos.",
+  "si": {
+   "wa": "Algún caso con lazos o pasadizos repetidos falla: guarda todas las aristas, Dijkstra se queda con la mejor."
+  },
+  "pistas": [
+   "Busca el caso que falla.",
+   "Los lazos no estorban a Dijkstra."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Grande: 60.000 celdas y 130.000 pasadizos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un laberinto grande en el que casi todos los ratones salen (T = 10⁶).",
+  "si": {
+   "tle": "Haces un Dijkstra (o un recorrido) desde cada celda hasta la salida: con 60.000 celdas no termina. Basta UNO desde la salida en el grafo inverso. También es lento buscar el mínimo recorriendo el vector (O(N²)).",
+   "mle": "Gastas demasiada memoria: no guardes una matriz de distancias.",
+   "wa": "Solo falla en el grande: revisa el valor de infinito y la comparación con T."
+  },
+  "pistas": [
+   "¿Cuántos Dijkstra haces? Debería ser uno.",
+   "Invierte el grafo (g.inverso()) y lanza Dijkstra desde S con IndexPQ."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Fila de 60.000 celdas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Una fila de celdas que desemboca en la salida: solo las ~200 más cercanas llegan en 10⁶ segundos.",
+  "si": {
+   "tle": "Demasiado lento: un Dijkstra con IndexPQ basta (y puede parar en cuanto la distancia supera T).",
+   "wa": "Las distancias de la fila llegan a 3·10⁸: revisa que no se desborda nada y la comparación con T."
+  },
+  "pistas": [
+   "Puedes cortar el Dijkstra cuando la celda que sale de la cola ya tarda más de T.",
+   "Usa la IndexPQ, no un recorrido del vector para buscar el mínimo."
+  ]
+ }
+]

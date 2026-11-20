@@ -1,0 +1,239 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del PDF: 53 (pasando por la página 2) e IMPOSIBLE.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: cómo sumas los tiempos de carga, la lectura de la entrada o el formato de la salida.",
+   "rte": "Error de ejecución ya con el ejemplo: casi seguro las páginas van del 1 al N y las usas sin restar 1 (el DigrafoValorado lanza una excepción con un vértice que no existe)."
+  },
+  "pistas": [
+   "Haz a mano el primer caso: 10 (carga de la 1) + 10 (enlace) + 5 (carga de la 2) + 20 (enlace) + 8 (carga de la 4) = 53.",
+   "Recuerda que la entrada empieza con el número de casos y que las páginas se numeran desde 1.",
+   "Escribe solo el número (o IMPOSIBLE) y un salto de línea por caso, sin texto adicional."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Sin enlaces: IMPOSIBLE",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Dos páginas y ningún enlace: no se puede llegar.",
+  "si": {
+   "wa": "Cuando no se puede llegar debes escribir exactamente IMPOSIBLE (en mayúsculas y sin nada más). Si escribes un número, revisa cómo detectas que la página N no se ha alcanzado (su distancia sigue a infinito)."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa si no hay ningún enlace?",
+   "Inicializa todas las distancias a infinito y, al final, si la de la página N sigue a infinito, escribe IMPOSIBLE."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "La página N solo se alcanza desde páginas inalcanzables",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "La página N tiene enlaces de entrada, pero salen de páginas a las que no se llega desde la 1.",
+  "si": {
+   "wa": "Que la página N tenga enlaces que lleguen a ella no basta: tienen que salir de páginas alcanzables desde la 1. La respuesta es IMPOSIBLE."
+  },
+  "pistas": [
+   "Desde la página 1 no sale ningún enlace: no se puede ir a ningún sitio.",
+   "La respuesta depende solo de la distancia calculada por Dijkstra desde la página 1: si sigue a infinito, IMPOSIBLE."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Enlace directo de la 1 a la N",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Lo mínimo: dos páginas y un enlace; se cargan las dos y se pulsa el enlace (7 + 9 + 4 = 20).",
+  "si": {
+   "wa": "Con un solo enlace el resultado es carga(1) + enlace + carga(N). Si no te sale, revisa qué cargas sumas.",
+   "rte": "Error de ejecución con dos páginas: las páginas van del 1 al N; resta 1 al leerlas."
+  },
+  "pistas": [
+   "Debe salir 7 + 9 + 4 = 20.",
+   "La página de inicio también se carga: su tiempo va en la distancia inicial, no en 0."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Todos los tiempos a cero",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Tiempos de carga y de enlace iguales a 0 (el enunciado lo permite): la respuesta es 0, no IMPOSIBLE.",
+  "si": {
+   "wa": "Si escribes IMPOSIBLE donde va 0, estás usando la distancia 0 como «no visitada». Usa un infinito de verdad para marcar lo no alcanzado."
+  },
+  "pistas": [
+   "El resultado de este caso es 0.",
+   "No uses 0 como valor especial: inicializa las distancias a numeric_limits<int>::max() y compara con eso."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Camino de 3000 páginas con tiempos máximos",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Una cadena 1 → 2 → … → 3000 con todos los tiempos a 10.000: la respuesta es 59.990.000.",
+  "si": {
+   "wa": "El valor que usas como infinito es demasiado pequeño: el tiempo puede llegar a casi 6·10⁷. Usa numeric_limits<int>::max().",
+   "tle": "Con 3000 páginas ya se nota el coste: si usas Floyd (N³ ≈ 2,7·10¹⁰) o algo parecido no termina. Basta un Dijkstra desde la página 1."
+  },
+  "pistas": [
+   "Calcula a mano el máximo posible: 3000 cargas y 2999 enlaces de 10.000.",
+   "Si tu infinito es 10⁶ o 10⁷, este caso sale IMPOSIBLE: usa numeric_limits<int>::max().",
+   "Solo hace falta la distancia desde la página 1: un único Dijkstra, O(M log N)."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Las cargas de las páginas intermedias deciden el camino",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El camino con los enlaces más rápidos pasa por una página muy lenta de cargar (las páginas 1 y N cargan en 0).",
+  "si": {
+   "wa": "Solo sumas el tiempo de los enlaces: la carga de cada página por la que pasas también cuenta. Súmala al coste de la arista que entra en ella."
+  },
+  "pistas": [
+   "Ir por la página 2 cuesta 1 + 100 + 1 = 102 y por la 3, 5 + 0 + 1 = 6.",
+   "Cada vez que llegas a una página la tienes que cargar: ese tiempo forma parte del camino.",
+   "Al crear el grafo, da a la arista v → w el valor enlace + carga[w]."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "La página de inicio también se carga",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Solo la página 1 tiene tiempo de carga: debe sumarse aunque no se llegue a ella por ningún enlace.",
+  "si": {
+   "wa": "Te falta la carga de la página 1: como no se entra en ella por ningún enlace, no va en ninguna arista. Empieza con dist[origen] = carga[origen] en lugar de 0."
+  },
+  "pistas": [
+   "El resultado es 25 + 3 + 4 = 32, no 7.",
+   "Si sumas la carga en la arista que entra en cada página, la de la página 1 se queda fuera.",
+   "Inicializa la distancia de la página 1 con su tiempo de carga."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "La página final también se carga",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Solo la página N tiene tiempo de carga: también se cuenta (el enunciado dice «incluidas la 1 y la N»).",
+  "si": {
+   "wa": "Te falta la carga de la página N. Si sumas la carga de la página de la que SALE el enlace, la última nunca se suma: súmala en la arista que entra en ella."
+  },
+  "pistas": [
+   "El resultado es 3 + 4 + 25 = 32, no 7.",
+   "¿Sumas carga[v] (página de salida) o carga[w] (página de llegada) en el enlace v → w?",
+   "Con coste(v → w) = enlace + carga[w] y dist[1] = carga[1] se cuentan todas las páginas una vez."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Los enlaces tienen sentido",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un enlace de v a w no permite ir de w a v (dígrafo, no grafo): aquí solo vale el enlace directo 1 → 3.",
+  "si": {
+   "wa": "Estás recorriendo los enlaces en los dos sentidos. Cada enlace va de la página en la que está a la página a la que lleva: añade solo la arista v → w."
+  },
+  "pistas": [
+   "La respuesta es 1 + 50 + 1 = 52: los enlaces 2 → 1 y 3 → 2 no sirven para ir de la 1 a la 3.",
+   "Un DigrafoValorado guarda cada arista solo en la lista de su origen; no añadas también w → v."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Mejorar una distancia ya encontrada",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "A una página se llega primero por un camino caro y después por uno más barato: hay que actualizar su distancia.",
+  "si": {
+   "wa": "Fijas la distancia de una página la primera vez que la ves y no la mejoras después. Eso es un recorrido en anchura, no Dijkstra: hay que relajar (si dist[v] + coste < dist[w], actualizar dist[w] y su prioridad)."
+  },
+  "pistas": [
+   "A la página 2 se llega directamente con 100, pero pasando por la 3 solo cuesta 2.",
+   "Una distancia solo es definitiva cuando su página sale de la cola de prioridad, no cuando entra.",
+   "Relaja cada arista: si mejora, actualiza dist[w] y llama a pq.update(w, dist[w])."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "No parar al descubrir la página N",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La primera vez que se llega a la página N no tiene por qué ser por el camino más rápido.",
+  "si": {
+   "wa": "Terminas en cuanto la página N recibe una distancia, pero esa distancia aún puede mejorar. Solo es definitiva cuando la N sale de la cola de prioridad."
+  },
+  "pistas": [
+   "El enlace directo da 50, pero 1 → 2 → 3 da 2.",
+   "Si quieres parar antes, hazlo cuando saques la página N de la cola (pq.top()), no al relajar una arista que llega a ella."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 8,
+  "comprueba": "Un caso grande seguido de otros pequeños (alguno IMPOSIBLE): nada de un caso debe quedar para el siguiente.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: las distancias, la cola de prioridad o el grafo no se crean de nuevo en cada caso.",
+   "rte": "Usas en un caso una estructura con el tamaño de otro caso anterior: crea el grafo, las distancias y la cola dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso (o son static).",
+   "Declara el grafo, dist y la IndexPQ dentro de la función de cada caso, con el N de ese caso."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 casos pequeños al azar (algunos IMPOSIBLE).",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas bien: mira la línea que falla (es el número de caso) y prueba ese caso a mano.",
+   "rte": "Algún caso pequeño rompe el programa: revisa los índices (páginas desde 1) y los casos sin enlaces."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso: búscalo en la entrada.",
+   "Dibuja ese grafo con sus cargas y calcula tú el camino; compáralo con lo que hace tu programa paso a paso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios con muchos tiempos a cero",
+  "tipo": "aleatorio",
+  "casos": 50,
+  "comprueba": "50 casos pequeños donde la mitad de los tiempos de carga y de enlace son 0.",
+  "si": {
+   "wa": "Los tiempos 0 te dan problemas: no uses 0 como marca de «sin visitar» y no supongas que pasar por más páginas siempre cuesta más."
+  },
+  "pistas": [
+   "Busca el caso que falla y fíjate en los ceros.",
+   "Dijkstra funciona con aristas de valor 0; lo que falla suele ser usar 0 como valor especial."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Grandes: 3000 páginas y 30.000 enlaces (5 casos)",
+  "tipo": "rendimiento",
+  "casos": 5,
+  "comprueba": "Cinco casos del tamaño máximo: mide la eficiencia.",
+  "si": {
+   "tle": "Demasiado lento para 3000 páginas y 30.000 enlaces. Un Dijkstra con IndexPQ es O(M log N); Floyd (N³) o un Bellman-Ford (N·M) no llegan.",
+   "mle": "Gastas demasiada memoria: con 3000 páginas una matriz N×N de long long ya son 72 MB; usa listas de adyacencia (DigrafoValorado).",
+   "wa": "Falla solo en los grandes: revisa el valor de infinito y que no haya desbordamientos."
+  },
+  "pistas": [
+   "Solo hace falta la distancia desde la página 1: un Dijkstra, no todas las parejas.",
+   "Usa DigrafoValorado (listas de adyacencia) e IndexPQ; pasa el grafo por referencia constante."
+  ]
+ }
+]

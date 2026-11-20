@@ -1,0 +1,12 @@
+{
+ "solucion": "7-Digrafos valorados y caminos minimos/EJ_07-2/EJ_07-2.cpp",
+ "cabeceras": [
+  "7-Digrafos valorados y caminos minimos/EJ_07-2/DigrafoValorado.h",
+  "7-Digrafos valorados y caminos minimos/EJ_07-2/IndexPQ.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "formas[w] += formas[v];",
+  "formas[w] += 1;"
+ ]
+}

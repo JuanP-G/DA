@@ -1,0 +1,238 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF: 4 formas, 0 (no se llega) y 1 (casa y colegio en el mismo sitio).",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: además de la distancia mínima hay que llevar, para cada intersección, cuántos caminos mínimos llegan a ella.",
+   "rte": "Error de ejecución con el ejemplo: las intersecciones van del 1 al N (resta 1) y N puede ser 1 sin ninguna calle."
+  },
+  "pistas": [
+   "En el dibujo hay 4 caminos de longitud 40 de la 1 a la 7: sigue tu programa a mano con ese grafo.",
+   "Lleva un vector formas[v]: cuántos caminos mínimos hay de la 1 a v.",
+   "Al relajar v → w: si mejora, formas[w] = formas[v]; si empata, formas[w] += formas[v]."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola intersección",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "N = 1: la casa es el colegio y hay exactamente una forma de ir (no moverse).",
+  "si": {
+   "wa": "Con N = 1 la respuesta es 1, no 0: el número de formas de llegar al origen es 1 (formas[origen] = 1 al empezar).",
+   "rte": "Con N = 1 y ninguna calle algo se sale del vector o accede a una posición que no existe."
+  },
+  "pistas": [
+   "¿Cuánto vale formas de la intersección de partida antes de empezar?",
+   "Inicializa formas[0] = 1 (el camino vacío) y no trates el origen como un caso especial al relajar."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Sin calles",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Dos intersecciones y ninguna calle: 0 formas.",
+  "si": {
+   "wa": "Si no se puede llegar al colegio, el número de formas es 0."
+  },
+  "pistas": [
+   "Si nunca se relaja ninguna arista, formas[N-1] debe quedarse en 0.",
+   "No escribas la distancia ni ningún texto: solo el número de formas."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Colegio en otra zona del pueblo",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Las calles no conectan la casa con el colegio: 0 formas.",
+  "si": {
+   "wa": "El colegio está en otra componente: la respuesta es 0. Revisa que formas empiece a 0 para todos menos el origen."
+  },
+  "pistas": [
+   "Desde la 1 solo se llega a la 2 y la 3.",
+   "Inicializa formas a 0 en todos los vértices salvo el origen."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Un único camino",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Una cadena 1 - 2 - 3 - 4 - 5: una sola forma.",
+  "si": {
+   "wa": "Solo hay un camino posible: si sale otra cosa, revisa la inicialización de formas o la lectura de las calles."
+  },
+  "pistas": [
+   "Debe salir 1.",
+   "Cada vez que mejoras dist[w], formas[w] pasa a valer formas[v]."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Calles de doble sentido",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las calles vienen escritas «hacia atrás» (2 1 y 3 2): Lucas puede recorrerlas en los dos sentidos.",
+  "si": {
+   "wa": "Solo añades cada calle en un sentido. Lucas no respeta el sentido: en el DigrafoValorado hay que poner las dos aristas, u → v y v → u."
+  },
+  "pistas": [
+   "Con las calles «2 1» y «3 2» hay que poder ir 1 → 2 → 3.",
+   "Por cada calle llama dos veces a ponArista: {u, v, l} y {v, u, l}."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Dos caminos de igual longitud",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un rombo: dos caminos de longitud 2 (1-2-4 y 1-3-4).",
+  "si": {
+   "wa": "Solo cuentas un camino: cuando dist[v] + l == dist[w] (empate) también hay que sumar. También pasa si terminas en cuanto el colegio recibe su primera distancia: puede llegar otro camino igual de corto después."
+  },
+  "pistas": [
+   "La respuesta es 2.",
+   "En Dijkstra normal, si la nueva distancia es igual no se hace nada; aquí sí: es otra manera de llegar.",
+   "Si empata: formas[w] += formas[v]. Y si quieres parar antes, hazlo al SACAR el colegio de la cola, nunca al descubrirlo."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Al empatar se suman las formas del vecino",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos rombos seguidos: 2 · 2 = 4 caminos. Al empatar no se suma 1, se suman las formas del vecino.",
+  "si": {
+   "wa": "Al empatar sumas 1, pero por el vecino pueden llegar muchos caminos mínimos: hay que sumar formas[v], no 1."
+  },
+  "pistas": [
+   "La respuesta es 4: a la intersección 4 llegan 2 caminos y cada uno sigue de 2 maneras.",
+   "Si a v llegan formas[v] caminos mínimos, cada uno se puede alargar con la calle v → w.",
+   "Empate: formas[w] += formas[v]."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Un camino más corto anula los anteriores",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "A la 3 se llega primero por la calle directa (10) y luego por la 2 (2): el camino de 10 ya no cuenta.",
+  "si": {
+   "wa": "Cuando encuentras un camino más corto sumas en vez de sustituir: los caminos anteriores dejan de ser mínimos. Si mejora, formas[w] = formas[v]."
+  },
+  "pistas": [
+   "La respuesta es 1: solo 1-2-3-4 mide 3.",
+   "Distingue los dos casos: si dist[v] + l < dist[w], formas[w] = formas[v] (se olvida lo anterior); si es igual, formas[w] += formas[v]."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "El camino con menos calles no es el más corto",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La calle directa 1-4 mide 10; los dos caminos de dos calles miden 2: hay 2 formas.",
+  "si": {
+   "wa": "Cuentas caminos con el menor número de calles (recorrido en anchura), pero lo que cuenta es la longitud: usa Dijkstra con las longitudes de las calles."
+  },
+  "pistas": [
+   "La respuesta es 2 (1-2-4 y 1-3-4), no 1.",
+   "Un BFS solo sirve si todas las calles miden lo mismo; aquí hay que usar Dijkstra."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 7,
+  "comprueba": "Un caso con caminos seguido de otro en el que no se llega (y más casos): nada de un caso debe quedar para el siguiente.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el vector de formas, las distancias o el grafo no se crean de nuevo en cada caso. Fíjate en el caso sin camino: debe dar 0.",
+   "rte": "Usas en un caso una estructura con el tamaño de un caso anterior: créalas dentro de resuelveCaso con el N de ese caso."
+  },
+  "pistas": [
+   "El segundo caso no tiene camino: si escribes algo distinto de 0, es un valor del caso anterior.",
+   "Declara el grafo, dist, formas y la cola dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Muchísimos caminos mínimos (2³⁰)",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "30 rombos seguidos: 2³⁰ = 1.073.741.824 caminos mínimos en un grafo de solo 91 intersecciones.",
+  "si": {
+   "tle": "Estás recorriendo los caminos uno a uno (con una búsqueda en profundidad o recursión sin memoria): con 2³⁰ caminos no termina. Hay que contarlos dentro del propio Dijkstra.",
+   "wa": "El número no te cabe: 2³⁰ cabe en int, pero si usas short o haces alguna multiplicación intermedia, se desborda."
+  },
+  "pistas": [
+   "No hace falta enumerar los caminos, solo contarlos.",
+   "Cada intersección guarda cuántos caminos mínimos llegan a ella; se calcula a partir de los de sus vecinos ya definitivos.",
+   "Cuéntalo en el mismo Dijkstra: al mejorar, formas[w] = formas[v]; al empatar, formas[w] += formas[v]."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 casos pequeños al azar, con calles cortas para que haya muchos empates.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas bien: la línea que falla es el número de caso; dibújalo y cuenta los caminos a mano.",
+   "rte": "Algún caso pequeño rompe el programa: revisa N = 1, los casos sin calles y los índices desde 1."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla.",
+   "Dibuja el grafo y escribe junto a cada intersección su distancia y su número de caminos mínimos."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios con muchos empates",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 casos algo más densos con calles de longitud 1 o 2.",
+  "si": {
+   "wa": "Con muchos empates algo se cuenta mal: comprueba que sumas en los empates y sustituyes al mejorar."
+  },
+  "pistas": [
+   "Busca el caso que falla y cuenta a mano los caminos mínimos de cada intersección.",
+   "formas[v] es definitivo cuando v sale de la cola; a partir de entonces solo se usa para sumar a sus vecinos."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Camino de 100.000 intersecciones",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Una cadena de 100.000 intersecciones con calles de 10.000: distancias de casi 10⁹.",
+  "si": {
+   "tle": "Tu Dijkstra no es O(C log N): si buscas el mínimo recorriendo todo el vector de distancias cada vez, con 100.000 intersecciones son 10¹⁰ pasos. Usa la IndexPQ.",
+   "wa": "La distancia llega a casi 10⁹: comprueba que tu infinito es mayor (numeric_limits<int>::max()).",
+   "rte": "Con 100.000 intersecciones algo se rompe: ¿una recursión de 100.000 niveles o un vector demasiado grande?"
+  },
+  "pistas": [
+   "Usa una cola de prioridad indexada (IndexPQ) para sacar el vértice más cercano.",
+   "Comprueba el valor de infinito: las distancias llegan a 999.990.000."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Rejilla con muchísimos empates",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Una rejilla de 250×250 con calles de longitud 1 (unos 125.000 tramos): al colegio llegan C(30,15) = 155.117.520 caminos.",
+  "si": {
+   "tle": "Demasiado lento con 62.500 intersecciones: el Dijkstra debe ser O(C log N) y el recuento, parte del mismo recorrido.",
+   "wa": "En el resto de la rejilla el número de caminos es gigantesco y se desborda; eso no debe afectar al colegio. Si falla, revisa que sumas y sustituyes en el orden correcto."
+  },
+  "pistas": [
+   "El número de caminos de otras intersecciones puede desbordarse sin problema (con unsigned no afecta al resultado).",
+   "Lo que no puede ser es recorrer los caminos uno a uno: cuéntalos dentro de Dijkstra."
+  ]
+ }
+]

@@ -1,0 +1,241 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del PDF, con sus pedidos, NO LLEGA y las líneas ---.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, compara carácter a carácter: «tiempo: a -> b -> c», con los dos puntos pegados al tiempo, flechas con un espacio a cada lado y --- tras cada caso.",
+   "pe": "Los datos están bien pero el formato no: espacios o saltos de línea de más o de menos (por ejemplo, entre el tiempo y el camino).",
+   "rte": "Error de ejecución con el ejemplo: los puntos van del 1 al N (resta 1 al leer) o la reconstrucción del camino se sale del vector."
+  },
+  "pistas": [
+   "Compara tu salida con «30: 1 -> 3» y «40: 4 -> 3 -> 1».",
+   "La entrada pone N y C en la misma línea; después de los tramos vienen K y los K pedidos.",
+   "Escribe --- después de todos los pedidos de cada caso."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Tramo directo",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Dos puntos y un tramo: «5: 1 -> 2».",
+  "si": {
+   "wa": "Con un solo tramo debe salir «5: 1 -> 2». Revisa que escribes el origen, el destino y que sumas 1 a los índices al escribir.",
+   "rte": "Error de ejecución en el caso más pequeño: revisa los índices (desde 1) y la reconstrucción del camino."
+  },
+  "pistas": [
+   "El camino tiene dos puntos: el origen y el destino.",
+   "Al reconstruir con ulti[] desde el destino, el bucle para al llegar al origen: añádelo tú."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Sin tramos: NO LLEGA",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Ningún tramo: todos los pedidos son NO LLEGA y aun así se escribe ---.",
+  "si": {
+   "wa": "Cuando no hay camino se escribe exactamente NO LLEGA (sin tiempo) y, al terminar los pedidos del caso, ---.",
+   "rte": "Si no hay camino no intentes reconstruirlo: ulti del destino no existe."
+  },
+  "pistas": [
+   "Comprueba si la distancia al destino sigue a infinito antes de reconstruir el camino.",
+   "La línea --- se escribe siempre al acabar el caso."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Camino de varios tramos, completo y en orden",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El camino 2 -> 4 -> 1 -> 5 debe escribirse del origen al destino, con los dos extremos y numerado desde 1.",
+  "si": {
+   "wa": "El camino sale mal escrito: al revés (del destino al origen), sin el origen o sin el destino, o con los puntos numerados desde 0."
+  },
+  "pistas": [
+   "Debe salir «9: 2 -> 4 -> 1 -> 5».",
+   "ulti[] te da el camino hacia atrás: mételo por delante (push_front en un deque) o dale la vuelta al final.",
+   "El bucle «for (v = destino; v != origen; v = ulti[v])» no añade el origen: añádelo después. Y suma 1 a cada punto al escribirlo."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Tramos de doble sentido",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los tramos vienen escritos «hacia atrás» (2 1 y 3 2): se recorren en los dos sentidos.",
+  "si": {
+   "wa": "Solo añades cada tramo en un sentido. Las calles son de doble sentido: pon las dos aristas, u → v y v → u."
+  },
+  "pistas": [
+   "Debe salir «8: 1 -> 2 -> 3».",
+   "Por cada tramo llama dos veces a ponArista."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Varios pedidos desde distintos orígenes",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cuatro pedidos en el mismo caso, cada uno desde un origen distinto: cada uno empieza de cero.",
+  "si": {
+   "wa": "El primer pedido sale bien y los siguientes no: las distancias o ulti[] del pedido anterior se quedan. Hay que hacer un Dijkstra nuevo (con vectores nuevos) por cada pedido.",
+   "tle": "La reconstrucción del camino entra en un bucle: ulti[] tiene restos del pedido anterior. Crea dist y ulti de nuevo en cada pedido.",
+   "mle": "La reconstrucción del camino no termina y llena la memoria: ulti[] tiene restos del pedido anterior y forma un ciclo. Crea dist y ulti de nuevo en cada pedido.",
+   "rte": "La reconstrucción del camino se sale del vector: ulti[] tiene restos del pedido anterior."
+  },
+  "pistas": [
+   "Si el primer pedido sale bien y el segundo no, mira qué se reutiliza entre pedidos.",
+   "Declara dist, ulti y la cola dentro del bucle de los pedidos."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "El camino con menos tramos no es el más rápido",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "1 -> 5 -> 4 tiene dos tramos pero tarda 20; 1 -> 2 -> 3 -> 4 tarda 3.",
+  "si": {
+   "wa": "Buscas el camino con menos tramos (anchura). Hay que minimizar el tiempo: Dijkstra con los minutos de cada tramo."
+  },
+  "pistas": [
+   "Debe salir «3: 1 -> 2 -> 3 -> 4».",
+   "Un BFS solo sirve si todos los tramos tardan lo mismo."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Mejorar el camino de un punto ya alcanzado",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Al punto 3 se llega primero directamente (10) y luego por el 2 (2): su «último tramo» debe cambiar.",
+  "si": {
+   "wa": "El tiempo sale bien pero el camino no: cuando mejoras dist[w] también hay que actualizar ulti[w] (por dónde se llega)."
+  },
+  "pistas": [
+   "Debe salir «3: 1 -> 2 -> 3 -> 4».",
+   "En la relajación, si mejora, actualiza a la vez dist[w], ulti[w] y la prioridad de w."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "No parar al descubrir el destino",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La primera vez que se llega al destino es por el tramo directo (5), pero pasando por el 2 se tarda 2.",
+  "si": {
+   "wa": "Paras en cuanto el destino recibe una distancia, pero aún puede mejorar. Solo es definitiva cuando el destino sale de la cola."
+  },
+  "pistas": [
+   "Debe salir «2: 1 -> 2 -> 4».",
+   "Puedes parar al SACAR el destino de la cola (pq.top()), no al relajar un tramo que llega a él."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Varios tramos entre los mismos puntos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Entre 1 y 2 hay dos tramos (10 y 3): hay que usar el más rápido, aunque venga después.",
+  "si": {
+   "wa": "Te quedas con un solo tramo entre dos puntos (el primero o el último que lees). Todos cuentan: guarda todas las aristas, Dijkstra elige solo la mejor."
+  },
+  "pistas": [
+   "Debe salir «7: 1 -> 2 -> 3».",
+   "No compruebes si ya existe la arista antes de añadirla, ni uses una matriz que se sobrescribe."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "NO LLEGA entre otros pedidos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un pedido imposible en medio de otros: los demás deben salir bien y --- solo al final.",
+  "si": {
+   "wa": "Tras un NO LLEGA algo se descoloca: revisa que no escribes --- después de cada pedido ni te saltas la lectura de los siguientes."
+  },
+  "pistas": [
+   "Debe salir «3: 2 -> 1», «NO LLEGA», «2: 5 -> 4 -> 3» y ---.",
+   "El --- va una vez por caso, después del bucle de los pedidos."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un caso con varios pedidos seguido de otros más pequeños: nada de un caso debe quedar para el siguiente.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el grafo, las distancias o ulti[] no se crean de nuevo en cada caso.",
+   "rte": "Usas en un caso una estructura con el tamaño de otro caso anterior: créalas dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "Crea el grafo dentro de resuelveCaso y dist/ulti dentro del bucle de pedidos."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 50,
+  "comprueba": "50 casos pequeños al azar (con tramos repetidos y pedidos que no llegan).",
+  "si": {
+   "wa": "Hay algún pedido que no tratas bien: busca qué caso es contando las líneas --- y prueba ese grafo a mano.",
+   "rte": "Algún caso pequeño rompe el programa: revisa los índices y la reconstrucción del camino."
+  },
+  "pistas": [
+   "Cada caso termina en ---: así localizas el caso que falla.",
+   "Dibuja ese grafo y sigue Dijkstra a mano anotando dist y ulti."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 15,
+  "comprueba": "15 casos de 20 a 60 puntos con 10 pedidos cada uno: caminos más largos.",
+  "si": {
+   "wa": "Con caminos más largos algo falla: revisa la reconstrucción con ulti[] y que se actualiza al mejorar."
+  },
+  "pistas": [
+   "Busca el pedido que falla y compara tu camino con el esperado: ¿cuál es más rápido?",
+   "Si tu tiempo es correcto pero el camino no, el problema está en ulti[]."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Grande: 20.000 puntos y 100.000 tramos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo con 10 pedidos a destinos lejanos: un Dijkstra por pedido.",
+  "si": {
+   "tle": "Demasiado lento: cada pedido necesita un Dijkstra O(C log N) con IndexPQ. Si buscas el mínimo recorriendo el vector (O(N²)), con 20.000 puntos y 10 pedidos no llega.",
+   "mle": "Gastas demasiada memoria: no uses una matriz N×N; usa DigrafoValorado (listas de adyacencia).",
+   "wa": "Solo falla en el grande: revisa el valor de infinito y los tramos repetidos."
+  },
+  "pistas": [
+   "Usa una IndexPQ para elegir el siguiente punto, no un recorrido de todo el vector.",
+   "Construye el grafo una vez por caso y haz un Dijkstra por pedido."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Caminos de 20.000 puntos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "10 pedidos cuyo camino pasa por los 20.000 puntos: la reconstrucción y la escritura deben ser lineales.",
+  "si": {
+   "tle": "Reconstruyes o escribes el camino en tiempo cuadrático: por ejemplo, concatenando por delante en un string (s = x + \" -> \" + s copia todo cada vez). Usa un deque/vector y escribe al final.",
+   "wa": "Con caminos tan largos algo se corta: revisa la reconstrucción con ulti[].",
+   "rte": "¿Reconstruyes el camino con recursión? Con 20.000 niveles puede bastar, pero revisa que no haya bucles en ulti[]."
+  },
+  "pistas": [
+   "Cuenta cuántas operaciones hace tu reconstrucción para un camino de L puntos.",
+   "Guarda los puntos en un deque (push_front) o en un vector que luego recorres al revés, y escribe con cout directamente."
+  ]
+ }
+]
