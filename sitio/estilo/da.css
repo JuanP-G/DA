@@ -460,3 +460,42 @@ details.op summary code{justify-self:start}
 .vsala .it b{font-size:.82rem;display:block;line-height:1.25}.vsala .it span{font-size:.72rem;color:var(--muted)}.vsala .it .thumb{border-radius:8px}
 @media(max-width:900px){.vsala .sala{grid-template-columns:1fr}.vsala .side{position:static;max-height:none}.vrow{grid-template-columns:1fr}.vmenu .vcont .thumb{width:110px}}
 @media (prefers-reduced-motion:reduce){.vv *{transition:none!important}}
+
+/* vídeos: sala, pantalla completa, cuenta atrás y tipos de botón */
+.vv.ensala .crumbs{display:none}
+.vsala .vtop{margin:0 0 14px}
+.vsala a.vback{display:inline-flex;gap:6px;align-items:center;padding:6px 2px;color:var(--muted);text-decoration:none;font-weight:600;font-size:.9rem;transition:color .15s,transform .15s}
+.vsala a.vback:hover{color:var(--ink);transform:translateX(-3px)}
+.pw{position:relative;border-radius:14px;overflow:hidden;background:#000}
+.pw video{border-radius:0!important}
+.pw .xit{display:none;position:absolute;top:14px;right:14px;z-index:5;padding:8px 14px;border-radius:99px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.6);color:#fff;font:600 .85rem Inter,sans-serif;cursor:pointer}
+.pw.cine{position:fixed;inset:0;z-index:300;border-radius:0;display:grid;place-items:center}
+.pw.cine video{width:100%;height:100%;max-height:100vh;aspect-ratio:auto;object-fit:contain}
+.pw.cine .xit{display:block}
+body.cine-on{overflow:hidden}
+.pw .nx{position:absolute;right:14px;bottom:60px;z-index:4;max-width:min(340px,calc(100% - 28px));display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:14px;background:rgba(8,10,28,.92);border:1px solid var(--ve);backdrop-filter:blur(6px);animation:nxIn .25s ease both}
+.pw .nx[hidden]{display:none}.pw .nx span{font-size:.78rem;color:var(--muted)}.pw .nx span b{color:var(--ink);font-variant-numeric:tabular-nums}
+.pw .nx .nt{font-size:.92rem;line-height:1.3}.pw .nx div{display:flex;gap:8px;margin-top:4px}
+@keyframes nxIn{from{opacity:0;transform:translateY(8px)}}
+/* capítulos: chips con la hora; el que se está viendo se ilumina */
+.vsala .caps{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.vsala .cap{all:unset;cursor:pointer;display:inline-flex;gap:8px;align-items:baseline;padding:5px 12px 5px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted);font-size:.8rem;transition:color .15s,border-color .15s,background-color .15s,transform .12s}
+.vsala .cap i{font:600 .72rem var(--mono,monospace);font-style:normal;opacity:.8}
+.vsala .cap:hover{color:var(--ink);border-color:var(--accent)}.vsala .cap:active{transform:scale(.97)}
+.vsala .cap.on{color:#fff;background:linear-gradient(135deg,#2dd4bf,#14b8a6);border-color:transparent;box-shadow:0 3px 12px rgba(45,212,191,.4);font-weight:600}
+.vsala .cap.on i{opacity:1}
+/* botones por tipo: navegación (segmentado), acción (discontinuo), enlace (relleno por color), pantalla completa (contorno) */
+.vsala .ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.vsala .ctl .sp{flex:1}
+.vsala .seg{display:inline-flex;border:1px solid var(--line);border-radius:12px;padding:3px;background:rgba(255,255,255,.04);gap:2px}
+.vsala .btn.nav{background:none!important;border:0!important;box-shadow:none!important;border-radius:9px;padding:8px 14px;color:var(--ink)}
+.vsala .btn.nav:hover{background:rgba(255,255,255,.09)!important}.vsala .btn.nav:active{transform:scale(.97)}
+.vsala .btn.fs{background:none!important;border:1px solid var(--line)!important;box-shadow:none!important;border-radius:10px;padding:7px 12px;font-size:.85rem;color:var(--ink)}
+.vsala .btn.fs:hover{border-color:var(--accent)!important}
+.vsala .btn.act{background:none!important;border:1px dashed var(--line)!important;box-shadow:none!important;border-radius:10px;padding:7px 12px;font-size:.85rem;color:var(--muted)}
+.vsala .btn.act:hover{color:var(--ink);border-color:var(--accent)!important}
+.vsala .btn.lnk{border:0!important;font-weight:700;border-radius:10px;padding:8px 16px;text-decoration:none;transition:transform .12s,box-shadow .15s}
+.vsala .btn.lnk.teo{background:linear-gradient(135deg,#2dd4bf,#34d399)!important;color:#06251f!important;box-shadow:0 3px 14px rgba(45,212,191,.35)!important}
+.vsala .btn.lnk.ej{background:linear-gradient(135deg,#8b7bff,#5a7bff)!important;color:#fff!important;box-shadow:0 3px 14px rgba(124,108,255,.4)!important}
+.vsala .btn.lnk:hover{transform:translateY(-1px)}.vsala .btn.lnk:active{transform:scale(.97)}
+.pw .nx .btn.go{background:linear-gradient(135deg,#8b7bff,#5a7bff)!important;border:0!important;color:#fff;font-weight:700}
+.pw .nx .btn.ghost{background:none!important;border:1px solid var(--line)!important;color:var(--muted)}
