@@ -951,5 +951,6 @@ updAlgoUI();
 loadPreset(PRESETS[0]);
 player.load([{ msg: 'Carga un ejemplo, construye tu propio grafo valorado y elige un algoritmo. Con <b>Añadir</b> verás cómo <code>ponArista</code> rellena las listas de adyacencia.', lines: [] }], { play: false });
 mostrarTab(location.hash === '#graf' ? 'graf' : 'lab');
+(function () { const v = new URLSearchParams(location.search).get('vista'); if (v && document.documentElement.classList.contains('embed') && document.getElementById('tabLab')) { document.documentElement.classList.add('vista'); mostrarTab(v === 'lab' ? 'lab' : 'graf'); } })();
 window.__DA = { G, ALGOS, gPon, gAddV, gReset, loadPreset, PRESETS, DSU, LAB, labUnir, Grid, gridAdd, kruskal };
 </script>

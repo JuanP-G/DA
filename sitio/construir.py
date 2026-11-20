@@ -709,17 +709,33 @@ LABS = {
             ("pop()", "Quita el mejor", "O(log n)", "Se baja el último a la raíz y se hunde. Cada intercambio actualiza la tabla de posiciones en O(1)."),
             ("size() / empty()", "Cuántos elementos hay", "O(1)", "Es el tamaño del vector menos uno."),
         ]),
-    "tema6-kruskal.html": dict(
-        slug="conjuntos-disjuntos", titulo="Conjuntos disjuntos y ARM", cab="ConjuntosDisjuntos.h", nota="El <b>coste</b> dice cómo crece el tiempo. <b>n</b> es el número de elementos, <b>V</b> y <b>A</b> los vértices y aristas del grafo. Abre cualquier fila para ver el razonamiento.",
-        lede="Particiones que solo se unen, comparadas en sus cuatro versiones, y su uso en Kruskal y Prim para encontrar el árbol de recubrimiento de coste mínimo.",
+    "tema6-kruskal.html|lab": dict(
+        slug="conjuntos-disjuntos", titulo="Conjuntos disjuntos", cab="ConjuntosDisjuntos.h", extra=["ConjuntosDisjuntos_variantes.h"],
+        desc="Particiones que solo se unen: las cuatro implementaciones, de la más lenta a la del juez.",
+        nota="El <b>coste</b> dice cómo crece el tiempo. <b>n</b> es el número de elementos. Abre cualquier fila para ver el razonamiento.",
+        lede="Una partición que solo sabe juntar conjuntos. Compara sus cuatro implementaciones (búsqueda rápida, unión rápida, por tamaños y con compresión de caminos) y mira cómo cambian los árboles.",
         ops=[
             ("buscar(a)", "Representante del conjunto de a", "O(α(n)) ≈ O(1)", "Con unión por tamaños el árbol tiene altura log n; con compresión de caminos cada búsqueda aplana el camino recorrido. Juntas dan un coste amortizado α(n) (inversa de Ackermann), que en la práctica es menor que 5."),
             ("unir(a, b)", "Fusiona los conjuntos de a y b", "O(α(n)) ≈ O(1)", "Son dos búsquedas más colgar la raíz pequeña de la grande. Lo único caro son las búsquedas."),
             ("unidos(a, b)", "¿Están en el mismo conjunto?", "O(α(n)) ≈ O(1)", "Dos búsquedas y comparar representantes."),
             ("cardinal(a) / num_cjtos()", "Tamaño del conjunto / cuántos hay", "O(α(n)) / O(1)", "El tamaño se guarda en la raíz (hay que buscarla); el número de conjuntos es un contador."),
             ("Versión «búsqueda rápida»", "Vector id[] con el conjunto de cada uno", "buscar O(1), unir O(n)", "Buscar es leer id[a]. Pero unir obliga a recorrer todo el vector para renombrar un conjunto."),
+            ("Versión «unión rápida»", "Un árbol por conjunto, sin equilibrar", "unir O(1)*, buscar O(n)", "Unir cuelga una raíz de otra. Pero sin control de la altura el árbol puede degenerar en una lista y buscar recorre hasta n nodos. (*tras buscar las raíces)."),
+            ("Por tamaños", "Colgar siempre el árbol pequeño del grande", "O(log n)", "Cada vez que un elemento baja un nivel, su conjunto al menos se duplica. Como no puede duplicarse más de log n veces, la altura es ≤ log n."),
+        ]),
+    "tema6-kruskal.html|graf": dict(
+        slug="grafo-valorado", titulo="Grafo valorado: Kruskal y Prim", cab="GrafoValorado.h", extra=["GrafoValorado_algoritmos.h"],
+        desc="Grafos con valores en las aristas y árbol de recubrimiento de coste mínimo (Kruskal y Prim).",
+        nota="El <b>coste</b> dice cómo crece el tiempo. <b>V</b> y <b>A</b> son los vértices y aristas del grafo. Abre cualquier fila para ver el razonamiento.",
+        lede="Un grafo no dirigido con valores en las aristas. Construye el tuyo y ejecuta Kruskal o Prim para ver cómo se forma el árbol de recubrimiento de coste mínimo.",
+        ops=[
+            ("GrafoValorado(V)", "Crea un grafo con V vértices y sin aristas", "O(V)", "Crea V listas de adyacentes vacías."),
+            ("ponArista({v, w, c})", "Añade una arista con valor c", "O(1)", "Una sola arista compartida que se guarda en la lista de v y en la de w: dos push_back."),
+            ("ady(v)", "Aristas incidentes en v", "O(1)", "Devuelve la lista ya guardada. Recorrerla cuesta O(grado de v)."),
+            ("aristas()", "Todas las aristas, cada una una vez", "O(V + A)", "Recorre todas las listas y se queda con cada arista una sola vez (la ve dos veces, una por extremo)."),
             ("Kruskal", "Ordenar aristas y unir sin formar ciclos", "O(A log A)", "Ordenar las aristas domina: A log A. Después hay A comprobaciones/uniones casi constantes gracias a los conjuntos disjuntos."),
             ("Prim", "Crecer el árbol con una cola de prioridad", "O(A log V)", "Cada arista puede provocar un update/push en la cola (log V) y hay A aristas."),
+            ("¿Es único el ARM?", "Solo si los valores son distintos", "—", "Si hay aristas con el mismo valor puede haber varios árboles de coste mínimo; el coste total es el mismo."),
         ]),
     "tema7-dijkstra.html": dict(
         slug="dijkstra", titulo="Dijkstra", cab="DigrafoValorado.h", nota="El <b>coste</b> dice cómo crece el tiempo. <b>V</b> y <b>A</b> son los vértices y aristas del dígrafo. Abre cualquier fila para ver el razonamiento.",
@@ -750,11 +766,11 @@ LABS = {
 
 def url_herr(herr, pre=""):
     """Dirección de la herramienta: la página del laboratorio si existe, y si no la herramienta suelta."""
-    lab = LABS.get(herr)
-    return f"{pre}lab/{lab['slug']}.html" if lab else f"{pre}herramientas/{herr}"
+    k = next((k for k in LABS if k.split("|")[0] == herr), None)
+    return f"{pre}lab/{LABS[k]['slug']}.html" if k else f"{pre}herramientas/{herr}"
 
 
-def pagina_lab(herr, lab, tema, info, lista_ej, slugs, descr_herr, otros=()):
+def pagina_lab(herr, lab, tema, info, lista_ej, slugs, descr_herr, otros=(), vista=""):
     rel = f"Estructuras de datos/{lab['cab']}" if lab["cab"] else None
     txt = leer_texto(rel) if rel else ""
     nota = lab.get("nota", "El <b>coste</b> dice cómo crece el tiempo al crecer el grafo. <b>V</b> es el número de vértices y <b>A</b> el de aristas. Abre cualquier fila para ver el razonamiento.")
@@ -766,7 +782,7 @@ def pagina_lab(herr, lab, tema, info, lista_ej, slugs, descr_herr, otros=()):
     ops = "".join(f'<details class="op"><summary><code>{o[0]}</code><span class="q">{o[1]}</span><b class="c">{o[2]}</b><i>¿Por qué?</i></summary><div class="why"><b>Por qué: </b>{o[3]}</div></details>' for o in lab["ops"])
     tabs = [("vis", "Visualizar")] + ([("cod", f"Código ({lab['cab']})")] if rel else []) + [("ops", "Operaciones y coste"), ("ej", "Ejercicios")]
     botones = "".join(f'<button class="btn{" pref" if i == "vis" else ""}" data-tab="{i}">{t}</button>' for i, t in tabs)
-    panes = (f'<div class="pane" id="p-vis"><iframe id="labframe" class="labframe" src="../herramientas/{herr}?embed=1" title="Simulador de {esc(lab["titulo"])}" loading="eager"></iframe></div>'
+    panes = (f'<div class="pane" id="p-vis"><iframe id="labframe" class="labframe" src="../herramientas/{herr}?embed=1{("&vista=" + vista) if vista else ""}" title="Simulador de {esc(lab["titulo"])}" loading="eager"></iframe></div>'
              + (f'<div class="pane" id="p-cod"><pre data-code="{esc(lab["cab"])}" id="src0">{esc(txt)}</pre></div>' if rel else '') +
              f'<div class="pane" id="p-ops"><p class="lede">{nota}</p><div class="ops">{ops}</div></div>'
              f'<div class="pane" id="p-ej"><p class="lede">Ejercicios del juez que usan esta estructura. Se marcan en verde cuando los das por hechos.</p><div class="labejs">{"".join(filas)}</div></div>')
@@ -1123,17 +1139,21 @@ def main():
     n_ej_tema = {t: sum(1 for _, e in por_tema[t] if not es_teoria(e)) for t in TEMAS}
     cpt = cabs_por_tema(cabs)
     temas_lab = []
+    herr_dict = {x[0]: x for x in herr}
     for f, a_, b_, c_ in herr:
         t_ = next((t for t in TEMAS if TEMAS[t]["herr"] == f), None)
         if t_ is None or not por_tema.get(t_):
             continue
-        otros = [c for c in cpt[t_] if not (f in LABS and c == LABS[f]["cab"])]
-        if f in LABS:
-            lab = LABS[f]
-            (OUT / "lab" / f"{lab['slug']}.html").write_text(pagina_lab(f, lab, t_, TEMAS[t_], por_tema[t_], slugs, c_, otros), encoding="utf-8", newline="\n")
-            temas_lab.append((t_, lab["titulo"], f"lab/{lab['slug']}.html", lab["cab"], otros, c_, True))
-        else:
-            temas_lab.append((t_, b_, f"herramientas/{f}", None, otros, c_, False))
+        claves = [k for k in LABS if k.split("|")[0] == f]
+        if not claves:
+            temas_lab.append((t_, b_, f"herramientas/{f}", None, [c for c in cpt[t_]], c_, False))
+            continue
+        for k in claves:
+            lab = LABS[k]
+            vista = k.split("|")[1] if "|" in k else ""
+            otros = lab["extra"] if "extra" in lab else [c for c in cpt[t_] if c != lab["cab"]]
+            (OUT / "lab" / f"{lab['slug']}.html").write_text(pagina_lab(f, lab, t_, TEMAS[t_], por_tema[t_], slugs, c_, otros, vista), encoding="utf-8", newline="\n")
+            temas_lab.append((t_, lab["titulo"], f"lab/{lab['slug']}.html", lab["cab"], otros, lab.get("desc", c_), True))
     (OUT / "laboratorio.html").write_text(pagina_laboratorio(temas_lab, n_ej_tema), encoding="utf-8", newline="\n")
 
     # portada

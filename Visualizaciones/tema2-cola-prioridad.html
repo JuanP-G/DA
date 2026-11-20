@@ -313,6 +313,8 @@ html.embed .wrap { padding: 0; max-width: none; }
 html.embed .volver-tema { display: none !important; }
 html.embed a.back, html.embed .foot a[href="index.html"] { display: none !important; }
 
+html.embed.vista nav.tabs { display: none !important; }
+
 .back { align-self: flex-start; font-size: .88rem; color: var(--blue); text-decoration: none; }
 .back:hover { text-decoration: underline; }
 .back:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
@@ -428,11 +430,6 @@ table.t td:first-child { white-space: nowrap; }
 
   <div class="stage">
     <div class="left">
-      <section class="panel" aria-label="Ejecución paso a paso">
-        <h2>Ejecución paso a paso</h2>
-        <div id="playerHost"></div>
-      </section>
-
       <section class="panel" aria-label="Montículo">
         <h2>Montículo · árbol y array (índices desde 1)</h2>
         <div class="legend" style="margin-bottom:8px">
@@ -449,6 +446,11 @@ table.t td:first-child { white-space: nowrap; }
           <div id="arr"></div>
         </div>
         <p class="stat" id="stat"></p>
+      </section>
+
+      <section class="panel" aria-label="Ejecución paso a paso">
+        <h2>Ejecución paso a paso</h2>
+        <div id="playerHost"></div>
       </section>
     </div>
 

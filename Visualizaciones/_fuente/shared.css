@@ -114,3 +114,5 @@ html.embed .noembed { display: none !important; }
 html.embed .wrap { padding: 0; max-width: none; }
 html.embed .volver-tema { display: none !important; }
 html.embed a.back, html.embed .foot a[href="index.html"] { display: none !important; }
+
+html.embed.vista nav.tabs { display: none !important; }
