@@ -847,20 +847,93 @@ fb.forEach(function(b){b.onclick=function(){filtra(b.dataset.lf)}});
                   "Laboratorio de estructuras de datos de Diseño de Algoritmos: simuladores paso a paso, código C++, coste de las operaciones y ejercicios.", ruta="laboratorio.html")
 
 
+def datos_videos(ej, slugs):
+    """Datos de cada vídeo para la página: duración, miniatura, subtítulos y capítulos (si hay ffmpeg)."""
+    out = []
+    pdir = OUT / "Videos" / "posters"
+    for i, e in enumerate(ej):
+        if not e["video"]:
+            continue
+        src = RAIZ / e["video"]
+        dur = 0.0
+        if shutil.which("ffprobe"):
+            r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(src)], capture_output=True, text=True)
+            try:
+                dur = float(r.stdout.strip())
+            except ValueError:
+                dur = 0.0
+        poster = ""
+        if shutil.which("ffmpeg") and dur:
+            pdir.mkdir(parents=True, exist_ok=True)
+            p = pdir / f"{slugs[i]}.jpg"
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(min(4, dur * 0.2)), "-i", str(src), "-frames:v", "1", "-vf", "scale=360:-2", "-q:v", "6", str(p)], capture_output=True)
+            if p.exists() and p.stat().st_size > 200:
+                poster = f"Videos/posters/{slugs[i]}.jpg"
+        vtt, caps = media_video(e["video"])
+        out.append(dict(s=slugs[i], id=e["id"], t=e["titulo"], tema=e["tema"], tn=TEMAS[e["tema"]]["nombre"], d=round(dur), v=quote(e["video"]),
+                        vtt=quote(vtt) if vtt else "", caps=[[round(c[0]), c[1]] for c in caps], p=poster, teoria=es_teoria(e), idea=re.sub(r"`", "", e["idea"])))
+    return out
+
+
+VIDEOS_JS = r"""
+const V=__DATA__;
+const $=s=>document.querySelector(s);
+const fmt=d=>d>=3600?Math.floor(d/3600)+':'+String(Math.floor(d%3600/60)).padStart(2,'0')+':'+String(d%60).padStart(2,'0'):Math.floor(d/60)+':'+String(d%60).padStart(2,'0');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='studia-da-vistos';
+let vistos={};try{vistos=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(vistos))}catch(e){}};
+const byT={};V.forEach(v=>(byT[v.tema]=byT[v.tema]||[]).push(v));
+const idx=s=>V.findIndex(v=>v.s===s);
+const thumb=v=>'<span class="thumb">'+(v.p?'<img loading="lazy" src="'+v.p+'" alt="" onerror="this.remove()">':'')+'<span class="ok" aria-hidden="true">✓</span><span class="pl"><i>▶</i></span><span class="dur">'+fmt(v.d)+'</span></span>';
+const root=$('#vroot');
+function menu(){
+ document.title='Vídeos de Diseño de Algoritmos UCM | StudIA';
+ const sig=V.find(v=>!vistos[v.s]),hay=Object.keys(vistos).length;
+ const sec=Object.keys(byT).map(t=>{const xs=byT[t],teo=xs.find(x=>x.teoria),res=xs.filter(x=>x!==teo),n=xs.filter(x=>vistos[x.s]).length,min=Math.round(xs.reduce((a,x)=>a+x.d,0)/60);
+  return '<section class="vtema"><div class="vth"><h2><span>Tema '+t+'</span>'+esc(xs[0].tn)+'</h2><small>'+n+'/'+xs.length+' vistos · '+min+' min</small></div><div class="vprog"><i style="width:'+(n/xs.length*100)+'%"></i></div>'
+  +'<div class="vrow">'+(teo?'<a class="vcard teo'+(vistos[teo.s]?' vist':'')+'" href="#'+teo.s+'">'+thumb(teo)+'<span class="etq">Resumen del tema</span><b>'+esc(teo.t)+'</b></a>':'<div></div>')
+  +'<div class="vsc">'+res.map(x=>'<a class="vcard ej'+(vistos[x.s]?' vist':'')+'" href="#'+x.s+'">'+thumb(x)+'<span class="etq">Ejercicio '+esc(x.id)+'</span><b>'+esc(x.t)+'</b></a>').join('')+'</div></div></section>'}).join('');
+ root.className='vmenu';
+ root.innerHTML='<div class="hero"><span class="tag">Vídeos</span><h1>Vídeos explicativos</h1><p class="lede">Un bloque por tema: el <b class="ct">resumen del tema</b> y, al lado, el <b class="ce">vídeo de cada ejercicio</b>. '+V.length+' vídeos, '+Math.round(V.reduce((a,v)=>a+v.d,0)/60)+' minutos.</p></div>'
+ +(sig?'<a class="vcont" href="#'+sig.s+'">'+thumb(sig)+'<div><span class="etq">'+(hay?'Continuar':'Empezar por aquí')+'</span><b>'+esc(sig.id)+' · '+esc(sig.t)+'</b><small>Tema '+sig.tema+' · '+esc(sig.tn)+'</small></div><span class="go">Ver →</span></a>':'')+sec;
+}
+function sala(s){
+ const i=idx(s),v=V[i];if(!v){location.hash='';return}
+ document.title=v.id+' · '+v.t+' | Vídeos StudIA';
+ const q=(window._q||'').toLowerCase();
+ const lista=Object.keys(byT).map(t=>{const xs=byT[t].filter(x=>!q||(x.id+' '+x.t+' '+x.idea).toLowerCase().includes(q));if(!xs.length)return'';const n=byT[t].filter(x=>vistos[x.s]).length;
+  return '<details '+(q||t==v.tema?'open':'')+'><summary><span>Tema '+t+' · '+esc(byT[t][0].tn)+'</span><small>'+n+'/'+byT[t].length+'</small></summary>'+xs.map(x=>'<a class="it'+(x.s===s?' act':'')+(vistos[x.s]?' vist':'')+(x.teoria?' teo':' ej')+'" href="#'+x.s+'">'+thumb(x)+'<div><b>'+esc(x.id)+' · '+esc(x.t)+'</b><span>'+(x.teoria?'Resumen del tema':'Ejercicio')+'</span></div></a>').join('')+'</details>'}).join('');
+ root.className='vsala';
+ root.innerHTML='<div class="vtop"><a class="btn" href="#">← Todos los vídeos</a></div><div class="sala"><div class="main"><video id="vid" controls preload="metadata" playsinline'+(v.p?' poster="'+v.p+'"':'')+' src="'+v.v+'">'+(v.vtt?'<track kind="subtitles" srclang="es" label="Español" src="'+v.vtt+'">':'')+'</video>'
+ +'<div class="info"><span class="etq '+(v.teoria?'teo':'ej')+'">'+(v.teoria?'Resumen del tema '+v.tema:'Ejercicio '+esc(v.id))+' · '+esc(v.tn)+'</span><h2>'+esc(v.t)+'</h2><p>'+esc(v.idea)+'</p>'
+ +(v.caps.length?'<div class="caps">'+v.caps.map(c=>'<button class="chipf" data-t="'+c[0]+'">'+fmt(c[0])+' · '+esc(c[1])+'</button>').join('')+'</div>':'')
+ +'<div class="ctl"><button class="btn" id="prev"'+(i?'':' disabled')+'>← Anterior</button><button class="btn" id="next"'+(i<V.length-1?'':' disabled')+'>Siguiente →</button><label class="auto"><input type="checkbox" id="auto" '+(window._auto===false?'':'checked')+'> pasar al siguiente</label><button class="btn" id="mk">'+(vistos[s]?'✓ Visto':'Marcar como visto')+'</button>'
+ +'<a class="btn" href="'+(v.teoria?'tema/'+v.tema+'.html':'ej/'+v.s+'.html')+'">'+(v.teoria?'Ver el tema '+v.tema:'Ver el ejercicio')+'</a></div></div></div>'
+ +'<aside class="side"><input id="q" type="search" placeholder="Buscar vídeo…" value="'+esc(window._q||'')+'" aria-label="Buscar vídeo">'+lista+'</aside></div>';
+ const vid=$('#vid');
+ vid.onended=()=>{vistos[s]=1;save();const n=V[i+1];if(n&&$('#auto').checked)location.hash=n.s;else sala(s)};
+ vid.play().catch(()=>{});
+ document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{vid.currentTime=+b.dataset.t;vid.play()});
+ $('#prev').onclick=()=>{if(i)location.hash=V[i-1].s};$('#next').onclick=()=>{if(i<V.length-1)location.hash=V[i+1].s};
+ $('#auto').onchange=e=>{window._auto=e.target.checked};
+ $('#mk').onclick=()=>{vistos[s]?delete vistos[s]:vistos[s]=1;save();const t=vid.currentTime;sala(s);$('#vid').currentTime=t;$('#vid').pause()};
+ const qi=$('#q');qi.oninput=()=>{window._q=qi.value;const p=qi.selectionStart,t=vid.currentTime,pl=!vid.paused;sala(s);const n=$('#q');n.focus();n.setSelectionRange(p,p);$('#vid').currentTime=t;if(!pl)$('#vid').pause()};
+ window.scrollTo({top:0});
+}
+function ruta(){const h=decodeURIComponent(location.hash.slice(1));if(h&&idx(h)>=0)sala(h);else menu()}
+window.addEventListener('hashchange',ruta);ruta();
+"""
+
+
 def pagina_videos(ej, slugs):
-    bloques = []
-    for t, info in TEMAS.items():
-        cards = []
-        for i, e in enumerate(ej):
-            if e["tema"] == t and e["video"]:
-                mb = tam_legible((RAIZ / e["video"]).stat().st_size)
-                cards.append(f'<a class="vcard" href="ej/{slugs[i]}.html#video"><span class="n">▶ {esc(e["id"])} · {mb}</span><b>{esc(e["titulo"])}</b><span class="d">{md_inline(e["idea"])}</span></a>')
-        if cards:
-            bloques.append(f'<section class="bloque"><h2>Tema {t} · {esc(info["nombre"])}</h2><div class="vlist">{"".join(cards)}</div></section>')
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="index.html">← Volver</a><a href="index.html">Inicio</a>›<span>Vídeos</span></div>'
-              f'<div class="hero"><span class="tag">Vídeos</span><h1>Vídeos explicativos</h1><p class="lede">Se ven aquí mismo, con subtítulos y, en los largos, capítulos. Cada uno abre la página de su ejercicio, donde también se puede descargar.</p></div>'
-              f'{"".join(bloques)}</div>')
-    return pagina("Vídeos de Diseño de Algoritmos UCM | StudIA", cuerpo, "", "", "Vídeos paso a paso de todos los ejercicios de Diseño de Algoritmos de la FDI UCM, con subtítulos.", ruta="videos.html")
+    datos = datos_videos(ej, slugs)
+    n_min = round(sum(v["d"] for v in datos) / 60)
+    cuerpo = (f'<div class="wrap vv"><div class="crumbs"><a class="back" href="index.html">← Volver</a><a href="index.html">Inicio</a>›<span>Vídeos</span></div>'
+              f'<div id="vroot"><noscript>Esta página necesita JavaScript para listar los {len(datos)} vídeos ({n_min} min).</noscript></div></div>')
+    js = VIDEOS_JS.replace("__DATA__", json.dumps(datos, ensure_ascii=False).replace("</", "<\\/"))
+    return pagina("Vídeos de Diseño de Algoritmos UCM | StudIA", cuerpo, "", js,
+                  "Vídeos paso a paso de todos los ejercicios de Diseño de Algoritmos de la FDI UCM, con subtítulos y capítulos.", ruta="videos.html")
 
 
 def volver_herr(t):
