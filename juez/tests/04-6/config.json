@@ -1,0 +1,11 @@
+{
+ "solucion": "4-Grafos no dirigidos/EJ_04-6/EJ_04-6.cpp",
+ "cabeceras": [
+  "4-Grafos no dirigidos/EJ_04-6/Grafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (dist[v] != ttl) {",
+  "if (dist[v] + 1 < ttl) {"
+ ]
+}

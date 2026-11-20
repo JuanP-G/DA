@@ -83,7 +83,8 @@ def pruebas():
     prueba("Un único píxel", "borde", [["#"], ["-#-"], ["-", "#", "-"]],
            "Bitmaps mínimos con un solo píxel negro: «1 1».",
            {"rte": "Con una sola fila o columna, mirar el vecino de abajo o de la derecha se sale del bitmap si no compruebas los bordes."},
-           ["Antes de mirar un vecino, comprueba que está dentro: 0 ≤ i < F y 0 ≤ j < C."])
+           ["Prueba a mano «1 1» con «#»: ¿mira tu programa algún vecino fuera del bitmap?",
+            "Antes de mirar un vecino, comprueba que está dentro: 0 ≤ i < F y 0 ≤ j < C."])
     prueba("Todo negro", "borde", [["#" * 7], ["####", "####", "####"]],
            "Todo el bitmap es una sola mancha: «1 F·C».",
            {"wa": "Si cuentas más de una mancha, no se marcan bien los visitados o no se recorren todos los vecinos."},
@@ -153,7 +154,8 @@ def pruebas():
            "Un tablero de ajedrez de 1000×500: 250.000 manchas de 1 píxel.",
            {"tle": "Algo cuesta por cada mancha más de lo que debería: ¿reinicias un vector entero de visitados cada vez que empiezas una mancha?",
             "wa": "Con muchas manchas, ¿usas int para contar? Debería bastar; revisa que no se mezclan diagonales."},
-           ["Los visitados se crean una vez por caso, no una vez por mancha."])
+           ["Cuenta cuántas veces recorres todo el bitmap o reinicias un vector entero: debería ser una vez por caso.",
+            "Los visitados se crean una vez por caso, no una vez por mancha."])
     return [Prueba(nombre, tipo,
                    entrada=f"{len(casos)}\n" + "".join(caso_a_texto(c) for c in casos),
                    salida="".join("%d %d\n" % manchas(len(c), len(c[0]), c) for c in casos),

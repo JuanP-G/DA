@@ -1,0 +1,11 @@
+{
+ "solucion": "4-Grafos no dirigidos/EJ_04-5/EJ_04-5.cpp",
+ "cabeceras": [
+  "4-Grafos no dirigidos/EJ_04-5/Grafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "for (int j = 1; j < k; ++j) {",
+  "for (int j = 2; j < k; ++j) {"
+ ]
+}

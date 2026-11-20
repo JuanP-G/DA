@@ -1,0 +1,362 @@
+40
+6
+Peli0 1 Act2
+Peli1 4 Act3 Act2 KevinBacon Act1
+Peli2 1 KevinBacon
+Peli3 1 Act2
+Peli4 3 Act6 Act4 Act3
+Peli5 3 Act5 KevinBacon Act2
+3
+Act5
+Act2
+Act1
+3
+Peli0 2 KevinBacon Act1
+Peli1 1 Act1
+Peli2 2 KevinBacon Act1
+4
+Act1
+Act1
+Act1
+KevinBacon
+1
+Peli0 4 KevinBacon Act2 Act1 Act3
+6
+KevinBacon
+Act2
+Act2
+KevinBacon
+KevinBacon
+Act3
+1
+Peli0 1 KevinBacon
+5
+KevinBacon
+KevinBacon
+KevinBacon
+KevinBacon
+KevinBacon
+7
+Peli0 2 Act4 Act5
+Peli1 1 Act3
+Peli2 1 Act5
+Peli3 4 KevinBacon Act1 Act5 Act6
+Peli4 3 Act5 KevinBacon Act2
+Peli5 1 KevinBacon
+Peli6 4 Act2 Act1 Act4 Act5
+1
+Act3
+3
+Peli0 1 Act8
+Peli1 3 Act8 Act7 Act0
+Peli2 3 Act7 Act4 Act3
+4
+Act4
+Act8
+Act7
+Act0
+2
+Peli0 2 KevinBacon Act3
+Peli1 4 Act5 Act2 Act3 KevinBacon
+3
+Act3
+Act5
+Act5
+2
+Peli0 4 KevinBacon Act2 Act1 Act4
+Peli1 4 Act2 Act1 KevinBacon Act3
+5
+Act1
+Act3
+Act3
+Act4
+Act2
+4
+Peli0 2 Act1 KevinBacon
+Peli1 1 KevinBacon
+Peli2 1 KevinBacon
+Peli3 1 Act1
+3
+Act1
+Act1
+Act1
+1
+Peli0 1 KevinBacon
+1
+KevinBacon
+3
+Peli0 2 KevinBacon Act1
+Peli1 1 KevinBacon
+Peli2 2 Act1 KevinBacon
+1
+Act1
+1
+Peli0 2 KevinBacon Act1
+5
+Act1
+Act1
+KevinBacon
+KevinBacon
+KevinBacon
+3
+Peli0 2 Act2 Act6
+Peli1 4 Act6 Act1 Act5 Act3
+Peli2 2 Act2 Act3
+4
+Act5
+Act3
+Act3
+Act6
+4
+Peli0 4 Act7 Act1 Act6 Act5
+Peli1 3 Act3 Act4 Act6
+Peli2 2 Act7 Act2
+Peli3 3 KevinBacon Act5 Act1
+4
+Act7
+Act5
+Act1
+Act5
+2
+Peli0 3 KevinBacon Act1 Act5
+Peli1 2 Act5 Act7
+6
+Act7
+KevinBacon
+KevinBacon
+Act1
+Act1
+Act7
+7
+Peli0 3 KevinBacon Act1 Act3
+Peli1 1 Act3
+Peli2 1 KevinBacon
+Peli3 3 Act3 KevinBacon Act2
+Peli4 4 Act2 KevinBacon Act3 Act1
+Peli5 3 KevinBacon Act3 Act2
+Peli6 1 Act2
+6
+KevinBacon
+Act1
+Act3
+KevinBacon
+Act2
+KevinBacon
+4
+Peli0 1 KevinBacon
+Peli1 1 KevinBacon
+Peli2 2 KevinBacon Act1
+Peli3 2 KevinBacon Act1
+5
+KevinBacon
+Act1
+Act1
+Act1
+Act1
+3
+Peli0 2 Act4 Act2
+Peli1 1 Act4
+Peli2 4 Act5 Act4 Act0 Act1
+2
+Act4
+Act0
+1
+Peli0 4 Act3 Act8 Act1 Act4
+3
+Act8
+Act4
+Act8
+4
+Peli0 3 Act3 Act5 Act4
+Peli1 3 Act4 Act2 Act1
+Peli2 1 Act3
+Peli3 4 Act5 Act4 Act0 Act2
+3
+Act1
+Act5
+Act2
+5
+Peli0 1 Act1
+Peli1 4 Act2 Act1 Act4 KevinBacon
+Peli2 3 Act1 Act2 KevinBacon
+Peli3 1 Act4
+Peli4 1 Act3
+4
+KevinBacon
+KevinBacon
+Act2
+KevinBacon
+7
+Peli0 2 Act3 Act2
+Peli1 3 Act1 Act3 Act4
+Peli2 4 Act2 KevinBacon Act1 Act4
+Peli3 1 KevinBacon
+Peli4 1 Act4
+Peli5 3 Act4 KevinBacon Act1
+Peli6 4 Act2 Act1 KevinBacon Act4
+3
+Act4
+Act4
+Act1
+1
+Peli0 3 Act3 Act2 KevinBacon
+2
+Act2
+KevinBacon
+3
+Peli0 2 Act4 KevinBacon
+Peli1 1 Act2
+Peli2 3 Act6 Act8 Act2
+4
+KevinBacon
+Act2
+Act6
+Act2
+2
+Peli0 1 Act7
+Peli1 4 Act7 Act6 Act4 Act1
+2
+Act6
+Act6
+1
+Peli0 2 Act5 Act7
+5
+Act7
+Act7
+Act7
+Act5
+Act5
+6
+Peli0 4 Act1 Act2 Act7 Act4
+Peli1 4 Act1 Act5 Act2 KevinBacon
+Peli2 1 Act2
+Peli3 1 KevinBacon
+Peli4 1 KevinBacon
+Peli5 2 Act2 Act1
+3
+KevinBacon
+Act1
+Act5
+6
+Peli0 2 Act4 Act6
+Peli1 1 Act5
+Peli2 2 Act3 Act0
+Peli3 1 Act1
+Peli4 1 Act3
+Peli5 3 Act3 Act4 Act1
+3
+Act3
+Act1
+Act6
+1
+Peli0 2 KevinBacon Act1
+6
+KevinBacon
+KevinBacon
+KevinBacon
+KevinBacon
+KevinBacon
+Act1
+5
+Peli0 2 Act5 Act2
+Peli1 3 Act4 KevinBacon Act1
+Peli2 1 Act8
+Peli3 1 Act6
+Peli4 3 Act6 Act8 KevinBacon
+4
+Act2
+Act8
+Act1
+KevinBacon
+6
+Peli0 2 Act0 Act1
+Peli1 2 Act3 Act5
+Peli2 1 Act0
+Peli3 3 Act0 Act6 Act5
+Peli4 1 Act5
+Peli5 3 Act3 Act2 Act1
+3
+Act6
+Act3
+Act5
+6
+Peli0 3 Act1 Act2 KevinBacon
+Peli1 1 KevinBacon
+Peli2 1 Act2
+Peli3 2 KevinBacon Act1
+Peli4 1 Act2
+Peli5 2 KevinBacon Act2
+6
+KevinBacon
+Act1
+Act1
+Act2
+Act2
+KevinBacon
+2
+Peli0 2 Act2 Act4
+Peli1 1 Act5
+3
+Act5
+Act2
+Act4
+1
+Peli0 3 Act1 KevinBacon Act3
+1
+KevinBacon
+5
+Peli0 2 Act0 Act1
+Peli1 2 Act1 Act0
+Peli2 2 Act1 Act0
+Peli3 2 Act0 Act1
+Peli4 1 Act1
+4
+Act1
+Act1
+Act1
+Act1
+6
+Peli0 4 Act2 Act6 Act3 KevinBacon
+Peli1 2 Act2 Act1
+Peli2 2 Act7 Act6
+Peli3 1 Act7
+Peli4 1 Act4
+Peli5 4 Act6 Act7 KevinBacon Act2
+5
+Act2
+Act1
+Act7
+Act1
+Act7
+7
+Peli0 4 Act1 Act3 KevinBacon Act2
+Peli1 3 KevinBacon Act3 Act2
+Peli2 2 Act2 Act1
+Peli3 4 Act2 KevinBacon Act3 Act1
+Peli4 3 Act2 Act1 Act3
+Peli5 3 KevinBacon Act1 Act2
+Peli6 2 Act3 Act2
+2
+Act2
+Act3
+2
+Peli0 2 Act1 KevinBacon
+Peli1 2 Act2 KevinBacon
+3
+Act2
+KevinBacon
+Act2
+2
+Peli0 4 Act2 Act0 Act3 Act1
+Peli1 4 Act0 Act1 Act2 Act3
+4
+Act3
+Act0
+Act0
+Act3
+3
+Peli0 3 Act2 KevinBacon Act1
+Peli1 1 Act1
+Peli2 1 KevinBacon
+1
+KevinBacon

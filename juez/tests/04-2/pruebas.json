@@ -1,0 +1,224 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF, con una pareja repetida al revés y personas sin amigos.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa lo básico: que las personas van de 1 a N, que escribes un número por línea y que un grupo es una componente conexa entera (no solo los amigos directos).",
+   "pe": "Los números están bien pero el formato no: un número por línea, sin texto extra."
+  },
+  "pistas": [
+   "Ejecuta tu programa con este mismo ejemplo y compara línea a línea.",
+   "En el primer caso, 1 y 3 no son amigos directos, pero sí por medio de 2: el grupo tiene 3 personas.",
+   "Un grupo de amigos es una componente conexa del grafo: haz un recorrido (DFS o BFS) desde cada persona sin visitar."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola persona",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "N = 1 y ninguna amistad: el mayor grupo es esa persona sola (1).",
+  "si": {
+   "wa": "Una persona sin amigos forma su propio grupo de tamaño 1. Si sale 0, solo cuentas grupos que tienen alguna amistad, o el máximo no se actualiza con el último grupo.",
+   "rte": "Con N = 1 solo existe la persona 1 (vértice 0): revisa los índices del vector."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con «1 0»?",
+   "Las personas sin amigos también son un grupo (de una sola persona).",
+   "Lanza el recorrido desde TODAS las personas sin visitar, tengan o no amigos, y actualiza el máximo después de cada recorrido."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Nadie es amigo de nadie",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "M = 0: cada persona es su propio grupo; el mayor tiene 1 persona.",
+  "si": {
+   "wa": "Sin amistades la respuesta es 1, no 0: cada persona es un grupo de una."
+  },
+  "pistas": [
+   "Con M = 0, ¿cuántas personas tiene cada grupo?",
+   "Inicializa bien el máximo y cuenta también los grupos de una sola persona."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Todos amigos de todos",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Seis personas y las 15 parejas posibles: un solo grupo de 6.",
+  "si": {
+   "wa": "Si sale más de 6, cuentas personas varias veces (por cada amistad en lugar de una vez por persona). Si sale menos, el recorrido no llega a todos."
+  },
+  "pistas": [
+   "El grupo tiene 6 personas aunque haya 15 amistades.",
+   "Cuenta vértices visitados, no aristas recorridas: marca cada persona al visitarla y no la vuelvas a contar."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Amigos de amigos (una cadena)",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una cadena 1-2-3-4-5-6-7 y una persona suelta: por el refrán, los siete son del mismo grupo.",
+  "si": {
+   "wa": "No basta con contar los amigos directos: el amigo de un amigo también es amigo. El grupo es todo lo que se alcanza siguiendo amistades."
+  },
+  "pistas": [
+   "1 y 7 no son amigos directos, pero hay una cadena de amistades que los une.",
+   "El tamaño del grupo es el número de personas que alcanza un recorrido (DFS/BFS), no el grado de una persona.",
+   "En el DFS, llama recursivamente a dfs(w) para cada amigo w sin visitar y suma lo que devuelve."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Una pareja repetida y al revés",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La misma amistad 1-2 aparece tres veces (una al revés): sigue siendo un grupo de 2.",
+  "si": {
+   "wa": "Una amistad repetida no añade personas. Si sale más de 2, sumas tamaños al unir dos personas que ya estaban en el mismo grupo (o cuentas aristas en lugar de personas)."
+  },
+  "pistas": [
+   "«1 2», «2 1» y «1 2» son la misma pareja: el grupo {1, 2} tiene 2 personas.",
+   "Si usas conjuntos disjuntos, antes de unir comprueba que los representantes son distintos.",
+   "Con un DFS que marca a cada persona al visitarla, las repeticiones no importan: el vecino ya visitado no se vuelve a contar."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Un grupo con un ciclo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un triángulo 1-2-3: la última amistad une a dos personas que ya estaban en el mismo grupo.",
+  "si": {
+   "wa": "La amistad 3-1 no trae a nadie nuevo. Si te sale más de 3, sumas tamaños sin comprobar si ya estaban juntos o cuentas a alguien dos veces."
+  },
+  "pistas": [
+   "Cuando llega «3 1», 1 y 3 ya son del mismo grupo.",
+   "Al unir dos grupos, suma los tamaños solo si son grupos distintos."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Personas numeradas de 1 a N",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las personas van de 1 a N y la persona N también aparece.",
+  "si": {
+   "rte": "Las personas van de 1 a N: si creas un grafo de N vértices y no restas 1, la persona N se sale (Grafo(cin, 1) resta el 1 al leer)."
+  },
+  "pistas": [
+   "La persona 3 existe cuando N = 3.",
+   "Usa Grafo(cin, 1), o resta 1 a cada persona al leerla, o crea N + 1 vértices y no uses el 0."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El grupo mayor es el último",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los grupos son {1, 2}, {3} y {4, 5, 6, 7}: el mayor es el último que se recorre.",
+  "si": {
+   "wa": "El máximo se queda sin mirar el último grupo: actualízalo justo después de recorrer cada grupo, no al empezar el siguiente."
+  },
+  "pistas": [
+   "La respuesta es 4: el grupo de las personas 4 a 7.",
+   "¿Dónde actualizas el máximo? Si es al encontrar un grupo nuevo, el último nunca se compara.",
+   "Pon maxim = max(maxim, dfs(v)) justo después de cada recorrido."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Dos grupos que se unen al final",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Primero {1, 2} y {3, 4} por separado; la última amistad 2-3 los junta en un grupo de 4.",
+  "si": {
+   "wa": "Si pones a cada persona una etiqueta de grupo según van llegando las amistades, cuando una amistad une dos grupos ya formados hay que fusionarlos (cambiar la etiqueta de todo un grupo)."
+  },
+  "pistas": [
+   "Con «2 3», los grupos {1, 2} y {3, 4} pasan a ser uno solo.",
+   "Etiquetar al leer no basta si no fusionas grupos; es más sencillo construir el grafo y recorrerlo después.",
+   "Construye el grafo con todas las amistades y luego recorre cada componente con un DFS."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso con un grupo grande seguido de otros con grupos pequeños: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el máximo, el vector de visitados o el grafo están declarados fuera de la función de cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y el segundo no, mira qué variables viven fuera de resuelveCaso.",
+   "El máximo empieza en 0 en cada caso: créalo (y los visitados) dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Más grupos variados",
+  "tipo": "trampa",
+  "casos": 6,
+  "comprueba": "Estrellas, cadenas en desorden, grupos que se van uniendo y parejas repetidas.",
+  "si": {
+   "wa": "Alguno de estos grupos te engaña: la línea que falla es el número de caso; dibuja sus amistades."
+  },
+  "pistas": [
+   "Busca el caso de la línea que falla y dibújalo.",
+   "Comprueba que cuentas cada persona una sola vez y que sigues las amistades en los dos sentidos."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 casos pequeños al azar, con alguna pareja repetida.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; dibuja ese grafo y sigue tu programa a mano."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla y dibújalo.",
+   "Comprueba a mano qué grupos salen y cuál es el mayor."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Cadena de 20.000 personas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Una sola cadena con todas las personas: el DFS recursivo baja 20.000 niveles.",
+  "si": {
+   "mle": "Gastas demasiada memoria en la recursión: ¿pasas el grafo por valor (Grafo g)? Se copia entero en cada llamada.",
+   "tle": "Algo se repite de más: ¿lanzas un recorrido desde cada persona, o copias el grafo o los visitados en cada llamada?",
+   "rte": "La recursión es muy profunda. En el juez hay pila de sobra; revisa que no declaras vectores grandes dentro de la función recursiva."
+  },
+  "pistas": [
+   "Mira la cabecera de tu función recursiva: ¿cómo recibe el grafo?",
+   "Pasa el grafo por referencia (Grafo const& g) y el vector de visitados como atributo o por referencia.",
+   "Un único recorrido por componente: no reinicies los visitados para cada persona."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Máximo de personas y amistades",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "N = 20.000 y M = 200.000 (con repeticiones), en grupos de tamaños muy distintos.",
+  "si": {
+   "tle": "Hay que ir en O(N + M). Si lanzas un recorrido completo desde cada persona (o reinicias los visitados cada vez), es O(N·(N + M)).",
+   "mle": "Una matriz de adyacencia de 20.000 × 20.000 no cabe: usa listas de adyacencia (la clase Grafo)."
+  },
+  "pistas": [
+   "Cada persona debe visitarse una sola vez en todo el caso.",
+   "Crea el vector de visitados una vez por caso y lanza el DFS solo desde las personas que aún no se han visitado."
+  ]
+ }
+]

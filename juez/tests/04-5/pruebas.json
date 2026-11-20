@@ -1,0 +1,236 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del PDF: grupos que se solapan, un grupo vacío, grupos de un solo usuario y un usuario sin grupo.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa lo básico: que los usuarios van de 1 a N, que los grupos vacíos («0») no tienen ningún número detrás y que la respuesta es el tamaño de toda la componente.",
+   "pe": "Los números están bien pero el formato no: los N números de cada caso van en una sola línea, separados por espacios."
+  },
+  "pistas": [
+   "Ejecuta tu programa con este mismo ejemplo y compara línea a línea.",
+   "El usuario 5 no comparte grupo con el 1, pero la noticia le llega a través del 2: su respuesta es 4.",
+   "La respuesta de i es el tamaño de la componente conexa de i en el grafo «comparten algún grupo»."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un solo usuario",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "N = 1: la noticia solo la conoce él (1).",
+  "si": {
+   "wa": "Con un solo usuario la respuesta es 1: quien empieza la noticia también la conoce."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con un único usuario?",
+   "Cuenta también al usuario que empieza la noticia."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Todos los grupos vacíos",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Tres grupos vacíos: nadie es amigo de nadie (1 1 1 1 1).",
+  "si": {
+   "wa": "Un grupo vacío no conecta a nadie: cada usuario se queda con la noticia (1)."
+  },
+  "pistas": [
+   "Con grupos «0», ¿lees algún número de más?",
+   "Si k = 0, no hay ningún usuario que leer en esa línea."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Todos en el mismo grupo",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Un grupo con los N usuarios: todas las respuestas son N.",
+  "si": {
+   "wa": "Si todos están en el mismo grupo, todos son amigos de todos: la noticia llega a los 6."
+  },
+  "pistas": [
+   "Todas las respuestas deben ser 6.",
+   "Basta unir a cada usuario del grupo con el primero: así quedan todos en la misma componente."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Un grupo vacío entre otros",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un grupo vacío seguido de otro: el «0» no va seguido de ningún usuario.",
+  "si": {
+   "wa": "Con k = 0 lees un usuario que no existe (el número de la línea siguiente) y todo se descoloca. Si el grupo está vacío no hay nada más que leer."
+  },
+  "pistas": [
+   "Las respuestas son «2 1 2»: el grupo {1, 3} junta a 1 y 3.",
+   "¿Lees el primer usuario del grupo antes de comprobar que k > 0?",
+   "Pon la lectura del primer usuario dentro de un if (k > 0)."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "La noticia salta de grupo en grupo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Grupos {1, 2}, {2, 3} y {3, 4}: la noticia que empieza en 1 llega a los cuatro.",
+  "si": {
+   "wa": "No basta con contar a los compañeros de grupo: los amigos de tus amigos también se enteran. La respuesta es el tamaño de toda la componente conexa."
+  },
+  "pistas": [
+   "1 y 4 no comparten ningún grupo, pero la noticia pasa por 2 y 3.",
+   "La respuesta de i no es «1 + compañeros de sus grupos», sino cuántos usuarios alcanza un recorrido desde i.",
+   "Construye el grafo, recorre cada componente una vez y guarda su tamaño."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Dos grupos con los mismos usuarios",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los mismos tres usuarios en dos grupos: siguen siendo 3, no 5.",
+  "si": {
+   "wa": "Un usuario que está con otro en dos grupos no cuenta doble. Cuenta usuarios distintos alcanzados, no suma tamaños de grupos."
+  },
+  "pistas": [
+   "Las respuestas son «3 3 3».",
+   "Marca a cada usuario al visitarlo y cuéntalo una sola vez."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Grupos de un solo usuario",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Grupos con un único miembro: no ponen a nadie en contacto (1 1 1).",
+  "si": {
+   "wa": "Un grupo de un solo usuario no crea ninguna amistad. Revisa el bucle que une a los miembros (empieza en el segundo).",
+   "rte": "Con k = 1 no hay segundo usuario: revisa los índices del bucle del grupo."
+  },
+  "pistas": [
+   "Todas las respuestas son 1.",
+   "Une el primero con los usuarios 2.º, 3.º... del grupo: con k = 1 no hay ninguna arista."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El usuario N también cuenta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los usuarios van de 1 a N y el usuario N aparece en un grupo.",
+  "si": {
+   "rte": "Los usuarios van de 1 a N: con un grafo de N vértices hay que restar 1 al leerlos (el N sería el vértice N, que no existe)."
+  },
+  "pistas": [
+   "El usuario 3 existe cuando N = 3.",
+   "Resta 1 a cada usuario al poner las aristas (o crea N + 1 vértices y no uses el 0)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Usuarios sin grupo intercalados",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los usuarios 1, 3 y 5 no están en ningún grupo; los demás forman {2, 4, 7} y {6, 8}.",
+  "si": {
+   "wa": "Un usuario que no aparece en ningún grupo tiene respuesta 1, y hay que escribirla en su sitio: N números, en orden de usuario."
+  },
+  "pistas": [
+   "La respuesta es «1 3 1 3 1 2 3 2».",
+   "Escribe una respuesta para cada usuario de 1 a N, aparezca o no en algún grupo."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Grupos que se unen al final",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "{1, 2} y {3, 4} quedan unidos por el último grupo {2, 3}.",
+  "si": {
+   "wa": "Si das una etiqueta de grupo a cada usuario según lees, un grupo que une dos componentes ya formadas obliga a fusionarlas. Es más sencillo construir el grafo y recorrerlo al final."
+  },
+  "pistas": [
+   "Las respuestas son «4 4 4 4 1».",
+   "Construye primero el grafo con todos los grupos y recorre las componentes después de leerlo todo."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso con todos juntos seguido de otros más pequeños: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: las componentes, sus tamaños o el grafo están declarados fuera de la función de cada caso (o son static)."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y el segundo no, mira qué variables viven fuera de resuelveCaso.",
+   "Crea el grafo y los vectores de componentes y tamaños dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 casos pequeños al azar, con grupos vacíos, de uno y de todos.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; dibuja sus grupos."
+  },
+  "pistas": [
+   "Busca el caso de la línea que falla y dibuja quién comparte grupo con quién.",
+   "Calcula a mano las componentes y comprueba tu salida usuario a usuario."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Un grupo con todos los usuarios",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un grupo de 100.000 usuarios: unir cada par serían 5.000 millones de aristas.",
+  "si": {
+   "mle": "Unir todos los pares de un grupo de k usuarios son k·(k − 1)/2 aristas. Basta unir a todos con el primero (k − 1 aristas).",
+   "tle": "O unes todos los pares del grupo o haces un recorrido por usuario: las dos cosas son cuadráticas."
+  },
+  "pistas": [
+   "¿Cuántas aristas pones para un grupo de k usuarios?",
+   "Solo importa quién está conectado con quién: une a cada usuario del grupo con el primero.",
+   "Y recorre cada componente una vez, guardando su tamaño, en lugar de un recorrido por usuario."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "100.000 usuarios sueltos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "100.000 usuarios sin amigos: 100.000 componentes de tamaño 1.",
+  "si": {
+   "tle": "Algo cuesta O(N) por cada componente o por cada usuario: un recorrido completo por usuario, reiniciar un vector entero o copiar el grafo al empezar cada componente.",
+   "mle": "Revisa que no copias el grafo al llamar a la función de recorrido."
+  },
+  "pistas": [
+   "Con 100.000 componentes, lo que hagas al empezar cada una debe costar O(1) más su tamaño.",
+   "Pasa el grafo por referencia (Grafo const&) a la función de recorrido.",
+   "Haz un único recorrido por componente y guarda en comp[v] su número y en tam[c] su tamaño."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Cadena de 100.000 usuarios",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "99.999 grupos de dos encadenados: una única componente muy «larga».",
+  "si": {
+   "tle": "Algo se repite de más: ¿un recorrido por usuario?",
+   "rte": "Si usas un DFS recursivo, la cadena tiene 100.000 niveles. En el juez hay pila de sobra, pero en tu ordenador puede desbordarse: un BFS con cola lo evita."
+  },
+  "pistas": [
+   "Un solo recorrido para toda la componente basta.",
+   "Para contar una componente da igual el orden: un BFS con cola no tiene problemas de pila."
+  ]
+ }
+]

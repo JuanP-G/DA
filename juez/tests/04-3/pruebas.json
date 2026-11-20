@@ -52,6 +52,7 @@
    "rte": "Con una sola fila o columna, mirar el vecino de abajo o de la derecha se sale del bitmap si no compruebas los bordes."
   },
   "pistas": [
+   "Prueba a mano «1 1» con «#»: ¿mira tu programa algún vecino fuera del bitmap?",
    "Antes de mirar un vecino, comprueba que está dentro: 0 ≤ i < F y 0 ≤ j < C."
   ]
  },
@@ -229,6 +230,7 @@
    "wa": "Con muchas manchas, ¿usas int para contar? Debería bastar; revisa que no se mezclan diagonales."
   },
   "pistas": [
+   "Cuenta cuántas veces recorres todo el bitmap o reinicias un vector entero: debería ser una vez por caso.",
    "Los visitados se crean una vez por caso, no una vez por mancha."
   ]
  }
