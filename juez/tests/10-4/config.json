@@ -1,0 +1,9 @@
+{
+ "solucion": "10-Programacion dinamica/EJ_10-4/EJ_10-4.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (anterior[j] > anterior[col]) col = j;",
+  "if (anterior[j] >= anterior[col]) col = j;"
+ ]
+}

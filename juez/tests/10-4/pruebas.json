@@ -1,0 +1,236 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El tablero de la figura: se empieza en la columna 2 y se consigue 30.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: la mejor suma desde una casilla es su valor más la mejor de las (hasta) tres casillas de encima.",
+   "pe": "Escribe la suma, un espacio y la columna, con un salto de línea por caso."
+  },
+  "pistas": [
+   "Calcula a mano la tabla para este tablero, fila a fila, y compárala con la tuya.",
+   "mejor(i, j) = t(i, j) + máximo de mejor(i−1, j−1), mejor(i−1, j), mejor(i−1, j+1) (solo las que existen).",
+   "La respuesta es el máximo de la última fila de la tabla y su columna, contada desde 1."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "Todo unos: cualquier columna vale; se prefiere la de más a la izquierda (3 1).",
+  "si": {
+   "wa": "Con empate hay que dar la columna de más a la izquierda: la 1, no la última."
+  },
+  "pistas": [
+   "Si escribes «3 3», te quedas con la última columna que empata.",
+   "Al buscar el máximo de izquierda a derecha, cambia de columna solo si la nueva es estrictamente mayor (>)."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Tablero mínimo (3×3)",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Tableros de 3×3, el tamaño más pequeño permitido.",
+  "si": {
+   "wa": "Con N = 3 la columna del centro tiene tres casillas encima y las de los lados solo dos: revisa los bordes.",
+   "rte": "Te sales del tablero al mirar la diagonal desde la primera o la última columna."
+  },
+  "pistas": [
+   "Haz a mano el segundo tablero: 9 → 9 → 9 subiendo en zigzag.",
+   "Antes de mirar j − 1 comprueba j > 0, y antes de mirar j + 1, j + 1 < N."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Columnas numeradas desde 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El mejor recorrido empieza en la última columna: debe salir «11 3».",
+  "si": {
+   "wa": "Escribes la columna contando desde 0. El enunciado numera las columnas de 1 a N."
+  },
+  "pistas": [
+   "¿Qué número escribes para la última columna de un tablero de 3×3?",
+   "Si guardas la columna como índice de un vector (desde 0), súmale 1 al escribirla."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Subir en vertical",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La mejor forma es subir recto por una columna (45, columna 3).",
+  "si": {
+   "wa": "No tienes en cuenta la casilla que está justo encima: los movimientos son vertical y las dos diagonales."
+  },
+  "pistas": [
+   "¿Puede tu programa ir de (i, j) a (i−1, j)?",
+   "El máximo de arriba tiene que considerar las tres casillas: j−1, j y j+1."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Subir en diagonal",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El mejor recorrido sube en zigzag: unas veces en diagonal hacia la izquierda y otras hacia la derecha.",
+  "si": {
+   "wa": "Te falta alguna de las dos diagonales (o solo miras una): desde (i, j) se puede ir a (i−1, j−1) y a (i−1, j+1)."
+  },
+  "pistas": [
+   "El mejor recorrido suma 45 y pasa por los cinco 9: dibújalo.",
+   "Comprueba que en el máximo entran j − 1 y j + 1, cada una con su comprobación de borde."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "No se puede dar la vuelta por los lados",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La primera y la última columna NO son vecinas: el tablero no da la vuelta.",
+  "si": {
+   "wa": "Tratas el tablero como si fuera circular (desde la columna 1 se llega a la N o al revés). Los movimientos no pueden salirse del tablero."
+  },
+  "pistas": [
+   "Desde la columna 1 solo se puede subir a las columnas 1 y 2.",
+   "No uses índices módulo N: si j − 1 < 0 o j + 1 ≥ N, esa casilla no existe."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "La columna es la de la última fila",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El recorrido óptimo empieza abajo en una columna (2) y acaba arriba en otra (4): se pide la de ABAJO.",
+  "si": {
+   "wa": "Escribes la columna donde ACABA el recorrido (la de la primera fila) en vez de aquella donde empieza (la de la última fila)."
+  },
+  "pistas": [
+   "El juego empieza en la última fila y sube: la columna que se pide es la de la fila N.",
+   "Si rellenas la tabla de abajo arriba, al final tienes el mejor valor de cada casilla de la fila 1, que no es lo que se pide: rellénala de arriba abajo (o guarda dónde empezó cada camino)."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Lo más grande de arriba no siempre conviene",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Ir siempre a la casilla mayor de encima (voraz) lleva a un recorrido peor.",
+  "si": {
+   "wa": "Eliges en cada paso la casilla mayor de las de encima: eso es un voraz y no da el óptimo. Hace falta la tabla de programación dinámica."
+  },
+  "pistas": [
+   "Desde la columna 2 de abajo, el 5 de la izquierda parece mejor, pero arriba a la derecha hay un 90.",
+   "La decisión de cada paso depende de lo que queda por encima: calcula mejor(i, j) para todas las casillas.",
+   "mejor(i, j) = t(i, j) + máximo de los mejor(i−1, ·) de las tres casillas de encima."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Empate entre columnas que no son la primera",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Varias columnas empatan con la suma máxima: hay que quedarse con la de más a la izquierda.",
+  "si": {
+   "wa": "Ante un empate te quedas con una columna que no es la de más a la izquierda (sueles usar ≥ en vez de >, o recorres de derecha a izquierda)."
+  },
+  "pistas": [
+   "En el primer tablero empatan las columnas 2 y 4: la respuesta es «9 2».",
+   "Recorre la última fila de izquierda a derecha y cambia de columna solo si la suma es estrictamente mayor."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Valores grandes",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Casillas con el valor máximo (10.000).",
+  "si": {
+   "wa": "Con valores de hasta 10.000, ¿lees bien los números o los guardas en un tipo pequeño (char, short)?"
+  },
+  "pistas": [
+   "La suma máxima es 10.000 · 1.000 = 10⁷: cabe en int, pero no en short.",
+   "Usa int para el tablero y para la tabla."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Un tablero grande y luego otros más pequeños: nada del anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente (la tabla, el máximo o la columna): créalos dentro de la función de cada caso.",
+   "rte": "La tabla de un caso anterior tiene otro tamaño: créala (o redimensiónala) en cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué vive fuera de resuelveCaso.",
+   "Declara la tabla, el máximo y la columna dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 tableros pequeños al azar (con muchos empates en algunos).",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; pruébalo a mano."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla y hazlo en papel.",
+   "Revisa los bordes y los empates, que son lo que más falla."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 10,
+  "comprueba": "10 tableros de hasta 60×60 con valores de hasta 10.000.",
+  "si": {
+   "wa": "Falla en tableros algo mayores: revisa los bordes y que se lea el tablero entero.",
+   "tle": "Una recursión sin memoria (probar todos los recorridos) crece como 3^N: aquí ya no termina. Guarda cada mejor(i, j) en una tabla."
+  },
+  "pistas": [
+   "¿Calculas el mismo mejor(i, j) muchas veces? Apúntalo en una tabla la primera vez.",
+   "Rellena la tabla fila a fila: cada fila solo necesita la de encima."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Tablero 1000×1000 al azar",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo (10⁶ casillas).",
+  "si": {
+   "tle": "Tu solución es lenta para 1000×1000. Debe ser O(N²): cada casilla mira solo tres de la fila de encima.",
+   "mle": "Gastas demasiada memoria: basta la fila anterior (o una tabla N×N de int).",
+   "rte": "Con N = 1000 se rompe: una tabla tan grande no puede ser un array local (pila); usa vector."
+  },
+  "pistas": [
+   "¿Haces algo más que mirar tres casillas por cada casilla?",
+   "Si usas recursión, que sea con memoria; o mejor, rellena la tabla con dos bucles.",
+   "Una matriz local int t[1000][1000] desborda la pila: usa vector<vector<int>> o solo dos filas."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Tablero 1000×1000 todo unos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Todo empata en el tamaño máximo: «1000 1».",
+  "si": {
+   "tle": "Tu solución es lenta para 1000×1000: debe ser O(N²).",
+   "wa": "Con todo empatado hay que dar la columna 1."
+  },
+  "pistas": [
+   "Un recorrido sin memoria tarda 3^N: imposible con N = 1000.",
+   "En el empate, cambia de columna solo con > estricto."
+  ]
+ }
+]

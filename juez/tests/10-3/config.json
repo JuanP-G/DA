@@ -1,0 +1,9 @@
+{
+ "solucion": "10-Programacion dinamica/EJ_10-3/EJ_10-3.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (fila[j] == 'X') caminos[j] = 0;",
+  "if (fila[j] == 'X') caminos[j] = 1;"
+ ]
+}
