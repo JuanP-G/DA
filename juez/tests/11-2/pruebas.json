@@ -1,0 +1,277 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado (roda)",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "roda: cuatro letras distintas, hay que añadir 3 (adoroda, rodador...). Vale cualquier palíndromo con el mínimo de letras añadidas.",
+  "si": {
+   "wa": "Falla el primer ejemplo: revisa la recurrencia faltan(i, j) y que escribes el número, un espacio y el palíndromo.",
+   "pe": "Los datos están bien pero no el formato: el número y el palíndromo van en la MISMA línea, separados por un espacio."
+  },
+  "pistas": [
+   "Con cuatro letras distintas solo una puede quedarse sola en el centro.",
+   "faltan(i, j) = faltan(i+1, j−1) si s[i] = s[j]; si no, 1 + min(faltan(i+1, j), faltan(i, j−1)).",
+   "Escribe «3 adoroda» (o cualquier otro palíndromo de 7 letras que contenga roda)."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado (amad)",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "amad: basta con una d al principio (damad).",
+  "si": {
+   "wa": "Sale más de 1: en «amad» hay que emparejar la d (añadiéndola al principio) y aprovechar que «ama» ya es palíndromo."
+  },
+  "pistas": [
+   "¿Qué queda si emparejas la d del final con una d nueva al principio?",
+   "Cuando los extremos son distintos hay que probar las DOS opciones y quedarse con la mejor."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado (reconor)",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "reconor: hay que insertar dos letras EN MEDIO (reconocer), no solo por los extremos.",
+  "si": {
+   "wa": "Las letras se pueden añadir en cualquier posición: si solo añades por un extremo (o buscas el palíndromo contiguo más largo) no sale 2."
+  },
+  "pistas": [
+   "r, o, n, o, r ya forman un palíndromo aunque no sean letras seguidas.",
+   "Es la subsecuencia palindrómica más larga, no la subcadena: faltan = n − (letras que se quedan)."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Ejemplo 4 del enunciado (reconocer)",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "reconocer ya es un palíndromo: se escribe «0 reconocer».",
+  "si": {
+   "wa": "Si la palabra ya es un palíndromo no se añade nada: «0» y la propia palabra."
+  },
+  "pistas": [
+   "¿Qué vale faltan(i, j) cuando s[i] = s[j] en todos los pasos?",
+   "Con extremos iguales se emparejan entre sí y no se añade ninguna letra."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Formato: número y palíndromo en la misma línea",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Dos palabras que ya son palíndromos: «0 aa» y «0 xxxx».",
+  "si": {
+   "wa": "Mira el «Por qué»: hay que escribir el número de letras añadidas, un espacio y el palíndromo, todo en una línea por palabra.",
+   "pe": "El número y el palíndromo van en la misma línea, separados por un solo espacio."
+  },
+  "pistas": [
+   "La salida de «aa» es exactamente «0 aa».",
+   "Escribe primero el número, luego un espacio y luego el palíndromo, y un salto de línea."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Una sola letra",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una palabra de una letra ya es un palíndromo: «0 a».",
+  "si": {
+   "wa": "Escribes la letra del centro dos veces: cuando i = j, esa letra va UNA sola vez (en la mitad izquierda o en el centro).",
+   "rte": "Con una sola letra te sales de la tabla: el caso base es faltan(i, j) = 0 si i ≥ j; no mires faltan(i+1, j−1) con j < i+1."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa para «a»?",
+   "En la reconstrucción, si i == j la letra se pone una sola vez y se termina."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Ya es un palíndromo impar",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Palabras que ya son palíndromos de longitud impar: no se añade nada.",
+  "si": {
+   "wa": "Añades letras a algo que ya es palíndromo: si s[i] = s[j], faltan(i, j) = faltan(i+1, j−1) (las dos letras se emparejan entre sí)."
+  },
+  "pistas": [
+   "En «aba» la a del principio y la del final se emparejan entre sí.",
+   "Revisa el caso s[i] = s[j]: el intervalo que queda es (i+1, j−1), no (i+1, j)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Dos letras distintas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "«ab»: hay que añadir 1 letra (aba o bab).",
+  "si": {
+   "wa": "Con dos letras distintas basta con añadir una: faltan(i, j) = 1 + min(...), no 2 + min(...). Cada letra sin pareja necesita UNA copia."
+  },
+  "pistas": [
+   "Añadiendo una a al final de «ab» sale «aba».",
+   "Si los extremos son distintos, se añade UNA copia de uno de ellos: 1 + min(faltan(i+1, j), faltan(i, j−1))."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "La mitad derecha va al revés",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "«abc»: se añaden 2 letras (abcba, cbabc...).",
+  "si": {
+   "wa": "Tu palabra no es un palíndromo: si construyes la mitad derecha de fuera hacia dentro, al final hay que darle la vuelta."
+  },
+  "pistas": [
+   "Escribe a mano tus dos mitades para «abc»: ¿en qué orden quedan las letras de la derecha?",
+   "La mitad derecha se va construyendo desde el final de la palabra: hay que invertirla antes de juntarla con la izquierda."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Elegir el extremo que menos letras necesita",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "«aab»: lo mejor es emparejar la b (baab), con una sola letra.",
+  "si": {
+   "wa": "Tu palabra tiene letras de más: al reconstruir, cuando los extremos son distintos hay que seguir por el lado con MENOS letras que añadir (el que dio el mínimo en la tabla)."
+  },
+  "pistas": [
+   "¿Cuántas letras faltan para «ab» y cuántas para «aa»?",
+   "Si faltan(i+1, j) ≤ faltan(i, j−1), empareja s[i]; si no, empareja s[j]."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Subsecuencia, no subcadena",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "En «abca» las dos a se emparejan aunque no estén juntas: basta con 1 letra (abcba).",
+  "si": {
+   "wa": "Sale más de lo debido: las letras que se quedan no tienen por qué ser contiguas (es la subsecuencia palindrómica más larga, no la subcadena)."
+  },
+  "pistas": [
+   "En «abca» se aprovechan las dos a de los extremos.",
+   "Usa la recurrencia por intervalos: si s[i] = s[j], se emparejan y queda (i+1, j−1)."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Todas las letras distintas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las 26 letras distintas: hay que añadir 25.",
+  "si": {
+   "wa": "Con todas las letras distintas solo una se queda sin copia: n − 1 letras añadidas."
+  },
+  "pistas": [
+   "¿Cuántas letras pueden quedarse sin pareja en un palíndromo?",
+   "Comprueba que tu palíndromo tiene 51 letras y contiene la palabra."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Letras iguales separadas",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Palabras en las que hay que decidir qué letras iguales se emparejan.",
+  "si": {
+   "wa": "Algún palíndromo no es mínimo o no contiene la palabra: revisa la recurrencia y que la reconstrucción sigue las decisiones de la tabla."
+  },
+  "pistas": [
+   "En «abab» basta con una letra: «ababa» o «babab».",
+   "La reconstrucción debe seguir exactamente las decisiones que dan el mínimo de la tabla."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 10,
+  "comprueba": "Una palabra larga seguida de otras cortas: nada de una palabra debe pasar a la siguiente.",
+  "si": {
+   "wa": "La primera palabra sale bien y las siguientes no: algo no se reinicia (las mitades del palíndromo o la tabla).",
+   "rte": "Una tabla del caso anterior con otro tamaño: créala dentro de cada caso con el tamaño de la palabra."
+  },
+  "pistas": [
+   "¿Vacías las cadenas de las dos mitades antes de cada palabra?",
+   "Declara la tabla y las cadenas dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Palabras de una y dos letras",
+  "tipo": "borde",
+  "casos": 4,
+  "comprueba": "Las palabras más cortas posibles: «0 z», «0 zz» y dos de dos letras distintas que necesitan una más.",
+  "si": {
+   "wa": "Falla con palabras mínimas: revisa el caso base (faltan = 0 si i ≥ j) y la letra del centro, que va una sola vez.",
+   "rte": "Con una o dos letras te sales de la tabla: no mires faltan(i+1, j−1) cuando j − i < 2."
+  },
+  "pistas": [
+   "Prueba tu programa con «z» y con «zy».",
+   "Con dos letras iguales faltan 0; con dos distintas, 1."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Palabras cortas al azar",
+  "tipo": "aleatorio",
+  "casos": 300,
+  "comprueba": "300 palabras de hasta 10 letras, muchas con pocas letras distintas (muchas soluciones). Vale cualquier palíndromo con el mínimo de letras añadidas.",
+  "si": {
+   "wa": "Alguna palabra falla: busca cuál es en la entrada y resuélvela a mano (son cortas)."
+  },
+  "pistas": [
+   "El «Por qué» te dice si el número no es el mínimo o si la palabra no es un palíndromo que contenga la dada.",
+   "Comprueba el orden de cálculo de la tabla: faltan(i, j) necesita intervalos MÁS CORTOS ya calculados."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Palabras medianas al azar",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 palabras de 11 a 18 letras.",
+  "si": {
+   "wa": "Alguna palabra mediana falla: revisa el orden de cálculo (por longitudes crecientes) y la reconstrucción."
+  },
+  "pistas": [
+   "Si las cortas salen bien y estas no, mira los índices de la tabla.",
+   "Rellena por d = j − i creciente: d = 1, 2, …, n − 1."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "Palabra de 1.000 letras",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Una palabra del tamaño máximo con letras al azar.",
+  "si": {
+   "tle": "Recursión sin memoria (exponencial): guarda faltan(i, j) en una tabla n × n.",
+   "mle": "¿Guardas un palíndromo (string) en cada casilla de la tabla? Guarda solo números y reconstruye al final.",
+   "rte": "Con 1.000 letras se rompe: revisa el tamaño de la tabla (n × n) y los índices."
+  },
+  "pistas": [
+   "¿Cuántas veces calculas el mismo faltan(i, j)?",
+   "Una tabla de enteros n × n (10⁶ casillas) rellena por longitudes crecientes: O(n²)."
+  ]
+ },
+ {
+  "n": 19,
+  "nombre": "16 palabras de 1.000 letras",
+  "tipo": "rendimiento",
+  "casos": 16,
+  "comprueba": "Muchas palabras del tamaño máximo (incluida una de mil «a»): mide el coste O(n²) por palabra.",
+  "si": {
+   "tle": "Debe costar O(n²) por palabra. ¿Concatenas strings en cada casilla, usas map en vez de una tabla o pasas la palabra por valor en una recursión?",
+   "mle": "No guardes strings en la tabla: solo números, y reconstruye el palíndromo al final."
+  },
+  "pistas": [
+   "10⁶ casillas por palabra son pocas; si tarda, algo repite trabajo o copia strings.",
+   "Reconstruye el palíndromo una sola vez, recorriendo la tabla desde (0, n − 1)."
+  ]
+ }
+]
