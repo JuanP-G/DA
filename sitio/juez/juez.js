@@ -4,6 +4,7 @@
 (function () {
   const AQUI = (document.currentScript && document.currentScript.src) || location.href;
   const RUTA_WORKER = new URL('juez-worker.js', AQUI).href;
+  const FACTOR_NAVEGADOR = 8;   // límite de tiempo × 8 en el modo navegador
   const WASM_BASE = 'https://binji.github.io/wasm-clang/';
 
   // Veredictos (las siglas son las de los jueces de programación, DOMjudge incluido)
@@ -220,7 +221,10 @@
       this.btn.disabled = true;
       this.res.replaceChildren();
       const codigo = this.ta.value;
-      const limite = this.m.limite_ms || 3000;
+      // El compilador del navegador (clang 8 en WebAssembly) es mucho más lento que g++ en el servidor:
+      // se da más margen para no marcar TLE a soluciones correctas. El servidor usa el límite real.
+      const limite = (this.m.limite_ms || 3000) * FACTOR_NAVEGADOR;
+      this.limiteActual = limite;
       const filas = [];
       try {
         this.msg(this.worker ? 'Compilando…' : 'Cargando el compilador (la primera vez tarda)…');
@@ -304,7 +308,7 @@
         } else if (f.v === 'rte' || f.v === 'mle' || f.v === 'ole') {
           li.append(h('div', { class: 'dj-dif' }, f.detalle || QUE_ES[f.v]));
         } else if (f.v === 'tle') {
-          li.append(h('div', { class: 'dj-dif' }, `Pasó del límite de ${this.m.limite_ms || 3000} ms.`));
+          li.append(h('div', { class: 'dj-dif' }, `Pasó del límite de ${this.limiteActual || this.m.limite_ms || 3000} ms` + (this.limiteActual ? ' (ampliado porque se ejecuta en tu navegador, más lento que el servidor).' : '.')));
         }
         if (f.t.comprueba && f.v !== 'ac' && f.v !== 'skip') li.append(h('div', { class: 'dj-que' }, 'Qué comprueba: ' + f.t.comprueba));
         return li;
