@@ -1177,6 +1177,7 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
                     f'<button class="mb" type="button" data-teo="{k}" title="Abrir aquí" aria-label="Abrir {esc(nom)} aquí">@@i:book@@</button>'
                     f'<a class="mb" href="{url_teoria(t, r, "../")}" download title="Descargar" aria-label="Descargar {esc(nom)}">@@i:download@@</a></div>')
     aprender = principales + pdfs
+    pdfsec = (f'<section class="pdfsec" id="teoria-pdf" aria-label="Teoría en PDF"><div class="mh"><h2>Teoría en PDF <span class="cnt">{len(pdfs)}</span></h2></div><div class="alist">{"".join(pdfs)}</div></section>' if pdfs else "")
     recursos = [f'<a class="chip" href="../estructuras/{quote(c)}.html">@@i:code@@ {esc(c)}</a>' for c in info["cab"] if c in cabs]
     lateral = (f'<aside class="tside">'
                f'<div class="sbox prog-box" data-ids="{ids}" style="--c:{color}"><div class="ph"><small>Tu progreso</small><b data-pct>0%</b></div><div class="prog"><i data-bar></i></div>'
@@ -1187,7 +1188,7 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas">← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>Tema {t}</span></div>'
               f'<div class="thead" data-ids="{ids}"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="tag">{esc(bloque)}</span><span class="est" data-est>Sin empezar</span></div>'
               f'<h1>Tema {t} · {esc(info["nombre"])}</h1><p class="lede">{esc(info["resumen"])}</p></div>'
-              f'<div class="tlay">{lateral}<main class="tmain">{vhero}<div class="mh" id="ejercicios"><h2>Ejercicios <span class="cnt">{n}</span></h2>'
+              f'<div class="tlay">{lateral}<main class="tmain">{vhero}{pdfsec}<div class="mh" id="ejercicios"><h2>Ejercicios <span class="cnt">{n}</span></h2>'
               f'<div class="filters"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="pend">Pendientes</button><button class="chip" data-f="hechos">Hechos</button><button class="chip" data-fv>@@i:video@@ Con vídeo</button></div></div>'
               f'<div id="p-ejercicios">{"".join(filas)}<p class="vacio" id="sin">Ningún ejercicio coincide con el filtro.</p></div>'
               f'<p class="notas">Tests del profe y propios: próximamente.</p></main></div>{pager}</div>{teoria_panel(t, "../")}')
