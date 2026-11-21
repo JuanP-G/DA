@@ -535,3 +535,12 @@ body.cine-on{overflow:hidden}
 .accb.lab{border-color:rgba(245,185,66,.5);background:linear-gradient(160deg,rgba(245,185,66,.13),rgba(245,185,66,.02))}.accb.lab em,.accb.lab b{color:#f5b942}.accb.lab:hover{box-shadow:0 10px 26px rgba(245,185,66,.2)}
 .accb.vid{border-color:rgba(139,123,255,.5);background:linear-gradient(160deg,rgba(139,123,255,.15),rgba(139,123,255,.02))}.accb.vid em,.accb.vid b{color:#a99cff}.accb.vid:hover{box-shadow:0 10px 26px rgba(139,123,255,.22)}
 @media(max-width:560px){.acc{grid-template-columns:1fr}}
+
+/* laboratorio en móvil: pestañas en una sola fila con desplazamiento lateral */
+@media(max-width:720px){
+.lab .tabsbar{margin:14px 0 12px}
+.lab .tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.lab .tabs::-webkit-scrollbar{display:none}
+.lab .tabs .btn{flex:0 0 auto;white-space:nowrap;padding:9px 14px;font-size:.88rem}
+.lab .tabs .fn{display:none}
+}

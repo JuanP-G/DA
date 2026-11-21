@@ -780,7 +780,7 @@ def pagina_lab(herr, lab, tema, info, lista_ej, slugs, descr_herr, otros=(), vis
             continue
         filas.append(f'<a class="labej" data-st="{slugs[i]}" href="../ej/{slugs[i]}.html"><span class="tk" aria-hidden="true">@@i:check@@</span><b>{esc(e["id"])}</b><span class="t">{esc(e["titulo"])}</span><span class="e">Hecho</span></a>')
     ops = "".join(f'<details class="op"><summary><code>{o[0]}</code><span class="q">{o[1]}</span><b class="c">{o[2]}</b><i>¿Por qué?</i></summary><div class="why"><b>Por qué: </b>{o[3]}</div></details>' for o in lab["ops"])
-    tabs = [("vis", "Visualizar")] + ([("cod", f"Código ({lab['cab']})")] if rel else []) + [("ops", "Operaciones y coste"), ("ej", "Ejercicios")]
+    tabs = [("vis", "Visualizar")] + ([("cod", f"Código<span class=\"fn\"> ({lab['cab']})</span>")] if rel else []) + [("ops", "Operaciones y coste"), ("ej", "Ejercicios")]
     botones = "".join(f'<button class="btn{" pref" if i == "vis" else ""}" data-tab="{i}">{t}</button>' for i, t in tabs)
     panes = (f'<div class="pane" id="p-vis"><iframe id="labframe" class="labframe" src="../herramientas/{herr}?embed=1{("&vista=" + vista) if vista else ""}" title="Simulador de {esc(lab["titulo"])}" loading="eager"></iframe></div>'
              + (f'<div class="pane" id="p-cod"><pre data-code="{esc(lab["cab"])}" id="src0">{esc(txt)}</pre></div>' if rel else '') +
@@ -802,7 +802,7 @@ LAB_JS = r"""
 (function(){var f=document.getElementById('labframe');if(!f)return;
  window.addEventListener('message',function(e){if(e.source!==f.contentWindow||!e.data||e.data.tipo!=='da-lab-alto')return;if(e.data.alto>200)f.style.height=(e.data.alto+4)+'px'});
  (function(){var t=document.querySelector('.lab .tabs');if(!t)return;var ind=document.createElement('span');ind.className='ind';t.appendChild(ind);
- function mv(){var b=t.querySelector('.btn.on');if(!b||!b.offsetWidth){t.classList.add('sin-ind');return}t.classList.remove('sin-ind');ind.style.width=b.offsetWidth+'px';ind.style.transform='translateX('+b.offsetLeft+'px)'}
+ function mv(){var b=t.querySelector('.btn.on');if(!b||!b.offsetWidth){t.classList.add('sin-ind');return}t.classList.remove('sin-ind');ind.style.width=b.offsetWidth+'px';ind.style.transform='translateX('+b.offsetLeft+'px)';if(t.scrollWidth>t.clientWidth){var l=b.offsetLeft-(t.clientWidth-b.offsetWidth)/2;if(t.scrollTo)t.scrollTo({left:l,behavior:t.classList.contains('listo')?'smooth':'auto'})}}
  mv();setTimeout(function(){mv();setTimeout(function(){t.classList.add('listo')},30)},50);window.addEventListener('resize',mv);window.addEventListener('hashchange',function(){requestAnimationFrame(mv)});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(mv);
  t.querySelectorAll('.btn').forEach(function(b){b.addEventListener('click',function(){requestAnimationFrame(mv)})})})();
 document.querySelectorAll('[data-tab]').forEach(function(b){b.addEventListener('click',function(){if(b.dataset.tab==='vis')setTimeout(function(){try{f.contentWindow.postMessage({tipo:'da-lab-medir'},'*')}catch(x){}},60)})});
