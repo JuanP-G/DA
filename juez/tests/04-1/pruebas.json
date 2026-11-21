@@ -1,0 +1,255 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF: un árbol, un grafo con V − 1 aristas que no es árbol y un único vértice.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa lo básico: que lees V y A en líneas distintas, que escribes SI/NO en mayúsculas y sin tilde, y la idea (conexo y sin ciclos).",
+   "pe": "Las respuestas están bien pero el formato no: una palabra por línea, sin espacios ni texto extra."
+  },
+  "pistas": [
+   "Ejecuta tu programa con este mismo ejemplo y compara línea a línea.",
+   "Escribe exactamente «SI» o «NO» (sin tilde, en mayúsculas) y un salto de línea por caso.",
+   "El segundo caso tiene V − 1 aristas y aun así no es árbol: además del número de aristas hay que comprobar que es conexo."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un único vértice",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "V = 1 y ninguna arista: es un árbol libre (SI).",
+  "si": {
+   "wa": "Con un solo vértice el grafo es conexo y no tiene ciclos: es árbol. Suele fallar por exigir al menos una arista o por tratar «A = 0» como caso especial.",
+   "rte": "Con V = 1 solo existe el vértice 0: ¿empiezas el recorrido en el vértice 1 o miras ady(1)?"
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con «1» vértice y «0» aristas?",
+   "1 vértice y 0 aristas cumple A = V − 1 y el recorrido desde 0 llega a todos (al único que hay).",
+   "No hace falta ningún caso especial: quita cualquier condición del tipo «si A == 0 entonces NO»."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Dos vértices",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "El árbol más pequeño con una arista (SI) y dos vértices sueltos (NO).",
+  "si": {
+   "wa": "Con una sola arista no hay ciclo. Si dices NO al primero, probablemente tomas la arista de vuelta al padre (1 → 0) como si cerrara un ciclo."
+  },
+  "pistas": [
+   "«0 1» es un árbol; «2 vértices, 0 aristas» no es conexo.",
+   "En un DFS que busca ciclos, el vecino del que vienes (el padre) ya está visitado pero NO forma un ciclo."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Muchos vértices y ninguna arista",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "V = 10.000 sin aristas: no es conexo (NO).",
+  "si": {
+   "wa": "Sin aristas tampoco hay ciclos, pero el grafo no es conexo. Si dices SI, solo estás comprobando que no hay ciclos."
+  },
+  "pistas": [
+   "Un grafo sin aristas y con más de un vértice tiene V componentes.",
+   "Además de no tener ciclos, el árbol tiene que ser conexo: cuenta cuántos vértices alcanza un recorrido desde el 0."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "V − 1 aristas pero no es conexo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un triángulo y una arista suelta: V − 1 aristas, todos los vértices con algún vecino… y no es conexo (NO).",
+  "si": {
+   "wa": "Contar aristas no basta: con V − 1 aristas el grafo puede tener un ciclo y quedar partido en trozos. Tampoco basta con que todos los vértices tengan algún vecino."
+  },
+  "pistas": [
+   "Hay 4 aristas y 5 vértices, todos con algún vecino… y no es árbol: el triángulo 0-1-2 y la arista 3-4 no se tocan.",
+   "Que todo vértice tenga grado ≥ 1 no significa que el grafo sea conexo.",
+   "Comprueba de verdad la conexión: un DFS desde el 0 tiene que visitar los V vértices, además de que A = V − 1."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Hay que leer todas las aristas aunque ya sepas la respuesta",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso con A ≠ V − 1 seguido de otros: aunque ya sepas que es NO, sus aristas siguen en la entrada.",
+  "si": {
+   "wa": "Si contestas NO en cuanto ves que A ≠ V − 1 y pasas al siguiente caso sin leer sus A aristas, esas aristas se leen como si fueran el caso siguiente y todo se descoloca."
+  },
+  "pistas": [
+   "El primer caso es NO, pero el segundo es SI: ¿tu programa contesta bien al segundo?",
+   "Mira qué pasa con las líneas «0 1», «1 2»… del primer caso si no las lees.",
+   "Lee siempre el caso completo (V, A y las A aristas) antes de decidir nada; Grafo(cin) ya lo hace."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Conexo pero con ciclos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un triángulo: es conexo pero tiene un ciclo, así que no es árbol (NO).",
+  "si": {
+   "wa": "Ser conexo no basta: un árbol tampoco puede tener ciclos. Si dices SI, solo compruebas la conexión."
+  },
+  "pistas": [
+   "El triángulo 0-1-2 es conexo, pero no es un árbol.",
+   "Un árbol con V vértices tiene exactamente V − 1 aristas; si hay más, hay algún ciclo.",
+   "Añade la segunda condición: conexo Y A == V − 1 (o busca ciclos en el DFS)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Bosque: sin ciclos pero no conexo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos árboles separados (un bosque): no hay ciclos, pero tampoco es conexo (NO).",
+  "si": {
+   "wa": "No tener ciclos no basta: tiene que ser conexo. Si solo buscas ciclos desde el vértice 0, los demás trozos ni se miran."
+  },
+  "pistas": [
+   "En «0-1» y «2-3» no hay ningún ciclo, y aun así no es un árbol.",
+   "Después del DFS desde el 0, ¿has comprobado que se ha visitado a todos?",
+   "Cuenta los vértices que visita el recorrido desde el 0: si no son V, la respuesta es NO."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "La arista de vuelta al padre no es un ciclo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un árbol binario de 7 vértices (SI): al bajar por cada arista, el hijo vuelve a ver a su padre.",
+  "si": {
+   "wa": "Si buscas ciclos con un DFS, al mirar los adyacentes de w aparece su padre v, que ya está visitado. Eso no es un ciclo: hay que ignorar al padre."
+  },
+  "pistas": [
+   "Dibuja el árbol y sigue tu DFS: al llegar al 1 desde el 0, ¿qué pasa cuando miras ady(1)?",
+   "En un grafo no dirigido la arista v-w aparece en ady(v) y en ady(w): al bajar de v a w, w ve otra vez a v.",
+   "Pasa el padre al DFS (dfs(w, v)) y solo cuenta como ciclo un vecino visitado que no sea el padre; o usa la condición A == V − 1."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Vértices numerados desde 0 hasta V − 1",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Aristas que usan el vértice 0 y el V − 1.",
+  "si": {
+   "rte": "Los vértices van de 0 a V − 1. Si les restas 1 al leerlos (Grafo(cin, 1)) el 0 se convierte en −1, y si reservas V posiciones y usas el número tal cual no cabe el V."
+  },
+  "pistas": [
+   "El enunciado numera los vértices desde 0, no desde 1.",
+   "Usa Grafo(cin) (sin el segundo parámetro) o, si lees a mano, no restes 1."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Aristas en cualquier orden",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Árboles cuyas aristas llegan desordenadas: la última arista une dos trozos ya empezados (SI).",
+  "si": {
+   "wa": "Mirar si los dos extremos de una arista «ya han aparecido» no detecta ciclos: en «0 1», «2 3», «1 2» la última arista une dos trozos distintos y no cierra ningún ciclo."
+  },
+  "pistas": [
+   "En el primer caso, la tercera arista tiene los dos extremos ya vistos y sin embargo es un camino 0-1-2-3.",
+   "Un ciclo aparece cuando los dos extremos ya están en el MISMO trozo, no simplemente cuando ya han salido.",
+   "Haz un recorrido sobre el grafo completo (DFS) o usa conjuntos disjuntos para saber si dos vértices están ya conectados."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un árbol grande seguido de otros más pequeños: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el vector de visitados, el contador de vértices alcanzados o el grafo, declarados fuera de la función de cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y el segundo no, mira qué variables viven fuera de resuelveCaso.",
+   "Crea el grafo, los visitados y los contadores dentro de la función de cada caso (o reinícialos)."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Más árboles y casi árboles",
+  "tipo": "trampa",
+  "casos": 12,
+  "comprueba": "Doce grafos parecidos a árboles: con un ciclo, con trozos sueltos, con el 0 aislado, caminos y estrellas.",
+  "si": {
+   "wa": "Alguno de estos casi-árboles te engaña: mira el número de caso que falla. Recuerda: árbol = conexo y sin ciclos (o conexo y A = V − 1)."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso: dibuja ese grafo.",
+   "Comprueba por separado: ¿llega el DFS desde 0 a todos?, ¿hay exactamente V − 1 aristas?"
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 80,
+  "comprueba": "80 grafos pequeños al azar: árboles, árboles con una arista de más, bosques y grafos cualesquiera.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; dibuja ese grafo y sigue tu programa a mano."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla y dibújalo.",
+   "Comprueba por separado las dos condiciones (conexo, sin ciclos) en ese caso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Camino de 10.000 vértices",
+  "tipo": "rendimiento",
+  "casos": 3,
+  "comprueba": "Un camino con el máximo de vértices: el DFS recursivo baja 10.000 niveles.",
+  "si": {
+   "mle": "Gastas demasiada memoria en la recursión: ¿pasas el grafo por valor (Grafo g) en vez de por referencia (Grafo const& g)? Se copia entero en cada llamada.",
+   "tle": "Algo se repite de más: copiar el grafo o el vector de visitados en cada llamada recursiva es muy caro.",
+   "rte": "La recursión es muy profunda. En el juez hay pila de sobra; revisa que no declaras vectores grandes dentro de la función recursiva."
+  },
+  "pistas": [
+   "Mira la cabecera de tu función recursiva: ¿cómo recibe el grafo?",
+   "Pasa siempre el grafo y los vectores grandes por referencia (const& o &).",
+   "dfs(Grafo const& g, int v): sin el & cada llamada copia el grafo entero."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Grafo con 100.000 aristas",
+  "tipo": "rendimiento",
+  "casos": 3,
+  "comprueba": "El máximo de aristas (con muchos ciclos) y un árbol aleatorio de 10.000 vértices.",
+  "si": {
+   "tle": "Para 100.000 aristas hay que ir en O(V + A). ¿Usas una matriz de adyacencia o recorres el grafo varias veces?",
+   "mle": "Una matriz de adyacencia de 10.000 × 10.000 enteros no cabe en memoria: usa listas de adyacencia (la clase Grafo)."
+  },
+  "pistas": [
+   "Un único recorrido por caso basta: cada vértice y cada arista se miran una vez.",
+   "Si usas una matriz de adyacencia, cámbiala por la clase Grafo (listas de adyacencia)."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Muchos grafos grandes sin aristas",
+  "tipo": "rendimiento",
+  "casos": 61,
+  "comprueba": "60 casos de 10.000 vértices: lo que cueste V² por caso no llega a tiempo.",
+  "si": {
+   "tle": "Algo cuesta V² por caso (una matriz de adyacencia, un bucle doble sobre los vértices...). Con listas de adyacencia es O(V + A).",
+   "mle": "Reservas demasiada memoria por caso: con V = 10.000 una matriz V × V de enteros ocupa 400 MB."
+  },
+  "pistas": [
+   "¿Qué estructura creas al empezar cada caso y cuánto ocupa con V = 10.000?",
+   "Usa la clase Grafo (listas de adyacencia): crearla cuesta O(V), no O(V²)."
+  ]
+ }
+]

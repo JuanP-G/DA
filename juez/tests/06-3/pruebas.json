@@ -1,0 +1,250 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El primer ejemplo del PDF: 4 islas y 5 puentes, coste mínimo 14.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: la lectura (I y P van en líneas distintas), el orden de los puentes o la condición para elegir uno."
+  },
+  "pistas": [
+   "Ejecútalo en tu ordenador con el ejemplo y compara.",
+   "Se eligen los puentes 3–4 (2), 1–2 (5) y 2–4 (7): ordénalos por coste y descarta los que unan islas ya unidas.",
+   "Es un árbol de recubrimiento de coste mínimo: algoritmo de Kruskal con conjuntos disjuntos."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El segundo ejemplo: 3 puentes para 4 islas, pero ninguno llega a la isla 3.",
+  "si": {
+   "wa": "Cuando no se pueden unir todas las islas hay que escribir exactamente «No hay puentes suficientes» (sin punto final). Que haya I − 1 puentes no basta: tienen que unir islas distintas."
+  },
+  "pistas": [
+   "Cuenta los puentes que ELIGES, no los que hay en la entrada.",
+   "Si al acabar Kruskal has elegido menos de I − 1 puentes, las islas no quedan todas unidas."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El tercer ejemplo: una sola isla y ningún puente; el coste es 0.",
+  "si": {
+   "wa": "Con una sola isla no hace falta ningún puente: la respuesta es 0, no el mensaje.",
+   "rte": "Con P = 0 algo se rompe: revisa que no accedes al primer puente de una lista vacía."
+  },
+  "pistas": [
+   "Con I = 1 hacen falta I − 1 = 0 puentes, y ya los tienes.",
+   "No uses el coste 0 como señal de «imposible»: aquí 0 es una respuesta válida."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Dos islas y un puente",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "El archipiélago más pequeño que necesita un puente.",
+  "si": {
+   "wa": "Con dos islas y un puente la respuesta es el coste de ese puente."
+  },
+  "pistas": [
+   "Con dos islas hace falta exactamente un puente.",
+   "Revisa la condición de parada: hay que llegar a I − 1 = 1 puente elegido."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Ningún puente presupuestado",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Varias islas y P = 0: no se puede.",
+  "si": {
+   "wa": "Con varias islas y ningún puente la respuesta es «No hay puentes suficientes».",
+   "rte": "Con P = 0 algo se rompe: revisa la lectura y no accedas a puentes que no existen."
+  },
+  "pistas": [
+   "Con I = 3 y P = 0 hacen falta 2 puentes y no hay ninguno.",
+   "Tras la línea con P = 0 empieza el caso siguiente."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Islas numeradas desde 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Puentes que tocan la isla I: hay que pasar de 1..I a 0..I−1.",
+  "si": {
+   "rte": "Usas el número de isla tal cual: la isla I se sale del grafo (o de los conjuntos disjuntos). Lee con GrafoValorado<int>(cin, 1) o resta 1 a cada isla.",
+   "wa": "Las islas se desplazan: resta 1 a las dos islas de cada puente."
+  },
+  "pistas": [
+   "El puente «3 1 4» une la última isla con la primera: ¿existe la isla 3 en tu grafo?",
+   "Los vértices van de 0 a I − 1: GrafoValorado<int>(cin, 1) resta 1 al leer."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Una isla sola no necesita puentes",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Con una sola isla el coste es 0 y es una respuesta válida, no el mensaje.",
+  "si": {
+   "wa": "Usas «coste == 0» (o «ningún puente elegido») como señal de imposible. Con I = 1 se han elegido I − 1 = 0 puentes: la respuesta es 0."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con «1» y «0»? Debe ser «0».",
+   "La condición correcta es «he elegido I − 1 puentes» (o «queda un solo conjunto»), no «el coste es mayor que 0»."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Puentes en cualquier orden",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Los puentes no vienen ordenados: hay que elegirlos de menor a mayor coste.",
+  "si": {
+   "wa": "No ordenas los puentes por coste creciente (o los ordenas por isla, o de mayor a menor). Kruskal necesita mirarlos de más barato a más caro."
+  },
+  "pistas": [
+   "En el primer caso los puentes buenos son 2–3 (1) y 1–3 (40): total 41.",
+   "Ordena las aristas por su valor: sort(v.begin(), v.end()) con Arista ya compara por valor.",
+   "Si guardas tuplas (isla, isla, coste), ordénalas por el coste, no por la primera isla."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Un puente barato que cerraría un ciclo",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Un puente entre dos islas que ya están unidas no hace falta, aunque sea barato.",
+  "si": {
+   "wa": "Eliges puentes que cierran un ciclo: antes de elegir uno, comprueba que sus islas no están ya unidas (cd.unidos)."
+  },
+  "pistas": [
+   "En el primer caso el puente 1–3 (3) sobra: 1 y 3 ya están unidas por 1–2–3. Total: 1 + 2 + 10 = 13.",
+   "Elige el puente solo si !unidos(u, v); después, unir(u, v)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Faltan puentes (P < I − 1)",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Muy pocos puentes para tantas islas: «No hay puentes suficientes».",
+  "si": {
+   "wa": "Escribes el coste aunque no se hayan podido unir todas las islas: comprueba al final que has elegido I − 1 puentes."
+  },
+  "pistas": [
+   "Con 5 islas hacen falta al menos 4 puentes.",
+   "Tras Kruskal: si elegidos == I − 1, el coste; si no, el mensaje (exactamente «No hay puentes suficientes»)."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Puentes de sobra, pero una isla queda aislada",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Hay al menos I − 1 puentes en la entrada, pero no llegan a todas las islas.",
+  "si": {
+   "wa": "Compruebas si hay I − 1 puentes en la ENTRADA en vez de cuántos has ELEGIDO. Los que cierran ciclo no cuentan."
+  },
+  "pistas": [
+   "En el primer caso hay 3 puentes para 4 islas, pero los tres unen 1, 2 y 3: la isla 4 queda fuera.",
+   "Cuenta los puentes elegidos por Kruskal (o mira num_cjtos() == 1)."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios puentes con el mismo coste",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Puentes que empatan en coste: todos cuentan, ninguno se pierde.",
+  "si": {
+   "wa": "Pierdes puentes con el mismo coste: ¿los guardas en un set o un map por coste? Dos puentes distintos pueden costar lo mismo."
+  },
+  "pistas": [
+   "En el primer caso hacen falta 3 puentes de coste 7: total 21.",
+   "Guarda los puentes en un vector y ordénalo; un set<Arista> (que compara por valor) descarta los empates."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Costes máximos (total cerca de 10⁹)",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "10.000 islas en fila con puentes de 100.000: el total es 999.900.000.",
+  "si": {
+   "wa": "La suma llega a casi 10⁹: cabe en un int, pero no en tipos más pequeños. Revisa también que no te paras antes de tiempo.",
+   "tle": "Con 10.000 islas en fila algo es demasiado lento: ¿tus conjuntos disjuntos usan unión por tamaños y compresión de caminos?"
+  },
+  "pistas": [
+   "Son 9.999 puentes de 100.000: 999.900.000.",
+   "Acumula el coste en un int (o long long) y no pares hasta tener I − 1 puentes."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un caso caro seguido de otros pequeños: ni el coste ni los conjuntos del anterior deben quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el coste, el contador de puentes o la partición se declaran fuera de resuelveCaso (o como static).",
+   "rte": "Un vector de un caso anterior con otro tamaño: crea el grafo y los conjuntos disjuntos dentro de cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "El coste y el número de puentes elegidos deben empezar en 0 en cada caso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 100,
+  "comprueba": "100 archipiélagos pequeños al azar, conexos y no conexos, con muchos empates.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; búscalo y haz Kruskal a mano."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso: busca ese archipiélago en la entrada.",
+   "Ordena sus puentes a mano y ve eligiendo los que unen islas aún separadas."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Archipiélago grande con un puente caro imprescindible",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "10.000 islas y 100.000 puentes; la última isla solo se alcanza por el puente más caro, así que hay que mirarlos todos.",
+  "si": {
+   "tle": "Tu solución no es O(P log P): ¿buscas el puente más barato recorriendo todos en cada paso, o llamas a g.aristas() (que crea un vector nuevo) dentro del bucle? Ordena una vez y recorre.",
+   "mle": "Gastas demasiada memoria: no copies el vector de puentes ni uses matrices I × I."
+  },
+  "pistas": [
+   "Ordena los puentes UNA vez (O(P log P)) y recórrelos en ese orden.",
+   "Guarda g.aristas() en una variable antes del bucle: cada llamada crea un vector nuevo con todos los puentes.",
+   "Pon ios::sync_with_stdio(false) y cin.tie(nullptr) para leer rápido."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Cadena larga de islas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Los puentes baratos forman una fila de 10.000 islas y después hay muchos puentes que sobran entre islas del principio.",
+  "si": {
+   "tle": "Tus conjuntos disjuntos forman árboles muy altos: usa unión por tamaños y compresión de caminos (como ConjuntosDisjuntos.h).",
+   "rte": "La búsqueda recursiva baja demasiado: con unión por tamaños la altura es como mucho log I."
+  },
+  "pistas": [
+   "Sin unión por tamaños, unir la fila isla a isla deja una cadena: buscar el representante cuesta I pasos.",
+   "Usa la clase ConjuntosDisjuntos de la asignatura (unión por tamaños y compresión de caminos)."
+  ]
+ }
+]

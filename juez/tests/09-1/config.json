@@ -1,0 +1,9 @@
+{
+ "solucion": "9-Algoritmos voraces II/EJ_09-1/EJ_09-1.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "x = E - 1;",
+  "x = E;"
+ ]
+}

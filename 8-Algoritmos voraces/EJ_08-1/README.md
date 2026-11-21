@@ -1,6 +1,6 @@
 # EJ 08-1 · Agujeros en la manguera
 
-📄 Enunciado: en el juez de la asignatura (`Ej08-1`) · 💻 [Solución](EJ_08-1.cpp)
+📄 [Enunciado](<../Enunciados/prob-Agujeros en la manguera.pdf>) · 💻 [Solución](EJ_08-1.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

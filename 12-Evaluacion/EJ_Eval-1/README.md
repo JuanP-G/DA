@@ -1,6 +1,6 @@
 # EJ Eval-1 · MasterHash
 
-📄 Enunciado: en el juez de la asignatura (`Eval-1`) · 💻 [Solución](EJ_Eval-1.cpp)
+📄 [Enunciado](<../Enunciados/prob-MasterHash.pdf>) · 💻 [Solución](EJ_Eval-1.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

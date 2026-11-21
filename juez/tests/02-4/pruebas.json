@@ -1,0 +1,238 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del PDF, terminados con «0 0».",
+  "si": {
+   "wa": "Si fallan hasta los ejemplos, revisa la base: cada escaño va a la candidatura de MAYOR coeficiente votos/(1 + escaños), y la salida va en el orden de la entrada.",
+   "pe": "Los números están bien pero no el formato: los escaños de un caso en UNA línea, separados por un espacio."
+  },
+  "pistas": [
+   "Haz a mano el primer caso: los escaños van a 226, 170, 226 (113) y 100.",
+   "En el segundo caso hay empates: a igual coeficiente, más votos; y a igualdad de votos, la que aparece antes.",
+   "La entrada acaba con «0 0»: usa la plantilla de centinela."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola candidatura",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Con una única candidatura, todos los escaños son suyos.",
+  "si": {
+   "wa": "Con una sola candidatura debe salir N: revisa que vuelves a meterla en la cola tras darle cada escaño.",
+   "rte": "Con una sola candidatura la cola se queda vacía: después de sacar la cima hay que volver a meterla con un escaño más."
+  },
+  "pistas": [
+   "Con «1 7 / 1» la salida es 7.",
+   "Cada escaño: saca la cima, súmale un escaño y vuelve a meterla."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "El escaño va al MAYOR coeficiente",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un solo escaño entre 10 y 1 votos: es para la de 10.",
+  "si": {
+   "wa": "Das el escaño al coeficiente MENOR: tu comparador está al revés. Con priority_queue (de máximos) operator< debe devolver true cuando this tiene MENOS prioridad que o, es decir, menor coeficiente."
+  },
+  "pistas": [
+   "Con un solo escaño, ¿quién debería llevárselo, la de 10 votos o la de 1?",
+   "priority_queue deja arriba el elemento «mayor» según operator<.",
+   "En operator<, si los coeficientes difieren, return coef(this) < coef(o) (con productos cruzados: v·(1 + e') < v'·(1 + e))."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Empate de coeficiente: gana la de más votos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El segundo escaño empata a coeficiente 30 (30/1 y 60/2): gana la de 60 votos aunque aparezca después.",
+  "si": {
+   "wa": "En el empate de coeficientes no das el escaño a la candidatura con más votos (o lo das por índice, o al revés). El enunciado: a igual coeficiente, más votos; solo si también empatan a votos, la de índice menor."
+  },
+  "pistas": [
+   "Escaño 1: 60 (coef. 60). Escaño 2: coef. 30 (60/2) frente a 30 (30/1), empate: gana 60 por tener más votos.",
+   "El orden de los criterios importa: coeficiente, luego votos, luego índice.",
+   "En operator<: if (coefs distintos) ...; if (votos != o.votos) return votos < o.votos; return orden > o.orden;"
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Salida en el orden de la entrada",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los escaños se escriben en el orden en que aparecen los votos, no en el orden en que salen de la cola.",
+  "si": {
+   "wa": "Escribes los escaños en el orden en que salen de la cola de prioridad. Guarda en cada candidatura su posición en la entrada y recoloca los resultados (res[orden] = escaños) antes de escribirlos."
+  },
+  "pistas": [
+   "Hazlo a mano: los escaños van a 300, a 200 y a 300 otra vez (150 > 100), así que la salida es «0 2 1».",
+   "La cola no devuelve las candidaturas en el orden de la entrada.",
+   "Al vaciar la cola, guarda los escaños en un vector indexado por la posición original y escribe ese vector."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Empate total: gana la de índice menor",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tres candidaturas con los mismos votos y dos escaños: van a la primera y a la segunda.",
+  "si": {
+   "wa": "Con empate de coeficiente y de votos, el escaño es de la candidatura que aparece ANTES en la entrada. Si salen al revés, en operator< el último criterio debe ser orden > o.orden (tiene menos prioridad la que aparece después)."
+  },
+  "pistas": [
+   "La salida correcta es «1 1 0».",
+   "Recuerda que operator< significa «tiene menos prioridad que»: ¿quién tiene menos prioridad, la que aparece antes o la de después?",
+   "La última línea del comparador: return orden > o.orden;"
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Sin truncar los coeficientes",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El cuarto escaño: 10/3 = 3,33 frente a 7/2 = 3,5. Con división entera los dos valdrían 3.",
+  "si": {
+   "wa": "Calculas el coeficiente con división ENTERA (votos / (1 + escaños) entre enteros) y pierdes los decimales: 10/3 y 7/2 salen los dos 3. Compara con productos cruzados: v₁·(1 + e₂) < v₂·(1 + e₁)."
+  },
+  "pistas": [
+   "Escaños: 10, 7, 10 (10/2 = 5 > 3,5) y el cuarto: 3,33 frente a 3,5, es para la de 7.",
+   "¿Qué tipo tiene la división votos / (1 + escaños) en tu código?",
+   "No dividas: a/b < c/d ⇔ a·d < c·b (con b, d positivos). Así no hay decimales ni redondeos."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Coeficientes casi iguales (precisión)",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Votos de unos 10⁷-10⁸ que solo se diferencian en una unidad: un float no los distingue.",
+  "si": {
+   "wa": "Comparas los coeficientes con float (o con una tolerancia tipo 1e-6) y dos coeficientes distintos te salen iguales. Compara con enteros mediante productos cruzados (en long long)."
+  },
+  "pistas": [
+   "16.777.217 y 16.777.216 son distintos, pero en float se redondean al mismo número.",
+   "Evita los números reales: compara v₁·(1 + e₂) con v₂·(1 + e₁) en long long."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Productos que no caben en int",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Votos grandes (hasta 10⁹, o como unas elecciones generales con 350 escaños): votos·(1 + escaños) pasa de 2³¹ − 1.",
+  "si": {
+   "wa": "Los productos cruzados votos·(1 + escaños) no caben en int: con 10⁹ votos ya desborda al multiplicar por 3. Haz los productos en long long (los votos guárdalos como long long o convierte antes de multiplicar)."
+  },
+  "pistas": [
+   "10⁹ · 3 = 3·10⁹, y el máximo de un int es 2.147.483.647.",
+   "Aunque los votos quepan en int, su producto no: el tipo de la multiplicación es el de los operandos.",
+   "Declara votos como long long (o escribe (long long)votos * (1 + o.escanios))."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Más escaños que candidaturas",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Muchos más escaños que candidaturas: cada una recibe varios.",
+  "si": {
+   "wa": "Con muchos escaños por candidatura los coeficientes bajan mucho y aparecen empates: revisa el desempate por votos y por índice, y que el coeficiente usa 1 + escaños."
+  },
+  "pistas": [
+   "Con «1 1» y 5 escaños: empates continuos, ganan alternativamente la primera y la segunda: «3 2».",
+   "El coeficiente es votos / (1 + escaños YA asignados)."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Menos escaños que candidaturas",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Pocos escaños: la mayoría de candidaturas se queda con 0, y hay que escribirlo.",
+  "si": {
+   "wa": "Las candidaturas sin escaños también se escriben (con un 0), en su sitio."
+  },
+  "pistas": [
+   "En el primer caso los dos escaños van a las dos candidaturas de 9 votos: «0 1 0 1 0 0».",
+   "El vector de resultados debe tener C posiciones inicializadas a 0."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Varios casos seguidos de distinto tamaño: nada debe arrastrarse de uno a otro.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: algo se arrastra entre casos (la cola o el vector de resultados fuera de resuelveCaso).",
+   "rte": "Un vector del caso anterior con otro tamaño: créalo dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y el segundo no, mira qué variables viven fuera de la función de cada caso.",
+   "Declara la cola y el vector de resultados dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 300,
+  "comprueba": "300 casos pequeños con pocos votos: muchísimos empates de todo tipo.",
+  "si": {
+   "wa": "Algún caso concreto falla: la línea que falla es el número de caso; búscalo en la entrada y reparte los escaños a mano."
+  },
+  "pistas": [
+   "Localiza el caso por el número de línea.",
+   "Haz la tabla de coeficientes v/1, v/2, v/3... de cada candidatura y ve eligiendo el mayor (con los desempates)."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios con votos grandes",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos de hasta 300 candidaturas y 3000 escaños con votos hasta 10⁹.",
+  "si": {
+   "wa": "Con votos grandes falla algo: revisa que los productos cruzados se hacen en long long y que no usas float."
+  },
+  "pistas": [
+   "Comprueba los tipos de todas las variables que intervienen en el comparador.",
+   "votos · (1 + escaños) puede llegar a 10⁹ · 3001."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Grande: 100.000 candidaturas y 100.000 escaños",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Tamaño grande: mide la eficiencia (debe ser O((C + N) log C)).",
+  "si": {
+   "tle": "Buscar la candidatura de mayor coeficiente recorriéndolas todas en cada escaño cuesta O(N·C) = 10¹⁰: usa una cola de prioridad de máximos.",
+   "wa": "Con muchos datos falla algo: revisa los productos en long long."
+  },
+  "pistas": [
+   "¿Cuánto cuesta decidir cada escaño? Hay 100.000.",
+   "Con una cola de prioridad cada escaño es un pop y un push: O(log C)."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Grande: votos iguales (empates masivos)",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "100.000 candidaturas con los mismos votos y 150.000 escaños: todos los escaños se deciden por desempate.",
+  "si": {
+   "tle": "Con empates masivos tu solución es lenta: el desempate debe estar en el comparador de la cola, no en una búsqueda aparte.",
+   "wa": "Con todo empatado los escaños van por orden de aparición: las 50.000 primeras candidaturas reciben 2 y el resto 1."
+  },
+  "pistas": [
+   "Con todos los votos iguales el reparto es por turnos en orden de índice.",
+   "El comparador debe desempatar por votos y por índice en O(1)."
+  ]
+ }
+]

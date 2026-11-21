@@ -1,0 +1,10 @@
+{
+ "solucion": "11-Programacion dinamica II/EJ_11-1/EJ_11-1.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "int tiempo = 3 * prof[i];",
+  "int tiempo = prof[i];"
+ ],
+ "comprobador": true
+}

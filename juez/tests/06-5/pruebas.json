@@ -1,0 +1,233 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El primer ejemplo del PDF: es mejor dar un rodeo por la cámara 2 (galerías de 2 y 5) que ir directo (10).",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: no se busca el camino de menor SUMA, sino el de galería más larga más corta."
+  },
+  "pistas": [
+   "Ejecútalo en tu ordenador con el ejemplo y compara.",
+   "Palencia descansa en cada cámara: lo que importa de un camino es su galería MÁS LARGA.",
+   "Kruskal: añade galerías de menor a mayor y para en cuanto el origen y el destino queden unidos."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El segundo ejemplo: una sola cámara, origen y tesoro en el mismo sitio; la respuesta es 0.",
+  "si": {
+   "wa": "Si el origen y el destino son la misma cámara no hay que bucear: 0."
+  },
+  "pistas": [
+   "Con origen = destino la respuesta es 0, haya galerías o no.",
+   "Comprueba unidos(origen, destino) ANTES de mirar la primera galería."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El tercer ejemplo: dos cámaras sin galerías; IMPOSIBLE.",
+  "si": {
+   "wa": "Si no se puede llegar hay que escribir exactamente «IMPOSIBLE», en mayúsculas.",
+   "rte": "Con M = 0 algo se rompe: revisa la lectura (tras las galerías viene la línea «origen destino»)."
+  },
+  "pistas": [
+   "Sin galerías no se puede ir de la cámara 1 a la 2.",
+   "El texto es «IMPOSIBLE», todo en mayúsculas."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Dos cámaras y una galería",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "La mina más pequeña en la que hay que bucear.",
+  "si": {
+   "wa": "Con una sola galería entre origen y destino, la respuesta es su tiempo."
+  },
+  "pistas": [
+   "La galería se puede recorrer en los dos sentidos.",
+   "La respuesta es el tiempo de esa única galería."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Cámaras numeradas desde 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El tesoro está en la cámara N: hay que restar 1 al origen y al destino, igual que a las galerías.",
+  "si": {
+   "rte": "Usas el origen o el destino tal cual: la cámara N se sale de los conjuntos disjuntos. Resta 1 a los dos.",
+   "wa": "El origen o el destino caen en otra cámara: resta 1 a los dos (la entrada cuenta desde 1)."
+  },
+  "pistas": [
+   "El tesoro está en la cámara 2 de una mina de 2 cámaras: en base 0, la 1.",
+   "Si lees el grafo con GrafoValorado<int>(cin, 1), haz también --origen y --destino."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Se aguanta la galería más larga, no la suma",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "En cada cámara se recupera el aliento: lo que cuenta es la galería más larga del camino.",
+  "si": {
+   "wa": "Sumas los tiempos de las galerías (como un camino mínimo). Aquí se descansa en cada cámara: la respuesta es un máximo, no una suma."
+  },
+  "pistas": [
+   "En el primer caso el camino 1–2–3 obliga a aguantar 5 segundos (la galería más larga), no 7.",
+   "Guarda el tiempo de la última galería que aceptas, sin sumar."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Una galería lenta que no hace falta",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "La galería directa es lentísima, pero hay un rodeo mejor: no cuenta.",
+  "si": {
+   "wa": "Te quedas con la galería más lenta de las que miras, aunque una cámaras ya unidas. Solo cuenta la galería que consigue unir el origen con el destino."
+  },
+  "pistas": [
+   "En el primer caso, de 2 a 3 el rodeo por la cámara 1 obliga a aguantar 4; la galería directa de 9 sobra.",
+   "Actualiza el tiempo solo cuando la galería une dos grupos distintos, y para al unir origen y destino."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "No hace falta recorrer toda la mina",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Solo importan el origen y el destino: las cámaras lejanas no cuentan aunque estén mal comunicadas.",
+  "si": {
+   "wa": "Sigues añadiendo galerías hasta unir TODA la mina (eso es la selva de Tarzán, 06-4). Hay que parar en cuanto el origen y el destino queden unidos."
+  },
+  "pistas": [
+   "En el primer caso, de 1 a 3 basta con 3 y 4: la respuesta es 4, aunque la cámara 4 necesite 50.",
+   "La condición de parada es unidos(origen, destino), no num_cjtos() == 1."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Palencia ya está en la cámara del tesoro",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Origen y destino iguales, aunque haya galerías: no hay que bucear, 0.",
+  "si": {
+   "wa": "Miras si el origen y el destino están unidos DESPUÉS de añadir una galería: con origen = destino ya están unidos antes de empezar y la respuesta es 0."
+  },
+  "pistas": [
+   "Palencia y el tesoro están en la cámara 2: la respuesta es 0, no 4.",
+   "Pon la comprobación unidos(origen, destino) al principio de cada vuelta (o trata aparte origen == destino)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Galerías en cualquier orden",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Las galerías no vienen ordenadas: hay que añadirlas de menor a mayor tiempo.",
+  "si": {
+   "wa": "No ordenas las galerías por tiempo creciente (o las ordenas al revés). Kruskal necesita mirarlas de más rápida a más lenta."
+  },
+  "pistas": [
+   "En el primer caso de 1 a 3 hay una galería directa de 90 y un rodeo 1–2–3 con galerías de 5 y 6: la respuesta es 6.",
+   "Ordena las aristas: sort(v.begin(), v.end()) con Arista ya compara por valor."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Tesoro inalcanzable aunque haya muchas galerías",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "El origen y el destino quedan en partes separadas de la mina: IMPOSIBLE.",
+  "si": {
+   "wa": "Escribes un tiempo aunque el tesoro sea inalcanzable, o el texto no es exactamente «IMPOSIBLE» (en mayúsculas)."
+  },
+  "pistas": [
+   "En el primer caso las cámaras {1, 2, 3} y {4, 5} no se comunican: IMPOSIBLE.",
+   "Al acabar, si !unidos(origen, destino), escribe «IMPOSIBLE»."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Tiempos extremos",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Galerías de 1.000.000 segundos y de 1 segundo.",
+  "si": {
+   "wa": "Con los valores extremos algo falla: ¿inicializas el tiempo o un máximo con un valor que no llega a 1.000.000?"
+  },
+  "pistas": [
+   "La respuesta puede ser 1.000.000.",
+   "Si usas un valor «infinito», que sea mayor que 1.000.000."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varias minas seguidas",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Una mina con galerías lentas seguida de otras pequeñas: nada de la anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de una mina a la siguiente: el tiempo o la partición se declaran fuera de resuelveCaso (o como static).",
+   "rte": "Un vector de una mina anterior con otro tamaño: crea el grafo y los conjuntos disjuntos en cada caso."
+  },
+  "pistas": [
+   "Fíjate en la segunda mina (origen = destino): debe salir 0, no el tiempo de la anterior.",
+   "El tiempo tiene que empezar en 0 en cada caso."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 100,
+  "comprueba": "100 minas pequeñas al azar: conexas y no conexas, con empates y alguna con origen = destino.",
+  "si": {
+   "wa": "Hay alguna mina concreta que no tratas: la línea que falla es el número de caso; búscala y haz Kruskal a mano."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso: busca esa mina en la entrada.",
+   "Ordena sus galerías a mano y añádelas hasta que el origen y el destino queden unidos."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Mina grande con el tesoro tras la galería más lenta",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "20.000 cámaras y 110.000 galerías; al tesoro solo se llega por la galería más lenta, así que hay que mirarlas todas.",
+  "si": {
+   "tle": "Tu solución no es O(M log M): ¿llamas a g.aristas() (que crea un vector nuevo) dentro del bucle, o repites un recorrido completo por cada galería o cada tiempo posible?",
+   "mle": "Gastas demasiada memoria: no copies el vector de galerías ni uses matrices N × N."
+  },
+  "pistas": [
+   "Ordena las galerías UNA vez y recórrelas en ese orden.",
+   "Comprobar unidos(origen, destino) con conjuntos disjuntos es casi O(1): no hace falta un recorrido.",
+   "Pon ios::sync_with_stdio(false) y cin.tie(nullptr) para leer rápido."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Cadena larga de cámaras",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Las galerías rápidas forman una fila de 20.000 cámaras con el origen al fondo, y después hay muchas que sobran.",
+  "si": {
+   "tle": "Tus conjuntos disjuntos forman árboles muy altos: usa unión por tamaños y compresión de caminos (como ConjuntosDisjuntos.h).",
+   "rte": "La búsqueda recursiva baja demasiado: con unión por tamaños la altura es como mucho log N."
+  },
+  "pistas": [
+   "Sin unión por tamaños, unir la fila cámara a cámara deja una cadena: buscar el representante del origen cuesta N pasos en cada vuelta.",
+   "Usa la clase ConjuntosDisjuntos de la asignatura."
+  ]
+ }
+]

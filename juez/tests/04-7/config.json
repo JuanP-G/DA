@@ -1,0 +1,11 @@
+{
+ "solucion": "4-Grafos no dirigidos/EJ_04-7/EJ_04-7.cpp",
+ "cabeceras": [
+  "4-Grafos no dirigidos/EJ_04-7/Grafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "color[w] = !color[v];",
+  "color[w] = color[v];"
+ ]
+}

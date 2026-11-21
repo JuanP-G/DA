@@ -1,0 +1,9 @@
+{
+ "solucion": "1-Arboles AVL/EJ_01-1/EJ 01-1.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "(abs(altIzq - altDer) <= 1)",
+  "(abs(altIzq - altDer) < 1)"
+ ]
+}

@@ -1,0 +1,9 @@
+wasm-clang-shared.js
+  Copia sin modificar de https://binji.github.io/wasm-clang/shared.js
+  (proyecto https://github.com/binji/wasm-clang, licencia Apache 2.0, cabecera dentro del fichero).
+  Es el "pegamento" JS que ejecuta clang 8 y lld compilados a WebAssembly dentro de un Worker.
+
+Los binarios grandes NO están en el repo: clang (31 MB), lld (19 MB), memfs, sysroot.tar (9 MB).
+juez.js los pide a JUEZ_WASM_BASE (por defecto https://binji.github.io/wasm-clang/, con CORS abierto).
+Para no depender de un tercero: descargarlos y servirlos desde el propio sitio (Vercel/R2) y
+cambiar la variable de entorno JUEZ_WASM_BASE al construir.

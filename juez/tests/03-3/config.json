@@ -1,0 +1,11 @@
+{
+ "solucion": "3-Colas de prioridad variable (Heapsort)/EJ_03-3/EJ_03-3.cpp",
+ "cabeceras": [
+  "3-Colas de prioridad variable (Heapsort)/EJ_03-3/IndexPQ.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (ini < tiempoActual) hayConflictos = true;",
+  "if (ini <= tiempoActual) hayConflictos = true;"
+ ]
+}

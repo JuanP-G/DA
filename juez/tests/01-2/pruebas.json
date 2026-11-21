@@ -1,0 +1,270 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF, con un valor repetido y una posición que no existe.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: la lectura (N, los valores, M y las posiciones), el k-ésimo o el formato (un valor o ?? por línea y --- tras cada caso).",
+   "pe": "Los valores son correctos pero el formato no: cada consulta en su línea y una línea con --- al final de cada caso.",
+   "rte": "El programa se rompe con el ejemplo: ¿capturas la excepción de kesimo cuando la posición no existe?"
+  },
+  "pistas": [
+   "Ejecuta el ejemplo en tu ordenador y compara línea a línea.",
+   "No hay número de casos: se lee hasta encontrar N = 0.",
+   "Cada consulta escribe el elemento o «??», y tras las consultas de cada caso se escribe «---»."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un único valor",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Conjuntos de un solo elemento (incluidos los valores mínimo y máximo, 1 y 1.000.000): la posición 1 es ese elemento.",
+  "si": {
+   "wa": "Con un solo elemento, kesimo(1) debe ser la raíz: revisa el valor inicial de tami (1 en un nodo nuevo) y la comparación k == tami.",
+   "rte": "Con un solo nodo accedes a un hijo vacío: revisa el caso k == tami."
+  },
+  "pistas": [
+   "En un nodo recién creado, tami vale 1 (hijo izquierdo vacío + 1).",
+   "Si k == tami, la respuesta es la raíz de ese subárbol."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Todos los valores iguales",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Cinco 7: el conjunto es {7}; la posición 1 es 7 y las demás no existen (??).",
+  "si": {
+   "wa": "Insertas los repetidos como elementos nuevos o cuentas mal el tamaño: un conjunto no tiene repetidos, {7, 7, 7, 7, 7} = {7}.",
+   "rte": "Al pedir una posición que no existe accedes a un nodo vacío: lanza la excepción (o escribe ??) en vez de seguir."
+  },
+  "pistas": [
+   "¿Cuántos elementos tiene el conjunto después de insertar cinco 7?",
+   "insert no hace nada si el elemento ya está: ni crea nodo ni cambia tami."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Primera y última posición",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "20 valores distintos (entre ellos 1 y 1.000.000): la posición 1 es el menor y la 20 el mayor.",
+  "si": {
+   "wa": "Fallas en los extremos: k = 1 es el elemento más a la izquierda y k = tamaño el más a la derecha. Revisa la bajada por la derecha (k − tami) y el desplazamiento de 1."
+  },
+  "pistas": [
+   "La posición 1 es el mínimo; la posición «número de elementos», el máximo.",
+   "Para llegar al máximo hay que bajar siempre por la derecha restando tami en cada paso."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Formato: ??, --- y el 0 final",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un caso mínimo: {9} y la posición 3 no existe. Debe salir exactamente «??» y luego «---», y nada más (el 0 final no es un caso).",
+  "si": {
+   "wa": "Algo falla en el formato básico: escribe exactamente «??» (dos interrogaciones) si la posición no existe, una línea «---» tras CADA caso, y para cuando N sea 0 (el 0 no es un caso: no escribas otro «---»). Si escribes un 9, estás guardando los repetidos."
+  },
+  "pistas": [
+   "Mira tu salida completa: ¿termina con una sola línea «---»?",
+   "La entrada acaba con N = 0: en ese momento hay que salir sin escribir nada.",
+   "«if (!cin || n == 0) return false;» al principio de resuelveCaso, y cout << \"??\\n\" en el catch."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Las posiciones empiezan en 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La posición 1 es el menor elemento (10), no el segundo.",
+  "si": {
+   "wa": "Cuentas las posiciones desde 0: kesimo(1) es el MENOR elemento. Con tami = tamaño del izquierdo + 1, la raíz está en la posición tami (empezando en 1)."
+  },
+  "pistas": [
+   "Con {10, 20, ..., 70}, la posición 1 debe dar 10.",
+   "No restes 1 a k antes de llamar a kesimo: tami ya cuenta desde 1."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Repetidos: posiciones que ya no existen",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Seis valores pero solo 3 distintos: las posiciones 4, 5 y 6 no existen (??) y la 3 es el mayor.",
+  "si": {
+   "wa": "Guardas los repetidos (multiset, vector ordenado sin quitar duplicados...) o confundes N con el tamaño del conjunto. Hay posiciones entre 1 y N que no corresponden a ningún elemento."
+  },
+  "pistas": [
+   "El conjunto es {1, 2, 3}: ¿qué debe salir para la posición 4?",
+   "Si un valor ya está en el árbol, insert no hace nada.",
+   "La posición k existe solo si k ≤ número de elementos DISTINTOS."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Bajar por la derecha restando tami",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Árbol perfecto 1..7: para la posición 6 hay que bajar a la derecha buscando la posición 6 − 4 = 2.",
+  "si": {
+   "wa": "Al bajar por la derecha sigues buscando la misma k. Al pasar al hijo derecho te saltas la raíz y todo su hijo izquierdo: busca k − tami."
+  },
+  "pistas": [
+   "En la raíz (4, tami 4), la posición 6 está a la derecha. ¿Qué posición ocupa dentro del subárbol derecho?",
+   "k < tami → izquierda con k; k == tami → raíz; k > tami → derecha con k − tami."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Repetido que baja por la izquierda",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tras construir 1..7 se vuelve a insertar el 1: su búsqueda baja dos veces por la izquierda y no debe cambiar ningún tami.",
+  "si": {
+   "wa": "Sumas 1 a tami al bajar por la izquierda aunque el valor ya estuviera: solo hay que sumarlo si de verdad se ha insertado un nodo nuevo (crece == true)."
+  },
+  "pistas": [
+   "Tras insertar el 1 repetido, ¿cuánto vale tami en la raíz? Debe seguir siendo 4.",
+   "Actualiza tami DESPUÉS de saber si la inserción en el hijo izquierdo ha tenido éxito."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Rotaciones a la derecha",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Valores decrecientes: el árbol se reequilibra con rotaciones a la derecha y tami tiene que seguir siendo correcto.",
+  "si": {
+   "wa": "No actualizas tami en rotaDer: el nodo que baja (r2) pierde a r1 y a su hijo izquierdo, así que r2->tami -= r1->tami."
+  },
+  "pistas": [
+   "Dibuja el árbol tras insertar 5, 4, 3 y la rotación: ¿cuánto debe valer tami en el 5?",
+   "En una rotación a la derecha solo cambia el tami del nodo que baja.",
+   "En rotaDer(r2), con r1 = r2->iz: r2->tami -= r1->tami."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Rotaciones a la izquierda",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Valores crecientes: el árbol se reequilibra con rotaciones a la izquierda y tami tiene que seguir siendo correcto.",
+  "si": {
+   "wa": "No actualizas tami en rotaIzq: el nodo que sube (r2) gana a r1 y a todo su hijo izquierdo, así que r2->tami += r1->tami."
+  },
+  "pistas": [
+   "Dibuja el árbol tras insertar 1, 2, 3 y la rotación: ¿cuánto debe valer tami en el 2?",
+   "En una rotación a la izquierda solo cambia el tami del nodo que sube.",
+   "En rotaIzq(r1), con r2 = r1->dr: r2->tami += r1->tami."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Rotaciones dobles",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Inserciones que provocan rotaciones izquierda-derecha y derecha-izquierda.",
+  "si": {
+   "wa": "Las rotaciones dobles dejan tami mal. Si las escribes a mano, es fácil equivocarse: hazlas como composición de las dos simples (que ya actualizan tami)."
+  },
+  "pistas": [
+   "Inserta 3, 1, 2 a mano y comprueba tami en los tres nodos.",
+   "rotaIzqDer(a) = rotaIzq(a->iz) y después rotaDer(a); así no hay que tocar tami aparte."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Consultas desordenadas y repetidas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las consultas no vienen en orden y se repiten: cada una se responde por sí sola.",
+  "si": {
+   "wa": "Supones que las consultas vienen ordenadas (por ejemplo, avanzando un iterador de una a otra) o cambias el árbol al consultar. Cada consulta empieza desde la raíz."
+  },
+  "pistas": [
+   "¿Qué pasa con tu programa si después de la posición 8 se pide la 1?",
+   "kesimo no modifica nada: baja desde la raíz en cada consulta."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un caso grande seguido de otros pequeños: el conjunto de cada caso empieza vacío.",
+  "si": {
+   "wa": "El conjunto (o un contador) se arrastra de un caso al siguiente: declara el Set dentro de resuelveCaso, no global ni static."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "Declara Set<int> arbol; dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 250,
+  "comprueba": "250 casos pequeños al azar, muchos con valores repetidos.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: busca el caso por las líneas «---» de la salida y pruébalo solo.",
+   "rte": "Algún caso rompe tu programa: busca cuál con las líneas «---»."
+  },
+  "pistas": [
+   "Cuenta los «---» antes de la línea que falla para saber qué caso es.",
+   "Inserta esos valores a mano, dibuja el árbol con los tami y sigue la búsqueda."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 25,
+  "comprueba": "25 casos de hasta 3.000 valores, con muchas rotaciones de todos los tipos.",
+  "si": {
+   "wa": "Con muchas rotaciones algún tami acaba mal: llama a comprueba() del .h tras cada insert mientras depuras.",
+   "rte": "Con árboles medianos se rompe: revisa los punteros en las rotaciones."
+  },
+  "pistas": [
+   "Usa assert(arbol.comprueba()) tras cada inserción para encontrar el primer tami incorrecto.",
+   "Repasa los cuatro tipos de rotación con un dibujo."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "100.000 valores crecientes y 100.000 consultas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Insertar en orden creciente (peor caso de un árbol sin equilibrar) y consultar posiciones altas.",
+  "si": {
+   "tle": "Tu solución es lineal por operación: o el árbol no se equilibra (insertar en orden lo convierte en una lista) o kesimo recorre los elementos en inorden. Cada operación debe costar O(log N).",
+   "rte": "Recursión muy profunda: ¿el árbol se está quedando como una lista? Revisa las rotaciones.",
+   "mle": "Gastas demasiada memoria: no copies el conjunto ni guardes vectores por consulta."
+  },
+  "pistas": [
+   "Con 100.000 consultas, recorrer en inorden hasta la posición k cuesta demasiado.",
+   "kesimo debe bajar un solo camino desde la raíz usando tami: O(altura) = O(log N).",
+   "Comprueba que insert reequilibra (rotaciones) para que la altura sea logarítmica."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "300.000 valores al azar",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo del enunciado (N = 300.000) con valores repetidos al azar.",
+  "si": {
+   "tle": "Insertar 300.000 valores tiene que costar O(N log N): revisa que la inserción no recorre el árbol entero ni copia nada.",
+   "mle": "Demasiada memoria para 300.000 nodos: no guardes copias del árbol.",
+   "rte": "Con 300.000 valores se rompe: revisa la memoria dinámica y los punteros."
+  },
+  "pistas": [
+   "Lee con cin >> sin hacer nada costoso por valor.",
+   "Cada insert es O(log N) si el árbol está equilibrado."
+  ]
+ }
+]

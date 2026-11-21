@@ -1,0 +1,12 @@
+{
+ "solucion": "5-Grafos dirigidos/EJ_05-6/EJ_05-6.cpp",
+ "cabeceras": [
+  "5-Grafos dirigidos/EJ_05-6/Digrafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "valor[post[i]] = n - i;",
+  "valor[post[i]] = i + 1;"
+ ],
+ "comprobador": true
+}

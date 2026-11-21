@@ -1,0 +1,9 @@
+{
+ "solucion": "9-Algoritmos voraces II/EJ_09-4/EJ_09-4.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "peso[i] + peso[j] <= P",
+  "peso[i] + peso[j] < P"
+ ]
+}

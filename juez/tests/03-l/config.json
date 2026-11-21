@@ -1,0 +1,11 @@
+{
+ "solucion": "3-Colas de prioridad variable (Heapsort)/EJ_03-L/EJ_03-L.cpp",
+ "cabeceras": [
+  "3-Colas de prioridad variable (Heapsort)/EJ_03-L/IndexPQ.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "tiempos[pq.top().prioridad.canal - 1].audiencia += duracion - tiempoAnterior;",
+  ""
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "solucion": "2-Colas de prioridad/EJ_02-6/EJ_02-6.cpp",
+ "cabeceras": [
+  "2-Colas de prioridad/EJ_02-6/Pila.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "int puesto = 1;",
+  "int puesto = 0;"
+ ]
+}

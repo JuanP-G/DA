@@ -1,0 +1,233 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF, incluido un agujero justo en el borde del parche (el 55).",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea básica: cada parche nuevo empieza en el primer agujero que sigue sin tapar y llega hasta esa posición más L.",
+   "pe": "Los números están bien pero el formato no: un número por línea, uno por caso."
+  },
+  "pistas": [
+   "Sigue a mano el tercer caso: el primer parche va de 3 a 13, el segundo empieza en 20…",
+   "Recuerda que la línea del caso trae primero N (agujeros) y después L (longitud del parche).",
+   "Guarda hasta dónde llega el último parche; si un agujero queda más allá, pon un parche nuevo que empiece en él."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un solo agujero",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "N = 1: hace falta exactamente un parche.",
+  "si": {
+   "wa": "Con un único agujero la respuesta es 1. Si sale 0, cuentas los parches al «cerrarlos» y te olvidas del último; si sale 2, cuentas uno de más al empezar."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con «1 5» y el agujero 7?",
+   "Si cuentas el parche cuando encuentras un agujero fuera del anterior, el primero también cuenta: inicializa para que el primer agujero siempre abra parche."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Todos los agujeros en la misma posición",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Seis agujeros en la posición 10⁹: un solo parche los tapa todos.",
+  "si": {
+   "wa": "Los agujeros repetidos están en el mismo sitio: un parche los tapa a la vez. ¿Cuentas un parche por agujero o comparas con < en vez de con ≤?"
+  },
+  "pistas": [
+   "Un parche que empieza en p tapa todo lo que hay en [p, p + L], y p está dentro.",
+   "Abre parche nuevo solo si el agujero está ESTRICTAMENTE más allá de donde llega el último parche."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Los parches no van en posiciones fijas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Agujeros en 2 y 4 con L = 3: un parche de 2 a 5 los tapa (1 parche). No hay que dividir la manguera en tramos fijos [0, L), [L, 2L)…",
+  "si": {
+   "wa": "Sale 2: repartes la manguera en tramos fijos (p / L) en vez de colocar cada parche donde empieza el primer agujero sin tapar."
+  },
+  "pistas": [
+   "Un parche se puede colocar en cualquier sitio, no solo en múltiplos de L.",
+   "Empieza cada parche justo en el primer agujero que queda sin tapar."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Agujero justo en el extremo del parche",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Agujeros en 1 y 4 con parches de 3: el parche de 1 a 4 tapa los dos (el borde cuenta).",
+  "si": {
+   "wa": "Sale 2: no tapas el agujero que queda justo en el borde. Un parche de longitud L que empieza en p llega hasta p + L INCLUIDO (en el ejemplo, el 55 lo tapa el parche de 45)."
+  },
+  "pistas": [
+   "¿Hasta dónde llega un parche de longitud 3 colocado en la posición 1?",
+   "Llega hasta 1 + 3 = 4, incluido: si dos agujeros están a distancia L, basta un parche.",
+   "Abre parche nuevo solo cuando p > finParche (no ≥), con finParche = inicio + L (no inicio + L - 1)."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Parches de longitud 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Agujeros en 1, 2, 4 y 5 con L = 1: un parche tapa el 1 y el 2, y otro el 4 y el 5 (2 parches).",
+  "si": {
+   "wa": "Con L = 1 un parche en p tapa p y p + 1. Si sale 4, el parche no llega a su extremo (usas ≥ al comparar o restas 1 al calcular dónde acaba)."
+  },
+  "pistas": [
+   "Un parche de longitud 1 en la posición 1 tapa el 1 y el 2.",
+   "La distancia entre el primer y el último agujero que tapa un parche puede ser L, no L - 1."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Un hueco de L + 1 ya no cabe",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Agujeros en 1 y 7 con L = 5: el parche de 1 llega a 6 y el 7 necesita otro (2 parches).",
+  "si": {
+   "wa": "Sale 1: tu parche llega más lejos de la cuenta. Un parche que empieza en p acaba en p + L, no en p + L + 1."
+  },
+  "pistas": [
+   "El parche de longitud 5 colocado en 1 va de 1 a 6.",
+   "Revisa la cuenta del final del parche: inicio + L, exactamente."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Huecos pequeños encadenados",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Agujeros cada 2 con L = 2: cada parche tapa dos agujeros seguidos y hacen falta 3, aunque ningún hueco sea mayor que L.",
+  "si": {
+   "wa": "Sale 1: comparas cada agujero con el ANTERIOR y no con el comienzo del parche. Los huecos pequeños se van acumulando: el parche que empieza en 1 no llega al 5."
+  },
+  "pistas": [
+   "¿Puede un parche de longitud 2 tapar a la vez los agujeros 1 y 5?",
+   "Lo que importa es la distancia al agujero donde EMPIEZA el parche, no al agujero anterior.",
+   "Guarda hasta dónde llega el parche actual (inicio + L) y no lo muevas hasta abrir uno nuevo."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Mucho espacio vacío entre agujeros",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tres agujeros muy separados: 3 parches. No se trata de cubrir toda la manguera de punta a punta.",
+  "si": {
+   "wa": "Solo hay que tapar los agujeros, no el tramo entero entre el primero y el último: cada agujero aislado necesita un parche."
+  },
+  "pistas": [
+   "¿Cuántos parches de longitud 10 hacen falta para tapar el 1, el 500 y el 1000?",
+   "No dividas la longitud total entre L: recorre los agujeros uno a uno."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Repetidos justo después de un parche",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Agujeros 1 3 3 | 4 4 4 6 con L = 2: el primer parche tapa 1 y los dos 3; el segundo, los tres 4 y el 6 (2 parches).",
+  "si": {
+   "wa": "Los agujeros repetidos están en el mismo sitio. ¿Abres un parche por cada agujero repetido, o tratas los iguales como si estuvieran separados?"
+  },
+  "pistas": [
+   "Varios agujeros en la misma posición los tapa el mismo parche.",
+   "Compara cada agujero con el final del parche actual; los repetidos no cambian nada."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Posiciones cerca de 10⁹",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Posiciones grandes con L = 1000: el parche de 999.998.000 llega justo al 999.999.000; 2 parches.",
+  "si": {
+   "wa": "Con posiciones grandes algo se estropea: ¿lees en un tipo demasiado pequeño o inicializas el final del parche con un valor que no sirve?"
+  },
+  "pistas": [
+   "Las posiciones llegan hasta 10⁹: caben en un int, y p + L también (≈ 10⁹ + 1000 < 2³¹).",
+   "Inicializa el final del último parche con un valor menor que cualquier posición (por ejemplo -1)."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un caso con posiciones enormes seguido de otros pequeños: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: el contador de parches o el final del último parche no se reinician en cada caso."
+  },
+  "pistas": [
+   "Si en el segundo caso salen 0 parches o parches de más, mira qué variables viven fuera de resuelveCaso.",
+   "Declara el contador y el final del parche dentro de la función de cada caso (y sin static)."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 casos de hasta 8 agujeros, con repetidos y distancias justo en L.",
+  "si": {
+   "wa": "Algún caso falla: localiza la línea, busca ese caso en la entrada y colócalo a mano sobre una recta."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso.",
+   "Revisa el borde (≤) y que comparas con el inicio del parche, no con el agujero anterior."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Casos medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 casos de 100 a 2.000 agujeros con L y posiciones variadas.",
+  "si": {
+   "wa": "Algún caso mediano falla: el error aparece solo en algunas configuraciones. Prueba los casos pequeños al azar primero."
+  },
+  "pistas": [
+   "Compara con un caso pequeño parecido que hagas a mano.",
+   "Revisa que el final del parche se calcula desde el agujero donde empieza."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "10 casos de 100.000 agujeros",
+  "tipo": "rendimiento",
+  "casos": 10,
+  "comprueba": "La suma de N llega a 10⁶: la solución debe ser O(N) por caso.",
+  "si": {
+   "tle": "Algo cuesta O(N²): ¿borras agujeros del principio del vector (erase(begin())) o vuelves a recorrer desde el principio por cada parche?",
+   "wa": "Con muchos agujeros repetidos falla: revisa cómo tratas posiciones iguales."
+  },
+  "pistas": [
+   "Las posiciones ya vienen ordenadas: no hace falta ordenar ni borrar nada.",
+   "Un único recorrido de izquierda a derecha basta.",
+   "Borrar el primer elemento de un vector mueve todos los demás: evítalo y usa un índice."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "100.000 agujeros por toda la manguera",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un caso grande con posiciones hasta casi 10⁹.",
+  "si": {
+   "tle": "Debe ser O(N): un solo recorrido por los agujeros.",
+   "wa": "En el caso grande falla: revisa el tipo de las posiciones y el borde del parche."
+  },
+  "pistas": [
+   "No vuelvas atrás en el vector: cada agujero se mira una vez.",
+   "Lee con cin normal; un único bucle basta."
+  ]
+ }
+]

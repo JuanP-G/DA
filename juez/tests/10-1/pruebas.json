@@ -1,0 +1,252 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 4,
+  "comprueba": "Los cuatro casos de ejemplo del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: es una mochila 0/1 con suma exacta, con tres tablas (formas, mínimo de cordeles y mínimo coste) sobre las longitudes 0..L.",
+   "pe": "Escribe «SI», el número de formas, el mínimo de cordeles y el mínimo coste separados por un espacio; o «NO»."
+  },
+  "pistas": [
+   "Haz a mano la tabla del primer caso para las longitudes múltiplos de 10.",
+   "formas[j] = número de formas de sumar exactamente j; cordeles[j] y coste[j], los mínimos para sumar j.",
+   "Casos base: formas[0] = 1 y cordeles[0] = coste[0] = 0; el resto de mínimos empieza en «infinito»."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un solo cordel",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "N = 1: el cordel mide justo L (SI 1 1 coste) o no (NO).",
+  "si": {
+   "wa": "Con un solo cordel la respuesta es inmediata: revisa los casos base (formas[0] = 1, cordeles[0] = coste[0] = 0)."
+  },
+  "pistas": [
+   "Con un cordel de 7 y L = 7 debe salir «SI 1 1 3».",
+   "Sin el caso base formas[0] = 1 ninguna longitud se puede formar."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Cordeles más largos que la cuerda",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Cordeles con longitud mayor que L: no se pueden usar y no deben romper nada.",
+  "si": {
+   "rte": "Con un cordel más largo que L accedes a la posición j − l < 0 de la tabla. El bucle de j debe ir de L hasta l (y no hacer nada si l > L).",
+   "wa": "Un cordel más largo que L no sirve para nada: no lo cuentes."
+  },
+  "pistas": [
+   "¿Qué hace tu bucle con un cordel de 1000 si L = 1?",
+   "Recorre j desde L hacia abajo mientras j ≥ l: si l > L, el bucle no da ninguna vuelta."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "SI y NO tal cual",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Una respuesta afirmativa y una negativa: «SI 1 1 3» y «NO», sin tildes ni nada más.",
+  "si": {
+   "wa": "Revisa el texto: «SI» sin tilde seguido de los tres números, o solo «NO».",
+   "pe": "Revisa los espacios: «SI», espacio, formas, espacio, cordeles, espacio, coste."
+  },
+  "pistas": [
+   "Compara tu salida carácter a carácter con «SI 1 1 3».",
+   "El enunciado escribe SI sin tilde; y con NO no se escribe ningún número."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Infinito que desborda al sumar",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Al probar el cordel de 3 para la longitud 5, la longitud 2 todavía no se puede formar: su «infinito» no debe sumarse.",
+  "si": {
+   "wa": "Sumas 1 (o el coste) a un «infinito» como INT_MAX y desborda a un número negativo, que luego gana todos los mínimos. Si j − l no se puede formar, no lo uses (o elige un infinito que no desborde al sumar)."
+  },
+  "pistas": [
+   "¿Cuánto vale INT_MAX + 1 en un int?",
+   "Antes de usar cordeles[j − l] + 1 comprueba que j − l se puede formar (formas[j − l] > 0 o cordeles[j − l] != INF).",
+   "Otra forma: usa como infinito un valor grande que no desborde al sumarle 1.000 (por ejemplo 10⁹)."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Cada cordel se usa una sola vez",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un único cordel de 5 no forma una cuerda de 10 (no se puede usar dos veces).",
+  "si": {
+   "wa": "Usas un mismo cordel más de una vez: con un solo vector, j tiene que ir de MAYOR a MENOR (de L hasta l), para que formas[j − l] sea todavía el de antes de este cordel."
+  },
+  "pistas": [
+   "Con un solo cordel de 5, ¿cuánto vale tu formas[10]?",
+   "Si recorres j de menor a mayor, formas[j − l] ya incluye el cordel actual y lo vuelves a usar.",
+   "Recorre j desde L hasta l, hacia abajo (o usa dos filas: la de antes y la nueva)."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Cada pregunta por separado",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La forma con menos cordeles (el de 10, que cuesta 11) no es la más barata (los de 4 y 6, que cuestan 4): «SI 2 1 4».",
+  "si": {
+   "wa": "Das el coste de la solución con menos cordeles (o los cordeles de la más barata). Cada mínimo se calcula por separado, con su propia tabla."
+  },
+  "pistas": [
+   "El ingeniero quiere menos cordeles y el economista menos coste: pueden ser formas distintas.",
+   "Lleva dos tablas independientes: cordeles[j] = min(cordeles[j], cordeles[j − l] + 1) y coste[j] = min(coste[j], coste[j − l] + c)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Cordeles iguales son distintos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cuatro cordeles iguales de 2: hay C(4, 2) = 6 parejas que forman 4.",
+  "si": {
+   "wa": "Cuentas los cordeles iguales como uno solo (o cuentas formas distintas por longitudes). Cada cordel es distinto aunque mida lo mismo."
+  },
+  "pistas": [
+   "Con los cordeles a, b, c, d las parejas son ab, ac, ad, bc, bd, cd.",
+   "No elimines repetidos al leer: cada cordel se procesa por separado en la tabla."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El coste puede ser mayor que la longitud",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Mínimos costes de 2.000 y 3.000 con cuerdas de 1.000 y 3: el «infinito» del coste tiene que ser mayor que cualquier coste posible.",
+  "si": {
+   "wa": "Tu «infinito» para el coste es demasiado pequeño (por ejemplo L + 1, que sirve para contar cordeles pero no para el coste). El coste puede llegar a 1.000 · 1.000."
+  },
+  "pistas": [
+   "¿Cuál es el mayor coste posible? Hasta 1.000 cordeles de 1.000 cada uno.",
+   "Usa como infinito un valor mayor que 10⁶ (por ejemplo INT_MAX con cuidado al sumar, o 10⁹)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Hacen falta todos los cordeles",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "La cuerda mide justo la suma de todos los cordeles: una única forma, con todos.",
+  "si": {
+   "wa": "Cuando la solución usa todos los cordeles algo falla: ¿el bucle de cordeles llega al último? ¿la tabla llega hasta L incluido?",
+   "rte": "La tabla debe tener L + 1 posiciones (de 0 a L)."
+  },
+  "pistas": [
+   "En el primer caso, 1 + 2 + 3 + 4 = 10: «SI 1 4 10».",
+   "Revisa que la tabla tiene tamaño L + 1 y que procesas los N cordeles."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Más formas de las que caben en un int",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "40 cordeles de 1 y L = 20: C(40, 20) = 137.846.528.820 formas.",
+  "si": {
+   "wa": "El número de formas no cabe en int: el enunciado dice que puede llegar a 10¹⁸, así que hace falta long long.",
+   "tle": "Cuentas las formas una a una (recursión sin memoria o vuelta atrás): aquí hay más de 10¹¹. Hace falta la tabla de programación dinámica."
+  },
+  "pistas": [
+   "¿Cuánto es C(40, 20)? Bastante más que 2³¹.",
+   "Declara la tabla de formas como vector<long long>."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Cerca de 10¹⁸ formas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "62 cordeles de 1 y L = 31: C(62, 31) = 465.428.353.255.261.088 formas.",
+  "si": {
+   "wa": "Con tantas formas pierdes precisión o desbordas: usa long long (no double, ni float, ni int)."
+  },
+  "pistas": [
+   "El enunciado garantiza como mucho 10¹⁸ formas: cabe en long long (hasta 9,2·10¹⁸).",
+   "Si usas double, a partir de 2⁵³ deja de ser exacto."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso grande y luego otros más pequeños: nada del anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: las tablas deben crearse (con sus casos base) dentro de la función de cada caso.",
+   "rte": "Las tablas de un caso anterior tienen otro tamaño: créalas en cada caso con tamaño L + 1."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué vive fuera de resuelveCaso.",
+   "Declara las tres tablas dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 casos pequeños al azar (hasta 10 cordeles).",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; pruébalo a mano."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla y enumera a mano los subconjuntos.",
+   "Revisa el sentido del bucle (de L hacia abajo) y los casos base."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios grandes",
+  "tipo": "aleatorio",
+  "casos": 8,
+  "comprueba": "8 casos con hasta 1.000 cordeles y L = 1.000.",
+  "si": {
+   "wa": "Falla en casos grandes: revisa el desbordamiento (formas en long long, infinito que no desborde) y el tamaño de las tablas.",
+   "tle": "Tu solución es lenta: debe ser O(N · L) por caso."
+  },
+  "pistas": [
+   "¿Usas long long para las formas?",
+   "Cada cordel recorre la tabla una sola vez: O(N · L)."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Muchos subconjuntos posibles",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "59 cordeles de 1 y uno de 2 para L = 60: hay del orden de 10¹⁷ subconjuntos que no se pasan de L.",
+  "si": {
+   "tle": "Pruebas todos los subconjuntos (recursión sin memoria o vuelta atrás): crece como 2^N. Con una tabla sobre las longitudes 0..L el coste es O(N · L).",
+   "wa": "Con muchos cordeles iguales algo desborda: formas en long long."
+  },
+  "pistas": [
+   "¿Cuántas veces calculas lo mismo? «Las formas de sumar j con los cordeles 1..i» se repite muchísimo.",
+   "Guarda esos valores en una tabla (o en un vector recorrido de L hacia abajo)."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Muchos casos de tamaño máximo",
+  "tipo": "rendimiento",
+  "casos": 12,
+  "comprueba": "12 casos con N = 1.000 y L = 1.000.",
+  "si": {
+   "tle": "Tu solución es lenta para N = L = 1.000: debe ser O(N · L) por caso, sin copiar tablas enteras por cada cordel innecesariamente.",
+   "mle": "Gastas demasiada memoria: basta un vector de tamaño L + 1 por tabla (o una tabla (N + 1) × (L + 1))."
+  },
+  "pistas": [
+   "Cada cordel debe costar O(L): un recorrido de la tabla.",
+   "Si copias la tabla en cada llamada recursiva o en cada cordel, cámbialo por un único vector recorrido hacia atrás."
+  ]
+ }
+]

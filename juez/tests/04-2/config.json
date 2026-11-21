@@ -1,0 +1,11 @@
+{
+ "solucion": "4-Grafos no dirigidos/EJ_04-2/EJ_04-2.cpp",
+ "cabeceras": [
+  "4-Grafos no dirigidos/EJ_04-2/Grafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "maxim = max(maxim, tam);",
+  "maxim = max(maxim, tam - 1);"
+ ]
+}

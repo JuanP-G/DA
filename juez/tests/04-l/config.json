@@ -1,0 +1,11 @@
+{
+ "solucion": "4-Grafos no dirigidos/EJ_04-L/EJ_04-L.cpp",
+ "cabeceras": [
+  "4-Grafos no dirigidos/EJ_04-L/Grafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "int coste = dA.distancia(m) + dL.distancia(m) + dT.distancia(m);",
+  "int coste = dA.distancia(m) + dL.distancia(m) + dT.distancia(m) + 1;"
+ ]
+}

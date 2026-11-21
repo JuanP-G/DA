@@ -1,0 +1,9 @@
+{
+ "solucion": "2-Colas de prioridad/EJ_02-3/EJ_02-3.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "vector<pair<int, int>>, greater<pair<int, int>>> cola",
+  "vector<pair<int, int>>, less<pair<int, int>>> cola"
+ ]
+}

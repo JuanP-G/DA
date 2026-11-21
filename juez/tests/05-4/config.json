@@ -1,0 +1,11 @@
+{
+ "solucion": "5-Grafos dirigidos/EJ_05-4/EJ_05-4.cpp",
+ "cabeceras": [
+  "5-Grafos dirigidos/EJ_05-4/Digrafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "entrada[v] == g.V() - 1",
+  "entrada[v] >= g.V() - 2"
+ ]
+}

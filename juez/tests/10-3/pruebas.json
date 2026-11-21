@@ -1,0 +1,220 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "La ciudad de la figura: 4 caminos que esquivan las obras.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: a un cruce solo se llega desde el de arriba o el de la izquierda, y a un cruce con obras no se llega nunca."
+  },
+  "pistas": [
+   "Escribe en papel, sobre la cuadrícula, cuántos caminos llegan a cada cruce.",
+   "caminos(i, j) = caminos(i−1, j) + caminos(i, j−1), y 0 si (i, j) tiene obras.",
+   "El caso base es caminos(0, 0) = 1; fuera de la ciudad cuenta como 0."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El segundo ejemplo: se puede llegar dando un rodeo, pero no por un camino de longitud mínima (0).",
+  "si": {
+   "wa": "Cuentas caminos que no son de longitud mínima (que suben o van hacia el oeste). Solo valen los que van al sur o al este."
+  },
+  "pistas": [
+   "Hay un camino de 8 manzanas, pero el mínimo es de 6: no cuenta.",
+   "No hagas un recorrido en anchura por toda la ciudad: un camino mínimo solo avanza hacia el sur o hacia el este."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ciudad de un solo cruce",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "N = M = 1: la estación está en el mismo cruce; hay 1 camino (quedarse).",
+  "si": {
+   "wa": "Con un solo cruce hay exactamente un camino (el vacío): revisa el caso base.",
+   "rte": "Con N = M = 1 accedes a una posición que no existe (j − 1 o i − 1)."
+  },
+  "pistas": [
+   "¿Qué escribes con «1 1» y «.»?",
+   "El caso base caminos(0, 0) = 1 ya es la respuesta cuando N = M = 1."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Una sola calle",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Una sola fila y una sola columna, sin obras: 1 camino.",
+  "si": {
+   "wa": "Con una sola fila o columna hay un único camino: revisa los bordes de la tabla.",
+   "rte": "Te sales de la tabla con una sola fila o columna: comprueba i > 0 y j > 0 antes de mirar arriba o a la izquierda."
+  },
+  "pistas": [
+   "Prueba «1 6» con «......»: debe salir 1.",
+   "Lo que está fuera de la ciudad cuenta 0 caminos: no lo leas del vector."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Ciudad no cuadrada",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Ciudades sin obras de 2×6 y 7×2: N filas (calles este-oeste) de M caracteres.",
+  "si": {
+   "wa": "Funciona con ciudades cuadradas pero no con rectangulares: ¿has cruzado N y M al leer o al recorrer?",
+   "rte": "Con N ≠ M te sales del vector: N es el número de líneas y M el de caracteres de cada línea."
+  },
+  "pistas": [
+   "La primera línea da N (filas) y luego M (columnas).",
+   "Repasa cada bucle: las filas van de 0 a N−1 y las columnas de 0 a M−1."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Una obra en medio",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una única obra en el centro de una ciudad 3×3: quedan 2 de los 6 caminos.",
+  "si": {
+   "wa": "No anulas los cruces con obras: a un cruce con obras llegan 0 caminos aunque arriba y a la izquierda haya caminos."
+  },
+  "pistas": [
+   "Sin la obra habría 6 caminos; ¿cuántos pasan por el centro?",
+   "Si usas un solo vector, en un cruce con obras hay que poner caminos[j] = 0 (no basta con no sumar: ahí queda el valor de la fila de arriba)."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Obra en la primera calle",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una obra en la primera fila corta todos los cruces que quedan a su derecha en esa fila.",
+  "si": {
+   "wa": "Inicializas toda la primera fila a 1 sin mirar las obras: los cruces a la derecha de una obra de la primera fila solo se alcanzan desde arriba... que no existe, así que valen 0."
+  },
+  "pistas": [
+   "¿Cuántos caminos llegan al cruce (0, 3)? Para llegar hay que pasar por (0, 2), que tiene obras.",
+   "Trata la primera fila con la misma regla que las demás (arriba vale 0) en vez de ponerla entera a 1."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Obra en la primera columna",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una obra en la primera columna corta todos los cruces que quedan debajo en esa columna.",
+  "si": {
+   "wa": "Inicializas toda la primera columna a 1 sin mirar las obras: debajo de una obra de la primera columna no llega ningún camino."
+  },
+  "pistas": [
+   "¿Cuántos caminos llegan al cruce (3, 0)?",
+   "La primera columna también sigue la regla general (a su izquierda hay 0 caminos)."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Ningún camino posible",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Una barrera diagonal de obras: la respuesta es 0.",
+  "si": {
+   "wa": "Cuando ningún camino llega, la respuesta es 0: ¿escribes otra cosa o cuentas caminos que atraviesan obras?"
+  },
+  "pistas": [
+   "Dibuja la ciudad: la diagonal de obras separa la salida de la estación.",
+   "Si la tabla está bien, la casilla final vale 0 sin tratar este caso aparte."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "El rodeo no cuenta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Solo se llega a la estación yendo un tramo hacia el oeste: no hay ningún camino mínimo (0).",
+  "si": {
+   "wa": "Estás contando caminos que no son de longitud mínima (con BFS o moviéndote en las 4 direcciones). Solo valen sur y este."
+  },
+  "pistas": [
+   "Los caminos más cortos tienen exactamente (N−1) + (M−1) manzanas.",
+   "A un cruce solo se puede llegar desde el de arriba o el de la izquierda."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Respuesta grande (cerca de 10⁹)",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Ciudades sin apenas obras con cientos de millones de caminos.",
+  "si": {
+   "wa": "Con respuestas grandes algo desborda: ¿usas short o sumas en un tipo pequeño? El resultado cabe en int.",
+   "tle": "Cuentas los caminos uno a uno (recursión sin memoria): con cientos de millones no acaba. Guarda en una tabla los caminos de cada cruce."
+  },
+  "pistas": [
+   "Una ciudad 17×17 sin obras tiene C(32, 16) = 601.080.390 caminos.",
+   "Cada cruce se calcula una vez sumando dos casillas: no recorras los caminos."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Una ciudad grande y luego otras más pequeñas: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: la tabla (o el vector) de caminos debe crearse a ceros en cada caso.",
+   "rte": "Una tabla de un caso anterior con otro tamaño: créala dentro de la función de cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "Declara la tabla dentro de la función de cada caso, inicializada a 0."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorias pequeñas",
+  "tipo": "aleatorio",
+  "casos": 80,
+  "comprueba": "80 ciudades pequeñas al azar.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; dibújalo y cuenta a mano."
+  },
+  "pistas": [
+   "Busca en la entrada la ciudad de la línea que falla.",
+   "Revisa obras en la primera fila o columna y ciudades de una sola calle."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorias grandes",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 ciudades de hasta 50×50 con bastantes obras.",
+  "si": {
+   "wa": "Falla en ciudades grandes: revisa los bordes y que se lean todas las líneas.",
+   "tle": "Cuentas los caminos uno a uno: en una ciudad de 50×50 hay demasiados. Usa una tabla."
+  },
+  "pistas": [
+   "¿Calculas los caminos de un mismo cruce varias veces? Apúntalos en una tabla.",
+   "Rellena la tabla por filas: cada cruce suma el de arriba y el de la izquierda."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Ciudades 50×50 con millones de callejones",
+  "tipo": "rendimiento",
+  "casos": 100,
+  "comprueba": "100 ciudades de 50×50 sin obras salvo junto a la estación (o a la salida): 0 caminos, pero muchísimos caminos a medias.",
+  "si": {
+   "tle": "Exploras los caminos uno a uno (recursión sin memoria o backtracking): con 50×50 hay del orden de 10²⁸. La tabla hace que cada cruce cueste O(1).",
+   "wa": "Cuando las obras rodean la estación (o la salida) la respuesta es 0."
+  },
+  "pistas": [
+   "Una recursión que prueba sur y este en cada cruce tarda 2^(N+M): imposible aquí.",
+   "Guarda cuántos caminos llegan a cada cruce y reutilízalo (programación dinámica): O(N·M) por ciudad."
+  ]
+ }
+]

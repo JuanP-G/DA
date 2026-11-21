@@ -1,0 +1,9 @@
+{
+ "solucion": "8-Algoritmos voraces/EJ_08-4/EJ_08-4.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "return a.fin < b.fin;",
+  "return a.inicio < b.inicio;"
+ ]
+}

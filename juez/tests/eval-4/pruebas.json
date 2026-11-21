@@ -1,0 +1,220 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El tablón de 10 m con marcas en 3, 6 y 8: lo mejor es cortar primero por el 6 (40).",
+  "si": {
+   "wa": "Falla el ejemplo: revisa la recurrencia. El primer corte de un trozo cuesta el doble de su longitud, elijas la marca que elijas; luego cada mitad se corta por separado.",
+   "pe": "Escribe solo el número, con un salto de línea por caso."
+  },
+  "pistas": [
+   "Haz a mano los tres órdenes que empiezan por cada marca: 3, 6 u 8.",
+   "esfuerzo(i, j) = 2·(p_j − p_i) + mínimo de esfuerzo(i, k) + esfuerzo(k, j) para las marcas k entre i y j.",
+   "La respuesta es esfuerzo(0, N+1), con p_0 = 0 y p_{N+1} = L."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El segundo ejemplo del PDF (88).",
+  "si": {
+   "wa": "Falla el segundo ejemplo: comprueba que pruebas todas las marcas k de cada trozo, no solo alguna."
+  },
+  "pistas": [
+   "El primer corte bueno es el del 8, no el más centrado.",
+   "Para cada trozo hay que probar todas las marcas que tiene dentro y quedarse con la mínima."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "El esfuerzo es el doble de la longitud",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una sola marca en un tablón de 1000: un único corte que cuesta 2 · 1000 = 2000.",
+  "si": {
+   "wa": "Sumas la longitud del trozo y no el doble. Cortar un trozo de longitud x cuesta 2·x."
+  },
+  "pistas": [
+   "Con una sola marca hay un solo corte: ¿cuánto cuesta cortar el tablón entero?",
+   "El coste de cortar el trozo (p_i, p_j) es 2·(p_j − p_i)."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Hay que cortar después cada mitad",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos marcas: el primer corte (20) y luego el corte de uno de los trozos (4). Total 24.",
+  "si": {
+   "wa": "Solo cuentas el primer corte: casi seguro la tabla se rellena en un orden en el que esfuerzo(k, j) aún no está calculado cuando lo usas (vale 0)."
+  },
+  "pistas": [
+   "Si escribes 20, solo cuentas el corte del tablón entero.",
+   "esfuerzo(i, j) usa trozos más cortos: rellena la tabla por longitud del trozo (j − i = 2, 3, ...), no por i creciente.",
+   "Otra forma: recorre i de mayor a menor y j de menor a mayor; o usa recursión con memoria."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Cortar en el orden de las marcas no sirve",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cortar de izquierda a derecha (1, 6, 7) cuesta 44; lo mejor es 40.",
+  "si": {
+   "wa": "Cortas en el orden en que vienen las marcas. El orden importa: hay que probar todas las marcas como primer corte de cada trozo."
+  },
+  "pistas": [
+   "Compara a mano cortar primero por el 1 o primero por el 6.",
+   "No hay un orden fijo bueno: la tabla esfuerzo(i, j) prueba cada marca k del trozo como primer corte."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Cortar por la marca de en medio no siempre es lo mejor",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cortar siempre por la marca central de la lista (7) cuesta 36; lo mejor es 34, empezando por el 6.",
+  "si": {
+   "wa": "Eliges como primer corte la marca que ocupa el centro de la lista: es un voraz y no da el óptimo."
+  },
+  "pistas": [
+   "Prueba a mano a empezar por el 6 y por el 7.",
+   "Ninguna regla fija acierta siempre: hay que probar todas las marcas k del trozo y quedarse con la mejor."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Cortar por la marca más cercana al centro tampoco",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cortar siempre por la marca más cercana a la mitad del trozo no da el óptimo (50).",
+  "si": {
+   "wa": "Eliges la marca más cercana a la mitad del trozo: es un voraz y aquí falla. Hace falta la programación dinámica."
+  },
+  "pistas": [
+   "La mitad del tablón es el 5; el 4 y el 6 están igual de cerca, pero ninguno de los dos es lo mejor como primer corte.",
+   "Calcula esfuerzo(i, j) para todos los trozos probando todas las marcas k; no decidas por la posición."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Una sola marca",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Tablones con una sola marca: el esfuerzo es 2·L.",
+  "si": {
+   "wa": "Con N = 1 solo hay un corte: el del tablón entero, que cuesta 2·L.",
+   "rte": "Con una sola marca te sales de la tabla: revisa los índices de p (0..N+1)."
+  },
+  "pistas": [
+   "La tabla tiene N + 2 puntos: 0, la marca y L.",
+   "esfuerzo(0, 2) = 2·(L − 0) + esfuerzo(0, 1) + esfuerzo(1, 2) = 2·L."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Los extremos 0 y L cuentan",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Marcas pegadas al principio de un tablón muy largo: el primer corte siempre es del tablón entero (de 0 a L).",
+  "si": {
+   "wa": "Te olvidas de los extremos 0 y L: el primer corte cuesta 2·L, y cada trozo va de una marca o un extremo al siguiente."
+  },
+  "pistas": [
+   "Añade a las marcas los puntos 0 (al principio) y L (al final).",
+   "p_0 = 0, p_1..p_N las marcas, p_{N+1} = L; la respuesta es esfuerzo(0, N+1)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Marcas en todos los metros",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Todas las marcas posibles en tablones cortos.",
+  "si": {
+   "wa": "Revisa la recurrencia con trozos de longitud 1 entre marcas seguidas."
+  },
+  "pistas": [
+   "Haz a mano el tablón de 10 con marcas en 1..9 (es largo: compáralo con tu tabla por trozos).",
+   "Un trozo entre dos puntos seguidos no tiene marcas y cuesta 0."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Un caso grande y luego otros pequeños: nada del anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente (la tabla o las marcas): créalos dentro de la función de cada caso.",
+   "rte": "La tabla de un caso anterior tiene otro tamaño: créala en cada caso con N + 2 puntos."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué vive fuera de resuelveCaso.",
+   "Declara la tabla y el vector de puntos dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 tablones al azar con hasta 8 marcas.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; pruébalo a mano."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla y hazlo en papel.",
+   "Revisa la recurrencia: todas las marcas k del trozo, y el doble de la longitud."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios con hasta 12 marcas",
+  "tipo": "aleatorio",
+  "casos": 20,
+  "comprueba": "20 tablones largos con hasta 12 marcas.",
+  "si": {
+   "wa": "Falla con algo más de marcas: revisa los índices de la tabla.",
+   "tle": "Incluso con 12 marcas va lento: la recursión sin memoria repite muchísimo trabajo."
+  },
+  "pistas": [
+   "¿Calculas el mismo esfuerzo(i, j) muchas veces? Apúntalo en una tabla.",
+   "Rellena la tabla por longitud de trozo."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "500 marcas al azar",
+  "tipo": "rendimiento",
+  "casos": 4,
+  "comprueba": "Cuatro tablones de 10⁶ con 500 marcas (el máximo).",
+  "si": {
+   "tle": "Es lento con 500 marcas. Probar todos los órdenes (N!) o la recursión sin memoria no terminan: guarda esfuerzo(i, j) en una tabla. Con la tabla es O(N³), unos 2·10⁷ pasos por caso.",
+   "mle": "La tabla de (N+2)×(N+2) es pequeña: ¿creas tablas o vectores dentro de los bucles?"
+  },
+  "pistas": [
+   "Hay unos N²/2 trozos distintos: calcula cada uno una sola vez.",
+   "Rellena esfuerzo(i, j) por longitud de trozo creciente, con tres bucles (longitud, i, k)."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "500 marcas seguidas",
+  "tipo": "rendimiento",
+  "casos": 3,
+  "comprueba": "Tres casos con 500 marcas en metros seguidos.",
+  "si": {
+   "tle": "Es lento con 500 marcas: la solución debe ser O(N³) como mucho.",
+   "wa": "Con muchas marcas el resultado es grande (hasta unos 10⁹): ¿lo guardas en un tipo pequeño?"
+  },
+  "pistas": [
+   "Calcula cada trozo una sola vez, guardado en una tabla.",
+   "Tres bucles: longitud del trozo, inicio i y marca k."
+  ]
+ }
+]

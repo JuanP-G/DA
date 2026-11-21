@@ -1,0 +1,265 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del ejemplo del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: la lectura de los eventos (TC no lleva argumentos), el comparador o el formato «puesto tema».",
+   "pe": "Los datos están bien pero no el formato: cada puesto en su línea, «número espacio tema», y «---» al final de cada caso."
+  },
+  "pistas": [
+   "En el segundo caso Hulk se queda a 0 y no sale; Superman e Ironman empatan y va antes Superman (su C es más reciente).",
+   "Cada puesto se escribe como «1 tema», «2 tema», «3 tema» en líneas distintas; cada caso acaba con «---».",
+   "La entrada no dice cuántos casos hay: lee hasta que falle la lectura de n (plantilla de casos ilimitados)."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "TC sin ningún tema",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Una consulta cuando aún no hay temas: no se escribe ningún puesto.",
+  "si": {
+   "wa": "Con la cola vacía no hay que escribir nada para esa consulta (solo el «---» del final del caso).",
+   "rte": "Consultas la cima de una cola vacía: comprueba que no está vacía antes de top()."
+  },
+  "pistas": [
+   "El primer caso solo tiene un TC: su salida es solo «---».",
+   "En el bucle del podio comprueba antes que nada que la cola no está vacía."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Menos de tres temas",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Con uno o dos temas el podio tiene solo esos puestos.",
+  "si": {
+   "wa": "Con menos de tres temas escribes puestos de más (o de menos): el podio se corta cuando se acaban los temas.",
+   "rte": "Con menos de tres temas sacas de una cola vacía al buscar el tercero."
+  },
+  "pistas": [
+   "Con un único tema la salida es «1 uno» y «---».",
+   "Saca como mucho 3, pero para antes si la cola se queda vacía."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Caso sin ninguna consulta",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Un caso sin TC: solo se escribe la línea «---».",
+  "si": {
+   "wa": "Aunque un caso no tenga consultas, hay que escribir su «---» al final.",
+   "pe": "Un caso sin consultas da solo «---», sin líneas en blanco."
+  },
+  "pistas": [
+   "La salida del primer caso es una sola línea: «---».",
+   "Escribe «---» después del bucle de eventos, pase lo que pase dentro."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Empate: va antes el C más reciente",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos temas con las mismas citas: va primero el que recibió su último C más tarde.",
+  "si": {
+   "wa": "En los empates no eliges el C más reciente: el desempate debe poner antes el tema con el último C posterior (instante mayor)."
+  },
+  "pistas": [
+   "A y B tienen 5 citas; el C de B llegó después: «1 B», «2 A».",
+   "Guarda en la prioridad el instante (número de evento) del último C y, si las citas empatan, va antes el mayor."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Empate: cuenta el último C, no el primero",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "A apareció antes que B, pero su último C es más reciente: en el empate va primero A.",
+  "si": {
+   "wa": "Desempatas por cuándo apareció el tema por primera vez (o por su índice). Hay que actualizar el instante en CADA C."
+  },
+  "pistas": [
+   "A y B tienen 5 citas; el último C de A (evento 3) es posterior al de B (evento 2): «1 A», «2 B».",
+   "En cada evento C, además de sumar las citas, actualiza el instante del último C."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Una E no cuenta como reciente",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las expiraciones no cambian el instante del último C.",
+  "si": {
+   "wa": "Una expiración (E) está actualizando el instante del desempate: solo los eventos C cuentan como «tendencia reciente»."
+  },
+  "pistas": [
+   "B baja a 5 y empata con A; el último C de A es posterior al de B: «1 A», «2 B».",
+   "Con E solo se restan citas; el instante del último C se queda como estaba."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Temas que se quedan a 0 no salen",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un tema cuyas citas expiran todas desaparece del podio.",
+  "si": {
+   "wa": "Escribes temas con 0 citas: al montar el podio para en cuanto la cima tenga 0 citas."
+  },
+  "pistas": [
+   "Tras «E A 3», A tiene 0 citas: el primer TC no escribe nada y el segundo solo «1 B».",
+   "Si la cima tiene 0 citas, todos los demás también: deja de sacar."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El podio no se pierde entre consultas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Para ver el podio se sacan temas de la cola: hay que volver a meterlos después.",
+  "si": {
+   "wa": "Tras un TC, los temas del podio desaparecen de la cola: hay que volver a meterlos (push) al acabar la consulta.",
+   "rte": "Tras un TC, un tema del podio ya no está en la cola y al consultar o cambiar su prioridad salta una excepción. Hay que volver a meterlos."
+  },
+  "pistas": [
+   "Después del primer TC, A y B deben seguir en la cola: «C A 1» la sube a 4.",
+   "Guarda en un vector los que sacas para el podio y, tras escribirlos, vuelve a hacer push de todos."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Más de tres temas: solo los tres primeros",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con cinco temas el podio tiene exactamente tres puestos.",
+  "si": {
+   "wa": "Escribes más (o menos) de tres puestos: el podio se corta en el tercero."
+  },
+  "pistas": [
+   "La salida es «1 e», «2 d», «3 c» y «---».",
+   "La condición del bucle del podio es «menos de 3 sacados» (< 3, no ≤ 3)."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Más citas va antes aunque el C sea antiguo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El criterio principal son las citas; la recencia solo desempata.",
+  "si": {
+   "wa": "Ordenas primero por recencia: el criterio principal son las citas y el último C solo sirve para desempatar."
+  },
+  "pistas": [
+   "A tiene 10 citas y B 1: «1 A», «2 B», aunque el C de B sea más reciente.",
+   "Comparador: si las citas son distintas, gana la mayor; solo si empatan, el C más reciente."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Una expiración baja al líder",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El tema que va primero pierde citas y baja hasta el tercer puesto.",
+  "si": {
+   "wa": "Cuando un tema pierde citas no baja en la cola: hay que hundirlo (update de la IndexPQ lo hace)."
+  },
+  "pistas": [
+   "A baja a 5: «1 B», «2 D», «3 A».",
+   "Usa update(idx, nuevaPrioridad): flota si mejora y hunde si empeora."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Un tema que vuelve tras quedarse a 0",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un tema a 0 que vuelve a recibir citas reaparece, con su nuevo último C.",
+  "si": {
+   "wa": "Un tema que se quedó a 0 no vuelve bien: debe seguir en la cola (o volver a ella) con sus citas y su último C actualizados.",
+   "rte": "Al volver a citar un tema que se quedó a 0 consultas un elemento que ya no está en la cola."
+  },
+  "pistas": [
+   "A vuelve con 1 cita y empata con B; el C de A es más reciente: «1 A», «2 B».",
+   "No saques de la cola los temas que se quedan a 0: basta con no escribirlos."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Los mismos temas aparecen en casos distintos: cada caso empieza sin temas ni citas.",
+  "si": {
+   "wa": "Algo se arrastra de un caso a otro: el mapa tema → índice, el vector de nombres o la cola deben crearse dentro de resuelveCaso.",
+   "rte": "Usas en un caso el índice de un tema de un caso anterior: el mapa tema → índice debe vaciarse en cada caso."
+  },
+  "pistas": [
+   "En el segundo caso A tiene 2 citas y B 1, no 52 y 41.",
+   "Declara la cola, el mapa y el vector de nombres dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Muchas citas",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Citas que suman 1,5·10⁹: caben en int, y los empates se siguen resolviendo bien.",
+  "si": {
+   "wa": "Con números grandes algo se corta o el empate falla: revisa el tipo de las citas (int basta aquí)."
+  },
+  "pistas": [
+   "«grande» tiene 1.500.000.000 citas y «otro» 1.499.999.999: primero «grande»; tras la E empatan y va antes «otro» (su C es más reciente).",
+   "Lee las citas en int o long long, no en short."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 casos pequeños al azar, con citas pequeñas (muchos empates).",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: busca la consulta que falla y apunta citas y último C de cada tema hasta ahí.",
+   "rte": "Algún caso pequeño hace que consultes un tema que no está en la cola."
+  },
+  "pistas": [
+   "Cuenta los «---» de la salida esperada hasta la línea que falla para saber qué caso es.",
+   "Haz una tabla: tema, citas vigentes e instante de su último C."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 5,
+  "comprueba": "Casos de 2000 eventos con cientos de temas.",
+  "si": {
+   "wa": "Con muchos temas algo falla al recolocarlos o al devolver el podio a la cola."
+  },
+  "pistas": [
+   "Si las pequeñas salen bien, revisa que tras cada TC los temas vuelven a la cola con su prioridad intacta.",
+   "Comprueba que E y C usan update y que el desempate es el mismo en todas las comparaciones."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "Muchos temas y muchas consultas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "210.000 eventos con 60.000 temas y unas 45.000 consultas TC.",
+  "si": {
+   "tle": "Cada TC (o cada búsqueda de un tema) recorre todos los temas: O(temas) por evento es demasiado. Con IndexPQ cada TC son 3 pop y 3 push.",
+   "mle": "Gastas demasiada memoria: guarda una entrada por tema, no una por evento."
+  },
+  "pistas": [
+   "Con 60.000 temas y 45.000 TC, recorrerlos todos en cada consulta son 2,7·10⁹ comparaciones.",
+   "Para encontrar el índice de un tema usa un unordered_map<string,int>.",
+   "En cada TC saca como mucho 3 cimas, escríbelas y vuelve a meterlas: O(log n)."
+  ]
+ }
+]

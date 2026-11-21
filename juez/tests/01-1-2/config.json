@@ -1,0 +1,11 @@
+{
+ "solucion": "1-Arboles AVL/EJ_01-1 (generico)/EJ 01-1 (GENERICO BIEN).cpp",
+ "cabeceras": [
+  "1-Arboles AVL/EJ_01-1 (generico)/bintree.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "&& (!hayDer || elem < der.minimo);",
+  "&& (!hayDer || !(der.minimo < elem));"
+ ]
+}

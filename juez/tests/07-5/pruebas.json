@@ -1,0 +1,221 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del PDF (con el número de casos delante): «27 NO», «19 SI», «5 SI», «SIN CAMINO».",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: hay que comparar las calles del camino más corto (el de menos calles entre los más cortos) con el menor número de calles posible (anchura).",
+   "pe": "Los datos están bien pero el formato no: un espacio entre la distancia y SI/NO, un salto de línea por consulta y --- tras cada caso.",
+   "rte": "Error de ejecución con el ejemplo: la entrada empieza con el número de casos; si lees hasta fin de fichero o no restas 1 a las intersecciones, se rompe."
+  },
+  "pistas": [
+   "En el juez de la asignatura la primera línea es el número de casos (plantilla de número de casos).",
+   "1 → 5: el más corto (27) usa 3 calles y 1 → 4 → 5 solo 2: NO.",
+   "Escribe --- después de todas las consultas de cada caso."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Calle directa",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Dos intersecciones y una calle: «7 SI».",
+  "si": {
+   "wa": "Con una sola calle el camino más corto es también el de menos calles: «7 SI».",
+   "rte": "Error de ejecución en el caso más pequeño: revisa los índices (desde 1) y la lectura."
+  },
+  "pistas": [
+   "Debe salir «7 SI».",
+   "La distancia y la palabra van en la misma línea, separadas por un espacio."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Sin calles: SIN CAMINO",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Ninguna calle: todas las consultas son SIN CAMINO (sin distancia) y aun así se escribe ---.",
+  "si": {
+   "wa": "Si no hay camino se escribe solo SIN CAMINO (sin distancia ni SI/NO) y, al acabar el caso, ---."
+  },
+  "pistas": [
+   "Comprueba si la distancia al destino sigue a infinito antes de escribir nada más.",
+   "La línea --- se escribe siempre al acabar el caso."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Calles de doble sentido",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las calles vienen escritas «hacia atrás» (2 1 y 3 2): se recorren en los dos sentidos.",
+  "si": {
+   "wa": "Solo añades cada calle en un sentido. Son de doble sentido: pon las dos aristas, u → v y v → u (también para la anchura)."
+  },
+  "pistas": [
+   "Debe salir «8 SI».",
+   "Por cada calle llama dos veces a ponArista."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "El camino más corto usa más calles: NO",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "1-4-5 tiene dos calles pero mide 10; 1-2-3-5 tiene tres y mide 3: «3 NO».",
+  "si": {
+   "wa": "La distancia que escribes no es la mínima: lo primero es la distancia (Dijkstra) y solo para desempatar se miran las calles. La prioridad es (distancia, calles), en ese orden."
+  },
+  "pistas": [
+   "Debe salir «3 NO»: el más corto mide 3 y usa 3 calles, pero se puede llegar con 2.",
+   "Compara las parejas en orden lexicográfico: primero la distancia, luego las calles."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "No parar al descubrir el destino",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La primera vez que se llega al destino es por la calle directa (5), pero por la 2 se recorren 2: «2 NO».",
+  "si": {
+   "wa": "Paras en cuanto el destino recibe una distancia, pero aún puede mejorar. Solo es definitiva cuando el destino sale de la cola."
+  },
+  "pistas": [
+   "Debe salir «2 NO».",
+   "Puedes parar cuando el destino esté en la cabeza de la cola, no al relajar una calle que llega a él."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Empate en distancia: el de menos calles se descubre después",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos caminos de 10: 1-2-3-5 (3 calles, se encuentra antes) y 1-4-5 (2 calles, después). Hay que quedarse con el de 2: «10 SI».",
+  "si": {
+   "wa": "Ante un empate en distancia te quedas con el primer camino encontrado. Entre los caminos de distancia mínima hay que quedarse con el de MENOS calles: actualiza también si la distancia empata y las calles mejoran."
+  },
+  "pistas": [
+   "Debe salir «10 SI».",
+   "Guarda para cada vértice la pareja (distancia, calles) y actualiza si la nueva pareja es menor en orden lexicográfico.",
+   "Con pair<int,int> basta comparar «nuevo < mejor[w]»; la IndexPQ<pair<int,int>> ordena igual."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Empate en distancia: el de menos calles se descubre antes",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos caminos de 10: 1-4-5 (2 calles, se encuentra antes) y 1-2-3-5 (3 calles, después). No hay que cambiarlo: «10 SI».",
+  "si": {
+   "wa": "Cambias el camino de un vértice cuando la distancia empata aunque tenga más calles (≤ en vez de <). Solo hay que cambiar si la distancia mejora o, empatando, las calles mejoran."
+  },
+  "pistas": [
+   "Debe salir «10 SI».",
+   "Si comparas solo distancias con ≤, el último camino empatado sustituye al anterior aunque sea peor en calles."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Varias consultas desde distintos orígenes",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cuatro consultas en el mismo caso, cada una desde un origen distinto: cada una empieza de cero.",
+  "si": {
+   "wa": "La primera consulta sale bien y las siguientes no: los vectores del Dijkstra o de la anchura de la consulta anterior se quedan. Créalos de nuevo en cada consulta."
+  },
+  "pistas": [
+   "Si la primera consulta sale bien y la segunda no, mira qué se reutiliza entre consultas.",
+   "Declara los vectores (distancias, calles) y la cola dentro del bucle de las consultas."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "SIN CAMINO entre otras consultas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una consulta sin camino en medio de otras: las demás deben salir bien y --- solo al final.",
+  "si": {
+   "wa": "Tras un SIN CAMINO algo se descoloca: revisa que no escribes --- tras cada consulta ni dejas de leer las siguientes."
+  },
+  "pistas": [
+   "Debe salir «3 SI», «SIN CAMINO», «2 NO» y ---.",
+   "El --- va una vez por caso, después del bucle de las consultas."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un caso con varias consultas seguido de otros más pequeños: nada de un caso debe quedar para el siguiente.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el grafo o los vectores de distancias y calles no se crean de nuevo en cada caso.",
+   "rte": "Usas en un caso una estructura con el tamaño de otro caso anterior: créalas dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "Crea el grafo dentro de resuelveCaso y los vectores dentro del bucle de consultas."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 50,
+  "comprueba": "50 casos pequeños al azar.",
+  "si": {
+   "wa": "Hay alguna consulta que no tratas bien: localiza el caso contando las líneas --- y prueba ese grafo a mano."
+  },
+  "pistas": [
+   "Cada caso termina en ---: así localizas el caso que falla.",
+   "Calcula a mano la distancia mínima, las calles del camino más corto con menos calles y el mínimo de calles posible."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios con muchos empates",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 casos con calles de longitud 1 o 2: hay muchos caminos de la misma distancia con distinto número de calles.",
+  "si": {
+   "wa": "Con empates en distancia algo falla: entre los caminos más cortos hay que quedarse con el de menos calles."
+  },
+  "pistas": [
+   "Busca la consulta que falla y enumera a mano los caminos más cortos.",
+   "La prioridad (distancia, calles) se compara en orden lexicográfico."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Grande: 20.000 intersecciones y 100.000 calles",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo con 10 consultas entre puntos lejanos.",
+  "si": {
+   "tle": "Demasiado lento: cada consulta necesita un Dijkstra O(C log N) con IndexPQ y una anchura O(N + C). Si buscas el mínimo recorriendo el vector (O(N²)), con 20.000 intersecciones y 10 consultas no llega.",
+   "mle": "Gastas demasiada memoria: no uses una matriz N×N.",
+   "wa": "Solo falla en el grande: revisa el valor de infinito."
+  },
+  "pistas": [
+   "Usa una IndexPQ para elegir el siguiente vértice.",
+   "Construye el grafo una vez por caso y haz los dos recorridos por consulta."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Rejilla con muchísimos empates",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Rejilla de 140×140 con calles de longitud 1 o 2 y 10 consultas de arriba abajo.",
+  "si": {
+   "tle": "Demasiado lento en una rejilla de casi 20.000 intersecciones: revisa la complejidad del Dijkstra y de la anchura.",
+   "wa": "Con muchísimos empates algo falla: entre los caminos más cortos hay que quedarse con el de menos calles."
+  },
+  "pistas": [
+   "La prioridad (distancia, calles) resuelve los empates sin coste extra.",
+   "Marca los visitados de la anchura al meterlos en la cola, no al sacarlos."
+  ]
+ }
+]

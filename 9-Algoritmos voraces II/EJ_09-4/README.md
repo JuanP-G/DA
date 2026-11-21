@@ -1,6 +1,6 @@
 # EJ 09-4 · El telesilla
 
-📄 Enunciado: en el juez de la asignatura (`Ej09-4`) · 💻 [Solución](EJ_09-4.cpp)
+📄 [Enunciado](<../Enunciados/prob-El telesilla.pdf>) · 💻 [Solución](EJ_09-4.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

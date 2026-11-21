@@ -1,0 +1,251 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del ejemplo del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: la lectura (D, C, N; C audiencias; cada actualización «m u» y u parejas canal-audiencia), los tramos o el orden de la salida.",
+   "pe": "Los datos están bien pero no el formato: «canal minutos» en cada línea y «---» al final de cada caso.",
+   "rte": "Se rompe con el ejemplo: los canales van de 1 a C, así que la cola necesita sitio para el índice C (tamaño C + 1, o restar 1 al canal)."
+  },
+  "pistas": [
+   "En el primer caso el canal 3 lidera de 0 a 15 y de 45 a 60; el canal 1, el resto (90 minutos).",
+   "Cada caso escribe «canal minutos» de más a menos minutos y termina con «---».",
+   "La entrada empieza con el número de casos: usa la plantilla de número de casos."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un solo canal",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Con un único canal, él lidera la franja entera.",
+  "si": {
+   "wa": "Con un solo canal debe salir «1 D». Revisa que sumas todos los tramos, también el último.",
+   "rte": "Con un solo canal te sales: revisa el tamaño de la cola y de los vectores (canales numerados desde 1)."
+  },
+  "pistas": [
+   "El primer caso es «1 1»: un canal en una franja de un minuto.",
+   "El segundo caso: el canal 1 lidera los 10 minutos aunque cambie su audiencia (incluso a 0)."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Franja enorme (D = 10⁹)",
+  "tipo": "borde",
+  "casos": 5,
+  "comprueba": "Cinco franjas de D = 10⁹ minutos con pocas actualizaciones: hay que contar por tramos, no minuto a minuto.",
+  "si": {
+   "tle": "Recorres la franja minuto a minuto: con D = 10⁹ es demasiado. Suma de golpe los minutos de cada tramo (m − minuto anterior).",
+   "wa": "Con D = 10⁹ algo se desborda o se corta: los minutos caben en int, pero revisa las restas de los tramos."
+  },
+  "pistas": [
+   "En el primer caso el canal 1 lidera 999.999.999 minutos y el 2, el último: «1 999999999» y «2 1».",
+   "No recorras los minutos: entre dos actualizaciones el líder no cambia, así que suma m − anterior de una vez."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Cada tramo es del líder de antes del cambio",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los minutos de un tramo son del canal que lideraba ANTES de aplicar la actualización que lo cierra.",
+  "si": {
+   "wa": "Das los minutos del tramo al líder de después de la actualización: hay que sumarlos al líder actual ANTES de aplicar los cambios."
+  },
+  "pistas": [
+   "El canal 2 lidera [0, 3), el 1 lidera [3, 9) y el 2 otra vez [9, 10): «1 6» y «2 4».",
+   "En cada actualización: primero suma m − anterior al líder actual (top), después aplica los cambios."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "El último tramo también cuenta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tras la última actualización queda el tramo hasta D, que suele olvidarse.",
+  "si": {
+   "wa": "Te falta el último tramo: después del bucle, el líder suma D − minuto de la última actualización."
+  },
+  "pistas": [
+   "El canal 2 lidera [0, 10) y el 1 [10, 100): «1 90» y «2 10».",
+   "Al acabar las actualizaciones, suma D − anterior al líder que haya en ese momento."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Un canal que nunca lidera no aparece",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El canal 2 nunca es el más visto: no se escribe.",
+  "si": {
+   "wa": "Escribes canales con 0 minutos: solo aparecen los que han liderado algún minuto."
+  },
+  "pistas": [
+   "La salida es «1 6», «3 4» y «---»: el canal 2 no sale.",
+   "Al escribir, sáltate los canales con 0 minutos."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Sin actualizaciones",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "N = 0: el líder del minuto 0 lo es durante toda la franja.",
+  "si": {
+   "wa": "Con N = 0 no escribes nada o te equivocas de canal: el líder inicial suma los D minutos.",
+   "tle": "Con N = 0 te quedas esperando más datos: no hay líneas de actualización que leer."
+  },
+  "pistas": [
+   "La respuesta es «2 77» y «---».",
+   "El último tramo (de 0 a D si no hay actualizaciones) se suma fuera del bucle."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "El líder baja sin que nadie le supere",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El canal 2 pierde casi toda su audiencia y pasa a liderar el 1, que no ha cambiado.",
+  "si": {
+   "wa": "Cuando el líder baja no lo recolocas: guardas el líder aparte y solo lo cambias si alguien le supera, o tu montículo no hunde."
+  },
+  "pistas": [
+   "El canal 2 lidera [0, 4) y el 1 [4, 10): «1 6» y «2 4».",
+   "Usa update de la IndexPQ: hunde el canal si su audiencia baja."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Empate en minutos: canal menor primero",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tres canales que lideran 2 minutos cada uno: se ordenan por número de canal.",
+  "si": {
+   "wa": "En los empates de minutos no ordenas por número de canal de menor a mayor."
+  },
+  "pistas": [
+   "Cada canal lidera 2 minutos: «1 2», «2 2», «3 2».",
+   "Ordena por minutos de mayor a menor y, si empatan, por canal de menor a mayor."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Orden por minutos, no por canal",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El canal 3 lidera más minutos que el 2: sale primero.",
+  "si": {
+   "wa": "Escribes los canales en orden de número: hay que ordenarlos por minutos de mayor a menor."
+  },
+  "pistas": [
+   "El canal 3 lidera 7 minutos y el 2 tres: «3 7» y «2 3».",
+   "Ordena el vector de resultados por minutos (de mayor a menor) antes de escribir."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "El canal número C",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los canales se numeran de 1 a C: el último canal (C) lidera y luego cambia.",
+  "si": {
+   "rte": "Te sales del vector o de la cola con el canal C: los canales van de 1 a C, así que hace falta tamaño C + 1 (o restar 1 al índice).",
+   "wa": "El canal C no se trata bien: revisa la traducción entre número de canal (1..C) y posición en tus vectores."
+  },
+  "pistas": [
+   "El canal 6 lidera [0, 5) y el 3 [5, 10): «3 5» y «6 5».",
+   "Si la cola tiene tamaño C, el índice C no existe: créala con C + 1 o usa canal − 1."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios cambios en el mismo minuto",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "En una actualización cambian varios canales a la vez: el líder nuevo se mira tras aplicarlos todos.",
+  "si": {
+   "wa": "Con varios cambios en un mismo minuto algo falla: suma el tramo antes de aplicar el primer cambio y no vuelvas a sumar entre cambio y cambio."
+  },
+  "pistas": [
+   "El canal 1 lidera [0, 3) y el 3 [3, 10): «3 7» y «1 3».",
+   "Por actualización: un único «sumar tramo» y después los u cambios seguidos."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "El mismo canal lidera en tramos separados",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un canal que pierde y recupera el liderato acumula todos sus tramos.",
+  "si": {
+   "wa": "No acumulas los minutos de un canal: cada tramo se SUMA a lo que ya llevaba."
+  },
+  "pistas": [
+   "Canal 1: [0, 4) + [8, 12) + [15, 20) = 13; canal 2: [4, 8) + [12, 15) = 7.",
+   "Usa un vector de minutos por canal y súmale cada tramo con +=."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Casos con distinto número de canales seguidos: cada caso empieza de cero.",
+  "si": {
+   "wa": "Algo se arrastra de un caso a otro: los minutos por canal, el minuto de la actualización anterior o la cola deben crearse en cada caso.",
+   "rte": "Una estructura de un caso anterior (con otro número de canales) se usa en el siguiente."
+  },
+  "pistas": [
+   "El primer caso acaba en el minuto 60: el segundo empieza otra vez en el minuto 0.",
+   "Declara la cola, el vector de minutos y el minuto anterior dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 casos pequeños al azar.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: cuenta los «---» hasta la línea que falla y dibuja la línea de tiempo de ese caso.",
+   "rte": "Algún caso pequeño hace que te salgas de un vector (¿canales desde 1?)."
+  },
+  "pistas": [
+   "Haz la línea de tiempo del caso que falla: quién lidera entre cada dos actualizaciones.",
+   "Comprueba primero el orden de la salida y el último tramo."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 15,
+  "comprueba": "15 casos medianos con audiencias y franjas grandes.",
+  "si": {
+   "wa": "Falla algún caso mediano: busca entre los pequeños uno que también falle; es más fácil de seguir."
+  },
+  "pistas": [
+   "Si los pequeños salen bien, revisa lo que solo pasa a lo grande: muchos canales, D grande, varios cambios por minuto.",
+   "Los minutos caben en int (≤ 10⁹), pero revisa que no multiplicas ni sumas de más."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "100.000 canales y 50.000 actualizaciones",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Muchos canales y muchas actualizaciones: buscar el líder recorriendo todos los canales es demasiado lento.",
+  "si": {
+   "tle": "Buscar el líder recorriendo los C canales en cada actualización es O(C·N). Con una IndexPQ de máximos el líder es top() y cada cambio un update en O(log C).",
+   "mle": "Gastas demasiada memoria: basta un vector de C enteros y la cola."
+  },
+  "pistas": [
+   "Con 10⁵ canales y 5·10⁴ actualizaciones, recorrer todos los canales cada vez son 5·10⁹ operaciones.",
+   "Guarda los canales en una IndexPQ de máximos (índice = canal, prioridad = audiencia): el líder es top().",
+   "Cada cambio de audiencia es un update(canal, nueva): sube o baja al canal en O(log C)."
+  ]
+ }
+]

@@ -1,0 +1,246 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF: solapes, una película que empieza justo al acabar otra y otra que pasa de un día al siguiente.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: pasar cada película a minutos absolutos, ordenarlas por hora de FIN e ir cogiendo las compatibles con la última elegida.",
+   "pe": "Los números están bien pero el formato no: un número por línea, uno por caso."
+  },
+  "pistas": [
+   "Sigue a mano el segundo caso: la de las 10:30 acaba a las 12:00 y la de las 12:00 no deja 10 minutos.",
+   "Lee la hora como dos enteros separados por «:» (por ejemplo, cin >> hh >> c >> mm con un char c).",
+   "inicio = (D·24 + HH)·60 + MM, fin = inicio + duración, y una película es compatible si inicio ≥ fin anterior + 10."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola película",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "N = 1: siempre se puede ver (1).",
+  "si": {
+   "wa": "Con una sola película la respuesta es 1: revisa cómo inicializas «libre desde» para que la primera siempre se pueda ver."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con una única película?",
+   "Inicializa el instante en que Deborah queda libre a un valor menor que cualquier comienzo."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Tres pases a la vez",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Tres películas que empiezan y acaban a la vez: solo se puede ver una.",
+  "si": {
+   "wa": "Películas que coinciden en el tiempo no se pueden ver juntas: ¿compruebas el solape con la última película ELEGIDA?"
+  },
+  "pistas": [
+   "Si la primera acaba a las 19:30, ¿puede empezar otra a las 18:00?",
+   "Compara cada película con el final de la última que has elegido (más 10 minutos)."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Exactamente 10 minutos de descanso",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La primera acaba a las 10:40 y la segunda empieza a las 10:50: con 10 minutos justos se pueden ver las dos (2).",
+  "si": {
+   "wa": "Sale 1: exiges más de 10 minutos. Con 10 minutos JUSTOS ya puede (como en el tercer ejemplo): la condición es inicio ≥ fin + 10, no >."
+  },
+  "pistas": [
+   "Relee el tercer ejemplo: acaba a la 1:00 y la siguiente empieza a la 1:10, y puede ver las dos.",
+   "Usa ≥ al comparar con el final anterior más 10."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "9 minutos no bastan",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La primera acaba a las 10:50 y la segunda empieza a las 10:59: solo hay 9 minutos, así que solo una (1).",
+  "si": {
+   "wa": "Sale 2: no tienes en cuenta los 10 minutos de descanso (o cuentas menos). Una película solo vale si empieza al menos 10 minutos después de que acabe la anterior."
+  },
+  "pistas": [
+   "¿Cuántos minutos hay entre las 10:50 y las 10:59?",
+   "Suma 10 al final de cada película elegida antes de compararla con el comienzo de la siguiente."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "El mismo horario en días distintos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos películas a las 10:00, una el día 1 y otra el día 2: no se solapan (2).",
+  "si": {
+   "wa": "Sale 1: no usas el día. El instante de comienzo es (D·24 + HH)·60 + MM: sin el día, películas de días distintos parecen solaparse."
+  },
+  "pistas": [
+   "¿Coinciden de verdad dos películas a la misma hora en días diferentes?",
+   "Pasa todo a minutos desde el principio: inicio = (D·24 + HH)·60 + MM."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Una hora tiene 60 minutos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La primera acaba a las 10:10 y la segunda empieza a las 10:15 (solo 5 minutos): solo una (1).",
+  "si": {
+   "wa": "Sale 2: conviertes la hora como HH·100 + MM. Entonces 9:30 + 40 = «9:70», que no es una hora: hay que usar HH·60 + MM."
+  },
+  "pistas": [
+   "¿Cuánto es 9:30 más 40 minutos?",
+   "Pasa la hora a minutos: HH·60 + MM (y el día, ·24·60)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Una película que acaba pasada la medianoche",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La de las 23:00 del día 1 acaba a la 1:00 del día 2, y la del día 2 a las 0:30 empieza antes: solo una (1).",
+  "si": {
+   "wa": "Sale 2: el final de una película no puede quedarse dentro de su día. Si sumas la duración en minutos absolutos, el cambio de día sale solo."
+  },
+  "pistas": [
+   "¿A qué hora acaba la película de las 23:00 que dura 120 minutos?",
+   "No hagas «módulo 24 horas» con el final: trabaja siempre con minutos absolutos."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Ordenar por hora de comienzo no sirve",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una película larguísima que empieza la primera tapa a otras dos cortas: lo mejor es ver las dos cortas (2).",
+  "si": {
+   "wa": "Sale 1: ordenas por hora de COMIENZO. Elegir la que empieza antes puede ocupar todo el día; hay que ordenar por hora de FIN."
+  },
+  "pistas": [
+   "Si eliges la de las 10:00 (dura 10 horas), ¿qué te queda?",
+   "El criterio voraz correcto es: la que ACABA antes.",
+   "Ordena las películas por fin (inicio + duración)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "La más corta no siempre es la mejor",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una película corta en medio que se solapa con dos largas: lo mejor es ver las dos largas (2).",
+  "si": {
+   "wa": "Sale 1: eliges primero las más cortas. La corta de las 11:30 impide ver las otras dos; el criterio correcto es la que acaba antes."
+  },
+  "pistas": [
+   "Si coges la de 40 minutos, ¿puedes ver alguna de las otras?",
+   "Ordena por hora de fin, no por duración."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Películas que duran días",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una película de 10⁶ minutos (unos 694 días) y otras cortas: las tres cortas se pueden ver; la larga no compensa (3).",
+  "si": {
+   "wa": "Con duraciones enormes falla: revisa que el fin es inicio + duración en minutos absolutos y que el tipo aguanta (≈ 1,5·10⁸ cabe en int)."
+  },
+  "pistas": [
+   "La película de 10⁶ minutos acaba el día 695 a las 10:40.",
+   "Ordena por fin: las tres cortas acaban antes que la larga."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Horas con ceros a la izquierda",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Horas como 00:05 y 08:09: hay que leerlas bien (4 películas).",
+  "si": {
+   "wa": "Las horas con ceros a la izquierda se leen mal: no uses scanf con %i (lee «08» en octal) ni tomes solo un carácter.",
+   "rte": "La lectura de la hora falla: lee HH, el carácter «:» y MM por separado."
+  },
+  "pistas": [
+   "Prueba a leer «08:09» y escribe lo que obtienes.",
+   "Lee con cin >> hh >> dosPuntos >> mm (dosPuntos de tipo char)."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso en días muy altos seguido de otros en los primeros días: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: el contador o el instante «libre desde» no se reinician en cada caso."
+  },
+  "pistas": [
+   "Si «libre desde» es global, en el segundo caso ninguna película parece compatible.",
+   "Declara el contador y el instante «libre desde» dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos de hasta 8 películas en uno o dos días.",
+  "si": {
+   "wa": "Algún caso falla: localiza la línea, busca el caso y dibuja las películas en una línea de tiempo."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso.",
+   "Revisa el criterio de ordenación (fin) y la condición inicio ≥ fin + 10."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Casos medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 20,
+  "comprueba": "20 casos de 100 a 2.000 películas con días y duraciones muy variados.",
+  "si": {
+   "wa": "Algún caso mediano falla: suele ser el cambio de día o una duración muy grande."
+  },
+  "pistas": [
+   "Comprueba que el día entra en la cuenta del inicio.",
+   "Usa minutos absolutos para todo."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "100.000 películas en orden inverso",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Muchas películas dadas de la última a la primera: la ordenación debe ser O(N log N).",
+  "si": {
+   "tle": "Algo cuesta O(N²): una ordenación por inserción o burbuja, o comparar cada película con todas las demás."
+  },
+  "pistas": [
+   "Con 100.000 películas, O(N²) son 10¹⁰ operaciones.",
+   "Usa sort de la biblioteca con un comparador por hora de fin.",
+   "Después basta un único recorrido."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "100.000 películas al azar",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un caso grande con días hasta 100.000.",
+  "si": {
+   "tle": "Debe ser O(N log N): ordenar una vez y un recorrido.",
+   "wa": "En el caso grande falla: revisa el día en la cuenta del inicio y el tipo de los minutos."
+  },
+  "pistas": [
+   "Ordena una sola vez por fin.",
+   "Un solo recorrido con el instante «libre desde»."
+  ]
+ }
+]

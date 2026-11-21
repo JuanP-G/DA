@@ -102,3 +102,19 @@ python v07_teoria.py             # genera el mp4
 - `pd_comun.py`: piezas comunes de los vídeos de PD (tablas con flechas, fórmulas con llave, código, portada y cierre)
 
 `python3 v10_2.py --preview` saca fotogramas sueltos (con los tiempos reales de la voz) en `preview/` para revisarlos antes de renderizar.
+
+## Pruebas evaluativas (Eval-2 … Eval-4)
+
+Vídeos animados de programación dinámica con el mismo esquema que los del tema 10 (portada, qué piden, ejemplo, recurrencia, tabla rellenándose, código real del `.cpp` con `find_line`, errores típicos y resumen). El texto de bloque es `TEMA = "Pruebas evaluativas"` (también en `vEval_1.py`). Las trazas salen de simular el algoritmo del `.cpp` en el propio guion, con `assert` sobre las salidas de los enunciados.
+
+- `vEval_2.py` → `../Eval-2_bollos_preñaos.mp4`: mochila acotada (`k = g / c`), tabla del ejemplo 2 (M = 8 → 240), recuperación de la solución, contraejemplo del voraz por €/g y el error de no copiar la fila (saldrían 400).
+- `vEval_3.py` → `../Eval-3_cine_romantico.mp4`: intervalos ponderados con `sig` por `lower_bound`; el voraz del 08-4 falla en el ejemplo 2; trazas de los ejemplos 1 y 2 (150 y 180).
+- `vEval_4.py` → `../Eval-4_carpintero_ebanisto.mp4`: PD por intervalos; órdenes 3-6-8 (42) y 6-3-8 (40), tabla por diagonales del ejemplo 1 (40) y árbol de cortes.
+
+Sin Kokoro ni Piper instalados, `--preview` de estos tres guiones usa tiempos de voz **estimados** (≈ 14,5 caracteres/s, solo en ese proceso; no toca `anim.py` ni `vidlib.py`) e imprime la duración aproximada. Con `KOKORO_MODEL` o `PIPER_MODEL` definidos usa la voz real.
+
+```bash
+export KOKORO_MODEL=/ruta/kokoro-v1.0.onnx KOKORO_VOICES=/ruta/voices-v1.0.bin KOKORO_VOICE=ef_dora
+python3 vEval_2.py --preview   # fotogramas en preview/Eval-2/
+python3 vEval_2.py             # genera ../Eval-2_bollos_preñaos.mp4 (igual con vEval_3.py y vEval_4.py)
+```

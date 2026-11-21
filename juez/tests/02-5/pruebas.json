@@ -1,0 +1,241 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF (el último sin ninguna atención), terminados con el 0.",
+  "si": {
+   "wa": "Si fallan hasta los ejemplos, revisa la base: en cada A sale el paciente MÁS GRAVE y, a igualdad, el que llegó antes; tras cada caso, una línea «---».",
+   "pe": "Los nombres están bien pero no el formato: un nombre por línea y «---» al final de cada caso."
+  },
+  "pistas": [
+   "En el segundo caso, Pepe y Sara tienen 3000: sale antes Pepe porque llegó antes.",
+   "El tercer caso no tiene ninguna A: su salida es solo «---».",
+   "La entrada termina con n = 0: usa la plantilla de centinela."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Separador «---» y fin con n = 0",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Casos con un solo paciente atendido o sin ninguna atención: solo se mira el formato de los separadores y el final.",
+  "si": {
+   "wa": "Falla el formato de los separadores: tras CADA caso (aunque no haya atendido a nadie) va una línea con tres guiones «---» (no «----» como en Acepta el Reto), y tras el 0 final no se escribe nada.",
+   "ole": "No te detienes al leer n = 0 y el programa sigue escribiendo.",
+   "tle": "El bucle de casos no termina al leer n = 0."
+  },
+  "pistas": [
+   "Mira la primera línea de tu salida: el primer caso no atiende a nadie y debe escribir solo «---».",
+   "Después del último caso no debe aparecer otro «---».",
+   "«if (!(cin >> n) || n == 0) return false;» y, al final de cada caso, cout << \"---\\n\" siempre."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Primero el más grave",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos pacientes de gravedad distinta: se atiende al de gravedad MAYOR.",
+  "si": {
+   "wa": "Atiendes al MENOS grave: el comparador está al revés. priority_queue pone arriba el «mayor» según operator<, así que operator< debe devolver true cuando this tiene menos gravedad que o."
+  },
+  "pistas": [
+   "Con gravedades 1 y 5, ¿a quién atiendes?",
+   "priority_queue es de máximos con operator<: si quieres arriba al más grave, «menor» debe significar «menos grave».",
+   "En operator<: if (gravedad != o.gravedad) return gravedad < o.gravedad;"
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Empate: el que más tiempo lleva esperando",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tres pacientes con la misma gravedad: se atienden en el orden en que llegaron (como una cola, no como una pila).",
+  "si": {
+   "wa": "Con gravedades iguales no atiendes por orden de llegada: o no desempatas (la priority_queue no respeta el orden de inserción), o desempatas al revés (atiendes primero al último en llegar). El que más tiempo lleva esperando es el que llegó ANTES."
+  },
+  "pistas": [
+   "La salida debe ser Ana, Luis, Zoe.",
+   "Guarda en cada paciente un número de llegada creciente y úsalo para desempatar.",
+   "Tiene menos prioridad el que llegó después: en operator<, return orden > o.orden;"
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "No se desempata por nombre",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Misma gravedad y nombres que no llegan en orden alfabético: manda el orden de llegada, no el nombre.",
+  "si": {
+   "wa": "Desempatas por nombre (orden alfabético). El enunciado dice que a igual gravedad va el que más tiempo lleva esperando: Zoe, Ana y Marta, en ese orden."
+  },
+  "pistas": [
+   "Aquí la salida es Zoe, Ana, Marta, aunque alfabéticamente sea al revés.",
+   "Si tu Paciente no tiene un campo con el orden de llegada y comparas por nombre (o comparas un pair/tuple que incluye el nombre), cámbialo.",
+   "Añade un campo orden (el número de evento, por ejemplo) y desempata solo con él."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "El orden de llegada no es la posición en la cola",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Quique llega antes que Rita (ambos 5): tras atender a otros, Quique sigue teniendo preferencia.",
+  "si": {
+   "wa": "Tu «orden de llegada» se repite o retrocede: si usas el tamaño de la cola (o un contador que reinicias al atender) como marca, un paciente que llega más tarde puede quedar marcado como más antiguo. Usa un contador que solo crezca."
+  },
+  "pistas": [
+   "Antes de llegar Rita la cola tiene 1 paciente (Quique): si la marca es el tamaño de la cola, Rita recibe una marca menor que la de Quique.",
+   "La marca de llegada tiene que ser estrictamente creciente durante todo el caso.",
+   "Usa el índice del evento i (o un contador que solo se incrementa en cada I)."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Empates con llegadas intercaladas",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Pacientes empatados que llegan entre atenciones: el orden de llegada se mantiene aunque se vayan atendiendo otros.",
+  "si": {
+   "wa": "Con llegadas y atenciones intercaladas los empates salen mal: revisa que la marca de llegada es creciente y que el desempate la usa a favor del más antiguo."
+  },
+  "pistas": [
+   "En el primer caso la salida es A1, D1, B1, C1, E1: D1 se cuela por ser más grave, pero entre los de gravedad 3 se respeta la llegada.",
+   "Cada paciente conserva su marca de llegada aunque se atienda a otros entre medias."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Gravedades extremas (0 y 1.000.000)",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Gravedad 0 (válida, no es un final) y gravedad 1.000.000.",
+  "si": {
+   "wa": "La gravedad 0 es un paciente normal (no marca ningún final) y 1.000.000 cabe en int. Revisa también el desempate entre los dos de gravedad 0."
+  },
+  "pistas": [
+   "El paciente de gravedad 0 se atiende igual que los demás, el último.",
+   "No uses la gravedad 0 como valor especial."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Nombres largos y repetidos",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Nombres de 20 caracteres y pacientes distintos con el mismo nombre (el enunciado no lo prohíbe).",
+  "si": {
+   "wa": "Dos pacientes pueden llamarse igual: no los identifiques por el nombre (por ejemplo, con un map de nombre a gravedad). Cada ingreso es un paciente distinto.",
+   "rte": "Con nombres de 20 caracteres se rompe algo: ¿guardas el nombre en un char[20] (falta sitio para el '\\0')? Usa string."
+  },
+  "pistas": [
+   "Guarda cada paciente completo (nombre, gravedad, llegada) en la cola, aunque el nombre se repita.",
+   "Usa string para el nombre, no un array de tamaño fijo."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Atender justo después de llegar",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Cada paciente se atiende nada más llegar: la cola tiene siempre 0 o 1 elementos.",
+  "si": {
+   "wa": "Con la cola casi siempre vacía no debería haber problema: revisa que haces pop() tras escribir el nombre.",
+   "rte": "Haces top()/pop() de más: cada A atiende exactamente a un paciente."
+  },
+  "pistas": [
+   "La salida es a, b, c, d.",
+   "Cada A: escribe top().nombre y haz pop(), una sola vez."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Varios casos en los que quedan pacientes sin atender: no pasan al caso siguiente.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: los pacientes que quedan sin atender (o el contador de llegada) se arrastran al caso siguiente. La cola debe ser local a resuelveCaso.",
+   "rte": "Algo del caso anterior se queda a medias: declara la cola dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Al acabar el primer caso quedan Ana y Carla sin atender: en el segundo caso no existen.",
+   "Declara la priority_queue (y el contador de llegada) dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Cincuenta pacientes empatados",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "50 pacientes con la misma gravedad: deben salir exactamente en su orden de llegada.",
+  "si": {
+   "wa": "Con muchos empates la priority_queue los desordena si el comparador no desempata por llegada: no es estable, el orden de inserción no se conserva."
+  },
+  "pistas": [
+   "La salida debe ser la lista de nombres en el mismo orden de la entrada.",
+   "El desempate tiene que estar dentro del comparador."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 250,
+  "comprueba": "250 casos pequeños al azar con muchas gravedades repetidas.",
+  "si": {
+   "wa": "Algún caso concreto falla: cuenta los «---» anteriores a la línea que falla para saber qué caso es, y simúlalo a mano."
+  },
+  "pistas": [
+   "Localiza el caso por el número de «---» anteriores.",
+   "Apunta la cola tras cada evento con (gravedad, llegada) de cada paciente."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 15,
+  "comprueba": "15 casos de hasta 5000 eventos.",
+  "si": {
+   "wa": "Con casos medianos aparece un fallo que en los pequeños no: revisa el desempate por orden de llegada.",
+   "tle": "Ya con casos medianos va lento: ¿buscas al más grave recorriendo a todos?"
+  },
+  "pistas": [
+   "Comprueba que el orden de llegada es un contador creciente.",
+   "Cada evento debe costar O(log n)."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Grande: 100.000 ingresos y luego 100.000 atenciones",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "200.000 eventos con la cola llena: mide la eficiencia (O(n log n)).",
+  "si": {
+   "tle": "Buscar al más grave recorriendo la lista en cada A (o insertar en un vector ordenado) cuesta O(n²): usa una priority_queue.",
+   "mle": "Gastas demasiada memoria con 100.000 pacientes: guarda solo nombre, gravedad y llegada."
+  },
+  "pistas": [
+   "¿Cuánto cuesta cada A? Hay 100.000 con 100.000 pacientes esperando.",
+   "priority_queue: push y pop en O(log n)."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Grande: muchísimos empates",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "160.000 eventos con solo cuatro gravedades posibles: casi todo se decide por orden de llegada.",
+  "si": {
+   "tle": "Con tantos empates tu solución se vuelve lenta: el desempate debe estar en el comparador (O(1)), no en una búsqueda aparte.",
+   "wa": "Con muchísimos empates el orden de llegada se pierde: revisa el desempate."
+  },
+  "pistas": [
+   "El comparador debe decidir en O(1): gravedad y, si empata, llegada.",
+   "No recorras la cola buscando al más antiguo."
+  ]
+ }
+]

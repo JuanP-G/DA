@@ -1,0 +1,9 @@
+{
+ "solucion": "8-Algoritmos voraces/EJ_08-3/EJ_08-3.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "int deUnaMas = min(faltan, equipaciones[t + 1]);",
+  "int deUnaMas = min(faltan, equipaciones[t - 1]);"
+ ]
+}

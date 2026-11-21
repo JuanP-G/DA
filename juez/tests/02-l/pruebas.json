@@ -1,0 +1,222 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 4,
+  "comprueba": "Los cuatro casos del PDF (la entrada acaba con el fin del fichero).",
+  "si": {
+   "wa": "Si fallan hasta los ejemplos, revisa la base: cada escena va a la estación que antes queda libre, empieza en max(libre, minuto de envío) y espera inicio − envío.",
+   "pe": "El resultado está bien pero no el formato: un número por línea."
+  },
+  "pistas": [
+   "Haz a mano el primer caso: las esperas son 0, 0, 15 y 15.",
+   "No hay número de casos ni centinela: lee «R S» hasta que falle la lectura (plantilla de casos ilimitados)."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "La espera no incluye el renderizado",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una sola escena con la estación libre: espera 0, aunque tarde 10 minutos en renderizarse.",
+  "si": {
+   "wa": "Cuentas como espera también el tiempo de renderizado. La espera es solo lo que pasa en la cola: inicio − minuto de envío, no fin − minuto de envío."
+  },
+  "pistas": [
+   "Si la estación está libre cuando llega la escena, ¿cuánto espera?",
+   "Distingue tres instantes: envío, inicio del renderizado y fin.",
+   "espera = inicio − minuto; el fin (inicio + duración) solo sirve para saber cuándo vuelve a quedar libre la estación."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Una estación libre no adelanta el reloj",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La segunda escena llega en 100 con la estación libre desde 5: empieza en 100 (no en 5) y acaba en 110, así que la tercera espera 5.",
+  "si": {
+   "wa": "Cuando la estación ya estaba libre, haces empezar la escena en el instante en que se liberó (en el pasado). Una escena no puede empezar antes de enviarse: inicio = max(libre, minuto)."
+  },
+  "pistas": [
+   "La segunda escena no puede empezar en el minuto 5: aún no se ha enviado.",
+   "Si empieza en 100 y tarda 10, la estación queda libre en 110, y la tercera (enviada en 105) espera 5.",
+   "inicio = max(libre, minuto); y lo que vuelves a meter en la cola es inicio + duración."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "La estación que antes queda libre",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con las dos estaciones ocupadas, la tercera escena va a la que se libera en 10, no a la que se libera en 100.",
+  "si": {
+   "wa": "Mandas la escena a la estación que MÁS TARDE queda libre: tu cola es de máximos. priority_queue<long long> a secas devuelve el mayor; usa greater<long long>."
+  },
+  "pistas": [
+   "La tercera escena espera de 5 a 10: 5 minutos.",
+   "¿Qué devuelve top() en una priority_queue por defecto?",
+   "priority_queue<long long, vector<long long>, greater<long long>>."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Las escenas se atienden en orden de envío",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "La cola de espera es por orden de envío: una escena corta no adelanta a una larga que se envió antes.",
+  "si": {
+   "wa": "Reordenas las escenas (por ejemplo, la más corta primero). El productor quiere el orden predeterminado: cada escena, en el orden de la entrada, va a la estación que antes quede libre."
+  },
+  "pistas": [
+   "En el primer caso la escena de 1 minuto tiene que esperar a que acabe la de 100: espera 109.",
+   "La cola de prioridad es de ESTACIONES (cuándo se liberan), no de escenas: las escenas se procesan tal como se leen."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Instantes que no caben en int",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cuatro escenas de 10⁹ minutos en una sola estación: la última espera 3·10⁹, y los instantes de fin pasan de 2³¹ − 1.",
+  "si": {
+   "wa": "Los instantes de fin se acumulan y no caben en int: la cola, el inicio y la espera máxima tienen que ser long long (aunque cada dato de la entrada quepa en int)."
+  },
+  "pistas": [
+   "La cuarta escena empieza en 3·10⁹; el máximo de un int es 2.147.483.647.",
+   "Revisa el tipo de los elementos de la cola y de las variables libre, inicio y la espera máxima.",
+   "Usa priority_queue<long long, vector<long long>, greater<long long>> y long long en todo el cálculo."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Llega justo cuando queda libre",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Escenas que llegan exactamente en el minuto en que se libera una estación: no esperan nada.",
+  "si": {
+   "wa": "Si una escena llega justo cuando una estación se libera, empieza en ese mismo instante: espera 0. Revisa las comparaciones (< frente a ≤)."
+  },
+  "pistas": [
+   "En el primer caso cada escena llega justo cuando acaba la anterior: la respuesta es 0.",
+   "Con inicio = max(libre, minuto) no hace falta ningún caso especial."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Nadie espera",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Hay estaciones de sobra: la respuesta es 0.",
+  "si": {
+   "wa": "Si nadie espera hay que escribir 0: inicializa la espera máxima a 0 (no a −1 ni al primer valor).",
+   "rte": "Con más estaciones que escenas te sales de algo: ¿dimensionas algún vector con R en lugar de S?"
+  },
+  "pistas": [
+   "Con más estaciones que escenas, todas empiezan nada más llegar.",
+   "La espera máxima empieza en 0 en cada caso."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Todas en el minuto 0",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Todas las escenas se envían a la vez: se van encadenando según se liberan las estaciones.",
+  "si": {
+   "wa": "Con todas las escenas a la vez, cada una espera hasta que se libere la primera estación disponible: revisa que siempre coges la que antes queda libre y que actualizas su instante."
+  },
+  "pistas": [
+   "Con una sola estación y seis escenas de 1 minuto, la última espera 5.",
+   "Mete de nuevo en la cola inicio + duración tras asignar cada escena."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Una sola escena y una sola estación",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "El caso mínimo: una escena nunca espera.",
+  "si": {
+   "wa": "Con una sola escena la espera es 0."
+  },
+  "pistas": [
+   "¿Cuánto puede esperar la única escena si la estación está libre?",
+   "Comprueba que la espera se calcula como inicio − minuto, no como inicio."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso con mucha espera seguido de otros con poca: la espera máxima y la cola empiezan de cero en cada caso.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: la espera máxima o la cola se arrastran del caso anterior (declaradas fuera de resuelveCaso o static).",
+   "rte": "Restos del caso anterior: declara la cola dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y el segundo no, mira qué variables viven fuera de resuelveCaso.",
+   "Declara la cola y la espera máxima (a 0) dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 300,
+  "comprueba": "300 casos pequeños al azar, con muchos envíos simultáneos.",
+  "si": {
+   "wa": "Algún caso concreto falla: la línea que falla es el número de caso; búscalo en la entrada y simúlalo a mano."
+  },
+  "pistas": [
+   "Localiza el caso por el número de línea.",
+   "Apunta para cada estación cuándo queda libre y asigna las escenas una a una."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 20,
+  "comprueba": "20 casos de hasta 3000 escenas, algunas muy largas.",
+  "si": {
+   "wa": "Con casos medianos falla algo que con los pequeños no: revisa los tipos (long long) y el max(libre, minuto).",
+   "tle": "Ya con casos medianos va lento: ¿buscas la estación libre recorriéndolas todas?"
+  },
+  "pistas": [
+   "Comprueba que cada escena hace un pop y un push.",
+   "Revisa que los instantes se guardan en long long."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Grande: 100.000 estaciones y 150.000 escenas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Muchas estaciones y muchas escenas: mide la eficiencia (debe ser O((S + R) log S)).",
+  "si": {
+   "tle": "Buscar la estación que antes queda libre recorriendo las S estaciones cuesta O(R·S) ≈ 10¹⁰: usa una cola de prioridad de mínimos.",
+   "wa": "Con muchos datos falla algo: revisa los tipos y el max(libre, minuto)."
+  },
+  "pistas": [
+   "¿Cuánto cuesta asignar cada escena? Hay 150.000 y 100.000 estaciones.",
+   "Con una cola de mínimos de instantes de liberación, cada escena es un pop y un push."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Grande: 200.000 escenas en 3 estaciones",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Muchas escenas y pocas estaciones: la cola de espera crece sin parar.",
+  "si": {
+   "tle": "Algo cuesta más de la cuenta por escena: ¿simulas el reloj minuto a minuto?",
+   "wa": "Con mucha espera acumulada los números crecen: revisa los tipos."
+  },
+  "pistas": [
+   "No avances el tiempo de uno en uno: salta al instante en que se libera la estación.",
+   "Cada escena: pop, calcular inicio y espera, push."
+  ]
+ }
+]

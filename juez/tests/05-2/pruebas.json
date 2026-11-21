@@ -1,0 +1,254 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 4,
+  "comprueba": "Los cuatro casos del PDF: 1, 2, -1 y 0 jugadas.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa lo básico: el orden de lectura (M S T, luego N y N parejas a b), el módulo y que el recorrido sea un BFS.",
+   "pe": "Los números están bien pero el formato no: un número por línea y nada más.",
+   "rte": "Se rompe con el ejemplo: casi seguro calculas un vértice fuera de 0…M-1 (falta aplicar el módulo al final)."
+  },
+  "pistas": [
+   "Compara caso a caso: ¿cuál de los cuatro sale mal?",
+   "El tercer caso es imposible (-1) y el cuarto ya empieza en el objetivo (0).",
+   "Lee en este orden: M, S, T, N y luego N parejas (a, b)."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "M = 1: solo existe el 0",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Con módulo 1 el único número es el 0: S = T = 0 y la respuesta es 0.",
+  "si": {
+   "wa": "Con M = 1 debe salir 0: el objetivo ya es el número de partida.",
+   "rte": "Con M = 1 hay un único vértice: revisa los tamaños de tus vectores y que todo se reduce módulo M."
+  },
+  "pistas": [
+   "¿Cuántos números hay con módulo 1?",
+   "Si S y T son iguales la respuesta es 0, sin hacer ninguna jugada."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Origen igual al destino",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Si S = T no hace falta ninguna jugada: 0.",
+  "si": {
+   "wa": "Cuando S = T debe salir 0. Si sale otra cosa, compruebas el objetivo solo al meter vecinos en la cola, o la distancia de S no empieza en 0."
+  },
+  "pistas": [
+   "¿Qué sale con «10 3 3»?",
+   "dist[S] = 0 antes de empezar; comprueba si has llegado a T al SACAR de la cola."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Factores y sumandos mayores que M",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "a y b pueden ser mayores que M: solo cuenta su valor módulo M.",
+  "si": {
+   "wa": "Con a o b ≥ M algo se calcula mal: el resultado es (a·x + b) mod M; puedes reducir a y b módulo M antes, pero el módulo final no se puede quitar.",
+   "rte": "(a·x + b) sin el módulo final se sale del rango 0…M-1."
+  },
+  "pistas": [
+   "Calcula a mano el primer caso: 9.999·1 + 9.998 = 19.997, y 19.997 mod 7 = 5.",
+   "Aplica el módulo al resultado completo: (a * x + b) % M."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Se cuentan jugadas, no números",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "2 + 5 = 7: una sola jugada.",
+  "si": {
+   "wa": "Te sale 2: cuentas los números del camino (vértices) en vez de las jugadas (aristas), o la distancia de S empieza en 1."
+  },
+  "pistas": [
+   "Una jugada es una arista: el camino 2 → 7 tiene una arista.",
+   "dist[S] = 0 y cada vecino nuevo recibe dist[x] + 1."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "S = T aunque haya una operación que vuelve a S",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La operación 1·x + 0 deja el número igual (un lazo). Aun así, de 4 a 4 hacen falta 0 jugadas.",
+  "si": {
+   "wa": "Debe salir 0. Si sale 1 o -1: compruebas el objetivo al meter un vecino en la cola (y el lazo 4 → 4 o nada lo vuelve a meter), en vez de al sacarlo."
+  },
+  "pistas": [
+   "El número de partida ya es el objetivo: ninguna jugada.",
+   "Marca S como visitado con distancia 0 al empezar.",
+   "Comprueba «¿es T?» al sacar cada número de la cola: así S también se comprueba."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Objetivo inalcanzable: -1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Sumando 2 desde el 1 solo se visitan impares: el 0 no se alcanza y hay que escribir -1.",
+  "si": {
+   "wa": "Si no se puede llegar hay que escribir -1. Si sale un número enorme, 0 u otro valor, no tratas el caso imposible (el «infinito» de tu vector de distancias no es -1)."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa si la cola se vacía sin haber visto T?",
+   "Inicializa las distancias a -1 («sin visitar») y escribe dist[T] tal cual: si no se alcanza, sigue valiendo -1."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "El módulo se aplica al resultado completo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con la operación x + 1, 6 + 1 = 7 y 7 mod 7 = 0: una jugada. Hay que reducir (a·x + b) entero, no solo a·x.",
+  "si": {
+   "wa": "El resultado de cada jugada es (a·x + b) mod M. Si haces (a·x mod M) + b, el valor puede quedar ≥ M.",
+   "rte": "Calculas un número ≥ M (por ejemplo (a·x) % M + b sin volver a reducir, o sin el módulo): te sales del vector o del Digrafo."
+  },
+  "pistas": [
+   "Con M = 7, x = 6 y la operación x + 1: ¿qué número sale? Tiene que estar entre 0 y 6.",
+   "El vecino es (a * x + b) % M: el módulo va al final, después de sumar b."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El orden importa: de S a T, no de T a S",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "De 3 se llega a 6 (3·2) en una jugada, pero de 6 nunca se vuelve a 3.",
+  "si": {
+   "wa": "Sale -1 o un número que no es 1: estás buscando el camino de T a S (has cambiado el orden de lectura de S y T)."
+  },
+  "pistas": [
+   "La primera línea de cada caso es «M S T»: módulo, partida y objetivo.",
+   "Haz el BFS desde S y mira la distancia de T."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Las jugadas no se pueden deshacer",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "De 3 se llega a 6, pero de 6 solo se recorre 6 → 2 → 4 → 8 → 6: el 3 es inalcanzable (-1).",
+  "si": {
+   "wa": "Te sale 1 (o algo distinto de -1): recorres las aristas en los dos sentidos. El grafo es DIRIGIDO: que x lleve a y no significa que y lleve a x."
+  },
+  "pistas": [
+   "De 6 con «×2 mod 10», ¿qué números salen?",
+   "Usa Digrafo (no Grafo): ponArista(x, y) añade solo x → y."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "El mínimo exige un BFS",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con las operaciones x + 3 y x + 1 (9 mod 8 = 1), de 2 a 4 son dos jugadas (+1, +1). Un DFS encuentra antes un camino más largo.",
+  "si": {
+   "wa": "Sale más de 2: tu recorrido no es en anchura. Con una pila o recursión (DFS) la primera vez que llegas a un número no es por el camino más corto.",
+   "tle": "Pruebas todos los caminos posibles: el número crece de forma exponencial. Usa un BFS que visite cada número una vez."
+  },
+  "pistas": [
+   "Para el mínimo número de jugadas hace falta un BFS: visita los números por capas.",
+   "Usa una cola (queue): saca por delante y mete por detrás.",
+   "La distancia de un número se fija la primera vez que se descubre: dist[y] = dist[x] + 1."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Camino muy largo: 9.999 jugadas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Con la única operación x + 1 hay que dar 9.999 pasos.",
+  "si": {
+   "wa": "En caminos largos te equivocas: ¿limitas el número de jugadas o la profundidad de la búsqueda?",
+   "tle": "Para un camino de 9.999 pasos tu método es demasiado lento: ¿repasas todos los números en cada paso? El BFS visita cada número una vez."
+  },
+  "pistas": [
+   "No pongas un tope a la profundidad: el BFS termina al sacar T o al vaciarse la cola.",
+   "Cada número entra una vez en la cola: el coste total es O(M·N)."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 7,
+  "comprueba": "Casos con módulos distintos uno tras otro: nada de un caso debe quedar para el siguiente.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: las distancias, los visitados o el grafo vienen del caso anterior.",
+   "rte": "Usas vectores con el tamaño del caso anterior (M cambia en cada caso): créalos dentro de cada caso con tamaño M."
+  },
+  "pistas": [
+   "Si el primer caso está bien y los siguientes no, mira qué vive fuera de resuelveCaso.",
+   "El grafo depende de M y de las operaciones: constrúyelo de nuevo en cada caso, con sus distancias."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 casos con M ≤ 12 y hasta 3 operaciones (hay alcanzables e inalcanzables).",
+  "si": {
+   "wa": "Algún caso concreto falla: localiza la línea, busca ese caso en la entrada y hazlo a mano (son muy pequeños)."
+  },
+  "pistas": [
+   "Con M ≤ 12 puedes dibujar el grafo entero en papel.",
+   "Fíjate si el caso que falla es imposible (-1), si S = T o si alguna operación tiene a o b ≥ M."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Casos medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 casos con M ≤ 2.000 y hasta 8 operaciones.",
+  "si": {
+   "wa": "Algún caso falla: mira la línea, encuentra el caso y revisa el módulo y el -1."
+  },
+  "pistas": [
+   "La línea que falla es el número de caso.",
+   "Comprueba que (a·x + b) se reduce módulo M en cada jugada."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "50 casos con M = 10.000 y N = 100",
+  "tipo": "rendimiento",
+  "casos": 50,
+  "comprueba": "Casos del tamaño máximo (un millón de aristas cada uno) con el objetivo inalcanzable: el BFS recorre todo.",
+  "si": {
+   "tle": "Cada caso debe costar O(M·N). ¿Usas una matriz de adyacencia M × M, buscas aristas con hayArista o recorres todos los números en cada paso?",
+   "mle": "Una matriz M × M (10⁸ casillas) no cabe: usa listas de adyacencia (Digrafo) o calcula los vecinos al vuelo.",
+   "wa": "Con casos grandes falla algo: ¿el -1 de los inalcanzables?"
+  },
+  "pistas": [
+   "El grafo tiene M·N aristas como mucho: recórrelas una vez.",
+   "No hace falta guardar el grafo: los vecinos de x se pueden calcular al vuelo con las N operaciones.",
+   "Evita la matriz de adyacencia y hayArista: son O(M²)."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "200 caminos de 9.999 jugadas",
+  "tipo": "rendimiento",
+  "casos": 200,
+  "comprueba": "Muchos casos donde el único camino da la vuelta entera al módulo.",
+  "si": {
+   "tle": "Tu método es O(M²) por caso o similar: ¿repasas todos los números en cada «ronda» en vez de usar una cola?"
+  },
+  "pistas": [
+   "Un BFS con cola procesa cada número una vez: 10.000 operaciones por caso.",
+   "Si en cada paso recorres todos los números buscando los de la capa actual, el coste se multiplica por la longitud del camino."
+  ]
+ }
+]

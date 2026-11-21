@@ -1,0 +1,11 @@
+{
+ "solucion": "4-Grafos no dirigidos/EJ_04-1/EJ_04-1.cpp",
+ "cabeceras": [
+  "4-Grafos no dirigidos/EJ_04-1/Grafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "arbol = conexo && g.A() == g.V() - 1;",
+  "arbol = g.A() == g.V() - 1;"
+ ]
+}

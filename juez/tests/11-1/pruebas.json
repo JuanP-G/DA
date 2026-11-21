@@ -1,0 +1,278 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El primer ejemplo del PDF: los dos cofres de 40 m no caben juntos. Si hay varias soluciones óptimas vale cualquiera, con los cofres en cualquier orden.",
+  "si": {
+   "wa": "Falla el primer ejemplo: revisa el coste de cada cofre (3·p segundos), la recurrencia y el formato (oro, número de cofres, un cofre por línea y ---).",
+   "pe": "Los datos están bien pero no el formato: cada cosa en su línea y «---» al final de cada caso."
+  },
+  "pistas": [
+   "Calcula a mano lo que cuesta cada cofre: bajar p y subir 2·p.",
+   "Es una mochila 0/1: oro(i, j) = máximo oro con los cofres 1..i y j segundos.",
+   "Escribe el oro, el número de cofres, cada cofre como «profundidad oro» y después «---»."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El segundo ejemplo del PDF: coger primero el cofre más valioso que cabe no es lo mejor.",
+  "si": {
+   "wa": "Sale 7 en vez de 8: estás eligiendo de forma voraz (el más valioso primero). Hace falta programación dinámica."
+  },
+  "pistas": [
+   "Con 200 segundos, ¿qué da coger primero el de 5 monedas? ¿Y los de 25 y 40 metros?",
+   "Ninguna regla voraz (por oro, por tiempo o por oro/tiempo) sirve en la mochila 0/1: rellena la tabla oro(i, j)."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El tercer ejemplo del PDF: el único cofre cuesta 30 segundos y la botella da 29. Se escribe 0, 0 y ---.",
+  "si": {
+   "wa": "Coges el cofre: cuesta 10 de bajada y 20 de subida, 30 en total, y no cabe. Si no coges nada, escribe «0», «0» y «---»."
+  },
+  "pistas": [
+   "¿Cuánto cuesta subir un cofre que está a 10 metros?",
+   "El tiempo de un cofre es p + 2·p = 3·p."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Ejemplo 4 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El cuarto ejemplo del PDF: dos formas de llegar a 11 gastando justo los 60 segundos. Si hay varias soluciones óptimas vale cualquiera, con los cofres en cualquier orden.",
+  "si": {
+   "wa": "Las dos soluciones gastan EXACTAMENTE los 60 segundos: si sale menos de 11, un cofre que cabe justo no lo estás cogiendo (¿< en vez de ≤?)."
+  },
+  "pistas": [
+   "12 + 8 = 20 metros son 60 segundos, justo lo que da la botella.",
+   "Un cofre cabe si 3·p ≤ j, con igual incluido."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Formato: profundidad, oro y --- en cada caso",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Dos casos sencillos (un cofre en cada uno): hay que escribir el oro, el número de cofres, cada cofre como «profundidad oro» y «---» tras CADA caso.",
+  "si": {
+   "wa": "Mira el «Por qué»: o falta la línea «---», o falta la línea con el número de cofres, o escribes los cofres como «oro profundidad» (es al revés: primero la profundidad).",
+   "pe": "Los datos son correctos pero mal repartidos en líneas: el oro en una línea, el número de cofres en otra y un cofre por línea."
+  },
+  "pistas": [
+   "La salida esperada del primer caso es «7», «1», «20 7» y «---», cada una en su línea.",
+   "Cada cofre se escribe como aparece en la entrada: primero la profundidad y luego el oro.",
+   "No olvides escribir «---» al final de cada caso, también del último."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Cabe justo: 3·p igual a T",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un cofre a 10 m con una botella de 30 segundos: cuesta exactamente 30 y se puede subir.",
+  "si": {
+   "wa": "No coges un cofre que cabe justo: la condición es 3·p ≤ j (con igual). Revisa también que la tabla llega hasta la columna T incluida."
+  },
+  "pistas": [
+   "Bajar 10 y subir 20 son 30 segundos: los que hay.",
+   "Usa ≤ al comprobar si el cofre cabe, y que el bucle de j llegue hasta T (j <= T)."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Subir cuesta el doble que bajar",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cofres a 10 y 5 m con 40 segundos de aire: cuestan 30 y 15 segundos, no caben los dos y se sube solo el de 9 monedas.",
+  "si": {
+   "wa": "Coges los dos cofres: estás contando p o 2·p segundos por cofre. Bajar cuesta p y subir 2·p: en total 3·p."
+  },
+  "pistas": [
+   "¿Cuánto se tarda en bajar y subir desde 10 metros? ¿Y desde 5?",
+   "El peso de cada cofre en la mochila es 3·p, tanto al rellenar la tabla como al reconstruir."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Cada cofre se sube una sola vez",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un único cofre de 30 segundos y 60 de aire: cabría dos veces, pero solo hay uno (respuesta 5).",
+  "si": {
+   "wa": "Sale 10: usas el mismo cofre dos veces. En la mochila 0/1, si coges el cofre i, el resto sale de la fila i − 1: oro(i − 1, j − 3·p) + o, no oro(i, j − 3·p) + o.",
+   "rte": "Algo se sale de rango al reconstruir: si tu tabla deja repetir cofres, la reconstrucción no cuadra."
+  },
+  "pistas": [
+   "Con un solo cofre, ¿cuánto oro puede haber como mucho?",
+   "Si la tabla es de una fila, recórrela con j de T hacia 0; si es entera, usa la fila i − 1 al coger el cofre i."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Ningún cofre cabe",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Todos los cofres cuestan más de 100 segundos: se escribe «0», «0» y «---».",
+  "si": {
+   "wa": "Si no se coge ningún cofre hay que escribir igualmente la línea con el 0 (número de cofres) y el «---».",
+   "rte": "Con cofres más hondos que la botella, j − 3·p es negativo: comprueba que cabe antes de mirar esa casilla."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa cuando no cabe nada?",
+   "La salida es siempre: oro, número de cofres (aunque sea 0), los cofres y «---»."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Cofre muchísimo más hondo que la botella",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Botellas de 1 y 3 segundos con un cofre a 500 m (1.500 segundos): j − 3·p queda muy negativo.",
+  "si": {
+   "rte": "Accedes a oro(i − 1, j − 3·p) con un índice negativo. Comprueba 3·p ≤ j ANTES de mirar esa casilla.",
+   "wa": "Coges un cofre que no cabe o lees basura de fuera de la tabla: comprueba 3·p ≤ j antes de usar j − 3·p."
+  },
+  "pistas": [
+   "¿Qué vale j − 3·p con j = 1 y p = 500?",
+   "Solo se puede coger el cofre si 3·p ≤ j: si no, oro(i, j) = oro(i − 1, j)."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Reconstrucción: descontar el tiempo del cofre cogido",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos cofres de 30 segundos y 30 de aire: solo se puede subir uno, el de 6 monedas.",
+  "si": {
+   "wa": "Escribes los dos cofres: al reconstruir, cuando decides que el cofre i está cogido hay que pasar a (i − 1, j − 3·p_i), descontando su tiempo."
+  },
+  "pistas": [
+   "Tu oro es 6, pero ¿cuánto tiempo suman los cofres que escribes?",
+   "Reconstruye desde (N, T): si oro(i, j) ≠ oro(i − 1, j), el cofre i está cogido y j baja en 3·p_i."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Voraz por oro/tiempo no sirve",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El cofre de 12 m es el que más oro da por segundo, pero los dos de 10 m juntos dan más (60 frente a 40).",
+  "si": {
+   "wa": "Ordenas por oro/segundo y coges los mejores: en la mochila 0/1 eso no da el óptimo. Rellena la tabla."
+  },
+  "pistas": [
+   "Coger el de 12 m deja 24 segundos: no cabe ninguno más.",
+   "Hace falta probar las dos opciones para cada cofre: cogerlo o no (programación dinámica)."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Cofres repetidos",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Cofres idénticos (misma profundidad y oro): si se cogen varios, se escribe cada uno en su línea.",
+  "si": {
+   "wa": "Hay cofres iguales y hay que escribirlos todos los que se cojan: no los juntes ni te saltes los repetidos."
+  },
+  "pistas": [
+   "En el primer caso se cogen los dos cofres «10 5»: van dos líneas iguales.",
+   "Marca los cofres cogidos por su posición en la entrada, no por su valor."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Un cofre de cada clase",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Valores extremos: un cofre a 500 m que cabe justo, el cofre más barato y dos de 1 m con un solo hueco.",
+  "si": {
+   "wa": "Algún caso extremo falla: revisa ≤ en la condición de que cabe y que no repites cofres."
+  },
+  "pistas": [
+   "El primer cofre cuesta 1.500 segundos, justo la botella.",
+   "En el último solo cabe uno de los dos cofres de 1 m (3 segundos): el de 10.000."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 6,
+  "comprueba": "Un caso de 12 cofres con varios cogidos seguido de casos más pequeños: nada de un caso debe pasar al siguiente.",
+  "si": {
+   "wa": "El primer caso sale bien y los siguientes no: algo no se reinicia (la tabla, las marcas de cofres cogidos o el contador).",
+   "rte": "Un vector de un caso anterior con otro tamaño: créalos dentro de cada caso."
+  },
+  "pistas": [
+   "Tras un caso con muchos cofres cogidos, ¿quedan marcas en tu vector de cogidos?",
+   "Declara la tabla, el vector de cogidos y el contador dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 casos de hasta 8 cofres con poco oro (muchos empates entre soluciones). Si hay varias soluciones óptimas vale cualquiera, con los cofres en cualquier orden.",
+  "si": {
+   "wa": "Algún caso falla: localiza el caso en la entrada (son pequeños) y resuélvelo a mano."
+  },
+  "pistas": [
+   "El «Por qué» dice qué falla: el oro máximo, un cofre que no existe o que no caben.",
+   "Prueba ese caso en tu ordenador y compara con todas las combinaciones de cofres."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Casos medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos de hasta 18 cofres y 3.000 segundos.",
+  "si": {
+   "wa": "Algún caso mediano falla: revisa la recurrencia y la reconstrucción."
+  },
+  "pistas": [
+   "Si los pequeños salen bien y estos no, revisa los tamaños de la tabla (N + 1 filas y T + 1 columnas).",
+   "Comprueba que la reconstrucción empieza en (N, T)."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "100 cofres poco hondos y 10.000 segundos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El caso más grande con cofres baratos: caben muchísimas combinaciones.",
+  "si": {
+   "tle": "Pruebas todas las combinaciones (recursión sin memoria, 2¹⁰⁰): guarda los resultados en la tabla oro(i, j).",
+   "mle": "La tabla debe ser (N + 1) × (T + 1) enteros: no reserves más."
+  },
+  "pistas": [
+   "¿Cuántas veces calculas el mismo oro(i, j)?",
+   "Rellena la tabla de N + 1 filas y T + 1 columnas con dos bucles: O(N·T)."
+  ]
+ },
+ {
+  "n": 19,
+  "nombre": "25 casos de 100 cofres y 10.000 segundos",
+  "tipo": "rendimiento",
+  "casos": 25,
+  "comprueba": "Muchos casos del tamaño máximo: mide el coste O(N·T) por caso.",
+  "si": {
+   "tle": "Debe costar O(N·T) por caso. ¿Recursión sin memoria, o un map en lugar de una tabla?",
+   "mle": "No hace falta más que una tabla (N + 1) × (T + 1) por caso; libérala al acabar el caso (créala dentro)."
+  },
+  "pistas": [
+   "10⁶ casillas por caso es poco; 25 casos también. Si no, algo repite trabajo.",
+   "Usa vector<vector<int>> y bucles, no map ni recursión sin memoria."
+  ]
+ }
+]

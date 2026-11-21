@@ -1,6 +1,6 @@
 # EJ 08-3 · Comienza la temporada
 
-📄 Enunciado: en el juez de la asignatura (`Ej08-3`) · 💻 [Solución](EJ_08-3.cpp)
+📄 [Enunciado](<../Enunciados/prob-Comienza la temporada.pdf>) · 💻 [Solución](EJ_08-3.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

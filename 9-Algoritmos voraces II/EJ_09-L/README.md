@@ -1,6 +1,6 @@
 # EJ 09-L · Necesitamos agua
 
-📄 Enunciado: en el juez de la asignatura (`Ej09-L`) · 💻 [Solución](EJ_09-L.cpp)
+📄 [Enunciado](<../Enunciados/prob-Necesitamos agua.pdf>) · 💻 [Solución](EJ_09-L.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

@@ -1,0 +1,10 @@
+{
+ "solucion": "10-Programacion dinamica/EJ_10-2/EJ_10-2.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "dardos[i][j] = min(dardos[i][j], dardos[i][j - p[i]] + 1);",
+  "dardos[i][j] = min(dardos[i][j], dardos[i - 1][j - p[i]] + 1);"
+ ],
+ "comprobador": true
+}

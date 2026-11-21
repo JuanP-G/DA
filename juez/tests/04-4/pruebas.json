@@ -1,0 +1,221 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del PDF: números 0, 1, 2, 3, INF y una base de datos sin Kevin Bacon.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa lo básico: «nombre número» por consulta, INF cuando no hay cadena y «---» al final de cada caso.",
+   "pe": "Los números están bien pero el formato no: «nombre», un espacio y el número (o INF), una consulta por línea."
+  },
+  "pistas": [
+   "Ejecuta tu programa con este mismo ejemplo y compara línea a línea.",
+   "Dustin Hoffman tiene número 1 (por Sleepers), aunque por Rain Man saldría 2: se pide el mínimo.",
+   "El número de Bacon es la distancia mínima en un grafo sin pesos: BFS desde KevinBacon."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Kevin Bacon y sus compañeros de reparto",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Una sola película con Kevin Bacon: sus compañeros tienen número 1.",
+  "si": {
+   "wa": "Los que han trabajado con Kevin Bacon tienen número 1. Si te sale 2, usas las películas como vértices y no divides la distancia entre 2."
+  },
+  "pistas": [
+   "¿Cuántas películas hay que encadenar para ir de FredWard a Kevin Bacon?",
+   "Si las películas son vértices, cada paso actor → película → actor son dos aristas: el número es distancia / 2."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Películas de un solo actor",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Películas con un único actor: nadie está conectado con nadie (INF), salvo Kevin Bacon consigo mismo (0).",
+  "si": {
+   "wa": "Una película de un solo actor no conecta a nadie. Si sale un número en lugar de INF, revisa cómo detectas que no hay camino."
+  },
+  "pistas": [
+   "AnaPrieto no comparte película con nadie: su número es INF.",
+   "Distingue «no visitado por el BFS» (INF) de «distancia 0» (solo Kevin Bacon)."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "El separador --- tras cada caso",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Dos casos iguales y muy sencillos (sin Kevin Bacon): detrás de las respuestas de cada caso va una línea «---».",
+  "si": {
+   "wa": "La salida de cada caso termina con una línea «---» (tres guiones), también la del último caso."
+  },
+  "pistas": [
+   "Mira la línea que falla: ¿esperaba «---»?",
+   "Escribe «---» después de contestar todas las consultas de cada caso, no solo entre casos."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Kevin Bacon no sale en ninguna película",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Base de datos sin Kevin Bacon: todos los números son INF.",
+  "si": {
+   "wa": "Si Kevin Bacon no está en la base de datos, nadie puede conectarse con él: todo INF. Revisa qué haces cuando no lo encuentras (¿lanzas el BFS desde otro actor? ¿id[\"KevinBacon\"] te crea un actor nuevo?).",
+   "rte": "Buscar a KevinBacon cuando no existe: con id[\"KevinBacon\"] el map crea una entrada nueva cuyo número no es ningún vértice del grafo."
+  },
+  "pistas": [
+   "Aquí todas las respuestas son INF.",
+   "Usa find (o count) para saber si KevinBacon existe; no uses id[\"KevinBacon\"], que lo crea.",
+   "Si no existe, contesta INF a todas las consultas sin hacer el BFS (o haciéndolo pero sin usarlo)."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Actores que no pueden llegar a Bacon",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Kevin Bacon está, pero estos actores están en otra parte del grafo: INF.",
+  "si": {
+   "wa": "Un actor al que el BFS no llega tiene número INF. Si te sale 0, estás dividiendo la marca de «no visitado» (−1) entre 2: en C++ −1 / 2 vale 0."
+  },
+  "pistas": [
+   "AnthonyPerkins nunca coincide con nadie conectado con Kevin Bacon.",
+   "¿Qué valor tiene dist de un vértice no alcanzado? ¿Lo compruebas antes de dividir?",
+   "Comprueba primero si dist[v] == −1 y escribe INF; solo si no, escribe dist[v] / 2."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Preguntan por el propio Kevin Bacon",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Kevin Bacon tiene número 0, aunque haya películas que vuelven a él.",
+  "si": {
+   "wa": "El número de Kevin Bacon es 0. Si usas 0 en dist para «no visitado», el BFS vuelve a visitar a Kevin Bacon y le pone otra distancia."
+  },
+  "pistas": [
+   "La primera respuesta debe ser «KevinBacon 0».",
+   "No uses 0 como marca de «no visitado»: el origen tiene distancia 0. Usa −1 (o un vector de visitados aparte)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Cada salto son dos aristas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una cadena de películas: números 1, 2, 3 y 4.",
+  "si": {
+   "wa": "Con las películas como vértices, ir de un actor a otro cuesta 2 aristas (actor → película → actor). Si sale el doble, divide la distancia entre 2."
+  },
+  "pistas": [
+   "«Uno» trabajó con Kevin Bacon: su número es 1, no 2.",
+   "Si en tu grafo las películas son vértices, el número de Bacon es distancia / 2."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El camino más corto no es el primero que se encuentra",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Ana trabajó con Kevin Bacon (1), aunque también se llega a ella dando la vuelta por Carla y Bea.",
+  "si": {
+   "wa": "Un recorrido en profundidad (DFS, o una pila en lugar de una cola) no da distancias mínimas: puede llegar a un actor por un camino largo. Hace falta un BFS."
+  },
+  "pistas": [
+   "Ana tiene número 1: salió en Larga1 con Kevin Bacon.",
+   "El DFS no visita por orden de distancia; el BFS sí (con una cola, no una pila).",
+   "Usa un BFS con queue: la primera vez que llegas a un vértice es por el camino más corto."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Una película que se llama como un actor",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Hay una película titulada «RayCharles» y también un actor RayCharles: son cosas distintas.",
+  "si": {
+   "wa": "Los títulos y los actores son cosas distintas aunque se escriban igual. Si guardas películas y actores en el mismo map por nombre, se mezclan."
+  },
+  "pistas": [
+   "El actor RayCharles solo sale en Biopic, con ReginaKing: no puede llegar a Kevin Bacon.",
+   "No metas los títulos en el mismo map que los actores; a las películas basta con darles un número (actores + p)."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Consultas repetidas y actores en muchas películas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Actores que salen en varias películas y la misma consulta repetida: cada respuesta es independiente.",
+  "si": {
+   "wa": "Si una consulta repetida cambia de respuesta, algo de una consulta afecta a la siguiente (¿modificas las distancias al contestar? ¿usas id[nombre] y creas actores nuevos?)."
+  },
+  "pistas": [
+   "Quique sale en la consulta 1 y en la 3: las dos respuestas deben ser iguales (2).",
+   "Contestar una consulta no debe cambiar nada: solo mira la distancia ya calculada."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Tres bases de datos distintas seguidas: nada del caso anterior debe quedar (repartos, nombres, distancias).",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: los repartos, el map de nombres o las distancias están declarados fuera de la función de cada caso y no se vacían."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y el segundo no, mira qué variables viven fuera de resuelveCaso.",
+   "Declara el map, los repartos y el grafo dentro de la función de cada caso (resize no borra lo que ya había)."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 bases de datos pequeñas al azar, con y sin Kevin Bacon.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: cuenta en qué caso cae la línea que falla y dibuja sus películas."
+  },
+  "pistas": [
+   "Busca el caso de la línea que falla (cada caso termina en «---») y dibuja el grafo.",
+   "Calcula a mano las distancias desde Kevin Bacon en ese caso."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Una película con 100.000 actores",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Una sola película con el máximo de actores y 100.000 consultas.",
+  "si": {
+   "mle": "Unir cada par de actores de una película son k·(k − 1)/2 aristas: con 100.000 actores, 5.000 millones. Mete las películas como vértices.",
+   "tle": "O unes cada par de actores de la película (cuadrático) o haces un BFS por consulta. Con un solo BFS desde Kevin Bacon y películas como vértices es lineal."
+  },
+  "pistas": [
+   "¿Cuántas aristas pones para una película de k actores?",
+   "Haz que cada película sea un vértice unido a sus actores: k aristas por película.",
+   "Haz un único BFS desde Kevin Bacon antes de leer las consultas y contesta cada una mirando su distancia."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "5.000 películas y 100.000 consultas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El máximo de películas, casi 100.000 actores y 100.000 consultas: cadenas largas de películas.",
+  "si": {
+   "tle": "Un BFS por consulta es demasiado: haz uno solo desde Kevin Bacon y guarda las distancias.",
+   "mle": "Revisa cuántas aristas pones y que no copias el grafo al pasarlo a funciones."
+  },
+  "pistas": [
+   "Cuenta cuántos BFS haces por caso: debería ser uno.",
+   "Calcula todas las distancias desde Kevin Bacon una vez y luego cada consulta es una búsqueda en el map."
+  ]
+ }
+]

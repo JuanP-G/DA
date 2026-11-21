@@ -1,6 +1,6 @@
 # EJ 09-3 · Carreras de coches
 
-📄 Enunciado: en el juez de la asignatura (`Ej09-3`) · 💻 [Solución](EJ_09-3.cpp)
+📄 [Enunciado](<../Enunciados/prob-Carreras de coches.pdf>) · 💻 [Solución](EJ_09-3.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

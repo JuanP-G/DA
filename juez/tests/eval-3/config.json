@@ -1,0 +1,9 @@
+{
+ "solucion": "12-Evaluacion/EJ_Eval-3/EJ_Eval-3.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "p[i].fin + 10",
+  "p[i].fin"
+ ]
+}

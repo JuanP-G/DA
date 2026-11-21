@@ -1,6 +1,6 @@
 # EJ 08-L · Planificación de conferencias
 
-📄 Enunciado: en el juez de la asignatura (`Ej08-L`) · 💻 [Solución](EJ_08-L.cpp)
+📄 [Enunciado](<../Enunciados/prob-Planificación de conferencias.pdf>) · 💻 [Solución](EJ_08-L.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

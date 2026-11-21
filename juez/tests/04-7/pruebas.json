@@ -1,0 +1,236 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos grafos del PDF: uno bipartito y otro con un triángulo.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa lo básico: V y A en líneas distintas, SI/NO en mayúsculas y sin tilde, y la idea (el color de un vértice obliga al contrario en sus vecinos).",
+   "pe": "Las respuestas están bien pero el formato no: una palabra por línea."
+  },
+  "pistas": [
+   "Ejecuta tu programa con este mismo ejemplo y compara línea a línea.",
+   "En el primer grafo el reparto es {0, 3, 5, 6} y {1, 2, 4}: compruébalo arista a arista.",
+   "Colorea con un DFS: a cada vecino nuevo, el color contrario; si un vecino ya coloreado tiene tu mismo color, NO."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un único vértice",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "V = 1 sin aristas: bipartito (SI).",
+  "si": {
+   "wa": "Un grafo sin aristas siempre es bipartito: no hay ninguna arista que pueda unir dos del mismo color.",
+   "rte": "Con V = 1 solo existe el vértice 0."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con «1» vértice y «0» aristas?",
+   "Sin aristas no hay conflicto posible: SI."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Muchos vértices sin aristas",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "V = 100 y ninguna arista: SI.",
+  "si": {
+   "wa": "Sin aristas cualquier coloreado vale: SI."
+  },
+  "pistas": [
+   "Con A = 0 no hay ningún conflicto.",
+   "Comprueba que lees bien A = 0 (no hay líneas de aristas detrás)."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Una sola arista",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Dos vértices unidos: uno de cada color (SI).",
+  "si": {
+   "wa": "Con una arista basta dar a cada extremo un color distinto. Si dices NO, ¿das al vecino el MISMO color que al vértice?"
+  },
+  "pistas": [
+   "0 de un color y 1 del otro: SI.",
+   "Al descubrir un vecino w desde v: color[w] = !color[v]."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Triángulo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El ciclo impar más pequeño: no es bipartito (NO).",
+  "si": {
+   "wa": "Tres vértices unidos entre sí no se pueden pintar con dos colores. Si dices SI, no compruebas los vecinos que ya tienen color."
+  },
+  "pistas": [
+   "Pinta 0 de blanco, 1 de negro, 2 de blanco… y la arista 2-0 une dos blancos.",
+   "Cuando un vecino ya está visitado, compara su color con el tuyo.",
+   "En el DFS: si w no está visitado, color contrario y dfs(w); si ya lo está y color[w] == color[v], el grafo no es bipartito."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Ciclo impar sin triángulos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un ciclo de 5 vértices: no hay ningún triángulo y aun así no es bipartito (NO).",
+  "si": {
+   "wa": "No basta con buscar triángulos: cualquier ciclo de longitud impar impide colorear con dos colores."
+  },
+  "pistas": [
+   "Intenta pintar a mano el ciclo 0-1-2-3-4-0 con dos colores.",
+   "El problema son los ciclos de longitud IMPAR, de cualquier tamaño.",
+   "Haz el coloreado con DFS/BFS en vez de buscar figuras concretas."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Ciclo par",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un ciclo de 6 vértices: sí es bipartito (SI).",
+  "si": {
+   "wa": "Un ciclo par sí se puede colorear alternando colores. Si dices NO, o tratas cualquier ciclo como un problema o das el mismo color al vecino."
+  },
+  "pistas": [
+   "0 blanco, 1 negro, 2 blanco, 3 negro, 4 blanco, 5 negro: la arista 5-0 une negro y blanco.",
+   "Tener ciclos no impide ser bipartito; solo los ciclos impares.",
+   "Comprueba que al vecino nuevo le das el color contrario (color[w] = !color[v])."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "El ciclo impar está en otra componente",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La componente del vértice 0 es bipartita, pero el triángulo 3-4-5 no (NO).",
+  "si": {
+   "wa": "El grafo puede no ser conexo: hay que colorear TODAS las componentes, lanzando el DFS desde cada vértice aún sin visitar, no solo desde el 0."
+  },
+  "pistas": [
+   "El triángulo 3-4-5 no está unido al vértice 0.",
+   "Un único DFS desde el 0 no llega a los demás trozos.",
+   "Recorre los vértices y lanza un DFS desde cada uno que no esté visitado."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Bipartito aunque las aristas lleguen desordenadas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El camino 0-1-3-2 dado en desorden: es bipartito (SI).",
+  "si": {
+   "wa": "Colorear las aristas según van llegando no funciona: «0 1» y «2 3» se pintan por separado y «1 3» parece un conflicto, cuando bastaba con invertir los colores de {2, 3}."
+  },
+  "pistas": [
+   "Es un camino: 0 blanco, 1 negro, 3 blanco, 2 negro.",
+   "Si coloreas al leer, dos trozos pintados por separado pueden necesitar invertir los colores de uno de ellos.",
+   "Construye primero el grafo y colorea después con un recorrido: así el color de cada vértice sale de su vecino."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Vértices numerados desde 0 hasta V − 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Aristas que usan el vértice 0 y el V − 1.",
+  "si": {
+   "rte": "Los vértices van de 0 a V − 1: si restas 1 al leerlos (Grafo(cin, 1)), el 0 se convierte en −1."
+  },
+  "pistas": [
+   "El enunciado numera los vértices desde 0.",
+   "Usa Grafo(cin), sin el segundo parámetro."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Ciclo impar muy largo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un ciclo de 99 vértices (con una cola), con los vértices desordenados: NO.",
+  "si": {
+   "wa": "Por largo que sea, un ciclo impar no es bipartito. ¿Limitas la profundidad del recorrido o miras solo ciclos cortos?"
+  },
+  "pistas": [
+   "Sigue el ciclo alternando colores: al cerrar los 99 vértices, dos vecinos quedan iguales.",
+   "El DFS tiene que llegar hasta el final del ciclo; no limites su profundidad."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Bipartitos completos y casi",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "K3,3 (SI), K3,3 con una arista dentro de un lado (NO), una estrella, dos cuadrados (SI) y un cuadrado con un triángulo aparte (NO).",
+  "si": {
+   "wa": "Alguno de estos grafos te engaña: la línea que falla es el número de caso; dibújalo y colorea a mano."
+  },
+  "pistas": [
+   "Busca el caso de la línea que falla y dibújalo.",
+   "Comprueba que miras todas las aristas de todas las componentes."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un grafo no bipartito seguido de otros que sí lo son: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el indicador de «es bipartito», los colores o los visitados están declarados fuera de la función de cada caso."
+  },
+  "pistas": [
+   "Si tras un NO todos salen NO, mira qué variables viven fuera de resuelveCaso.",
+   "Empieza cada caso con bipar = true y los vectores de colores y visitados nuevos."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 80,
+  "comprueba": "80 grafos pequeños al azar, la mitad construidos para ser bipartitos.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; dibújalo y colorea a mano."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla y dibújalo.",
+   "Si es NO, busca el ciclo impar; si es SI, busca el reparto en dos colores."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Grafos completos de 100 vértices",
+  "tipo": "rendimiento",
+  "casos": 3,
+  "comprueba": "K100 (NO), el bipartito completo 50 + 50 (SI) y el mismo con una arista de más (NO): miles de aristas.",
+  "si": {
+   "tle": "Probar todos los coloreados posibles es exponencial (2¹⁰⁰). El coloreado con DFS es O(V + A).",
+   "wa": "Con muchas aristas, revisa que comparas los colores en todas, no solo en la primera que encuentras."
+  },
+  "pistas": [
+   "No pruebes combinaciones de colores: el color de un vértice obliga al de sus vecinos.",
+   "Un DFS que da el color contrario a cada vecino nuevo decide en O(V + A)."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "300 grafos de 100 vértices",
+  "tipo": "rendimiento",
+  "casos": 300,
+  "comprueba": "Muchos casos medianos, casi bipartitos: algunos tienen una arista que lo estropea.",
+  "si": {
+   "tle": "Algo es más caro de lo necesario por caso: ¿pruebas combinaciones de colores?",
+   "wa": "Alguno de estos casos te engaña: la línea que falla es el número de caso."
+  },
+  "pistas": [
+   "Cada caso debe costar O(V + A).",
+   "Si falla un caso concreto, cópialo y pruébalo a mano en tu ordenador."
+  ]
+ }
+]

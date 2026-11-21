@@ -1,0 +1,10 @@
+{
+ "solucion": "11-Programacion dinamica II/EJ_11-2/EJ_11-2.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "reverse(der.begin(), der.end());",
+  ";"
+ ],
+ "comprobador": true
+}

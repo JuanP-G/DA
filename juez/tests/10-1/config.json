@@ -1,0 +1,9 @@
+{
+ "solucion": "10-Programacion dinamica/EJ_10-1/EJ_10-1.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "for (int j = L; j >= l; --j) {",
+  "for (int j = l; j <= L; ++j) {"
+ ]
+}

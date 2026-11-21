@@ -1,0 +1,223 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Las dos redes del PDF, con una consulta de TTL 0 y una red partida en dos trozos.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa lo básico: el mensaje llega a los nodos a distancia ≤ TTL del origen, se cuentan los que NO llegan, y tras cada red va una línea «---».",
+   "pe": "Los números están bien pero el formato no: un número por línea y «---» tras cada red."
+  },
+  "pistas": [
+   "Ejecuta tu programa con este mismo ejemplo y compara línea a línea.",
+   "Desde 4 con TTL 2 llegan 4, 1, 5, 6 (a 1 salto) y 2, 7 (a 2 saltos): solo falta el 3.",
+   "Calcula las distancias mínimas con un BFS desde el origen y cuenta los nodos con distancia > TTL o sin camino."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un solo nodo",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "N = 1: el origen siempre recibe su propio mensaje (0 inalcanzables).",
+  "si": {
+   "wa": "El origen cuenta como alcanzado: con un solo nodo la respuesta es 0."
+  },
+  "pistas": [
+   "¿Cuántos nodos quedan sin mensaje si solo existe el origen?",
+   "Cuenta el origen como alcanzado nada más empezar."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Sin ninguna conexión",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "C = 0: el mensaje no sale del origen; los otros 4 nodos son inalcanzables.",
+  "si": {
+   "wa": "Sin conexiones solo se entera el origen: N − 1 inalcanzables."
+  },
+  "pistas": [
+   "Con 5 nodos y ninguna conexión, la respuesta es 4.",
+   "Comprueba que lees bien C = 0 (no hay líneas de conexiones) y luego K."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Nodos numerados de 1 a N",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El nodo N aparece en las conexiones y como origen.",
+  "si": {
+   "rte": "Los nodos van de 1 a N: hay que restar 1 tanto al leer las conexiones (Grafo(cin, 1)) como al origen de cada consulta."
+  },
+  "pistas": [
+   "El nodo 4 existe cuando N = 4.",
+   "¿Restas 1 al origen de la consulta igual que a las conexiones?",
+   "Usa Grafo(cin, 1) y pasa origen − 1 al BFS."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "TTL 0: solo se entera el origen",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Consultas con TTL 0: el origen tiene el mensaje pero no lo reenvía (N − 1 inalcanzables).",
+  "si": {
+   "wa": "Con TTL 0 el origen tiene el mensaje (cuenta como alcanzado) pero no lo reenvía. Si te sale N, no cuentas el origen; si te sale menos de N − 1, reenvías aunque el TTL ya no lo permita."
+  },
+  "pistas": [
+   "En la primera red, desde 2 con TTL 0 solo lo tiene el 2: la respuesta es 2.",
+   "Un nodo a distancia d recibe el mensaje si d ≤ TTL; el origen está a distancia 0.",
+   "Cuenta el origen al empezar y no expandas un nodo cuya distancia ya es igual al TTL."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "TTL 1: llegan exactamente los vecinos",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Con TTL 1 el mensaje llega a los vecinos del origen y a nadie más.",
+  "si": {
+   "wa": "El último salto permitido sí llega: un nodo a distancia igual al TTL recibe el mensaje (y ya no lo reenvía). Te sobra o te falta un nivel."
+  },
+  "pistas": [
+   "Desde 2 con TTL 1 lo reciben 2, 1, 3 y 5: faltan 4 y 6, la respuesta es 2.",
+   "Revisa la condición de corte: ¿es dist < TTL, dist ≤ TTL, dist + 1 < TTL...?",
+   "Un nodo v se expande si dist[v] < TTL; así los de distancia TTL reciben el mensaje pero no lo reenvían."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Varias consultas sobre la misma red",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cinco consultas con orígenes distintos sobre la misma red: cada una empieza de cero.",
+  "si": {
+   "wa": "Las distancias (o los visitados) de una consulta se quedan para la siguiente. Hay que empezar cada consulta con todo sin visitar."
+  },
+  "pistas": [
+   "La primera consulta sale bien y la segunda no: ¿qué conserva tu programa entre consultas?",
+   "Crea el vector de distancias dentro de cada consulta (o reinícialo a −1 entero)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "El camino corto no es el primero que se encuentra",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Al nodo 5 se llega en 2 saltos por 1-2-5, aunque también por el camino largo 1-3-4-5; el 6 está a 3.",
+  "si": {
+   "wa": "Un DFS (o una pila en lugar de una cola) no calcula distancias mínimas: puede llegar al 6 por el camino largo y darlo por inalcanzable. Hace falta un BFS."
+  },
+  "pistas": [
+   "Desde 1 con TTL 3 llega a todos: la respuesta es 0. Si llegas al 5 por 1-3-4-5 te quedas sin TTL para el 6.",
+   "El BFS visita por orden de distancia; el DFS no.",
+   "Usa una cola (queue): la primera vez que llegas a un nodo es por el camino más corto."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Origen aislado en una red partida",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Una red en tres trozos y un nodo sin conexiones como origen.",
+  "si": {
+   "wa": "Los nodos de otros trozos nunca reciben el mensaje, por grande que sea el TTL; y un origen aislado solo se tiene a sí mismo."
+  },
+  "pistas": [
+   "Desde 6 (aislado) la respuesta es 5; desde 1 con TTL 100, 3.",
+   "Los nodos que el BFS no visita también son inalcanzables: N − alcanzados."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "TTL mayor que cualquier distancia",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "TTL de 20.000 en una red pequeña: llega a todo su trozo.",
+  "si": {
+   "wa": "Un TTL enorme no debe dar problemas: el BFS se acaba al no quedar nodos nuevos.",
+   "rte": "¿Reservas algo del tamaño del TTL o indexas con él?",
+   "tle": "No hagas un paso por cada unidad de TTL: el BFS termina en O(N + C) aunque el TTL sea 20.000."
+  },
+  "pistas": [
+   "Desde 1 llega a 1, 2, 3, 4: la respuesta es 4.",
+   "No uses el TTL como tamaño de nada ni como número de vueltas de un bucle."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Ciclos: cada nodo se cuenta una vez",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Muchos ciclos: a cada nodo se llega por varios caminos, pero se cuenta una sola vez.",
+  "si": {
+   "wa": "Si cuentas un nodo cada vez que llegas a él (y no solo la primera), te salen más alcanzados de la cuenta."
+  },
+  "pistas": [
+   "Desde 1 con TTL 1 llegan 1, 2, 3, 4: la respuesta es 2.",
+   "Cuenta un nodo solo cuando lo descubres por primera vez (dist == −1)."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varias redes seguidas",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Redes de distintos tamaños seguidas: nada de la red anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de una red a la siguiente: el grafo, las distancias o el contador están declarados fuera de la función de cada caso."
+  },
+  "pistas": [
+   "Si la primera red sale bien y la segunda no, mira qué variables viven fuera de resuelveCaso.",
+   "Lee el grafo y crea las distancias dentro de la función de cada caso (y de cada consulta)."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 redes pequeñas al azar con consultas de todo tipo (TTL 0, 1, 2... y 20.000).",
+  "si": {
+   "wa": "Hay alguna consulta concreta que no tratas: localiza su red (cada red acaba en «---») y calcula a mano las distancias."
+  },
+  "pistas": [
+   "Busca la red y la consulta de la línea que falla y dibuja la red.",
+   "Calcula las distancias desde el origen por capas y cuenta las que pasan del TTL."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Red grande con TTL enorme",
+  "tipo": "rendimiento",
+  "casos": 8,
+  "comprueba": "Ocho redes de 10.000 nodos (dos con 50.000 conexiones), con 10 consultas cada una y TTL de hasta 20.000.",
+  "si": {
+   "tle": "Cada consulta debe costar O(N + C). Si das una vuelta a todos los nodos por cada nivel de TTL, son 20.000 × 10.000 pasos por consulta.",
+   "mle": "Una matriz de adyacencia 10.000 × 10.000 de enteros no cabe: usa listas de adyacencia (la clase Grafo)."
+  },
+  "pistas": [
+   "¿Cuánto cuesta una consulta en función del TTL?",
+   "Con una cola, cada nodo entra una vez y cada conexión se mira dos veces: el TTL no influye en el coste.",
+   "No busques «los nodos del nivel d» recorriendo todos los nodos: sácalos de la cola del BFS."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Camino de 10.000 nodos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Una red en forma de línea: distancias de hasta 9.999 saltos.",
+  "si": {
+   "tle": "Algo se repite de más en un recorrido muy largo.",
+   "rte": "Si haces un DFS recursivo, la profundidad llega a 10.000; mejor un BFS con cola."
+  },
+  "pistas": [
+   "Desde un extremo con TTL 9.998 falta exactamente un nodo.",
+   "El BFS con cola recorre la línea entera en O(N)."
+  ]
+ }
+]

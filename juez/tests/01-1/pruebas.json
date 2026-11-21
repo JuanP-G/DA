@@ -1,0 +1,358 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres árboles del PDF: uno AVL, uno desequilibrado y uno que no es de búsqueda.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: la lectura en preorden (raíz, izquierdo, derecho, con -1 como vacío), las dos condiciones del AVL o el formato SI/NO.",
+   "pe": "Los SI/NO son correctos pero el formato no: escribe cada respuesta en su propia línea, sin espacios ni texto extra.",
+   "rte": "El programa se rompe con el ejemplo: revisa la recursión de lectura (cada -1 es un árbol vacío y corta la recursión)."
+  },
+  "pistas": [
+   "Ejecuta el ejemplo en tu ordenador y compara línea a línea.",
+   "Cada caso es una línea con el árbol en preorden: se lee la raíz y después, recursivamente, el hijo izquierdo y el derecho. Un -1 es un árbol vacío.",
+   "Escribe exactamente «SI» o «NO» (sin tilde) seguido de un salto de línea por caso."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Árbol vacío",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Un caso que es solo «-1»: el árbol vacío es AVL (SI).",
+  "si": {
+   "wa": "El árbol vacío es AVL: no tiene ningún nodo que incumpla nada. Tu programa responde NO o escribe algo raro.",
+   "rte": "Con el árbol vacío tu programa accede a la raíz de un árbol que no existe."
+  },
+  "pistas": [
+   "¿Qué hace tu programa si lo primero que lee es -1?",
+   "El caso base de la recursión (leer -1) debe devolver «es AVL» con altura 0."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Un solo nodo",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Un árbol con solo la raíz («7 -1 -1»): es AVL.",
+  "si": {
+   "wa": "Una hoja siempre es AVL. Si dices NO, falla el caso base o las comparaciones con los hijos vacíos (sus «mínimo» y «máximo» no deben estorbar).",
+   "rte": "Con una hoja accedes a un hijo que no existe."
+  },
+  "pistas": [
+   "Sigue tu código a mano con «7 -1 -1»: ¿qué altura, mínimo y máximo devuelve cada hijo vacío?",
+   "Un hijo vacío no debe impedir nada: su máximo tiene que ser menor que cualquier valor y su mínimo mayor que cualquier valor (o compruébalo aparte con «si hay hijo...»)."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Dos nodos",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Raíz con un solo hijo (izquierdo o derecho): alturas 1 y 0, sigue siendo AVL.",
+  "si": {
+   "wa": "Con un solo hijo la diferencia de alturas es 1, que SÍ está permitida. Revisa si usas < 1 en vez de ≤ 1, o si no tratas bien el hijo vacío."
+  },
+  "pistas": [
+   "La condición es |altIzq − altDer| ≤ 1: una diferencia de 1 vale.",
+   "Comprueba también que el hijo que falta no rompe la comparación de orden."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Valor 0 en el árbol",
+  "tipo": "borde",
+  "casos": 4,
+  "comprueba": "Los valores son enteros no negativos: el 0 es un valor válido.",
+  "si": {
+   "wa": "Usas 0 (o algo parecido) como «máximo» del árbol vacío: con un nodo que vale 0 sin hijo izquierdo, «0 < 0» es falso y respondes NO. El centinela tiene que ser menor que cualquier valor posible (por ejemplo INT_MIN o -1)."
+  },
+  "pistas": [
+   "Prueba «0 -1 -1» a mano: debe salir SI.",
+   "¿Qué devuelve como máximo tu árbol vacío? Tiene que ser estrictamente menor que 0.",
+   "Usa INT_MIN como máximo del vacío y INT_MAX como mínimo, o guarda un booleano «hay hijo» y no compares si no lo hay."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Valores grandes (hasta mil millones)",
+  "tipo": "borde",
+  "casos": 4,
+  "comprueba": "Valores muy grandes (caben en int): el «mínimo» del árbol vacío no puede ser un número pequeño.",
+  "si": {
+   "wa": "Usas como mínimo del árbol vacío un número fijo (100000, 1000000...) y aquí hay valores mayores. Usa INT_MAX o compruébalo con un booleano «hay hijo».",
+   "rte": "Algún cálculo con valores grandes se sale de rango: no hace falta sumar ni restar valores, solo compararlos."
+  },
+  "pistas": [
+   "Prueba «1000000000 -1 -1» a mano.",
+   "El mínimo del árbol vacío debe ser mayor que cualquier valor posible: INT_MAX (de <climits>)."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Lista hacia la derecha",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tres nodos en fila hacia la derecha («1 -1 2 -1 3 -1 -1»): es de búsqueda pero NO es AVL (alturas 0 y 2 en la raíz).",
+  "si": {
+   "wa": "Comparas las alturas sin valor absoluto: «altIzq − altDer ≤ 1» da −2 ≤ 1, que es cierto, y dejas pasar los árboles cargados a la derecha. O solo compruebas el orden y no el equilibrio."
+  },
+  "pistas": [
+   "La raíz tiene alturas 0 (izquierda) y 2 (derecha).",
+   "¿Qué pasa con tu comparación si altIzq − altDer es negativo?",
+   "La condición es abs(altIzq − altDer) ≤ 1, en cada nodo."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Lista hacia la izquierda y en zigzag",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Otras listas de tres nodos: hacia la izquierda y en zigzag. Ninguna es AVL.",
+  "si": {
+   "wa": "Solo compruebas el orden, o la diferencia de alturas solo en un sentido. Las listas en zigzag también tienen alturas 2 y 0 en la raíz."
+  },
+  "pistas": [
+   "Calcula a mano las alturas de los dos hijos de la raíz en cada árbol.",
+   "Usa abs(altIzq − altDer) ≤ 1 y que la altura sea 1 + max(altIzq, altDer)."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Diferencia de alturas exactamente 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La raíz tiene alturas 2 y 1 (diferencia justo 1): SÍ es AVL.",
+  "si": {
+   "wa": "Te equivocas en el límite: una diferencia de alturas de 1 está permitida. Revisa si usas < 1 en vez de ≤ 1 (o «≥ 1» en vez de «> 1» para decir que no lo es)."
+  },
+  "pistas": [
+   "«3 2 1 -1 -1 -1 4 -1 -1» es AVL: diferencia 1 en la raíz y en el nodo 2.",
+   "La condición es |altIzq − altDer| ≤ 1 (menor o IGUAL)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Diferencia de alturas 2 sin ser una lista",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Árboles con ramas cuya raíz tiene alturas 2 y 0: NO son AVL.",
+  "si": {
+   "wa": "Con diferencia 2 debe salir NO. Si dices SI, revisa el valor absoluto, el límite (≤ 1) y que la altura del vacío sea 0 (o −1 de forma coherente)."
+  },
+  "pistas": [
+   "El primer árbol: el hijo izquierdo tiene altura 2 y el derecho está vacío.",
+   "Revisa cómo calculas la altura: vacío = 0, hoja = 1, nodo = 1 + max(hijos)."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Desequilibrio en un nodo interior",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La raíz está equilibrada (alturas 3 y 2) pero el nodo 3 no (alturas 2 y 0): el árbol NO es AVL.",
+  "si": {
+   "wa": "Solo miras el equilibrio de la raíz, o no combinas el resultado de los hijos: un nodo es AVL solo si sus DOS subárboles también lo son."
+  },
+  "pistas": [
+   "El nodo 3 tiene alturas 2 y 0.",
+   "La condición AVL es para todo subárbol, no solo para la raíz.",
+   "Devuelve «es AVL» = izqOK && derOK && equilibrado && ordenado."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Nieto que rompe el orden por la izquierda",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El 15 es mayor que su padre 5 (bien) pero está a la izquierda de la raíz 10 (mal): NO es de búsqueda.",
+  "si": {
+   "wa": "Comparas cada nodo solo con sus hijos directos, o calculas mal el máximo del subárbol izquierdo. Todo el subárbol izquierdo tiene que ser menor que la raíz: compara con su MÁXIMO, que está en su rama derecha."
+  },
+  "pistas": [
+   "En «10 5 -1 15 -1 -1 20 -1 -1», ¿qué valores hay a la izquierda del 10?",
+   "No basta hijo izquierdo < raíz < hijo derecho: hay que mirar todo el subárbol.",
+   "Haz que la recursión devuelva también el mínimo y el máximo de cada subárbol, y comprueba maxIzq < raíz < minDer. Al volver: maximo = max(maxDer, valor)."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Nieto que rompe el orden por la derecha",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El 7 es menor que su padre 20 (bien) pero está a la derecha de la raíz 10 (mal): NO es de búsqueda.",
+  "si": {
+   "wa": "Comparas solo con los hijos directos, o calculas mal el mínimo del subárbol derecho. El mínimo de un subárbol está en su rama IZQUIERDA (o es la raíz si no tiene)."
+  },
+  "pistas": [
+   "En «10 5 -1 -1 20 7 -1 -1 -1», ¿qué valores hay a la derecha del 10?",
+   "Comprueba raíz < mínimo de todo el subárbol derecho.",
+   "Al volver de la recursión: minimo = min(minIzq, valor)."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Valor repetido en el subárbol izquierdo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un 5 a la izquierda de la raíz 5: el orden es ESTRICTO, así que NO es AVL.",
+  "si": {
+   "wa": "Usas ≤ al comparar con el subárbol izquierdo. El enunciado pide que la raíz sea ESTRICTAMENTE mayor que todo su hijo izquierdo: maxIzq < valor."
+  },
+  "pistas": [
+   "En «5 3 -1 5 -1 -1 8 -1 -1» hay dos 5.",
+   "Cambia el ≤ por < en la comparación con el máximo del izquierdo."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Valor repetido en el subárbol derecho",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un 5 a la derecha de la raíz 5: tampoco vale, NO es AVL.",
+  "si": {
+   "wa": "Usas ≤ al comparar con el subárbol derecho. La raíz tiene que ser ESTRICTAMENTE menor que todo su hijo derecho: valor < minDer."
+  },
+  "pistas": [
+   "En «5 3 -1 -1 8 5 -1 -1 -1» hay dos 5.",
+   "Cambia el ≤ por < en la comparación con el mínimo del derecho."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Altura, no número de nodos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Hijos con alturas 3 y 2 pero con 7 y 2 nodos: es AVL. Lo que se compara son ALTURAS.",
+  "si": {
+   "wa": "Estás comparando el número de nodos de los hijos (o sumando las alturas) en lugar de sus alturas. La altura es 1 + el MÁXIMO de las de los hijos."
+  },
+  "pistas": [
+   "El hijo izquierdo tiene 7 nodos y altura 3; el derecho, 2 nodos y altura 2.",
+   "altura = 1 + max(altIzq, altDer), no altIzq + altDer + 1."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Hojas a profundidades muy distintas",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Árboles de Fibonacci (los AVL más desequilibrados posibles): hay hojas a profundidad 2 y a profundidad 5, y son AVL.",
+  "si": {
+   "wa": "Usas un criterio global (por ejemplo, que todas las hojas estén a profundidades que difieren en 1, o comparar la rama más corta con la más larga). La condición AVL es LOCAL: en cada nodo, la altura de sus dos hijos."
+  },
+  "pistas": [
+   "Dibuja el primer árbol: la rama más corta tiene 3 nodos y la más larga 5, pero cada nodo está equilibrado.",
+   "No compares profundidades de hojas: compara, en cada nodo, la altura de su hijo izquierdo con la de su derecho."
+  ]
+ },
+ {
+  "n": 18,
+  "nombre": "Un NO pronto no te ahorra leer el árbol",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "En el primer árbol el fallo está en el hijo izquierdo; aun así hay que leer el derecho entero para que el siguiente caso empiece donde debe.",
+  "si": {
+   "wa": "En cuanto sabes que el izquierdo no es AVL dejas de leer (return temprano o «izqOK && leer(...)»). El resto del árbol se queda en la entrada y se lee como si fuera el caso siguiente.",
+   "rte": "Te has desincronizado con la entrada: lo que queda del árbol anterior se lee como otro caso."
+  },
+  "pistas": [
+   "El primer caso es NO, pero ¿qué lee tu programa como segundo caso?",
+   "Cuidado con el cortocircuito de && : «izqOK && leerAVL(...)» no llega a leer el derecho si izqOK es falso.",
+   "Lee SIEMPRE los dos hijos (dos llamadas guardadas en variables) y combina los resultados después."
+  ]
+ },
+ {
+  "n": 19,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 6,
+  "comprueba": "Un árbol grande que no es AVL seguido de varios pequeños que sí lo son: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: un booleano «esAVL» global que no vuelves a poner a true, el «último valor» del inorden o un vector de nodos que no se vacía."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de la función de cada caso.",
+   "Declara (o reinicia) todo lo que uses dentro de resuelveCaso, o mejor, que la recursión devuelva sus resultados en vez de usar variables globales."
+  ]
+ },
+ {
+  "n": 20,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 300,
+  "comprueba": "300 árboles pequeños al azar (AVL, casi AVL y árboles cualesquiera).",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; busca ese árbol en la entrada y dibújalo."
+  },
+  "pistas": [
+   "Cuenta la línea que falla: es el número de caso. Copia ese árbol y pruébalo solo.",
+   "Dibuja el árbol y calcula a mano, de abajo arriba, altura, mínimo y máximo de cada nodo."
+  ]
+ },
+ {
+  "n": 21,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 60,
+  "comprueba": "60 árboles de 20 a 120 nodos, casi todos AVL con algún fallo escondido.",
+  "si": {
+   "wa": "Algún fallo escondido en lo hondo del árbol (un valor repetido, dos valores cambiados o un nodo desequilibrado) se te escapa.",
+   "rte": "Con árboles algo más grandes se rompe: revisa la recursión."
+  },
+  "pistas": [
+   "Busca el caso que falla y localiza el nodo donde está el problema.",
+   "Las tres comprobaciones deben hacerse en TODOS los nodos: hijos AVL, |altIzq − altDer| ≤ 1 y maxIzq < valor < minDer."
+  ]
+ },
+ {
+  "n": 22,
+  "nombre": "AVL grande (más de 100.000 nodos)",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un árbol AVL enorme: hay que recorrerlo una sola vez.",
+  "si": {
+   "tle": "Tu solución no es lineal: recalculas alturas, mínimos o máximos recorriendo subárboles una y otra vez. Haz que cada llamada devuelva todo lo necesario.",
+   "mle": "Gastas demasiada memoria: no hace falta guardar el árbol (se puede comprobar mientras se lee) y nunca copies estructuras en cada llamada.",
+   "wa": "Con un árbol grande la respuesta cambia: ¿usas algún tipo pequeño (short, char) o un tamaño fijo de array?"
+  },
+  "pistas": [
+   "Una sola recursión en postorden que devuelva (es AVL, altura, mínimo, máximo) basta: O(n).",
+   "No llames a una función «altura» aparte desde cada nodo."
+  ]
+ },
+ {
+  "n": 23,
+  "nombre": "Grandes con un único fallo en lo más hondo",
+  "tipo": "rendimiento",
+  "casos": 3,
+  "comprueba": "Tres árboles grandes: uno con un repetido en la hoja más honda, otro con un desequilibrio allí y otro AVL.",
+  "si": {
+   "wa": "El fallo está en la hoja más profunda: revisa que comparas con el mínimo/máximo de TODO el subárbol y que miras el equilibrio en todos los nodos.",
+   "tle": "Tu solución recorre los subárboles varias veces: debe ser O(n)."
+  },
+  "pistas": [
+   "Prueba con un árbol pequeño que tenga un valor repetido en una hoja profunda.",
+   "Cada nodo se procesa una vez, al volver de las llamadas de sus dos hijos."
+  ]
+ },
+ {
+  "n": 24,
+  "nombre": "Lista degenerada de 120.000 nodos",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un árbol que es una lista hacia la derecha: recursión muy profunda y peor caso de las soluciones cuadráticas.",
+  "si": {
+   "tle": "Tu solución es cuadrática en árboles profundos: en cada nodo vuelves a recorrer el subárbol entero (para la altura, el mínimo o el máximo). Calcula todo en un solo recorrido.",
+   "rte": "La recursión es muy profunda (120.000 llamadas). El juez da pila de sobra; revisa que no declaras arrays grandes dentro de la función recursiva.",
+   "mle": "Cada llamada recursiva gasta demasiada memoria: no copies vectores ni árboles al pasarlos como parámetro."
+  },
+  "pistas": [
+   "En una lista, la altura del subárbol de cada nodo es enorme: si la calculas aparte en cada nodo, el coste es n².",
+   "Devuelve la altura (y el mínimo y el máximo) desde la propia recursión en lugar de recalcularla.",
+   "Pasa por referencia lo que tenga que salir de la función (altura, mínimo, máximo) o devuelve un struct."
+  ]
+ }
+]

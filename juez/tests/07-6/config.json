@@ -1,0 +1,12 @@
+{
+ "solucion": "7-Digrafos valorados y caminos minimos/EJ_07-6/EJ_07-6.cpp",
+ "cabeceras": [
+  "7-Digrafos valorados y caminos minimos/EJ_07-6/DigrafoValorado.h",
+  "7-Digrafos valorados y caminos minimos/EJ_07-6/IndexPQ.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "dijkstra(g.inverso(), oficina)",
+  "dijkstra(g, oficina)"
+ ]
+}

@@ -1,0 +1,374 @@
+9
+C mergeSort 3
+E mergeSort 2
+E mergeSort 1
+C heapSort 3
+E heapSort 2
+TC
+C quickSort 3
+E heapSort 1
+C quickSort 1
+4
+C quickSort 1
+E quickSort 1
+C quickSort 2
+TC
+2
+C mergeSort 3
+C burbuja 2
+6
+C burbuja 1
+E burbuja 1
+C quickSort 3
+E quickSort 1
+TC
+E quickSort 2
+7
+C heapSort 3
+C mergeSort 3
+C quickSort 3
+TC
+TC
+C quickSort 1
+C burbuja 3
+10
+TC
+C mergeSort 3
+E mergeSort 3
+C quickSort 3
+E quickSort 3
+C heapSort 3
+E heapSort 3
+TC
+C quickSort 3
+C heapSort 3
+8
+C burbuja 1
+E burbuja 1
+TC
+C heapSort 3
+C mergeSort 2
+TC
+C heapSort 1
+TC
+1
+C burbuja 3
+12
+TC
+C quickSort 2
+E quickSort 1
+C IndexPQ 2
+C mergeSort 1
+TC
+TC
+C IndexPQ 3
+C burbuja 1
+TC
+E burbuja 1
+C quickSort 3
+15
+C burbuja 3
+E burbuja 2
+C quickSort 3
+TC
+E quickSort 1
+TC
+C burbuja 3
+TC
+TC
+E burbuja 3
+E burbuja 1
+C burbuja 1
+E quickSort 2
+E burbuja 1
+TC
+9
+C IndexPQ 1
+TC
+E IndexPQ 1
+C burbuja 1
+TC
+C IndexPQ 2
+TC
+C burbuja 1
+TC
+7
+C quickSort 2
+C mergeSort 2
+C heapSort 1
+TC
+E quickSort 2
+C burbuja 1
+E heapSort 1
+11
+C quickSort 1
+TC
+C quickSort 3
+TC
+C heapSort 2
+TC
+C heapSort 3
+E heapSort 1
+E heapSort 3
+E heapSort 1
+E quickSort 2
+5
+TC
+C mergeSort 1
+C quickSort 1
+E mergeSort 1
+TC
+8
+C mergeSort 2
+TC
+C burbuja 2
+C burbuja 3
+TC
+E burbuja 3
+E mergeSort 1
+E mergeSort 1
+10
+C quickSort 1
+C IndexPQ 1
+E IndexPQ 1
+C quickSort 1
+C mergeSort 2
+E quickSort 1
+C quickSort 2
+E quickSort 3
+TC
+C IndexPQ 3
+8
+C burbuja 2
+E burbuja 2
+C heapSort 2
+C heapSort 3
+C quickSort 1
+C heapSort 2
+C IndexPQ 3
+TC
+6
+C IndexPQ 3
+TC
+C IndexPQ 2
+C quickSort 1
+C IndexPQ 1
+C mergeSort 1
+9
+C burbuja 3
+C heapSort 1
+TC
+TC
+C IndexPQ 3
+TC
+C IndexPQ 3
+E heapSort 1
+TC
+12
+C quickSort 2
+TC
+C IndexPQ 1
+TC
+E quickSort 2
+C mergeSort 1
+C IndexPQ 3
+C heapSort 3
+C burbuja 2
+TC
+TC
+C heapSort 3
+9
+C quickSort 1
+TC
+TC
+C mergeSort 3
+C mergeSort 2
+E mergeSort 5
+C IndexPQ 2
+TC
+C mergeSort 1
+4
+TC
+TC
+C mergeSort 3
+TC
+10
+C burbuja 2
+E burbuja 2
+C quickSort 3
+C quickSort 1
+C heapSort 2
+C quickSort 3
+C mergeSort 1
+E quickSort 5
+TC
+C burbuja 1
+10
+TC
+C quickSort 2
+E quickSort 2
+C IndexPQ 1
+C mergeSort 1
+C IndexPQ 1
+C IndexPQ 3
+C IndexPQ 1
+E mergeSort 1
+E IndexPQ 3
+8
+C burbuja 2
+C IndexPQ 1
+C IndexPQ 1
+TC
+C heapSort 1
+TC
+TC
+C quickSort 2
+4
+C quickSort 1
+C IndexPQ 1
+C IndexPQ 2
+C quickSort 1
+13
+C burbuja 2
+TC
+C burbuja 3
+C burbuja 3
+TC
+C IndexPQ 2
+C quickSort 3
+C IndexPQ 2
+C mergeSort 3
+C burbuja 2
+TC
+E burbuja 4
+C mergeSort 3
+11
+TC
+C quickSort 2
+TC
+E quickSort 2
+C mergeSort 1
+C heapSort 3
+E heapSort 3
+TC
+TC
+E mergeSort 1
+C burbuja 2
+6
+TC
+C mergeSort 1
+E mergeSort 1
+TC
+C IndexPQ 3
+C heapSort 2
+9
+C heapSort 1
+C mergeSort 3
+C IndexPQ 1
+C IndexPQ 1
+TC
+C mergeSort 1
+C heapSort 2
+E IndexPQ 1
+TC
+15
+C heapSort 3
+TC
+TC
+TC
+C IndexPQ 2
+E heapSort 2
+TC
+C burbuja 3
+C quickSort 2
+E burbuja 1
+C quickSort 2
+TC
+C IndexPQ 2
+C heapSort 2
+TC
+7
+TC
+C burbuja 2
+C IndexPQ 2
+TC
+C mergeSort 2
+C quickSort 3
+C IndexPQ 3
+7
+C heapSort 2
+TC
+C burbuja 1
+C burbuja 2
+C IndexPQ 2
+C mergeSort 3
+TC
+2
+C IndexPQ 1
+E IndexPQ 1
+9
+TC
+C mergeSort 1
+C heapSort 1
+E mergeSort 1
+C burbuja 1
+TC
+TC
+C burbuja 2
+TC
+10
+C burbuja 3
+TC
+C mergeSort 1
+C heapSort 1
+E heapSort 1
+E mergeSort 1
+C IndexPQ 3
+C IndexPQ 1
+TC
+TC
+15
+TC
+TC
+C quickSort 1
+E quickSort 1
+TC
+TC
+TC
+C burbuja 2
+C mergeSort 3
+E mergeSort 3
+C mergeSort 2
+TC
+TC
+C quickSort 2
+C quickSort 1
+8
+C burbuja 2
+C burbuja 1
+C mergeSort 3
+C heapSort 1
+E mergeSort 3
+E burbuja 3
+C mergeSort 2
+TC
+3
+C quickSort 1
+C burbuja 3
+C mergeSort 2
+15
+C quickSort 3
+TC
+E quickSort 2
+C quickSort 2
+C heapSort 3
+C burbuja 1
+C burbuja 2
+C burbuja 2
+TC
+TC
+E heapSort 1
+C heapSort 2
+E heapSort 1
+C burbuja 3
+E burbuja 3

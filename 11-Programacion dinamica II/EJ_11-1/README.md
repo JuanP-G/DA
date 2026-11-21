@@ -1,6 +1,6 @@
 # EJ 11-1 · El cazatesoros
 
-📄 Enunciado: en el juez de la asignatura (`Ej11-1`) · 💻 [Solución](EJ_11-1.cpp)
+📄 [Enunciado](<../Enunciados/prob-El cazatesoros.pdf>) · 💻 [Solución](EJ_11-1.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

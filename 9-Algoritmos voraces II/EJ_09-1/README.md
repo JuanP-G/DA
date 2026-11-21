@@ -1,6 +1,6 @@
 # EJ 09-1 · ¡En primera línea de playa!
 
-📄 Enunciado: en el juez de la asignatura (`Ej09-1`) · 💻 [Solución](EJ_09-1.cpp)
+📄 [Enunciado](<../Enunciados/prob-¡En primera línea de playa!.pdf>) · 💻 [Solución](EJ_09-1.cpp)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

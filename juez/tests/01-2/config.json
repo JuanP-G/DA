@@ -1,0 +1,12 @@
+{
+ "solucion": "juez/soluciones/01-2.cpp",
+ "plantilla": "juez/plantillas/01-2.cpp",
+ "cabeceras": [
+  "1-Arboles AVL/EJ_01-2/bintree.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "cout << \"??\\n\";",
+  "cout << \"?\\n\";"
+ ]
+}

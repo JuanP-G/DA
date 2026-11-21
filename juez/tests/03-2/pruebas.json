@@ -1,0 +1,251 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del ejemplo del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, el fallo es de base: lectura de los eventos, el comparador o el formato «nombre puntos».",
+   "pe": "Los datos están bien pero no el formato: cada respuesta es «nombre», un espacio y los puntos, en su propia línea; y «---» al final de cada caso.",
+   "rte": "Se rompe con el ejemplo: ¿consultas la prioridad de un país que aún no está en la cola? Un país nuevo empieza con 0 puntos."
+  },
+  "pistas": [
+   "Sigue el segundo caso a mano: tras «Italy -7» Italia baja a 15 y España, con 20, vuelve a mandar.",
+   "Cada «?» escribe «nombre puntos» y cada caso termina con una línea «---».",
+   "La entrada no dice cuántos casos hay: lee hasta que falle la lectura de N (plantilla de casos ilimitados)."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Caso sin ninguna consulta",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Un caso sin «?»: solo se escribe la línea «---».",
+  "si": {
+   "wa": "Aunque un caso no tenga consultas, hay que escribir su «---». Revisa que lo escribes siempre al acabar los N eventos.",
+   "pe": "Revisa las líneas en blanco: un caso sin consultas da solo «---», sin líneas vacías."
+  },
+  "pistas": [
+   "La salida del primer caso es una sola línea: «---».",
+   "Escribe «---» después del bucle de eventos, pase lo que pase dentro."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Un solo país",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "Casos con un único país que cambia de puntos.",
+  "si": {
+   "wa": "Con un solo país, el líder es siempre él con sus puntos actuales. Revisa que actualizas la puntuación al restar.",
+   "rte": "Con un solo país te sales: revisa el tamaño de la cola y los índices de los países."
+  },
+  "pistas": [
+   "Malta pasa de 5 a 3: las respuestas son «Malta 5», «Malta 3», «Malta 3».",
+   "Cada evento cambia los puntos del país que nombra; la consulta mira los puntos ACTUALES."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Los puntos se acumulan",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Cada evento suma (o resta) a lo que ya tenía el país; no sustituye sus puntos.",
+  "si": {
+   "wa": "Estás guardando los puntos del último evento en vez de sumarlos a los que ya tenía el país."
+  },
+  "pistas": [
+   "España tiene 5 + 3 = 8 puntos e Italia 7: el líder es «Spain 8».",
+   "La nueva prioridad es (puntos actuales + incremento): consulta los actuales con priority(idx) antes del update."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Empate: gana el nombre menor (llega después)",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Dos países empatados a puntos: manda el de nombre lexicográficamente menor, aunque haya llegado después.",
+  "si": {
+   "wa": "En los empates tu comparador no elige el nombre menor (o elige el que llegó antes). Con puntos iguales debe ir antes el nombre más pequeño."
+  },
+  "pistas": [
+   "España y Francia empatan a 10: manda «France 10» porque «France» < «Spain».",
+   "El comparador debe ser: más puntos antes; si empatan, nombre menor antes (a.nombre < b.nombre)."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Empate: gana el nombre menor (llega antes)",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Empate en el que el país de nombre menor ya iba primero: el recién llegado no le quita la cabeza.",
+  "si": {
+   "wa": "En los empates gana el último que ha cambiado: tu comparador no mira el nombre (o usa ≥ con los puntos). Con puntos iguales manda el nombre menor."
+  },
+  "pistas": [
+   "Austria y España empatan a 10: sigue mandando «Austria 10».",
+   "Si el comparador solo mira los puntos (o usa >=), al flotar un empatado se coloca por encima. Añade el nombre como desempate."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "El líder pierde puntos y deja de serlo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El que iba primero recibe una sanción y otro país pasa a mandar sin haber recibido nada.",
+  "si": {
+   "wa": "Cuando el líder pierde puntos no lo bajas en la cola: guardas al líder aparte y solo lo cambias cuando alguien le supera, o tu montículo flota pero no hunde."
+  },
+  "pistas": [
+   "España baja a 10 e Italia, con 15, pasa a mandar: «Italy 15».",
+   "El líder puede dejar de serlo sin que nadie le supere: hay que recolocarlo (hundirlo) al bajar sus puntos.",
+   "Con IndexPQ, update(idx, nuevaPrioridad) ya flota o hunde según haga falta; no guardes el líder en una variable aparte."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "El líder pierde puntos y empata",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El líder baja justo hasta empatar con otro de nombre menor: al hundirse, el desempate decide.",
+  "si": {
+   "wa": "Al bajar el líder hasta empatar, el desempate por nombre no se aplica: el comparador debe usar el nombre también al hundir."
+  },
+  "pistas": [
+   "España baja a 10 y empata con Italia: manda «Italy 10» («Italy» < «Spain»).",
+   "Revisa que el mismo comparador (puntos y luego nombre) se usa en todas las comparaciones del montículo."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El líder pierde puntos pero sigue mandando",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "El líder baja pero sigue por delante: hay que escribir sus puntos actuales, no los antiguos.",
+  "si": {
+   "wa": "Escribes una puntuación antigua del líder: si guardas copias en un montículo, la del principio puede estar desfasada."
+  },
+  "pistas": [
+   "España baja de 20 a 10 y sigue por delante de Italia (5): «Spain 10».",
+   "La consulta debe dar los puntos actuales del líder: con IndexPQ, top().prioridad está siempre al día si haces update."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Todos con puntos negativos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los países pueden ir en negativo: el líder es el menos negativo.",
+  "si": {
+   "wa": "Con puntuaciones negativas el líder no sale bien: ¿empiezas el máximo en 0 o descartas los países con puntos negativos?",
+   "rte": "Con puntuaciones negativas no encuentras líder y consultas algo que no existe."
+  },
+  "pistas": [
+   "Italia, con −3, va por delante de España (−5): «Italy -3».",
+   "Un país que entra en la cola sigue en ella aunque sus puntos sean negativos o cero."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Un país con 0 puntos puede mandar",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "España vuelve a 0 puntos y sigue en la clasificación: va por delante de Italia (−2).",
+  "si": {
+   "wa": "Quitas de la clasificación a los países que vuelven a 0, pero siguen participando (no es como el tridente de temas)."
+  },
+  "pistas": [
+   "España tiene 0 e Italia −2: «Spain 0».",
+   "No saques a nadie de la cola: aquí ningún país desaparece."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Comparación estándar de cadenas",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "En los empates se compara con el orden estándar de string: mayúsculas antes que minúsculas, y un prefijo antes que la palabra larga.",
+  "si": {
+   "wa": "Tu comparación de nombres no es la estándar: «Zambia» < «albania» (las mayúsculas van antes) y «Macedonia» < «MacedoniaNorte»."
+  },
+  "pistas": [
+   "En C++, «Z» (90) va antes que «a» (97): manda «Zambia 7».",
+   "Compara los nombres con < de string directamente; no los pases a minúsculas ni compares solo la primera letra."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Los mismos países aparecen en casos distintos: cada caso empieza con todos a 0.",
+  "si": {
+   "wa": "Algo se arrastra de un caso a otro: el mapa nombre → índice o la cola deben crearse dentro de resuelveCaso.",
+   "rte": "Usas en un caso un índice o una cola de un caso anterior: el mapa nombre → número de país debe vaciarse en cada caso."
+  },
+  "pistas": [
+   "En el segundo caso España tiene 5 puntos, no 55: manda «Italy 10».",
+   "Declara la cola, el mapa y el contador de países dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 casos pequeños al azar con pocos países.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: busca qué consulta falla y sigue los puntos de cada país hasta ahí.",
+   "rte": "Algún caso pequeño hace que consultes algo que no existe."
+  },
+  "pistas": [
+   "Cuenta los «---» de la salida esperada hasta la línea que falla para saber qué caso es.",
+   "Apunta en una tabla los puntos de cada país evento a evento."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios con muchos empates",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "Puntos de −1 a 1 con pocos países: hay empates continuamente.",
+  "si": {
+   "wa": "Con muchos empates falla el desempate por nombre en algún momento: suele ser al bajar (hundir) o al subir (flotar) un país empatado."
+  },
+  "pistas": [
+   "Busca la primera consulta que falla y mira qué países empataban en ese momento.",
+   "El comparador debe ser el mismo en todas partes: puntos y, si empatan, nombre."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Aleatorios con muchos países",
+  "tipo": "aleatorio",
+  "casos": 8,
+  "comprueba": "Casos de unos cientos de eventos y países: el montículo tiene varios niveles.",
+  "si": {
+   "wa": "Con muchos países algo falla al recolocarlos: revisa que tras cada cambio el país sube o baja lo que haga falta."
+  },
+  "pistas": [
+   "Si las pequeñas salen bien, el fallo aparece cuando el montículo es profundo: flotar/hundir más de un nivel.",
+   "Usa update de la IndexPQ: flota si ha mejorado y hunde si ha empeorado."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "Muchos países y muchas consultas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "250.000 eventos con 60.000 países y unas 95.000 consultas.",
+  "si": {
+   "tle": "Cada consulta (o cada búsqueda de un país) recorre todos los países: O(países) por evento es demasiado. Con IndexPQ la consulta es O(1) y el cambio O(log n).",
+   "mle": "Gastas demasiada memoria: ¿guardas una copia por evento en vez de una entrada por país?"
+  },
+  "pistas": [
+   "Con 60.000 países y 95.000 consultas, recorrerlos todos en cada «?» son 5,7·10⁹ comparaciones.",
+   "Para encontrar el índice de un país usa un unordered_map<string,int> (no busques en un vector).",
+   "La consulta es top() de la IndexPQ: O(1). Cada cambio, update: O(log n)."
+  ]
+ }
+]

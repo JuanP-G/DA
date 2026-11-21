@@ -1,0 +1,11 @@
+{
+ "solucion": "4-Grafos no dirigidos/EJ_04-4/EJ_04-4.cpp",
+ "cabeceras": [
+  "4-Grafos no dirigidos/EJ_04-4/Grafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "caminos.distancia(v) / 2",
+  "caminos.distancia(v)"
+ ]
+}

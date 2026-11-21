@@ -1,0 +1,9 @@
+{
+ "solucion": "3-Colas de prioridad variable (Heapsort)/EJ_03-4/EJ_03-4.cpp",
+ "cabeceras": [],
+ "limite_ms": 4000,
+ "fallo": [
+  "if (edad < lider) menores.push(edad);",
+  "if (edad < primero) menores.push(edad);"
+ ]
+}

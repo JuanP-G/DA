@@ -39,7 +39,7 @@ TEMAS = {
     9: dict(nombre="Algoritmos voraces II", resumen="Más voraces: pinchar y cubrir intervalos, emparejar extremos de un vector ordenado y voraces sobre Dijkstra.", herr="", cab=[]),
     10: dict(nombre="Programación dinámica", resumen="Recurrencias con subproblemas repetidos rellenadas en tablas: mochila, cambio de monedas y caminos en cuadrículas.", herr="", cab=[]),
     11: dict(nombre="Programación dinámica II", resumen="Programación dinámica con reconstrucción de la solución: mochila 0/1 y palíndromos sobre intervalos.", herr="", cab=[]),
-    12: dict(nombre="Problemas de evaluación", resumen="Problemas de evaluación de la asignatura.", herr="", cab=[]),
+    12: dict(nombre="Pruebas evaluativas", resumen="Problemas de las pruebas evaluativas de la asignatura.", herr="", cab=[]),
 }
 HERRAMIENTAS = [
     ("tema1-avl.html", "Tema 1", "Árbol AVL", "Inserta, borra y pide el k-ésimo; mira el factor de equilibrio y cada rotación."),
@@ -122,6 +122,8 @@ def leer_readme():
         m = re.match(r"##\s+Tema\s+(\d+)\b", linea)
         if m:
             tema = int(m.group(1)); continue
+        if re.match(r"##\s+Pruebas evaluativas\b", linea):
+            tema = EVAL; continue
         if linea.startswith("## "):
             tema = None; continue
         if tema is None or not linea.startswith("|"):
@@ -292,6 +294,19 @@ KATEX = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Ka
          '{left:\'\\\\(\',right:\'\\\\)\',display:false}]})"></script>'
          '<style>.math{overflow-x:auto;overflow-y:hidden;padding:.2em 0}</style>')
 JSZIP = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>'
+
+
+EVAL = 12   # las pruebas evaluativas se guardan como «tema 12», pero en la web no llevan número
+
+
+def tema_corto(t):
+    """«Tema 4» o «Pruebas evaluativas»."""
+    return "Pruebas evaluativas" if t == EVAL else f"Tema {t}"
+
+
+def tema_largo(t, nombre):
+    """«Tema 4 · Grafos no dirigidos» o «Pruebas evaluativas»."""
+    return "Pruebas evaluativas" if t == EVAL else f"Tema {t} · {nombre}"
 
 
 def pagina(titulo, cuerpo, prefijo="", extra_js="", desc="", head="", ruta=None):
@@ -549,6 +564,12 @@ def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
 
     tabs = [("enunciado", "@@i:pdf@@ Enunciado", bool(e["pdf"]), p_enun),
             ("explicacion", "@@i:book@@ Explicación", bool(e["readme"]), p_exp), ("codigo", "@@i:code@@ Código", bool(codigos), p_cod)]
+    hay_juez = slug in JUECES
+    if hay_juez:
+        p_juez = (f'<div class="dj-host" data-manifest="../juez/{slug}/manifest.json" '
+                  f'data-wasm="{esc(os.environ.get("JUEZ_WASM_BASE", "https://binji.github.io/wasm-clang/"))}" '
+                  f'data-servidor="{esc(os.environ.get("JUEZ_SERVIDOR", ""))}"><p class="hint">Cargando el juez…</p></div>')
+        tabs.append(("probar", "@@i:check@@ Probar", True, p_juez))
     if e["readme"]:
         pref = "explicacion"
     elif codigos:
@@ -583,7 +604,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
         items += (f'<a class="el{" actual" if actual else ""}" href="{s_}.html" data-st="{s_}"{ACT if actual else ""}><span class="dot">@@i:check@@</span>'
                   f'<span class="et"><b>{esc(x["id"])}</b>{esc(x["titulo"])}</span></a>')
     lateral = (f'<aside class="eside"><a class="volver" href="../tema/{tema}.html">{CHEV_L}<span>Volver al tema</span></a>'
-               f'<div class="etema"><small>Tema {tema}</small><b>{esc(TEMAS[tema]["nombre"])}</b></div>'
+               f'<div class="etema"><small>{tema_corto(tema)}</small><b>{esc(TEMAS[tema]["nombre"])}</b></div>'
                f'<div class="sbox prog-box" data-ids="{ids}" style="--c:{color}"><div class="ph"><small>Tu progreso</small><b data-pct>0%</b></div><div class="prog"><i data-bar></i></div>'
                f'<span class="pt" data-hechos>0 de {len(hermanos)} hechos</span></div>'
                + (f'<div class="atarj">{"".join(tarjetas)}</div>' if tarjetas else "")
@@ -610,7 +631,8 @@ def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
               f'<p class="lede">{md_inline(e["idea"])}</p></div>'
               f'{p_vid}'
               f'<div class="tabsbar"><div class="tabs">{botones}</div><div class="xls">{"".join(acc)}</div></div>{panes}{cierre}</main></div></div>{teoria_panel(tema, "../")}')
-    return pagina(f'{e["id"]} {e["titulo"]} | Diseño de Algoritmos UCM', cuerpo, "../", HIGHLIGHT_JS + TABS_JS + (TEORIA_JS if TEORIA.get(tema) else ""), e["idea"], JSZIP, ruta=f"ej/{slug}.html")
+    return pagina(f'{e["id"]} {e["titulo"]} | Diseño de Algoritmos UCM', cuerpo, "../", HIGHLIGHT_JS + TABS_JS + (TEORIA_JS if TEORIA.get(tema) else "") + (JUEZ_JS if hay_juez else ""), e["idea"],
+                  JSZIP + ('<link rel="stylesheet" href="../juez/juez.css">' if hay_juez else ""), ruta=f"ej/{slug}.html")
 
 
 def pagina_guia(n_temas, n_ej, n_herr, n_vid):
@@ -979,7 +1001,7 @@ window.addEventListener('hashchange',ruta);document.addEventListener('keydown',e
 def pagina_videos(ej, slugs):
     datos = datos_videos(ej, slugs)
     n_min = round(sum(v["d"] for v in datos) / 60)
-    cuerpo = (f'<div class="wrap vv"><div class="crumbs"><a class="back" href="index.html">← Volver</a><a href="index.html">Inicio</a>›<span>Vídeos</span></div>'
+    cuerpo = (f'<div class="wrap vv"><div class="crumbs"><a class="back" href="index.html" data-back>← Volver</a><a href="index.html">Inicio</a>›<span>Vídeos</span></div>'
               f'<div id="vroot"><noscript>Esta página necesita JavaScript para listar los {len(datos)} vídeos ({n_min} min).</noscript></div></div>')
     js = VIDEOS_JS.replace("__DATA__", json.dumps(datos, ensure_ascii=False).replace("</", "<\\/"))
     return pagina("Vídeos de Diseño de Algoritmos UCM | StudIA", cuerpo, "", js,
@@ -1041,11 +1063,14 @@ def tarjeta_tema(t, info, lista, slugs, hay_herr):
     herr = '<span class="chip">@@i:tool@@ Herramienta</span>' if hay_herr else ""
     herr += '<span class="chip p">@@i:book@@ Teoría</span>' if teo else ""
     vid = f'<span class="chip v">@@i:video@@ {plural(n_vid, "vídeo", "vídeos")}</span>' if n_vid else ""
+    n_juez = sum(1 for i, _ in lista if slugs[i] in JUECES)
+    juez = (f'<span class="chip">@@i:check@@ Juez en {n_juez}/{n}</span>' if n_juez
+            else '<span class="chip mute">@@i:check@@ Juez pronto</span>')
     return (f'<a class="tcard" href="tema/{t}.html" data-ids="{ids}" data-tema="{t}" style="--b:{color_de(t)}">'
-            f'<div class="th"><div><span class="n">{t:02d}</span><b>{esc(info["nombre"])}</b></div><span class="est" data-est>Sin empezar</span></div>'
+            f'<div class="th"><div><span class="n">{"✎" if t == EVAL else f"{t:02d}"}</span><b>{esc(info["nombre"])}</b></div><span class="est" data-est>Sin empezar</span></div>'
             f'<div class="met"><div class="sol"><div class="l"><span>Con solución</span><b>{n_sol}/{n}</b></div><div class="prog"><i style="width:{pct_sol}%"></i></div></div>'
             f'<div><div class="l"><span>Tu progreso</span><b data-txt>0/{n} · 0%</b></div><div class="prog"><i data-bar></i></div></div></div>'
-            f'<div class="tcf"><span class="chip">@@i:code@@ {plural(n, "ejercicio", "ejercicios")}</span>{herr}{vid}<span class="chip mute">@@i:check@@ Tests pronto</span></div></a>')
+            f'<div class="tcf"><span class="chip">@@i:code@@ {plural(n, "ejercicio", "ejercicios")}</span>{herr}{vid}{juez}</div></a>')
 
 
 FILTRO_JS = r"""
@@ -1108,7 +1133,7 @@ def teoria_panel(t, prefijo):
         return ""
     opts = "".join(f'<option value="{esc(url_teoria(t, r, prefijo))}">{esc(n)}</option>' for r, n, b in docs)
     return (f'<button class="btn primary teo-fab" type="button" id="teoAbrir" aria-controls="teoPanel" aria-expanded="false">@@i:book@@ Teoría</button>'
-            f'<aside class="teo-panel" id="teoPanel" aria-label="Teoría del tema {t}" hidden><div class="teo-bar"><b>Teoría · Tema {t}</b>'
+            f'<aside class="teo-panel" id="teoPanel" aria-label="Teoría · {tema_corto(t)}" hidden><div class="teo-bar"><b>Teoría · {tema_corto(t)}</b>'
             f'<select id="teoSel" aria-label="Documento">{opts}</select>'
             f'<a class="btn mini" id="teoTab" target="_blank" rel="noopener" href="#">Abrir en pestaña</a>'
             f'<button class="btn mini" type="button" id="teoCerrar">Cerrar</button></div>'
@@ -1151,8 +1176,8 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     bloque = next((b[0] for b in BLOQUES if t in b[1]), "")
     prev_t = t - 1 if t - 1 in nombres_temas else None
     next_t = t + 1 if t + 1 in nombres_temas else None
-    pager = ('<div class="pager">' + (f'<a class="btn" href="{prev_t}.html">← Tema {prev_t} · {esc(nombres_temas[prev_t])}</a>' if prev_t else "<span></span>")
-             + (f'<a class="btn" href="{next_t}.html">Tema {next_t} · {esc(nombres_temas[next_t])} →</a>' if next_t else "<span></span>") + "</div>")
+    pager = ('<div class="pager">' + (f'<a class="btn" href="{prev_t}.html">← {esc(tema_largo(prev_t, nombres_temas[prev_t]))}</a>' if prev_t else "<span></span>")
+             + (f'<a class="btn" href="{next_t}.html">{esc(tema_largo(next_t, nombres_temas[next_t]))} →</a>' if next_t else "<span></span>") + "</div>")
     # --- Vídeo del tema: lo más útil para entender el tema, va arriba del todo ---
     vhero = ""
     tv = next((e for _, e in teo if e["video"]), None)
@@ -1185,14 +1210,14 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
                + (f'<details class="sbox aprende" data-aprende><summary><h2>Aprende</h2></summary><div class="alist main">{"".join(principales)}</div>{('<h3 class="sub">PDFs de teoría</h3><div class="alist">' + "".join(pdfs) + '</div>') if pdfs else ""}</details>' if aprender else '')
                + (f'<div class="sbox"><h2>Plantillas y código</h2><div class="rec">{"".join(recursos)}</div></div>' if recursos else '')
                + '</aside>')
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas">← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>Tema {t}</span></div>'
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas" data-back>← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>{tema_corto(t)}</span></div>'
               f'<div class="thead" data-ids="{ids}"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="tag">{esc(bloque)}</span><span class="est" data-est>Sin empezar</span></div>'
-              f'<h1>Tema {t} · {esc(info["nombre"])}</h1><p class="lede">{esc(info["resumen"])}</p></div>'
+              f'<h1>{esc(tema_largo(t, info["nombre"]))}</h1><p class="lede">{esc(info["resumen"])}</p></div>'
               f'<div class="tlay">{lateral}<main class="tmain">{vhero}{pdfsec}<div class="mh" id="ejercicios"><h2>Ejercicios <span class="cnt">{n}</span></h2>'
               f'<div class="filters"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="pend">Pendientes</button><button class="chip" data-f="hechos">Hechos</button><button class="chip" data-fv>@@i:video@@ Con vídeo</button></div></div>'
               f'<div id="p-ejercicios">{"".join(filas)}<p class="vacio" id="sin">Ningún ejercicio coincide con el filtro.</p></div>'
               f'<p class="notas">Tests del profe y propios: próximamente.</p></main></div>{pager}</div>{teoria_panel(t, "../")}')
-    titulo = f'Tema {t} · {info["nombre"]} | Diseño de Algoritmos UCM'
+    titulo = f'{tema_largo(t, info["nombre"])} | Diseño de Algoritmos UCM'
     desc = f'{info["resumen"]} Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++ con explicación.'
     return pagina(titulo, cuerpo, "../", FILTRO_JS + (TEORIA_JS if TEORIA.get(t) else ""), desc, ruta=f"tema/{t}.html")
 
@@ -1208,9 +1233,26 @@ def commit_info():
     return sha[:7]
 
 
+JUECES = set()   # slugs de los ejercicios con juez (pestaña «Probar»)
+
+JUEZ_JS = r"""
+// Pestaña «Probar»: el juez se carga solo cuando se abre (no pesa en el resto de la página).
+(function(){const host=document.querySelector('.dj-host');if(!host)return;let hecho=false;
+ const cargar=s=>new Promise((ok,ko)=>{const e=document.createElement('script');e.src=s;e.onload=ok;e.onerror=ko;document.head.appendChild(e)});
+ function montar(){if(hecho)return;hecho=true;
+  cargar('../juez/diagnostico.js').then(()=>cargar('../juez/juez.js'))
+   .then(()=>DAJuez.mount(host,{manifest:host.dataset.manifest,wasmBase:host.dataset.wasm,servidor:host.dataset.servidor}))
+   .catch(()=>{host.textContent='No se ha podido cargar el juez. Recarga la página.'})}
+ document.querySelectorAll('[data-tab="probar"]').forEach(b=>b.addEventListener('click',montar));
+ if(location.hash==='#probar')montar();
+ window.addEventListener('hashchange',()=>{if(location.hash==='#probar')montar()});})();
+"""
+
+
 def main():
-    global TEORIA
+    global TEORIA, JUECES
     TEORIA = teoria_pdfs()
+    JUECES = {k.lower() for k in config_juez()}
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / "ej").mkdir(parents=True); (OUT / "estructuras").mkdir()
@@ -1360,7 +1402,103 @@ window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');
     for rel in sorted(COPIAR):
         if existe(rel):
             d = OUT / rel; d.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(RAIZ / rel, d)
-    print(f"ok: {len(ej)} ejercicios, {n_vid} vídeos, {n_pdf} PDFs, {len(herr)} herramientas, {len(cabs)} cabeceras -> {OUT}")
+    n_juez = generar_juez(ej, slugs)
+    print(f"ok: {len(ej)} ejercicios, {n_vid} vídeos, {n_pdf} PDFs, {len(herr)} herramientas, {len(cabs)} cabeceras, {n_juez} jueces -> {OUT}")
+
+
+def escribe_lf(ruta, texto):
+    ruta.parent.mkdir(parents=True, exist_ok=True)
+    with open(ruta, "w", encoding="utf-8", newline="\n") as f:
+        f.write(texto)
+
+
+def config_juez():
+    """Configuración de los jueces: juez/juez.json (antigua) + juez/tests/<id>/config.json (una por
+    ejercicio, la escribe herramientas/generar_tests_juez.py). La clave es el slug de la página."""
+    cfg = {}
+    p = RAIZ / "juez" / "juez.json"
+    if p.exists():
+        cfg.update(json.loads(p.read_text(encoding="utf-8")))
+    for c in sorted((RAIZ / "juez" / "tests").glob("*/config.json")):
+        cfg[c.parent.name] = json.loads(c.read_text(encoding="utf-8"))
+    return cfg
+
+
+def sin_planteamiento(codigo):
+    """Las soluciones traen, tras «Nombre y Apellidos», un comentario /*@ <answer> ... */ con el
+    planteamiento completo. En la plantilla del juez se deja solo su primera línea (el título):
+    el planteamiento lo dan las pistas, de una en una."""
+    bloques = list(re.finditer(r"/\*@ <answer>.*?@ </answer> \*/", codigo, flags=re.S))
+    for m in reversed(bloques[1:]):
+        lineas_ = [l.strip() for l in m.group(0).splitlines()[1:-1] if l.strip()]
+        titulo = lineas_[0] if lineas_ else ""
+        codigo = codigo[:m.start()] + f"/*\n {titulo}\n*/" + codigo[m.end():]
+    return codigo
+
+
+def generar_juez(ej, slugs=None):
+    """Juez en el navegador (prototipo). Lee juez/juez.json y juez/tests/<ej>/N.in|N.out.
+    Genera _site/juez/<ej>.html (página independiente) y _site/juez/<ej>/ (manifest, tests, cabeceras).
+    El componente (sitio/juez/juez.js) no toca la página de ejercicio: se encaja donde se quiera."""
+    cfg = config_juez()
+    if not cfg:
+        return 0
+    por_slug = {slugs[i]: e for i, e in enumerate(ej)} if slugs else {e["id"].lower(): e for e in ej}
+    wasm_base = os.environ.get("JUEZ_WASM_BASE", "https://binji.github.io/wasm-clang/")
+    servidor = os.environ.get("JUEZ_SERVIDOR", "")   # URL del servidor del juez (Raspberry Pi); vacío = solo navegador
+    shutil.copytree(AQUI / "juez", OUT / "juez")
+    for ej_id, c in cfg.items():
+        e = por_slug.get(ej_id.lower())
+        if e is None:
+            print(f"aviso: juez {ej_id} sin ejercicio en la web")
+            continue
+        d = OUT / "juez" / ej_id
+        sol = leer_texto(c["solucion"])
+        if c.get("plantilla"):           # plantilla propia (p. ej. 01-2: la clase sin tami ni kesimo)
+            plantilla = leer_texto(c["plantilla"])
+        else:
+            vacio = "//@ <answer>\n\n    // Escribe aquí tu solución\n\n//@ </answer>"
+            plantilla = re.sub(r"//@ <answer>.*?//@ </answer>", lambda m: vacio, sol, count=1, flags=re.S)
+        plantilla = sin_planteamiento(plantilla)
+        escribe_lf(d / "solucion.cpp", sol)
+        a, b = c["fallo"]
+        assert a in sol, f"juez {ej_id}: no encuentro «{a}» para fabricar el fallo de demostración"
+        escribe_lf(d / "fallo.cpp", sol.replace(a, b, 1))
+        cab = []
+        for rel in c.get("cabeceras", []):
+            nombre = posixpath.basename(rel)
+            escribe_lf(d / nombre, leer_texto(rel))
+            cab.append({"nombre": nombre, "url": nombre})
+        tests = []
+        meta_p = RAIZ / "juez" / "tests" / ej_id / "pruebas.json"   # qué comprueba cada prueba, pistas...
+        meta = {m["n"]: m for m in json.loads(meta_p.read_text(encoding="utf-8"))} if meta_p.exists() else {}
+        for p in sorted((RAIZ / "juez" / "tests" / ej_id).glob("*.in"), key=lambda p: int(p.stem)):
+            n = p.stem
+            escribe_lf(d / f"{n}.in", leer_texto(p.relative_to(RAIZ).as_posix()))
+            escribe_lf(d / f"{n}.out", leer_texto(p.with_suffix(".out").relative_to(RAIZ).as_posix()))
+            nombre_p = p.with_suffix(".txt")
+            t = {"n": int(n), "nombre": nombre_p.read_text(encoding="utf-8").strip() if nombre_p.exists() else "",
+                 "in": f"{n}.in", "out": f"{n}.out", "bytes": p.stat().st_size}
+            t.update({k: v for k, v in meta.get(int(n), {}).items() if k != "n"})
+            tests.append(t)
+        manifest = {"id": ej_id, "titulo": e["titulo"], "limite_ms": c.get("limite_ms", 3000), "plantilla": plantilla,
+                    "cabeceras": cab, "tests": tests,
+                    "demo": {"solucion": "solucion.cpp", "fallo": "fallo.cpp"}}
+        comp = RAIZ / "juez" / "tests" / ej_id / "comprobador.js"
+        if c.get("comprobador") and comp.exists():    # admite varias respuestas: se comprueba, no se compara
+            escribe_lf(d / "comprobador.js", comp.read_text(encoding="utf-8"))
+            manifest["comprobador"] = "comprobador.js"
+        escribe_lf(d / "manifest.json", json.dumps(manifest, ensure_ascii=False, indent=1) + "\n")
+        cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../ej/{ej_id.lower()}.html">← Volver al ejercicio</a>'
+                  f'<a href="../index.html">Inicio</a>›<a href="../tema/{e["tema"]}.html">{tema_corto(e["tema"])}</a>›<span>{esc(ej_id)} · probar</span></div>'
+                  f'<div class="ejhead"><span class="tag">Prototipo del juez</span><h1>{esc(ej_id)} · {esc(e["titulo"])}</h1>'
+                  f'<p class="lede">Pega o escribe tu solución y comprueba si pasa las {len(tests)} pruebas de este ejercicio.</p></div>'
+                  f'<div id="juez"></div></div>'
+                  f'<script src="diagnostico.js"></script><script src="juez.js"></script><script>DAJuez.mount(document.getElementById("juez"),{{manifest:"{ej_id}/manifest.json",wasmBase:{json.dumps(wasm_base)},servidor:{json.dumps(servidor)}}})</script>')
+        pag = pagina(f"Probar {ej_id} {e['titulo']} | Diseño de Algoritmos UCM", cuerpo, "../", "", "Prototipo del juez en el navegador.",
+                     '<meta name="robots" content="noindex"><link rel="stylesheet" href="juez.css">')
+        escribe_lf(OUT / "juez" / f"{ej_id}.html", pag)
+    return len(cfg)
 
 
 def md_inline(s):

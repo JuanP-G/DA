@@ -1,0 +1,245 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplos del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres ejemplos del PDF.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la lectura (primero W y luego E), la idea voraz o la salida: un número por línea.",
+   "pe": "Los números están bien pero el formato no: un número por caso y un salto de línea detrás."
+  },
+  "pistas": [
+   "Ejecútalo en tu ordenador con este mismo ejemplo y compara línea a línea.",
+   "El segundo caso es el delicado: [1, 4] y [4, 8] solo se tocan en un punto.",
+   "Ordena los edificios por su extremo oriental y pon cada pasadizo lo más al este posible."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un único edificio",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Con un solo edificio hace falta exactamente un pasadizo.",
+  "si": {
+   "wa": "Con un edificio la respuesta es 1: revisa cómo inicializas el contador y la posición del último pasadizo."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa con «1» y «5 9»?",
+   "El primer edificio siempre necesita un pasadizo nuevo, sea cual sea la posición inicial."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Edificio que empieza en el metro 0",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Edificios con W = 0: no deben darse por servidos por un pasadizo «inicial» imaginario.",
+  "si": {
+   "wa": "Sale 0 o menos de lo debido: el «último pasadizo» empieza en una posición (0, por ejemplo) que ya sirve a un edificio que empieza en 0."
+  },
+  "pistas": [
+   "Antes de poner ningún pasadizo, ¿en qué metro crees que está «el último»?",
+   "Inicializa la posición del último pasadizo a un valor imposible (por ejemplo -1) o trata aparte el primer edificio."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Ordenar al revés (de este a oeste) falla",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Recorrer los edificios del que acaba más tarde al que acaba antes, poniendo el pasadizo al final, no es óptimo.",
+  "si": {
+   "wa": "Ordenas de mayor a menor extremo oriental (o pones el pasadizo en el lado equivocado). La regla es: el que acaba antes, con el pasadizo lo más al este posible."
+  },
+  "pistas": [
+   "Con [1, 5], [2, 8] y [6, 9] hacen falta 2 pasadizos: [6, 9] y [1, 5] no comparten ningún metro.",
+   "Si vas de este a oeste, el pasadizo debe ir lo más al OESTE posible (W); lo más simple es ir de oeste a este por E."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Edificios que solo se tocan en un punto",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "[1, 4], [4, 8] y [8, 9] se tocan en un punto pero no comparten ningún metro: hacen falta 3.",
+  "si": {
+   "wa": "Tratas los edificios como si un punto común bastara. El pasadizo mide 1 metro: el del metro [x, x+1] sirve a [W, E] solo si W ≤ x y x + 1 ≤ E."
+  },
+  "pistas": [
+   "Dibuja [1, 4] y [4, 8]: ¿hay algún metro entero debajo de los dos?",
+   "Si pones el pasadizo en el extremo E, en realidad lo estás poniendo fuera del edificio.",
+   "Pon el pasadizo en el metro [E - 1, E] y considera servido al siguiente edificio solo si W ≤ E - 1."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Comparten justo un metro",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "[1, 5] y [4, 9] comparten el metro [4, 5]: basta un pasadizo.",
+  "si": {
+   "wa": "Pides demasiado solapamiento: con que compartan un metro (W ≤ E - 1 del otro) basta. Revisa < frente a ≤."
+  },
+  "pistas": [
+   "El metro [4, 5] está completamente debajo de los dos.",
+   "Un edificio está servido por el pasadizo [x, x+1] si W ≤ x (no W < x)."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Edificios de un metro de ancho",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Edificios de anchura 1: el pasadizo tiene que ir justo en su único metro.",
+  "si": {
+   "wa": "Un edificio [W, W+1] solo admite el pasadizo del metro [W, W+1]: revisa los cálculos con E - 1."
+  },
+  "pistas": [
+   "Con [3, 4] el pasadizo solo puede ir en el metro 3.",
+   "Los edificios repetidos comparten pasadizo; [4, 5] y [2, 3] necesitan cada uno el suyo."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Edificios desordenados",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los edificios no vienen ordenados en la entrada.",
+  "si": {
+   "wa": "Parece que recorres los edificios en el orden de la entrada: hay que ordenarlos antes."
+  },
+  "pistas": [
+   "La entrada no garantiza ningún orden.",
+   "Ordena los edificios (por su extremo oriental) antes de recorrerlos."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Ordenar por el extremo occidental no basta",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un edificio largo que empieza antes que otros cortos: ordenar por W y poner el pasadizo al final del primero falla.",
+  "si": {
+   "wa": "Ordenas por el extremo occidental (W). El edificio [1, 10] empieza antes pero acaba tarde: su pasadizo en el metro 9 no sirve a [2, 3]."
+  },
+  "pistas": [
+   "Aquí hacen falta 2: uno en [2, 3] (que sirve también a [1, 10]) y otro en [5, 6].",
+   "¿Qué edificio te obliga primero a poner un pasadizo? El que ACABA antes.",
+   "Ordena por E y pon cada pasadizo en el metro [E - 1, E]."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Edificios anidados",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Un edificio enorme que contiene a otros pequeños separados.",
+  "si": {
+   "wa": "El edificio grande no debe decidir dónde van los pasadizos: lo hacen los pequeños, que acaban antes."
+  },
+  "pistas": [
+   "Bastan 3: uno por cada edificio pequeño, y cualquiera sirve al grande.",
+   "Ordena por E: los pequeños salen antes que el grande."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Ordenar por longitud falla",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Atender primero al edificio más corto no es un buen criterio.",
+  "si": {
+   "wa": "Elegir el edificio más corto (o el que más se solapa) no es óptimo. El criterio correcto es el extremo oriental."
+  },
+  "pistas": [
+   "Aquí bastan 2: el metro [3, 4] sirve a los dos primeros y el [5, 6] a los dos últimos.",
+   "Ordena por E y pon el pasadizo en el último metro del edificio que acaba antes."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Mismo extremo oriental",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Varios edificios que acaban en el mismo punto (empates al ordenar).",
+  "si": {
+   "wa": "Con empates en E, el resultado no debe depender de cuál vaya primero: todos admiten el metro [E - 1, E]."
+  },
+  "pistas": [
+   "Los cuatro comparten el metro [8, 9]: basta 1.",
+   "Comprueba que, tras poner el pasadizo en [E - 1, E], los demás con el mismo E quedan servidos."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Coordenadas hasta 10⁹",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Extremos en los valores máximos que permite el enunciado.",
+  "si": {
+   "wa": "Con valores cerca de 10⁹ algo se sale de rango: revisa los tipos y el valor inicial de la posición del último pasadizo."
+  },
+  "pistas": [
+   "Bastan 2: el metro [0, 1] y el [999999999, 1000000000].",
+   "10⁹ cabe en int, pero no inventes centinelas como 10⁹ + 1 en un int sin pensarlo."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso con muchos pasadizos seguido de otros: nada del caso anterior debe quedar.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el contador o la posición del último pasadizo no se reinician."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso.",
+   "Declara el contador, el vector y la posición del último pasadizo dentro de la función de cada caso."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 casos pequeños al azar.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas: la línea que falla es el número de caso; dibújalo en papel."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla.",
+   "Dibuja los edificios sobre una recta y sigue tu algoritmo paso a paso."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 casos medianos con coordenadas variadas.",
+  "si": {
+   "wa": "Algo falla con más edificios: revisa los empates y los edificios que se tocan en un punto."
+  },
+  "pistas": [
+   "Busca el caso que falla y redúcelo quitando edificios mientras siga fallando.",
+   "Compara con un recorrido ordenado por E poniendo el pasadizo en [E - 1, E]."
+  ]
+ },
+ {
+  "n": 17,
+  "nombre": "100.000 edificios",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo de un caso: mide la eficiencia.",
+  "si": {
+   "tle": "Tu solución es lenta para 100.000 edificios: debe ser O(N log N). ¿Comparas cada edificio con todos los demás o con todos los pasadizos?"
+  },
+  "pistas": [
+   "Ordenar cuesta O(N log N); el recorrido posterior debe ser una sola pasada.",
+   "Basta con recordar el último pasadizo puesto; no hace falta mirar los anteriores.",
+   "Usa sort de la biblioteca, no una ordenación cuadrática hecha a mano."
+  ]
+ }
+]

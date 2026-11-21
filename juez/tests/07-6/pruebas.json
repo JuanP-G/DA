@@ -1,0 +1,221 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del PDF: 35 e Imposible.",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: cada paquete cuesta lo que cuesta ir de la oficina a la casa MÁS lo que cuesta volver, y la vuelta puede ir por otro camino.",
+   "rte": "Error de ejecución con el ejemplo: las casas van del 1 al N (resta 1) y la entrada pone N y C en líneas distintas y luego «O P» y la lista de destinos."
+  },
+  "pistas": [
+   "En el primer caso: (5 + 10) + (7 + 8) + (2 + 3) = 35.",
+   "La vuelta de la casa 2 no es 5: no hay conexión 2 → 1 y hay que pasar por la 3."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola casa",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "N = 1 con un lazo: el único paquete es para la propia oficina, esfuerzo 0.",
+  "si": {
+   "wa": "Un paquete para la casa de la oficina no cuesta nada: ida y vuelta son 0 (el lazo no sirve de nada).",
+   "rte": "Con una sola casa algo se sale del vector: revisa los índices desde 1."
+  },
+  "pistas": [
+   "Debe salir 0.",
+   "La distancia de la oficina a sí misma es 0 en los dos Dijkstra."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Paquete para la propia oficina",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Uno de los paquetes es para la casa de la oficina (cuesta 0); el otro, 4 + 6.",
+  "si": {
+   "wa": "El paquete para la oficina no cuesta nada; la casa 3 (aislada salvo un lazo) no recibe paquetes, así que el reparto es posible: 10."
+  },
+  "pistas": [
+   "Debe salir 10.",
+   "Solo importa que se pueda ir y volver de las casas que reciben paquetes."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Fila de 40.000 casas con esfuerzos máximos",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Un solo paquete a la otra punta de una fila de 40.000 casas: 799.980.000.",
+  "si": {
+   "wa": "El esfuerzo llega a casi 8·10⁸: revisa el valor de infinito (si es 10⁶ o 10⁷ la casa parece inalcanzable) y que no se desborda nada.",
+   "tle": "Con 40.000 casas tu Dijkstra es demasiado lento: usa la IndexPQ.",
+   "rte": "¿Una recursión de 40.000 niveles? Dijkstra con IndexPQ no la necesita."
+  },
+  "pistas": [
+   "Calcula a mano: 39.999 conexiones de 10.000 para ir y otras tantas para volver.",
+   "Usa como infinito numeric_limits<int>::max() o, mejor, long long."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Conexiones de un solo sentido",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "1 → 3 y 2 → 3 no permiten ir de 1 a 2 pasando por la 3: solo vale la conexión directa (10 + 10).",
+  "si": {
+   "wa": "Recorres las conexiones en los dos sentidos. Cada conexión va solo de origen a destino; si se puede volver, viene otra línea."
+  },
+  "pistas": [
+   "Debe salir 20.",
+   "Añade solo la arista origen → destino al DigrafoValorado."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "La vuelta no es la ida al revés",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Para ir a la casa 2 basta 1 → 2 (1), pero para volver hay que dar la vuelta 2 → 3 → 1 (2).",
+  "si": {
+   "wa": "Calculas la vuelta igual que la ida (o la ida dos veces). El esfuerzo de volver de cada casa a la oficina es la distancia en el grafo INVERSO desde la oficina."
+  },
+  "pistas": [
+   "Debe salir 3.",
+   "Ir de la casa d a la oficina en el grafo es lo mismo que ir de la oficina a d en el grafo con las aristas al revés.",
+   "Un Dijkstra desde la oficina en g y otro en g.inverso(): ida[d] + vuelta[d]."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Se puede ir pero no volver: Imposible",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La casa 3 es alcanzable desde la oficina, pero desde ella no se puede regresar.",
+  "si": {
+   "wa": "Solo compruebas que se puede llegar. También hay que poder volver: si ida o vuelta es infinito, el reparto es Imposible (y no sumes infinitos: se desbordan)."
+  },
+  "pistas": [
+   "Debe salir Imposible.",
+   "Comprueba los dos vectores (ida y vuelta) antes de sumar."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Varios paquetes para la misma casa",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Tres paquetes para la casa 2: hay que hacer tres viajes de ida y vuelta.",
+  "si": {
+   "wa": "Cuentas una sola vez las casas repetidas. La moto solo lleva un paquete: cada paquete es un viaje completo."
+  },
+  "pistas": [
+   "Debe salir 3 · (2 + 3) = 15.",
+   "Suma ida[d] + vuelta[d] por cada número de la lista de destinos, aunque se repita."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Varias conexiones entre dos casas y lazos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Entre 1 y 2 hay varias conexiones en cada sentido y lazos: hay que usar las más baratas (4 y 2).",
+  "si": {
+   "wa": "Te quedas con una sola conexión entre dos casas (la primera o la última que lees). Guarda todas: Dijkstra elige la mejor."
+  },
+  "pistas": [
+   "Debe salir 6.",
+   "No compruebes si ya existe la arista antes de añadirla ni uses una matriz que se sobrescribe."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "La oficina no está en la casa 1",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La oficina está en la casa 2: todo se mide desde ahí.",
+  "si": {
+   "wa": "Supones que la oficina es la casa 1. Su número viene en la línea «O P» después de las conexiones."
+  },
+  "pistas": [
+   "Debe salir 2.",
+   "Lanza los dos Dijkstra desde O − 1."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Varios repartos posibles seguidos: nada de un caso (el total, las distancias) debe quedar para el siguiente.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el total acumulado, la marca de imposible o las distancias no se reinician en cada caso.",
+   "rte": "Usas en un caso una estructura con el tamaño de otro caso anterior: créalas dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso (o son static).",
+   "El total empieza en 0 en cada caso."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos: un reparto imposible a mitad",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "El primer caso es imposible ya por el primer destino, pero hay que leer los demás destinos antes de pasar al siguiente caso.",
+  "si": {
+   "wa": "Tras un Imposible el siguiente caso sale mal: dejas de leer la lista de destinos en cuanto encuentras uno imposible, y los que quedan se leen como si fueran el caso siguiente. Lee siempre los P destinos.",
+   "rte": "Tras un Imposible el programa se rompe: dejas destinos sin leer y el caso siguiente lee esos números como N, C o conexiones (casas que no existen). Lee siempre los P destinos aunque ya sepas que es imposible."
+  },
+  "pistas": [
+   "El primer caso es Imposible; el segundo debe dar 8.",
+   "No hagas return ni break dentro del bucle de lectura de destinos: marca que es imposible y sigue leyendo."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 50,
+  "comprueba": "50 casos pequeños al azar (muchos imposibles).",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas bien: la línea que falla es el número de caso; calcula a mano la ida y la vuelta de cada destino."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla.",
+   "Dibuja el dígrafo con flechas: la vuelta usa las flechas en su sentido, desde la casa hasta la oficina."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios con lazos y conexiones repetidas",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 casos con lazos, conexiones repetidas y destinos repetidos.",
+  "si": {
+   "wa": "Algún caso con lazos, conexiones repetidas o destinos repetidos falla: guarda todas las aristas y cuenta cada paquete."
+  },
+  "pistas": [
+   "Busca el caso que falla.",
+   "Los lazos no estorban a Dijkstra; las conexiones repetidas tampoco si las guardas todas."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Grande: 30.000 casas y 30.000 paquetes",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un caso grande con un paquete para casi cada casa.",
+  "si": {
+   "tle": "Haces un Dijkstra por cada paquete (por ejemplo, desde cada casa hasta la oficina para la vuelta). Basta con dos: uno desde la oficina en el grafo y otro en el grafo inverso.",
+   "mle": "Gastas demasiada memoria: no guardes las distancias de cada casa por separado.",
+   "wa": "Solo falla en el grande: revisa los desbordamientos al sumar."
+  },
+  "pistas": [
+   "¿Cuántos Dijkstra haces? Deberían ser exactamente dos.",
+   "La vuelta de TODAS las casas a la oficina sale de un único Dijkstra desde la oficina en g.inverso()."
+  ]
+ }
+]

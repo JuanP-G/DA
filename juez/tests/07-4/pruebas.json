@@ -1,0 +1,219 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Los dos casos del PDF: «3 1» y «2 2» (empate entre las aldeas 2 y 4).",
+  "si": {
+   "wa": "Si falla hasta el ejemplo, revisa la idea: para cada aldea neutral hace falta la distancia a la aldea gala MÁS CERCANA y a la romana más cercana.",
+   "rte": "Error de ejecución con el ejemplo: las aldeas van del 1 al N (resta 1) y las líneas de cada bando empiezan por el número de aldeas."
+  },
+  "pistas": [
+   "En el segundo caso, para la aldea 4 la aldea gala más cercana es la 5 (a 2), no la 1.",
+   "Escribe el índice de la aldea (desde 1) y la diferencia, separados por un espacio."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Tres aldeas en fila",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Lo mínimo: una aldea de cada bando y la neutral en medio, a la misma distancia: «2 0».",
+  "si": {
+   "wa": "Con tres aldeas solo hay una neutral, la 2, con diferencia 0. Revisa la lectura y que escribes el índice desde 1.",
+   "rte": "Error de ejecución en el caso más pequeño: revisa los índices y la lectura de las dos líneas de bandos."
+  },
+  "pistas": [
+   "Debe salir «2 0».",
+   "Las dos últimas líneas son «1 1» (una aldea gala, la 1) y «1 3» (una romana, la 3)."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "La aldea neutral en un extremo",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "La única neutral (la 1) está detrás de la aldea gala: su romana más cercana está a 12, pasando por la gala.",
+  "si": {
+   "wa": "La aldea neutral 1 está a 5 de los galos y a 12 de los romanos (pasando por la aldea gala): «1 7»."
+  },
+  "pistas": [
+   "Debe salir «1 7».",
+   "Para ir de la aldea 1 a la romana hay que atravesar la gala, y eso está permitido."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Cadena de 50.000 aldeas",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Galos en un extremo y romanos en el otro, con caminos de 1000: distancias de hasta 5·10⁷.",
+  "si": {
+   "wa": "Las distancias llegan a 5·10⁷: si tu infinito es más pequeño (10⁶, 10⁷…), algunas aldeas parecen inalcanzables. Usa numeric_limits<int>::max().",
+   "tle": "Con 50.000 aldeas en fila, tu Dijkstra es demasiado lento: usa la IndexPQ, no un recorrido del vector para buscar el mínimo."
+  },
+  "pistas": [
+   "La aldea neutral del centro está a la misma distancia de los dos extremos.",
+   "Revisa el valor que usas como infinito."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Caminos de doble sentido",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los caminos vienen escritos «hacia atrás» (2 1, 3 2, 4 3): se pueden recorrer en los dos sentidos.",
+  "si": {
+   "wa": "Solo añades cada camino en un sentido. Son transitables en ambos: pon las dos aristas, u → v y v → u."
+  },
+  "pistas": [
+   "Debe salir «3 1»: la aldea 3 está a 5 de los galos y a 4 de los romanos (la 2 está a 6 y a 3).",
+   "Por cada camino llama dos veces a ponArista."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Diferencia en valor absoluto",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La aldea 2 está a 1 de los galos y a 5 de los romanos (diferencia 4, no −4).",
+  "si": {
+   "wa": "Te quedas con una diferencia negativa: la diferencia es el valor absoluto |dGalos − dRomanos|."
+  },
+  "pistas": [
+   "Debe salir «3 1».",
+   "Usa abs(dGalos[v] - dRomanos[v])."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "La aldea gala más cercana no es la primera de la lista",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Hay dos aldeas galas (la 6 y la 1): para cada neutral cuenta la más cercana de las dos.",
+  "si": {
+   "wa": "Solo tienes en cuenta una aldea de cada bando. Hay que usar todas: mete todas las aldeas del bando en la cola de prioridad con distancia 0 (un Dijkstra con varios orígenes)."
+  },
+  "pistas": [
+   "Debe salir «2 0»: la aldea 2 está a 1 de la gala 1 y a 1 de la romana 3.",
+   "La distancia de una aldea a un bando es la mínima a cualquiera de sus aldeas.",
+   "No hace falta un Dijkstra por aldea: empieza uno solo con todas las del bando a distancia 0."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Empate: la aldea de menor índice",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las aldeas neutrales 2 y 3 tienen diferencia 0: se elige la 2.",
+  "si": {
+   "wa": "En los empates te quedas con la última aldea. Recorre las aldeas en orden y cambia la elegida solo si la diferencia es estrictamente menor (<, no ≤)."
+  },
+  "pistas": [
+   "Debe salir «2 0».",
+   "Con «if (dif <= mejor)» gana la última de las empatadas; con «<», la primera."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Se puede pasar por las aldeas de un bando",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Para ir de la aldea 1 a la romana hay que atravesar la gala (y de la 4 a la gala, la romana): en tregua se puede.",
+  "si": {
+   "wa": "No dejas que los caminos atraviesen aldeas controladas. El enunciado dice que en tregua se puede pasar por cualquier aldea: no cortes el Dijkstra en ellas."
+  },
+  "pistas": [
+   "Debe salir «1 3».",
+   "Las aldeas de los bandos son vértices normales del grafo: Dijkstra debe seguir relajando sus aristas."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Solo cuentan las aldeas neutrales",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Las aldeas 2 (gala) y 3 (romana) tienen diferencia 1, pero la conferencia tiene que ser en una neutral: la 1, con 101.",
+  "si": {
+   "wa": "Estás eligiendo una aldea de un bando. La conferencia se celebra en una aldea neutral: sáltate las que pertenecen a galos o romanos."
+  },
+  "pistas": [
+   "Debe salir «1 101».",
+   "Marca a qué bando pertenece cada aldea al leer las dos últimas líneas y, al buscar la mejor, ignora las marcadas."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un caso con muchas aldeas controladas seguido de otros más pequeños: nada de un caso debe quedar para el siguiente.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente: el vector que marca el bando de cada aldea, las listas de aldeas o las distancias no se crean de nuevo.",
+   "rte": "Usas en un caso una estructura con el tamaño de otro caso anterior: créalas dentro de resuelveCaso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué variables viven fuera de resuelveCaso (o son static).",
+   "Declara el grafo, las listas de cada bando y el vector de bandos dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Aleatorios pequeños",
+  "tipo": "aleatorio",
+  "casos": 50,
+  "comprueba": "50 casos pequeños al azar.",
+  "si": {
+   "wa": "Hay algún caso concreto que no tratas bien: la línea que falla es el número de caso; calcula a mano las dos distancias de cada aldea neutral."
+  },
+  "pistas": [
+   "Busca en la entrada el caso de la línea que falla.",
+   "Escribe junto a cada aldea su distancia a los galos y a los romanos."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Aleatorios con muchas aldeas en cada bando",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos de 10 a 40 aldeas, un tercio de cada bando, con caminos cortos para que haya empates.",
+  "si": {
+   "wa": "Con muchas aldeas por bando algo falla: ¿usas todas las del bando como orígenes? ¿desempatas por el menor índice?"
+  },
+  "pistas": [
+   "Busca el caso que falla y comprueba la aldea elegida y su diferencia.",
+   "Las aldeas de un bando son todas orígenes a distancia 0."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Aleatorios medianos",
+  "tipo": "aleatorio",
+  "casos": 10,
+  "comprueba": "10 casos de 50 a 400 aldeas.",
+  "si": {
+   "wa": "En grafos más grandes algo falla: revisa la relajación y la elección de la aldea."
+  },
+  "pistas": [
+   "Busca el caso que falla.",
+   "Comprueba que los dos Dijkstra (galos y romanos) recorren todo el grafo."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "Grande: 60.000 aldeas, 15.000 de cada bando",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Un caso grande con muchísimas aldeas en cada bando.",
+  "si": {
+   "tle": "Haces un Dijkstra por cada aldea de un bando (o por cada neutral): con 15.000 aldeas por bando no termina. Basta UN Dijkstra por bando con todas sus aldeas como orígenes.",
+   "mle": "Gastas demasiada memoria: no guardes las distancias desde cada aldea por separado.",
+   "wa": "Solo falla en el grande: revisa el infinito y la lectura de las listas de aldeas."
+  },
+  "pistas": [
+   "¿Cuántos Dijkstra haces? Deberían ser exactamente dos.",
+   "Mete todas las aldeas galas en la cola con distancia 0 y lanza un Dijkstra; lo mismo con las romanas."
+  ]
+ }
+]

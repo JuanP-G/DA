@@ -1,0 +1,12 @@
+{
+ "solucion": "12-Evaluacion/EJ_Eval-1/EJ_Eval-1.cpp",
+ "cabeceras": [
+  "12-Evaluacion/EJ_Eval-1/Digrafo.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (necesaria[S]) { cout << \"NO\\n\"; return; }",
+  ""
+ ],
+ "comprobador": true
+}

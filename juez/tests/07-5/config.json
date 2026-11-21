@@ -1,0 +1,12 @@
+{
+ "solucion": "7-Digrafos valorados y caminos minimos/EJ_07-5/EJ_07-5.cpp",
+ "cabeceras": [
+  "7-Digrafos valorados y caminos minimos/EJ_07-5/DigrafoValorado.h",
+  "7-Digrafos valorados y caminos minimos/EJ_07-5/IndexPQ.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "if (nuevo < mejor[w]) {",
+  "if (nuevo.first < mejor[w].first) {"
+ ]
+}
