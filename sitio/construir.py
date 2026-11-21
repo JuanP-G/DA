@@ -637,37 +637,67 @@ def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
                   JSZIP + ('<link rel="stylesheet" href="../juez/juez.css">' if hay_juez else ""), ruta=f"ej/{slug}.html")
 
 
-def pagina_guia(n_temas, n_ej, n_herr, n_vid):
+def pagina_guia(n_temas, n_ej, n_lab, n_vid):
+    n_t = n_temas - 1   # sin contar las pruebas evaluativas
+    ej = ["Enunciado", "Explicación", "Código"]
+    pills = "".join(f'<span class="gm-mi">@@i:{i}@@<i>{t}</i></span>' for i, t in (("pdf", "Enunciado"), ("book", "Explicación"), ("code", "Código"), ("video", "Vídeo")))
     pasos = [
-        ("1", "Mira la teoría", "El vídeo del tema explica la idea general. Los apuntes la dejan resumida por escrito.", ""),
-        ("2", "Juega con el algoritmo", f"La herramienta interactiva del tema te deja ver paso a paso qué hace el algoritmo (temas con herramienta: {n_herr}).", ""),
-        ("3", "Haz los ejercicios en orden", "Lee el enunciado, inténtalo tú y, cuando te atasques, mira el vídeo y compara con la explicación y el código.", ""),
-        ("4", "Márcalo y sigue", "Pulsa «Marcar como hecho» al terminar. La barra del tema te muestra cuánto llevas.", " ok"),
+        ("Empieza por la portada",
+         "Arriba tienes los accesos al <b>Laboratorio</b> y a los <b>Vídeos</b>, tu progreso y la búsqueda. Más abajo, los temas agrupados por bloques.",
+         "Pulsa <kbd>/</kbd> en cualquier momento para buscar un ejercicio por nombre, número o técnica.",
+         '<div class="gm-acc"><div class="gm-tile lab"><b>Laboratorio</b><span>@@LAB@@ simuladores</span></div><div class="gm-tile vid"><b>Vídeos</b><span>@@VID@@ vídeos</span></div></div>'
+         '<div class="gm-prog"><small>TU PROGRESO</small><b>38%</b><div class="gm-bar"><i style="width:38%"></i></div></div>'),
+        ("Entra en un tema",
+         "Cada tema empieza con su <b>vídeo</b>. Debajo están los <b>PDFs de teoría</b> de clase y la lista de ejercicios. La barra lateral guarda tu progreso y los apuntes.",
+         "Los ejercicios de la lista llevan un acceso directo a su enunciado, explicación, código y vídeo.",
+         '<div class="gm-video"><span class="gm-play">▶</span><small>Vídeo del tema</small></div>'
+         '<div class="gm-row"><span class="gm-ic">@@i:pdf@@</span><b>Colas de prioridad</b><small>PDF · 2,4 MB</small></div>'
+         f'<div class="gm-row ex"><span class="gm-dot"></span><em>02-1</em><b>Lo que cuesta sumar</b><span class="gm-chips">{pills}</span></div>'),
+        ("Abre un ejercicio",
+         "Arriba tienes el <b>vídeo</b> resuelto. Debajo, las pestañas: el <b>enunciado</b> original del juez, la <b>explicación</b> paso a paso, el <b>código</b> en C++ y, si lo tiene, <b>Probar</b>.",
+         "Mira el vídeo primero. Si te atascas, la explicación te dice por qué se plantea así y cuánto cuesta.",
+         '<div class="gm-tabs"><i class="gm-ind" style="left:calc(5px + 3 * 24.2%)"></i><span>Enunciado</span><span>Explicación</span><span>Código</span><span class="on">Probar</span></div>'
+         '<div class="gm-note">Elige una pestaña: el contenido cambia sin salir de la página.</div>'),
+        ("Pruébalo con el juez",
+         "En <b>Probar</b> escribes tu solución y se compila y ejecuta <b>en tu navegador</b> contra las pruebas del ejercicio. Te dice cuál falla, qué esperaba y te da pistas.",
+         "La primera vez descarga el compilador (unos 60 MB). Una prueba con <b>N/E</b> es de recursión muy profunda: el navegador tiene menos pila que el juez real, así que no cuenta como fallo.",
+         '<pre class="gm-code"><span class="kc">#include</span> <span class="s">&lt;iostream&gt;</span>\n<span class="k">int</span> <span class="fn">main</span>() {\n  <span class="t">vector</span>&lt;<span class="k">int</span>&gt; v;  <span class="c">// tu código</span>\n  <span class="kc">return</span> <span class="n">0</span>;\n}</pre>'
+         '<div class="gm-ver">AC · Correcto · 15/16 pruebas <small>(1 no evaluable en el navegador)</small></div>'),
+        ("Márcalo y sigue",
+         "Cuando lo tengas, pulsa <b>Marcar como hecho</b>. La barra del tema y la portada cuentan lo que llevas. Después, <b>Siguiente</b> te lleva al ejercicio que viene.",
+         "Tu progreso se guarda en este navegador: no hace falta cuenta. Si cambias de ordenador o borras los datos del navegador, empezará de cero.",
+         '<div class="gm-done"><span class="gm-ok">@@i:check@@ Hecho</span><span class="gm-next">Siguiente →</span></div>'
+         '<div class="gm-prog"><small>ÁRBOLES AVL</small><b>3 / 8</b><div class="gm-bar"><i style="width:37%"></i></div></div>'),
+        ("Juega en el laboratorio",
+         f"Cada estructura de datos tiene su simulador paso a paso ({n_lab} en total), el código de la asignatura, el coste de cada operación con su «¿por qué?» y ejercicios.",
+         "Los botones de cada simulador muestran el algoritmo funcionando sobre el código real.",
+         '<div class="gm-tabs lab"><i class="gm-ind" style="left:calc(33.3% + 2px);width:calc(33.3% - 6px)"></i><span>Visualizar</span><span class="on">Operaciones y coste</span><span>Ejercicios</span></div>'
+         '<div class="gm-op"><code>insertar(x)</code><em>O(log n)</em><small>Añade x en su sitio y reequilibra</small></div>'),
+        ("Mira los vídeos",
+         f"Hay {n_vid} vídeos. Menú por temas, y dentro de cada uno <b>capítulos</b> que se iluminan según avanza, velocidad, subtítulos y pantalla completa. Al acabar salta al siguiente a los 5 s.",
+         "Teclas: <kbd>f</kbd> pantalla completa, <kbd>k</kbd> o espacio pausa, <kbd>m</kbd> silencio, flechas ±5 s. La opción «Pasar al siguiente» está en el menú ⋮.",
+         '<div class="gm-caps"><span><i>0:00</i>Portada</span><span class="on"><i>0:25</i>Implementaciones</span><span><i>0:39</i>El montículo</span></div>'
+         '<div class="gm-ctl"><span class="gm-ic">▶</span><span class="gm-seek"><i style="width:40%"></i></span><span class="gm-time">0:33 / 1:22</span><span class="gm-ic">⛶</span></div>'),
     ]
-    dentro = [
-        ("Vídeo", "El ejercicio resuelto y explicado. Es lo más útil para entenderlo."),
-        ("Enunciado", "El PDF original del juez, con los casos de ejemplo."),
-        ("Explicación", "Qué piden, cómo se plantea, por qué así y cuánto cuesta."),
-        ("Código", "La solución en C++ lista para copiar o descargar, con sus cabeceras."),
-    ]
+    h_pasos = "".join(
+        f'<div class="gstep"><div class="gtxt"><span class="gn">{i}</span><h3>{esc(t)}</h3><p>{d}</p><p class="gtip">{tip}</p></div>'
+        f'<div class="gmock" aria-hidden="true">{m}</div></div>'
+        for i, (t, d, tip, m) in enumerate(pasos, 1))
+    h_pasos = h_pasos.replace("@@LAB@@", str(n_lab)).replace("@@VID@@", str(n_vid))
     donde = [
-        ("index.html#temas", "Temas", f"Los {n_temas} temas con sus ejercicios, vídeo y apuntes. Empieza aquí."),
-        ("index.html#herramientas", "Herramientas", f"Las {n_herr} herramientas interactivas para ver los algoritmos funcionando."),
-        ("laboratorio.html", "Laboratorio", "Estructuras de datos: simulador paso a paso, código .h, coste de cada operación y ejercicios."),
-        ("videos.html", "Vídeos", f"Todos los vídeos juntos ({n_vid} en total), por si quieres verlos de seguido."),
+        ("index.html#temas", "Temas", f"Los {n_t} temas y las pruebas evaluativas, con vídeo, PDFs, ejercicios y apuntes. Empieza aquí."),
+        ("laboratorio.html", "Laboratorio", f"{n_lab} simuladores de estructuras y algoritmos, con código .h, coste de cada operación y ejercicios."),
+        ("videos.html", "Vídeos", f"Todos los vídeos juntos ({n_vid} en total), por temas, para verlos de seguido."),
     ]
-    h_pasos = "".join(f'<div class="gp"><span class="gn{ok}">{n}</span><b>{esc(t)}</b><span>{esc(d)}</span></div>' for n, t, d, ok in pasos)
-    h_dentro = "".join(f'<div class="gd"><b>{esc(t)}</b><span>{esc(d)}</span></div>' for t, d in dentro)
     h_donde = "".join(f'<a href="{u}"><b>{esc(t)}</b><span>{esc(d)}</span></a>' for u, t, d in donde)
     cuerpo = (f'<div class="wrap guia"><a class="volver" href="index.html">{CHEV_L}<span>Volver a Diseño de Algoritmos</span></a>'
               f'<header><span class="eyebrow">Guía · 1 minuto</span><h1>Cómo usar esta web</h1>'
-              f'<p class="lede">Hay {n_temas} temas y {n_ej} ejercicios, cada uno con su vídeo, su explicación y su código. Esta guía te dice qué es cada cosa y por dónde empezar para no perderte.</p></header>'
-              f'<section><h2>La ruta recomendada para cada tema</h2><div class="gpasos">{h_pasos}</div></section>'
-              f'<section><h2>Qué hay dentro de cada ejercicio</h2><div class="gdentro">{h_dentro}</div></section>'
+              f'<p class="lede">Hay {n_t} temas y {n_ej} ejercicios, cada uno con su vídeo, su explicación, su código y un juez para probar tu solución. Sigue estos seis pasos y no te pierdes.</p></header>'
+              f'<section><div class="gsteps">{h_pasos}</div></section>'
               f'<section><h2>Dónde está cada cosa</h2><div class="gdonde">{h_donde}</div></section>'
-              f'<section class="gcta"><div><b>Tu progreso se guarda en este navegador</b><span>No hace falta cuenta. Si cambias de ordenador o borras los datos del navegador, empezará de cero.</span></div>'
+              f'<section class="gcta"><div><b>Todo en un mismo sitio</b><span>Teoría en PDF, vídeo, explicación, código y juez para cada ejercicio. Empieza por el tema que toque esta semana.</span></div>'
               f'<a class="btn prim" href="tema/1.html">Empezar por el Tema 1 →</a></section></div>')
-    return pagina("Cómo usar esta web | Diseño de Algoritmos UCM", cuerpo, "", "", "Guía de 1 minuto de Diseño de Algoritmos UCM: la ruta recomendada, qué hay en cada ejercicio y dónde está cada cosa.", ruta="guia.html")
+    return pagina("Cómo usar esta web | Diseño de Algoritmos UCM", cuerpo, "", "", "Guía de Diseño de Algoritmos UCM: la ruta recomendada paso a paso, con la teoría, los vídeos, el juez y el laboratorio.", ruta="guia.html")
 
 
 def pagina_cabecera(nombre):
@@ -1378,7 +1408,7 @@ function filtra(){const v=q.value.trim().toLowerCase(),r=document.getElementById
 q.oninput=filtra;
 document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus()}});
 window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');if(g&&!q.value){q.value=g}}catch(e){}if(q.value)filtra()});""")
-    (OUT / "guia.html").write_text(pagina_guia(n_temas, len(solo_ej), len(herr), n_vid), encoding="utf-8", newline="\n")
+    (OUT / "guia.html").write_text(pagina_guia(n_temas, len(solo_ej), len(LABS), n_vid), encoding="utf-8", newline="\n")
     (OUT / "index.html").write_text(pagina("Diseño de Algoritmos UCM: ejercicios resueltos, vídeos y herramientas | StudIA", cuerpo, "", js,
                                            "Ejercicios de Diseño de Algoritmos de la FDI UCM resueltos en C++, con explicación, vídeo paso a paso de cada uno y visualizadores de AVL, grafos y Dijkstra.", ruta=""), encoding="utf-8")
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
