@@ -1,6 +1,6 @@
 # EJ Eval-2 · Bollos preñaos
 
-📄 [Enunciado](<../Enunciados/prob-Bollos preñaos.pdf>) · 💻 [Solución](EJ_Eval-2.cpp)
+📄 [Enunciado](<../Enunciados/prob-Bollos preñaos.pdf>) · 💻 [Solución](EJ_Eval-2.cpp) · 🎬 [Vídeo](<../../Videos/Eval-2_bollos_preñaos.mp4>)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

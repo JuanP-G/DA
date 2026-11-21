@@ -1,6 +1,6 @@
 # EJ Eval-4 · El carpintero Ebanisto
 
-📄 [Enunciado](<../Enunciados/prob-El carpintero Ebanisto.pdf>) · 💻 [Solución](EJ_Eval-4.cpp)
+📄 [Enunciado](<../Enunciados/prob-El carpintero Ebanisto.pdf>) · 💻 [Solución](EJ_Eval-4.cpp) · 🎬 [Vídeo](<../../Videos/Eval-4_carpintero_ebanisto.mp4>)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 
