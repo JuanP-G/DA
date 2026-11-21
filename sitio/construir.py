@@ -39,7 +39,8 @@ TEMAS = {
     9: dict(nombre="Algoritmos voraces II", resumen="Más voraces: pinchar y cubrir intervalos, emparejar extremos de un vector ordenado y voraces sobre Dijkstra.", herr="", cab=[]),
     10: dict(nombre="Programación dinámica", resumen="Recurrencias con subproblemas repetidos rellenadas en tablas: mochila, cambio de monedas y caminos en cuadrículas.", herr="", cab=[]),
     11: dict(nombre="Programación dinámica II", resumen="Programación dinámica con reconstrucción de la solución: mochila 0/1 y palíndromos sobre intervalos.", herr="", cab=[]),
-    12: dict(nombre="Pruebas evaluativas", resumen="Problemas de las pruebas evaluativas de la asignatura.", herr="", cab=[]),
+    12: dict(nombre="Programación dinámica III", resumen="Programación dinámica sobre intervalos y sobre texto: multiplicación encadenada de matrices y justificación de un texto, con los problemas de las pruebas que los usan.", herr="", cab=[]),
+    13: dict(nombre="Pruebas evaluativas", resumen="Problemas de las pruebas evaluativas de la asignatura.", herr="", cab=[]),
 }
 HERRAMIENTAS = [
     ("tema1-avl.html", "Tema 1", "Árbol AVL", "Inserta, borra y pide el k-ésimo; mira el factor de equilibrio y cada rotación."),
@@ -64,7 +65,7 @@ DA_CSS = (ESTILO / "da.css").read_text(encoding="utf-8")
 PROGRESO_JS = (ESTILO / "progreso.js").read_text(encoding="utf-8")
 PORTAL_URL = os.environ.get("PORTAL_URL", "https://studia-one-flax.vercel.app")   # URL del portal; si está vacía no se enseña el enlace
 BLOQUES = [("Estructuras de datos", [1, 2, 3], "var(--s1)"), ("Grafos", [4, 5, 6, 7], "var(--s2)"), ("Algoritmos voraces", [8, 9], "var(--s3)"),
-           ("Programación dinámica", [10, 11], "var(--s4)"), ("Evaluación", [12], "var(--muted)")]
+           ("Programación dinámica", [10, 11, 12], "var(--s4)"), ("Evaluación", [13], "var(--muted)")]
 DECO = ('<div class="deco" aria-hidden="true"><svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"><defs>'
         '<linearGradient id="dg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff" stop-opacity=".55"/><stop offset="1" stop-color="#4f6bff" stop-opacity="0"/></linearGradient>'
         '<linearGradient id="dg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d5cff" stop-opacity=".5"/><stop offset="1" stop-color="#2a3cff" stop-opacity="0"/></linearGradient>'
@@ -297,7 +298,7 @@ KATEX = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Ka
 JSZIP = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>'
 
 
-EVAL = 12   # las pruebas evaluativas se guardan como «tema 12», pero en la web no llevan número
+EVAL = 13   # las pruebas evaluativas se guardan como «tema 13», pero en la web no llevan número
 
 
 def tema_corto(t):
@@ -1211,7 +1212,7 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
                + (f'<details class="sbox aprende" data-aprende><summary><h2>Aprende</h2></summary><div class="alist main">{"".join(principales)}</div>{('<h3 class="sub">PDFs de teoría</h3><div class="alist">' + "".join(pdfs) + '</div>') if pdfs else ""}</details>' if aprender else '')
                + (f'<div class="sbox"><h2>Plantillas y código</h2><div class="rec">{"".join(recursos)}</div></div>' if recursos else '')
                + '</aside>')
-    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas" data-back>← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>{tema_corto(t)}</span></div>'
+    cuerpo = (f'<div class="wrap"><div class="crumbs"><a class="back" href="../index.html#temas">← Volver</a><a href="../index.html">Inicio</a>›<a href="../index.html#temas">{esc(bloque)}</a>›<span>{tema_corto(t)}</span></div>'
               f'<div class="thead" data-ids="{ids}"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="tag">{esc(bloque)}</span><span class="est" data-est>Sin empezar</span></div>'
               f'<h1>{esc(tema_largo(t, info["nombre"]))}</h1><p class="lede">{esc(info["resumen"])}</p></div>'
               f'<div class="tlay">{lateral}<main class="tmain">{vhero}{pdfsec}<div class="mh" id="ejercicios"><h2>Ejercicios <span class="cnt">{n}</span></h2>'

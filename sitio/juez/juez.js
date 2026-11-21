@@ -138,14 +138,7 @@
         if (ev.key === 'Tab') { ev.preventDefault(); document.execCommand('insertText', false, '    '); }
       });
       this.btn = h('button', { class: 'btn prim', type: 'button', onclick: () => this.comprobar() }, 'Comprobar');
-      const botones = [
-        this.btn,
-        h('button', { class: 'btn dj-extra', type: 'button', onclick: () => this.poner(this.m.plantilla) }, 'Plantilla vacía'),
-      ];
-      if (this.m.demo) {
-        botones.push(h('button', { class: 'btn dj-extra', type: 'button', onclick: async () => this.poner(await this.texto(this.m.demo.solucion)) }, 'Demo: solución correcta'));
-        botones.push(h('button', { class: 'btn dj-extra', type: 'button', onclick: async () => this.poner(await this.texto(this.m.demo.fallo)) }, 'Demo: con un fallo'));
-      }
+      const botones = [this.btn];
       this.bar = h('div', { class: 'dj-bar' }, botones);
       let ok = false;
       try { ok = localStorage.getItem(this.clave + '-ok') === '1'; } catch (e) {}
