@@ -547,3 +547,8 @@ body.cine-on{overflow:hidden}
 
 /* tema: teoría en PDF visible en la columna principal (antes solo estaba en el plegable «Aprende») */
 .pdfsec{margin:0 0 22px}.pdfsec .alist{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+
+/* código: paleta de VS Code Dark+ (palabras clave, control, tipos, funciones, números, cadenas, comentarios) */
+:root{--kw:#569cd6;--kc:#c586c0;--ty:#4ec9b0;--fn:#dcdcaa;--nu:#b5cea8;--st:#ce9178;--co:#6a9955}
+.codebox .kc{color:var(--kc)}.codebox .fn{color:var(--fn)}
+.codebox .c{font-style:italic}

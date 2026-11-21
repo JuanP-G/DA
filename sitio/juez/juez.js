@@ -10,9 +10,9 @@
   const NOMBRES = {
     ac: 'Correcto', wa: 'Respuesta incorrecta', pe: 'Error de presentación', ce: 'Error de compilación',
     tle: 'Tiempo excedido', mle: 'Memoria excedida', rte: 'Error de ejecución', ole: 'Salida excesiva',
-    skip: 'No ejecutada',
+    skip: 'No ejecutada', nav: 'No evaluable en el navegador',
   };
-  const SIGLAS = { ac: 'AC', wa: 'WA', pe: 'PE', ce: 'CE', tle: 'TLE', mle: 'MLE', rte: 'RTE', ole: 'OLE', skip: '—' };
+  const SIGLAS = { ac: 'AC', wa: 'WA', pe: 'PE', ce: 'CE', tle: 'TLE', mle: 'MLE', rte: 'RTE', ole: 'OLE', skip: '—', nav: 'N/E' };
   const QUE_ES = {
     wa: 'Tu programa termina, pero escribe algo distinto de lo esperado.',
     pe: 'Los datos son correctos, pero el formato no: espacios, saltos de línea o el orden en que los escribes.',
@@ -47,6 +47,38 @@
     if (/call stack|Maximum/.test(d)) return 'Recursión demasiado profunda (desbordamiento de pila). ' + d;
     if (/exited with code/.test(d)) return 'El programa terminó con código de error: ' + d;
     return d;
+  }
+  // ---- resaltado de sintaxis ligero para C++ (colores de VS Code Dark+) ----
+  const KW = new Set('auto bool char class const constexpr delete double enum explicit extern false float inline int long namespace new nullptr operator private protected public short signed sizeof static struct template this true typedef typename union unsigned using virtual void volatile'.split(' '));
+  const CTL = new Set('if else for while do switch case default return break continue throw try catch goto'.split(' '));
+  const TIPOS = new Set('vector string queue stack deque map set unordered_map unordered_set multiset pair priority_queue array bitset list cin cout cerr endl std size_t istream ostream ifstream ofstream Set Grafo Digrafo GrafoValorado DigrafoValorado IndexPQ ConjuntosDisjuntos Arista AristaDirigida Adys Par BinTree Pila'.split(' '));
+  const TOK = /(\/\/.*$)|(\/\*[\s\S]*?(?:\*\/|(?![\s\S])))|("(?:[^"\\\n]|\\.)*"?)|('(?:[^'\\\n]|\\.)*'?)|(#\s*\w+)|(\b\d[\w.]*)|([A-Za-z_]\w*)|(\s+)|([\s\S])/gm;
+  const FN = /\s*\(/y;
+  const esc = t => t.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  function resalta(src) {
+    let out = '', m, incl = false;
+    TOK.lastIndex = 0;
+    while ((m = TOK.exec(src))) {
+      const t = m[0];
+      if (m[1] || m[2]) out += '<span class="c">' + esc(t) + '</span>';
+      else if (m[3] || m[4]) out += '<span class="s">' + esc(t) + '</span>';
+      else if (m[5]) { incl = /include/.test(t); out += '<span class="kc">' + esc(t) + '</span>'; }
+      else if (m[6]) out += '<span class="n">' + esc(t) + '</span>';
+      else if (m[7]) {
+        FN.lastIndex = TOK.lastIndex;
+        const esFn = FN.test(src);
+        if (CTL.has(t)) out += '<span class="kc">' + t + '</span>';
+        else if (KW.has(t)) out += '<span class="k">' + t + '</span>';
+        else if (TIPOS.has(t) || (/^[A-Z][a-z]\w*$/.test(t) && !esFn)) out += '<span class="t">' + t + '</span>';
+        else if (esFn) out += '<span class="fn">' + t + '</span>';
+        else out += esc(t);
+      } else if (m[9] === '<' && incl) {   // #include <cabecera>
+        const fin = src.indexOf('>', TOK.lastIndex), nl = src.indexOf('\n', TOK.lastIndex);
+        if (fin > -1 && (nl < 0 || fin < nl)) { out += '<span class="s">&lt;' + esc(src.slice(TOK.lastIndex, fin)) + '&gt;</span>'; TOK.lastIndex = fin + 1; incl = false; }
+        else out += '&lt;';
+      } else { if (m[8] && t.includes('\n')) incl = false; out += esc(t); }
+    }
+    return out;
   }
   function h(tag, attrs, ...hijos) {
     const e = document.createElement(tag);
@@ -94,21 +126,30 @@
     dibujar() {
       let guardado = '';
       try { guardado = localStorage.getItem(this.clave) || ''; } catch (e) {}
-      this.ta = h('textarea', { class: 'dj-code', spellcheck: 'false', 'aria-label': 'Tu código C++', rows: 22 });
+      this.ta = h('textarea', { class: 'dj-code', spellcheck: 'false', wrap: 'off', 'aria-label': 'Tu código C++', rows: 22 });
       this.ta.value = guardado || this.m.plantilla;
-      this.ta.addEventListener('input', () => { try { localStorage.setItem(this.clave, this.ta.value); } catch (e) {} });
+      this.hl = h('pre', { class: 'dj-hl', 'aria-hidden': 'true' });
+      const pinta = () => { this.hl.innerHTML = resalta(this.ta.value) + '\n'; };
+      pinta();
+      this.ed = h('div', { class: 'dj-ed' }, this.hl, this.ta);
+      this.ta.addEventListener('input', () => { pinta(); try { localStorage.setItem(this.clave, this.ta.value); } catch (e) {} });
+      this.ta.addEventListener('scroll', () => { this.hl.scrollTop = this.ta.scrollTop; this.hl.scrollLeft = this.ta.scrollLeft; });
       this.ta.addEventListener('keydown', ev => {
         if (ev.key === 'Tab') { ev.preventDefault(); document.execCommand('insertText', false, '    '); }
       });
       this.btn = h('button', { class: 'btn prim', type: 'button', onclick: () => this.comprobar() }, 'Comprobar');
       const botones = [
         this.btn,
-        h('button', { class: 'btn', type: 'button', onclick: () => this.poner(this.m.plantilla) }, 'Plantilla vacía'),
+        h('button', { class: 'btn dj-extra', type: 'button', onclick: () => this.poner(this.m.plantilla) }, 'Plantilla vacía'),
       ];
       if (this.m.demo) {
-        botones.push(h('button', { class: 'btn', type: 'button', onclick: async () => this.poner(await this.texto(this.m.demo.solucion)) }, 'Demo: solución correcta'));
-        botones.push(h('button', { class: 'btn', type: 'button', onclick: async () => this.poner(await this.texto(this.m.demo.fallo)) }, 'Demo: con un fallo'));
+        botones.push(h('button', { class: 'btn dj-extra', type: 'button', onclick: async () => this.poner(await this.texto(this.m.demo.solucion)) }, 'Demo: solución correcta'));
+        botones.push(h('button', { class: 'btn dj-extra', type: 'button', onclick: async () => this.poner(await this.texto(this.m.demo.fallo)) }, 'Demo: con un fallo'));
       }
+      this.bar = h('div', { class: 'dj-bar' }, botones);
+      let ok = false;
+      try { ok = localStorage.getItem(this.clave + '-ok') === '1'; } catch (e) {}
+      this.bar.classList.toggle('dj-resuelto', ok);
       this.estado = h('div', { class: 'dj-estado', role: 'status', 'aria-live': 'polite' });
       this.res = h('div', { class: 'dj-res' });
       this.raiz.replaceChildren(
@@ -116,9 +157,14 @@
           ? h('p', { class: 'dj-nota' }, 'Al pulsar Comprobar, tu código se envía al servidor del juez (una Raspberry Pi), que lo compila con g++ (C++17) y lo ejecuta aislado con límites de tiempo y memoria. Si el servidor no responde, se usa el compilador del navegador (clang 8, ~60 MB la primera vez).')
           : h('p', { class: 'dj-nota' }, 'Tu código se compila y se ejecuta en tu navegador con ', h('b', {}, 'clang 8 (C++17)'),
           '; no se envía a ningún servidor. La primera vez descarga el compilador (~60 MB, queda en caché).'),
-        this.ta,
-        h('div', { class: 'dj-bar' }, botones),
+        this.ed,
+        this.bar,
         this.estado, this.res);
+    }
+
+    resuelto(on) {
+      this.bar.classList.toggle('dj-resuelto', on);
+      try { on ? localStorage.setItem(this.clave + '-ok', '1') : localStorage.removeItem(this.clave + '-ok'); } catch (e) {}
     }
 
     poner(codigo) { this.ta.value = codigo; this.ta.dispatchEvent(new Event('input')); this.res.replaceChildren(); this.estado.textContent = ''; }
@@ -263,6 +309,9 @@
         this.worker.terminate(); this.worker = null; this.compilado = null; this.msgs.clear();
         return { t, v: 'tle', ms: limite };
       }
+      if (r.estado === 'rte' && /call stack|Maximum/.test(r.detalle || '') && (t.tipo === 'rendimiento' || /recursi/i.test(t.comprueba || ''))) {
+        return { t, v: 'nav', ms: r.ms, detalle: 'El navegador tiene la pila de llamadas mucho más pequeña que el juez real, así que una recursión de esta profundidad se corta aunque tu solución sea correcta. Esta prueba no cuenta como fallo: se comprueba con el servidor del juez o en Acepta el Reto.' };
+      }
       if (r.estado === 'rte') return { t, v: 'rte', ms: r.ms, detalle: explica(r.detalle) };
       if (r.ms > limite) return { t, v: 'tle', ms: r.ms };
       let d;
@@ -283,9 +332,10 @@
       const total = this.m.tests.length;
       const ok = filas.filter(f => f.v === 'ac').length;
       const hechas = filas.filter(f => f.v !== 'skip').length;
-      const mal = filas.find(f => f.v !== 'ac' && f.v !== 'skip');
+      const mal = filas.find(f => f.v !== 'ac' && f.v !== 'skip' && f.v !== 'nav');
+      const nav = filas.filter(f => f.v === 'nav').length;
       let cab;
-      if (final && !mal) cab = this.veredicto('ac', `${SIGLAS.ac} · Correcto · ${ok}/${total} pruebas`);
+      if (final && !mal) cab = this.veredicto('ac', `${SIGLAS.ac} · Correcto · ${ok}/${total} pruebas` + (nav ? ` (${nav} no evaluable${nav > 1 ? 's' : ''} en el navegador)` : ''));
       else if (mal && final) cab = this.veredicto(mal.v, `${SIGLAS[mal.v]} · ${NOMBRES[mal.v]} · ${ok}/${total} pruebas`);
       else cab = this.veredicto('run', `En curso · ${ok}/${hechas} bien`);
       const lista = h('ul', { class: 'dj-tests' }, filas.map((f, i) => {
@@ -301,7 +351,7 @@
             h('div', {}, h('span', {}, 'tu salida '), h('code', {}, corta(f.dif.obtenida))),
             f.dif.motivo ? h('div', { class: 'dj-motivo' }, 'Por qué: ' + f.dif.motivo) : null,
             this.m.comprobador && f.dif.esperada ? h('div', {}, 'La salida esperada es una de las respuestas válidas: vale cualquiera que cumpla el enunciado.') : null));
-        } else if (f.v === 'rte' || f.v === 'mle' || f.v === 'ole') {
+        } else if (f.v === 'rte' || f.v === 'mle' || f.v === 'ole' || f.v === 'nav') {
           li.append(h('div', { class: 'dj-dif' }, f.detalle || QUE_ES[f.v]));
         } else if (f.v === 'tle') {
           li.append(h('div', { class: 'dj-dif' }, `Pasó del límite de ${this.m.limite_ms || 3000} ms.`));
@@ -310,13 +360,14 @@
         return li;
       }));
       const partes = [cab];
+      if (final) this.resuelto(!mal);
       if (final && mal) partes.push(this.guia(filas));
       partes.push(lista);
       this.res.replaceChildren(...partes);
     }
 
     // ---------- guía: de dónde viene el fallo (motor en diagnostico.js, el mismo que usa el verificador) ----------
-    diagnostico(filas) { return window.DAJuezDiag.diagnostico(filas); }
+    diagnostico(filas) { return window.DAJuezDiag.diagnostico(filas.filter(f => f.v !== 'nav')); }
 
     guia(filas) {
       const { clave, notas } = this.diagnostico(filas);

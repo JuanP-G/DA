@@ -229,12 +229,13 @@ FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="p
 
 HIGHLIGHT_JS = r"""
 const KW=/^(for|if|else|while|return|const|class|struct|public|private|protected|void|bool|int|long|double|char|auto|true|false|template|typename|using|namespace|throw|new|delete|break|continue|static|nullptr|include|define|ifndef|endif|inline|unsigned|operator|switch|case|default|do)$/;
+const CTL=/^(if|else|for|while|do|switch|case|default|return|break|continue|throw|try|catch|goto)$/;
 const TY=/^(Set|Grafo|Digrafo|IndexPQ|Par|vector|queue|stack|string|priority_queue|pair|map|set|cin|cout|endl|std|Adys|size_t|BinTree|Pila|istream|ostream)$/;
 const TOK=/(\/\/.*$)|(\/\*[\s\S]*?\*\/)|("[^"]*")|(#\w+)|(\b\d+\b)|(\b[A-Za-z_]\w*\b)|(\s+)|(.)/g;
 function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 function paint(src){let h='',m;TOK.lastIndex=0;while((m=TOK.exec(src))){const t=m[0];
  if(m[1]||m[2])h+='<span class="c">'+esc(t)+'</span>';else if(m[3])h+='<span class="s">'+esc(t)+'</span>';else if(m[4])h+='<span class="k">'+esc(t)+'</span>';
- else if(m[5])h+='<span class="n">'+t+'</span>';else if(m[6]&&KW.test(t))h+='<span class="k">'+t+'</span>';else if(m[6]&&TY.test(t))h+='<span class="t">'+t+'</span>';else h+=esc(t)}return h}
+ else if(m[5])h+='<span class="n">'+t+'</span>';else if(m[6]&&CTL.test(t))h+='<span class="kc">'+t+'</span>';else if(m[6]&&KW.test(t))h+='<span class="k">'+t+'</span>';else if(m[6]&&(TY.test(t)||/^[A-Z][a-z]\w*$/.test(t)&&!/^\s*\(/.test(src.slice(TOK.lastIndex))))h+='<span class="t">'+t+'</span>';else if(m[6]&&/^\s*\(/.test(src.slice(TOK.lastIndex)))h+='<span class="fn">'+t+'</span>';else h+=esc(t)}return h}
 document.querySelectorAll('pre[data-code]').forEach(pre=>{
  const name=pre.dataset.code,src=pre.textContent.replace(/\n$/,'');
  const box=document.createElement('div');box.className='codebox';if(pre.id)box.id=pre.id;box.dataset.src=src;
