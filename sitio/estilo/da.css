@@ -586,3 +586,13 @@ body.cine-on{overflow:hidden}
 .gm-ctl{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:#0b0e1f;color:#fff}.gm-seek{flex:1;height:4px;border-radius:99px;background:rgba(255,255,255,.25)}.gm-seek i{display:block;height:100%;width:40%;border-radius:99px;background:#2dd4bf}.gm-time{font:600 .75rem var(--mono)}
 @media(max-width:760px){.gstep{grid-template-columns:1fr;gap:16px;padding:18px}.gm-chips .gm-mi{padding:0 6px}}
 .gm-row em{white-space:nowrap}.gm-row b{min-width:0}
+
+/* ejercicios con juez: «hecho» solo con AC; «intentado» si se ha enviado y falló */
+.okb.jz{cursor:default}.okb.jz:hover{border-color:var(--line)}
+.okb.jz.on:hover{border-color:var(--c,var(--accent))}
+.okb.int{border-color:var(--amber);background:color-mix(in srgb,var(--amber) 22%,transparent);color:var(--amber)}
+.okb.int:hover{border-color:var(--amber)}
+.okb-ej.jz{text-decoration:none}
+.okb-ej.int{border-color:var(--amber);color:var(--amber);background:color-mix(in srgb,var(--amber) 14%,transparent)}
+.el.int .dot{border-color:var(--amber);background:color-mix(in srgb,var(--amber) 28%,transparent)}
+.exr.int .t a{color:var(--ink)}

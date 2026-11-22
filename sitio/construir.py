@@ -568,7 +568,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
             ("explicacion", "@@i:book@@ Explicación", bool(e["readme"]), p_exp), ("codigo", "@@i:code@@ Código", bool(codigos), p_cod)]
     hay_juez = slug in JUECES
     if hay_juez:
-        p_juez = (f'<div class="dj-host" data-manifest="../juez/{slug}/manifest.json" '
+        p_juez = (f'<div class="dj-host" data-slug="{slug}" data-manifest="../juez/{slug}/manifest.json" '
                   f'data-wasm="{esc(os.environ.get("JUEZ_WASM_BASE", "https://binji.github.io/wasm-clang/"))}" '
                   f'data-servidor="{esc(os.environ.get("JUEZ_SERVIDOR", ""))}"><p class="hint">Cargando el juez…</p></div>')
         tabs.append(("probar", "@@i:check@@ Probar", True, p_juez))
@@ -617,8 +617,8 @@ def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
     teoria_pag = es_teoria(e)
     prev_b = (f'<a class="enav prev" href="{ant[0]}.html"><span class="ar">{CHEV_L}</span><span class="tx"><small>Anterior</small>{esc(ant[1])}</span></a>' if ant else "<span></span>")
     if sig:
-        etq = "Siguiente" if teoria_pag else "Marcar como hecho y seguir"
-        done = "" if teoria_pag else f' data-done-go="{slug}"'
+        etq = "Siguiente" if (teoria_pag or slug in JUECES) else "Marcar como hecho y seguir"
+        done = "" if (teoria_pag or slug in JUECES) else f' data-done-go="{slug}"'
         next_b = f'<a class="enav next"{done} href="{sig[0]}.html"><span class="tx"><small>{etq}</small>{esc(sig[1])}</span><span class="ar">{CHEV_R}</span></a>'
     else:
         next_b = f'<a class="enav next" href="../tema/{tema}.html"><span class="tx"><small>Has llegado al final</small>Volver al tema {tema}</span><span class="ar">{CHEV_R}</span></a>'
@@ -629,7 +629,7 @@ def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
     cuerpo = (f'<div class="wrap"><div class="elay">{lateral}<main class="emain">{aviso}'
               f'<div class="ejhead"><span class="eyebrow">{etq_ej}</span>'
               f'<div class="ejtit"><h1>{esc(e["titulo"])}</h1>'
-              f'<button class="btn okb-ej" data-ok="{slug}" aria-pressed="false">@@i:check@@ <span class="lab">Marcar como hecho</span></button></div>'
+              f'{okb_ej(slug)}</div>'
               f'<p class="lede">{md_inline(e["idea"])}</p></div>'
               f'{p_vid}'
               f'<div class="tabsbar"><div class="tabs">{botones}</div><div class="xls">{"".join(acc)}</div></div>{panes}{cierre}</main></div></div>{teoria_panel(tema, "../")}')
@@ -1186,6 +1186,21 @@ document.querySelectorAll('[data-teo]').forEach(function(x){x.onclick=function()
 """
 
 
+def okb_fila(s_, e):
+    """Círculo de «hecho» de la lista. Con juez no se puede marcar a mano: lo pone el juez al dar AC."""
+    if s_ in JUECES:
+        return (f'<span class="okb jz" data-ok="{s_}" data-juez title="Se marca solo al aprobar en el juez" role="img" '
+                f'aria-label="{esc(e["id"])}: pendiente; se marca al aprobar en el juez">@@i:check@@</span>')
+    return f'<button class="okb" data-ok="{s_}" aria-label="Marcar {esc(e["id"])} como hecho" aria-pressed="false">@@i:check@@</button>'
+
+
+def okb_ej(slug):
+    if slug in JUECES:
+        return (f'<a class="btn okb-ej jz" data-ok="{slug}" data-juez href="#probar" title="Se marca solo al aprobar en el juez">'
+                '@@i:check@@ <span class="lab">Sin intentar · Probar</span></a>')
+    return f'<button class="btn okb-ej" data-ok="{slug}" aria-pressed="false">@@i:check@@ <span class="lab">Marcar como hecho</span></button>'
+
+
 def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     color = color_de(t)
     teo = [x for x in lista if es_teoria(x[1])]
@@ -1196,7 +1211,7 @@ def pagina_tema(t, info, lista, slugs, cabs, herr_ok, nombres_temas):
     filas = []
     for i, e in lista:
         s_ = slugs[i]
-        filas.append(f'<div class="exr" data-v="{1 if e["video"] else 0}" style="--c:{color}"><button class="okb" data-ok="{s_}" aria-label="Marcar {esc(e["id"])} como hecho" aria-pressed="false">@@i:check@@</button>'
+        filas.append(f'<div class="exr" data-v="{1 if e["video"] else 0}" style="--c:{color}">{okb_fila(s_, e)}'
                      f'<span class="id">{esc(e["id"])}</span><span class="t"><a href="../ej/{s_}.html">{esc(e["titulo"])}</a>'
                      f'<span class="idea">{md_inline(e["idea"])}</span></span><span class="chips">{chips(e, s_, "../")}</span></div>')
     acc = []
@@ -1273,7 +1288,7 @@ JUEZ_JS = r"""
  const cargar=s=>new Promise((ok,ko)=>{const e=document.createElement('script');e.src=s;e.onload=ok;e.onerror=ko;document.head.appendChild(e)});
  function montar(){if(hecho)return;hecho=true;
   cargar('../juez/diagnostico.js').then(()=>cargar('../juez/juez.js'))
-   .then(()=>DAJuez.mount(host,{manifest:host.dataset.manifest,wasmBase:host.dataset.wasm,servidor:host.dataset.servidor}))
+   .then(()=>DAJuez.mount(host,{slug:host.dataset.slug,manifest:host.dataset.manifest,wasmBase:host.dataset.wasm,servidor:host.dataset.servidor}))
    .catch(()=>{host.textContent='No se ha podido cargar el juez. Recarga la página.'})}
  document.querySelectorAll('[data-tab="probar"]').forEach(b=>b.addEventListener('click',montar));
  if(location.hash==='#probar')montar();
@@ -1391,12 +1406,12 @@ def main():
 <section class="bloque" id="videos"><h2>Vídeos</h2><p class="lede">Un vídeo paso a paso por cada ejercicio y por cada tema ({n_vid} en total), que se ven aquí mismo, con subtítulos.</p><p><a class="btn primary" href="videos.html">Ver todos los vídeos →</a></p></section>
 <footer>Material de estudio independiente, no afiliado a la UCM</footer></div>"""
     datos = json.dumps([{"s": slugs[i], "i": e["id"], "t": e["titulo"], "d": re.sub(r"`", "", e["idea"]), "k": color_de(e["tema"]),
-                         "h": 1 if es_teoria(e) else 0, "v": 1 if e["video"] else 0, "c": 1 if e["sols"] else 0, "e": 1 if e["readme"] else 0, "p": 1 if e["pdf"] else 0} for i, e in enumerate(ej)], ensure_ascii=False)
+                         "h": 1 if es_teoria(e) else 0, "v": 1 if e["video"] else 0, "c": 1 if e["sols"] else 0, "e": 1 if e["readme"] else 0, "p": 1 if e["pdf"] else 0, "j": 1 if slugs[i] in JUECES else 0} for i, e in enumerate(ej)], ensure_ascii=False)
     js = ("const EJ=" + datos.replace("</", "<\\/") + r""";
 const q=document.getElementById('q');
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function fila(x){const ch=[];if(x.p)ch.push('<a class="chip p" href="ej/'+x.s+'.html#enunciado">Enunciado</a>');if(x.c)ch.push('<a class="chip" href="ej/'+x.s+'.html#codigo">Código</a>');if(x.e)ch.push('<a class="chip" href="ej/'+x.s+'.html#explicacion">Explicación</a>');if(x.v)ch.push('<a class="chip v" href="ej/'+x.s+'.html#video">Vídeo</a>');
- const ok=x.h?'<span class="okb th0" aria-hidden="true"><svg class="i"><use href="#i-book"/></svg></span>':'<button class="okb" data-ok="'+x.s+'" aria-label="Marcar '+esc(x.i)+' como hecho" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></button>';
+ const ok=x.h?'<span class="okb th0" aria-hidden="true"><svg class="i"><use href="#i-book"/></svg></span>':x.j?'<span class="okb jz" data-ok="'+x.s+'" data-juez title="Se marca solo al aprobar en el juez"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span>':'<button class="okb" data-ok="'+x.s+'" aria-label="Marcar '+esc(x.i)+' como hecho" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></button>';
  return '<div class="exr'+(x.h?' teoria':'')+'" style="--c:'+x.k+'">'+ok+'<span class="id">'+(x.h?'Teoría':esc(x.i))+'</span><span class="t"><a href="ej/'+x.s+'.html">'+esc(x.t)+'</a></span><span class="idea">'+esc(x.d)+'</span><span class="chips">'+ch.join('')+'</span></div>'}
 function filtra(){const v=q.value.trim().toLowerCase(),r=document.getElementById('resultados'),t=document.getElementById('temas');
  try{sessionStorage.setItem('q',q.value)}catch(e){}

@@ -1,20 +1,22 @@
 /* Progreso personal: ejercicios marcados como hechos. Se guarda solo en este navegador (localStorage).
    Los botones llevan data-ok="<slug>"; las tarjetas y bloques llevan data-ids="slug1,slug2,…". */
 (function(){
-  var KEY='studia-da-hechos';
+  var KEY='studia-da-hechos',KI='studia-da-intentos';
+  function leerI(){try{return JSON.parse(localStorage.getItem(KI)||'{}')}catch(e){return{}}}
   function leer(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
   function guardar(h){try{localStorage.setItem(KEY,JSON.stringify(h))}catch(e){}}
   function pct(a,b){return b?Math.round(a/b*100):0}
   function cuenta(ids,h){return ids.filter(function(i){return h[i]}).length}
   function ids(el){return el.dataset.ids?el.dataset.ids.split(','):[]}
   function pintar(){
-    var h=leer();
+    var h=leer(),I=leerI();
     document.querySelectorAll('[data-ok]').forEach(function(b){
-      var on=!!h[b.dataset.ok];b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');
-      var f=b.closest('.exr');if(f)f.classList.toggle('hecho',on);
-      var l=b.querySelector('.lab');if(l)l.textContent=on?'Hecho':'Marcar como hecho';
+      var on=!!h[b.dataset.ok],jz=b.hasAttribute('data-juez'),it=jz&&!on&&!!I[b.dataset.ok];b.classList.toggle('on',on);b.classList.toggle('int',it);
+      if(!jz)b.setAttribute('aria-pressed',on?'true':'false');
+      var f=b.closest('.exr');if(f){f.classList.toggle('hecho',on);f.classList.toggle('int',it)}
+      var l=b.querySelector('.lab');if(l)l.textContent=jz?(on?'Aprobado en el juez':it?'Intentado · sigue probando':'Sin intentar · Probar'):(on?'Hecho':'Marcar como hecho');
     });
-    document.querySelectorAll('[data-st]').forEach(function(a){a.classList.toggle('hecho',!!h[a.dataset.st])});
+    document.querySelectorAll('[data-st]').forEach(function(a){var on=!!h[a.dataset.st];a.classList.toggle('hecho',on);a.classList.toggle('int',!on&&!!I[a.dataset.st])});
     document.querySelectorAll('.tcard[data-ids],.box[data-ids],.prog-box[data-ids],.thead[data-ids]').forEach(function(c){
       var l=ids(c),n=cuenta(l,h),t=l.length;
       var bar=c.querySelector('[data-bar]');if(bar)bar.style.width=pct(n,t)+'%';
@@ -42,6 +44,7 @@
   document.addEventListener('click',function(e){
     var g=e.target.closest('[data-done-go]');if(g){var hh=leer();hh[g.dataset.doneGo]=1;guardar(hh);return}
     var b=e.target.closest('[data-ok]');if(!b)return;
+    if(b.hasAttribute('data-juez')){if(b.tagName!=='A')e.preventDefault();return}
     e.preventDefault();e.stopPropagation();
     var h=leer(),k=b.dataset.ok;if(h[k])delete h[k];else h[k]=1;guardar(h);pintar();
   });

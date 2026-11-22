@@ -156,7 +156,23 @@
         this.estado, this.res);
     }
 
+    // Progreso del curso: AC -> «hecho»; cualquier otro resultado -> «intentado» (no quita un hecho ya conseguido).
+    // OJO: el juez corre en el navegador, así que esto no es a prueba de trampas; lo será con el juez en servidor.
+    marcar(ac) {
+      const s = this.cfg.slug;
+      if (!s) return;
+      try {
+        const H = JSON.parse(localStorage.getItem('studia-da-hechos') || '{}');
+        const I = JSON.parse(localStorage.getItem('studia-da-intentos') || '{}');
+        if (ac) { H[s] = 1; delete I[s]; } else if (!H[s]) I[s] = 1;
+        localStorage.setItem('studia-da-hechos', JSON.stringify(H));
+        localStorage.setItem('studia-da-intentos', JSON.stringify(I));
+      } catch (e) {}
+      if (window.pintarProgreso) window.pintarProgreso();
+    }
+
     resuelto(on) {
+      this.marcar(on);
       this.bar.classList.toggle('dj-resuelto', on);
       try { on ? localStorage.setItem(this.clave + '-ok', '1') : localStorage.removeItem(this.clave + '-ok'); } catch (e) {}
     }
@@ -404,6 +420,7 @@
     }
 
     pintarCE(log) {
+      this.marcar(false);
       const notas = [];
       const reglas = [
         [/was not declared in this scope/, 'Usas algo que no está declarado: una variable con otro nombre, una función que no existe o te falta un #include (por ejemplo <vector>, <string> o <algorithm>).'],
