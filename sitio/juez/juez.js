@@ -24,22 +24,22 @@
     ce: 'El código no compila: el compilador te dice en qué línea está el error.',
   };
 
-  // ---- comparación: ignora espacios al final de línea y líneas vacías finales ----
+  // ---- comparación: se comparan las palabras; da igual cuántos espacios o saltos de línea haya ----
   function lineas(t) {
     const l = t.replace(/\r/g, '').split('\n').map(x => x.replace(/\s+$/, ''));
     while (l.length && l[l.length - 1] === '') l.pop();
     return l;
   }
+  const palabras = t => t.trim().split(/\s+/).filter(Boolean);
   function compara(esperada, obtenida) {
+    const p = palabras(esperada), q = palabras(obtenida);
+    if (p.length === q.length && p.every((x, i) => x === q[i])) return { igual: true };
     const a = lineas(esperada), b = lineas(obtenida);
     const n = Math.max(a.length, b.length);
     for (let i = 0; i < n; i++) {
-      if (a[i] !== b[i]) {
-        const pe = esperada.trim().split(/\s+/).join(' ') === obtenida.trim().split(/\s+/).join(' ');
-        return { igual: false, linea: i + 1, esperada: a[i], obtenida: b[i], total: a.length, lineas_tuyas: b.length, pe };
-      }
+      if (a[i] !== b[i]) return { igual: false, linea: i + 1, esperada: a[i], obtenida: b[i], total: a.length, lineas_tuyas: b.length };
     }
-    return { igual: true };
+    return { igual: false, linea: 1, esperada: undefined, obtenida: undefined, total: a.length, lineas_tuyas: b.length };
   }
 
   function explica(d) {

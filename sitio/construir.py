@@ -37,8 +37,8 @@ TEMAS = {
     7: dict(nombre="Dígrafos valorados y caminos mínimos", resumen="Dígrafos con costes en las aristas y el algoritmo de Dijkstra: distancias mínimas, contar caminos y reconstruir rutas.", herr="tema7-dijkstra.html", cab=["DigrafoValorado.h", "IndexPQ.h"]),
     8: dict(nombre="Algoritmos voraces", resumen="Elegir en cada paso lo que parece mejor sin volver atrás: intervalos, emparejamientos y por qué la elección es óptima.", herr="", cab=[]),
     9: dict(nombre="Algoritmos voraces II", resumen="Más voraces: pinchar y cubrir intervalos, emparejar extremos de un vector ordenado y voraces sobre Dijkstra.", herr="", cab=[]),
-    10: dict(nombre="Programación dinámica", resumen="Recurrencias con subproblemas repetidos rellenadas en tablas: mochila, cambio de monedas y caminos en cuadrículas.", herr="", cab=[]),
-    11: dict(nombre="Programación dinámica II", resumen="Programación dinámica con reconstrucción de la solución: mochila 0/1 y palíndromos sobre intervalos.", herr="", cab=[]),
+    10: dict(nombre="Programación dinámica", resumen="Recurrencias con subproblemas repetidos rellenadas en tablas: mochila, cambio de monedas y caminos en cuadrículas.", herr="", cab=["EnterosInf.h"]),
+    11: dict(nombre="Programación dinámica II", resumen="Programación dinámica con reconstrucción de la solución: mochila 0/1 y palíndromos sobre intervalos.", herr="", cab=["EnterosInf.h"]),
     12: dict(nombre="Programación dinámica III", resumen="Programación dinámica sobre intervalos y sobre texto: multiplicación encadenada de matrices y justificación de un texto, con los problemas de las pruebas que los usan.", herr="", cab=[]),
     13: dict(nombre="Pruebas evaluativas", resumen="Problemas de las pruebas evaluativas de la asignatura.", herr="", cab=[]),
 }
@@ -1494,6 +1494,11 @@ def generar_juez(ej, slugs=None):
     wasm_base = os.environ.get("JUEZ_WASM_BASE", "https://binji.github.io/wasm-clang/")
     servidor = os.environ.get("JUEZ_SERVIDOR", "")   # URL del servidor del juez (Raspberry Pi); vacío = solo navegador
     shutil.copytree(AQUI / "juez", OUT / "juez")
+    comunes = []
+    dir_cab = RAIZ / "Estructuras de datos"
+    for h in sorted(dir_cab.glob("*.h")) if dir_cab.is_dir() else []:
+        escribe_lf(OUT / "juez" / "_cab" / h.name, leer_texto(f"Estructuras de datos/{h.name}"))
+        comunes.append(h.name)
     for ej_id, c in cfg.items():
         e = por_slug.get(ej_id.lower())
         if e is None:
@@ -1516,6 +1521,10 @@ def generar_juez(ej, slugs=None):
             nombre = posixpath.basename(rel)
             escribe_lf(d / nombre, leer_texto(rel))
             cab.append({"nombre": nombre, "url": nombre})
+        propias = {x["nombre"] for x in cab}
+        for nombre in comunes:                       # cabeceras de la asignatura, disponibles en todos los ejercicios
+            if nombre not in propias:
+                cab.append({"nombre": nombre, "url": f"../_cab/{nombre}"})
         tests = []
         meta_p = RAIZ / "juez" / "tests" / ej_id / "pruebas.json"   # qué comprueba cada prueba, pistas...
         meta = {m["n"]: m for m in json.loads(meta_p.read_text(encoding="utf-8"))} if meta_p.exists() else {}

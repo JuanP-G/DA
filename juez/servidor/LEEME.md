@@ -37,12 +37,21 @@ Las capas, de fuera a dentro; cada una funciona aunque fallen las demás:
   el juez (`MemoryMax=2500M`, `TasksMax=600`, `OOMScoreAdjust=500`).
 - Sin `JUEZ_ORIGENES` acepta peticiones de cualquier web; el servicio lo fija a StudIA.
 
+## Entrada, salida y cabeceras
+- La entrada llega por la entrada estándar (`cin`) y además se crean los ficheros `casos.txt`, `datos.txt`,
+  `entrada.txt`, `input.txt` e `in.txt` con los mismos datos, así que vale leer con `cin` o abriendo el
+  fichero. Se compila con `-DDOMJUDGE`, como en el juez de la asignatura.
+- La salida se compara por palabras: da igual el número de espacios, que falte o sobre algún salto de
+  línea o que haya líneas vacías. Solo cuenta que las palabras y su orden coincidan. No hay «error de
+  presentación».
+- Todas las cabeceras de `Estructuras de datos/*.h` (incluida `EnterosInf.h`) están disponibles en todos
+  los ejercicios. Las que traiga un ejercicio en su `config.json` mandan sobre las comunes.
+
 ## Veredictos
 | Sigla | Nombre | Cuándo |
 |---|---|---|
 | AC | Correcto | Pasa todas las pruebas. |
 | WA | Respuesta incorrecta | Termina pero escribe otra cosa. |
-| PE | Error de presentación | Los datos son correctos pero el formato no (espacios, saltos de línea). |
 | CE | Error de compilación | No compila, o usa algo prohibido (system, fork, cabeceras del sistema...). |
 | TLE | Tiempo excedido | Pasa del límite de CPU, o se queda parado (tope de reloj). |
 | MLE | Memoria excedida | Pasa de 256 MB. |

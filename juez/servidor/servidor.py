@@ -224,18 +224,31 @@ def lineas(t):
 
 
 def compara(esperada, obtenida):
-    """None si coinciden (sin contar espacios al final de línea ni líneas vacías finales).
-    Si no, la primera diferencia; "pe": True si solo cambia el formato (mismas palabras)."""
+    """None si coinciden. Se comparan las palabras (separadas por espacios, tabuladores o saltos de
+    línea): da igual cuántos espacios haya, si falta un salto de línea o sobran líneas vacías.
+    Si no coinciden, devuelve la primera línea que difiere para enseñarla."""
+    if esperada.split() == obtenida.split():
+        return None
     a, b = lineas(esperada), lineas(obtenida)
     for i in range(max(len(a), len(b))):
         x = a[i] if i < len(a) else None
         y = b[i] if i < len(b) else None
         if x != y:
-            d = {"linea": i + 1, "esperada": x, "obtenida": y, "total": len(a), "lineas_tuyas": len(b)}
-            if esperada.split() == obtenida.split():
-                d["pe"] = True
-            return d
-    return None
+            return {"linea": i + 1, "esperada": x, "obtenida": y, "total": len(a), "lineas_tuyas": len(b)}
+    return {"linea": 1, "esperada": None, "obtenida": None, "total": len(a), "lineas_tuyas": len(b)}
+
+
+# Nombres de fichero con los que los alumnos suelen leer la entrada (plantillas de la asignatura:
+# casos.txt). Se crean con los mismos datos que llegan por la entrada estándar, así que vale tanto
+# leer con cin como abrir el fichero.
+FICHEROS_ENTRADA = ("casos.txt", "datos.txt", "entrada.txt", "input.txt", "in.txt")
+
+
+def cabeceras_comunes():
+    """Cabeceras de la asignatura («Estructuras de datos/*.h»): están disponibles en todos los
+    ejercicios, con el mismo nombre que usan los alumnos en #include."""
+    d = RAIZ / "Estructuras de datos"
+    return sorted(d.glob("*.h")) if d.is_dir() else []
 
 
 def leer(p):
@@ -421,7 +434,7 @@ def compilar(carp):
 def ejecutar(carp, entrada, limite_ms):
     """Ejecuta el programa ya compilado con una entrada. Devuelve (fila, salida)."""
     cpu = max(2, -(-limite_ms // 1000) + 1)          # tope duro de CPU (s), por encima del límite
-    argv = ["/w/prog"] if not SIN_CAJA else [str(carp / BIN)]
+    argv = ["/w/prog"] if not SIN_CAJA else ["env", "-C", str(carp), str(carp / BIN)]   # en la caja el directorio ya es /w
     fdm = os.pipe() if (MEDIDOR and not SIN_CAJA) else None
     cmd = comando_caja(carp, argv, MEM_EJECUTAR, False, cpu, 16, fdm[1] if fdm else None)
     est, rc, out, err, ms, pared, medida = correr(cmd, entrada, 2 * limite_ms / 1000 + 1.0, MAX_SALIDA, fdm)
@@ -494,7 +507,9 @@ def juzgar(ej_id, codigo):
     with tempfile.TemporaryDirectory(prefix="juez-", dir=TMP) as td:
         carp = Path(td)
         os.chmod(td, 0o755)
-        for c in cfg.get("cabeceras", []):
+        for h in cabeceras_comunes():
+            shutil.copy(h, carp / h.name)
+        for c in cfg.get("cabeceras", []):              # las propias del ejercicio mandan sobre las comunes
             shutil.copy(RAIZ / c, carp / Path(c).name)
         (carp / "main.cpp").write_text(codigo, encoding="utf-8", newline="\n")
         ce = compilar(carp)
@@ -502,6 +517,9 @@ def juzgar(ej_id, codigo):
             return ce
         filas, global_v = [], "ac"
         for i, fin in enumerate(pruebas):
+            datos = fin.read_bytes()
+            for nombre in FICHEROS_ENTRADA:
+                (carp / nombre).write_bytes(datos)
             with open(fin, "rb") as fh:
                 fila, out = ejecutar(carp, fh, limite_ms)
             fila["n"] = int(fin.stem)
@@ -515,7 +533,7 @@ def juzgar(ej_id, codigo):
                              "motivo": f"no se entiende la salida ({type(e).__name__})"}
                 else:
                     d = compara(esperada, obtenida)
-                if d: fila["v"] = "pe" if d.get("pe") else "wa"; fila["dif"] = d
+                if d: fila["v"] = "wa"; fila["dif"] = d
                 else: fila["v"] = "ac"
             filas.append(fila)
             if fila["v"] != "ac" and global_v == "ac":

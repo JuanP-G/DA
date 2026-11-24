@@ -70,9 +70,13 @@ async function compilar({ codigo, ficheros }) {
   return { ok: true, log: limpia(sink) };
 }
 
+// Con los mismos datos que por la entrada estándar: vale leer con cin o abrir el fichero.
+const FICHEROS_ENTRADA = ['casos.txt', 'datos.txt', 'entrada.txt', 'input.txt', 'in.txt'];
+
 async function ejecutar({ entrada }) {
   sink = [];
   api.memfs.setStdinStr(entrada);
+  for (const nombre of FICHEROS_ENTRADA) api.memfs.addFile(nombre, entrada);
   const t0 = performance.now();
   let estado = 'ok', detalle = '';
   try {
