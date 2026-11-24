@@ -219,10 +219,12 @@ VARIANTES = [
                                                  ("else { cout << ' ' << p[i]; j -= p[i]; }", "else { if (!pr) cout << ' '; pr = false; cout << p[i]; j -= p[i]; }")], prueba=1, v="pe"),
     Variante("bucle con eof()", [("bool resuelveCaso() {\n    int V, S;\n    cin >> V >> S;\n    if (!cin)  // fin de la entrada\n        return false;",
                                   "bool resuelveCaso() {\n    if (cin.eof()) return false;\n    int V = 0, S = 0;\n    cin >> V >> S;")], prueba=4, v="wa"),
-    Variante("sectores usados una sola vez (0/1)", [("dardos[i][j] = min(dardos[i][j], dardos[i][j - p[i]] + 1);", "dardos[i][j] = min(dardos[i][j], dardos[i - 1][j - p[i]] + 1);"),
-                                                    ("dardos[i][j - p[i]] != INF", "dardos[i - 1][j - p[i]] != INF")], prueba=6, v="wa"),
+    Variante("sectores usados una sola vez (0/1)", [("dardos[i][j] = min(dardos[i][j], dardos[i][j - p[i]] + 1);", "dardos[i][j] = min(dardos[i][j], dardos[i - 1][j - p[i]] + 1);")], prueba=6, v="wa"),
     Variante("al reconstruir cambia de sector tras usarlo", [("else { cout << ' ' << p[i]; j -= p[i]; }", "else { cout << ' ' << p[i]; j -= p[i]; --i; }")], prueba=6, v="rte"),
-    Variante("infinito que desborda", [(" && dardos[i][j - p[i]] != INF", "")], prueba=7, v="rte"),
+    Variante("infinito = INT_MAX en int, sin EntInf (la suma desborda)",
+             [("#include <vector>", "#include <vector>\n#include <climits>"),
+              ("Matriz<EntInf> dardos(S + 1, V + 1, Infinito);", "Matriz<int> dardos(S + 1, V + 1, INT_MAX);"),
+              ("if (dardos[S][V] == Infinito)", "if (dardos[S][V] == INT_MAX)")], prueba=7, v="rte"),
     Variante("escribe IMPOSIBLE", [('cout << "Imposible\\n";', 'cout << "IMPOSIBLE\\n";')], prueba=7, v="wa"),
     Variante("voraz: el sector más alto que cabe",
              [("bool resuelveCaso() {\n    int V, S;\n    cin >> V >> S;\n    if (!cin)  // fin de la entrada\n        return false;",
@@ -233,7 +235,7 @@ VARIANTES = [
                "      return true; }")], prueba=8, v="wa"),
     Variante("recursión sin memoria",
              [("bool resuelveCaso() {",
-               "int rec(const vector<int>& p, int j) {\n    if (j == 0) return 0;\n    int m = INT_MAX;\n"
+               "#include <climits>\nint rec(const vector<int>& p, int j) {\n    if (j == 0) return 0;\n    int m = INT_MAX;\n"
                "    for (size_t k = 1; k < p.size(); ++k) if (p[k] <= j) { int r = rec(p, j - p[k]); if (r != INT_MAX) m = min(m, r + 1); }\n    return m;\n}\n"
                "bool resuelveCaso() {\n    { int V, S; cin >> V >> S; if (!cin) return false; vector<int> p(S + 1); for (int i = 1; i <= S; ++i) cin >> p[i];\n"
                "      int r = rec(p, V); if (r == INT_MAX) { cout << \"Imposible\\n\"; return true; }\n"

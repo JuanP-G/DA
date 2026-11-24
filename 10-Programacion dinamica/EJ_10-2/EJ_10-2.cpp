@@ -9,8 +9,10 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
-#include <climits>
 using namespace std;
+
+#include "EnterosInf.h"
+#include "Matriz.h"
 
 /*@ <answer>
 
@@ -24,7 +26,7 @@ using namespace std;
  PLANTEAMIENTO (programacion dinamica: problema del cambio con monedas ilimitadas)
      dardos(i, j) = minimo numero de dardos para sumar j usando los sectores 1..i
  
-     dardos(0, 0) = 0        dardos(0, j) = INF  si j > 0
+     dardos(0, 0) = 0        dardos(0, j) = Infinito  si j > 0   (EntInf de EnterosInf.h)
      dardos(i, j) = dardos(i - 1, j)                              si p_i > j
                   = min(dardos(i - 1, j), dardos(i, j - p_i) + 1) si p_i <= j
  En la segunda opcion se queda en la fila i porque el sector i se puede volver a usar.
@@ -53,19 +55,18 @@ bool resuelveCaso() {
     vector<int> p(S + 1);
     for (int i = 1; i <= S; ++i) cin >> p[i];
 
-    const int INF = INT_MAX;
-    vector<vector<int>> dardos(S + 1, vector<int>(V + 1, INF));
+    Matriz<EntInf> dardos(S + 1, V + 1, Infinito);
     dardos[0][0] = 0;
     for (int i = 1; i <= S; ++i) {
         dardos[i][0] = 0;
         for (int j = 1; j <= V; ++j) {
             dardos[i][j] = dardos[i - 1][j];
-            if (p[i] <= j && dardos[i][j - p[i]] != INF)
+            if (p[i] <= j)
                 dardos[i][j] = min(dardos[i][j], dardos[i][j - p[i]] + 1);
         }
     }
 
-    if (dardos[S][V] == INF) { cout << "Imposible\n"; return true; }
+    if (dardos[S][V] == Infinito) { cout << "Imposible\n"; return true; }
 
     cout << dardos[S][V] << ':';
     int i = S, j = V;

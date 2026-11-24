@@ -62,8 +62,8 @@ Programación dinámica tipo **mochila 0/1 con suma exacta**: tres tablas sobre 
 
 ```text
 formas[j]   = nº de subconjuntos que suman j          formas[0] = 1
-cordeles[j] = mínimo nº de cordeles para sumar j      cordeles[0] = 0   (INF si no se puede)
-coste[j]    = mínimo coste para sumar j               coste[0] = 0      (INF si no se puede)
+cordeles[j] = mínimo nº de cordeles para sumar j      cordeles[0] = 0   (Infinito si no se puede)
+coste[j]    = mínimo coste para sumar j               coste[0] = 0      (Infinito si no se puede)
 
 al añadir el cordel (l, c), para j = L, L−1, …, l:
     formas[j]   += formas[j − l]
@@ -91,4 +91,4 @@ La forma con menos cordeles no es la más barata: cada pregunta se responde por 
 
 ## Ojo con
 - Cordeles con la misma longitud **son distintos** (en el ejemplo 3, tres cordeles de 1 dan 3 formas de hacer 2).
-- Si `formas[j − l] == 0` no hay que tocar nada: así `INF + 1` nunca se calcula.
+- `cordeles` y `coste` son `EntInf` (`EnterosInf.h`): con `Infinito`, `Infinito + 1` sigue siendo `Infinito` y no hace falta comprobar nada antes de sumar.

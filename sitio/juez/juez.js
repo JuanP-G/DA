@@ -24,22 +24,30 @@
     ce: 'El código no compila: el compilador te dice en qué línea está el error.',
   };
 
-  // ---- comparación: se comparan las palabras; da igual cuántos espacios o saltos de línea haya ----
-  function lineas(t) {
-    const l = t.replace(/\r/g, '').split('\n').map(x => x.replace(/\s+$/, ''));
-    while (l.length && l[l.length - 1] === '') l.pop();
-    return l;
+  // ---- comparación ----
+  // Correcta aunque haya espacios de más o al final, líneas vacías o falte el último salto de línea.
+  // Mismas palabras y mismo orden pero repartidas en otras líneas: error de presentación.
+  // Palabras distintas: respuesta incorrecta. Se devuelve la primera línea que difiere.
+  function filasUtiles(t) {
+    const res = [];
+    t.replace(/\r/g, '').split('\n').forEach((l, i) => {
+      const x = l.trim().split(/\s+/).filter(Boolean).join(' ');
+      if (x) res.push([i + 1, x]);
+    });
+    return res;
   }
-  const palabras = t => t.trim().split(/\s+/).filter(Boolean);
   function compara(esperada, obtenida) {
+    const a = filasUtiles(esperada), b = filasUtiles(obtenida);
+    if (a.length === b.length && a.every((f, i) => f[1] === b[i][1])) return { igual: true };
+    const palabras = t => t.trim().split(/\s+/).filter(Boolean);
     const p = palabras(esperada), q = palabras(obtenida);
-    if (p.length === q.length && p.every((x, i) => x === q[i])) return { igual: true };
-    const a = lineas(esperada), b = lineas(obtenida);
+    const pe = p.length === q.length && p.every((w, i) => w === q[i]);
     const n = Math.max(a.length, b.length);
     for (let i = 0; i < n; i++) {
-      if (a[i] !== b[i]) return { igual: false, linea: i + 1, esperada: a[i], obtenida: b[i], total: a.length, lineas_tuyas: b.length };
+      const x = i < a.length ? a[i][1] : undefined, y = i < b.length ? b[i][1] : undefined;
+      if (x !== y) return { igual: false, linea: i + 1, esperada: x, obtenida: y, total: a.length, lineas_tuyas: b.length, pe };
     }
-    return { igual: false, linea: 1, esperada: undefined, obtenida: undefined, total: a.length, lineas_tuyas: b.length };
+    return { igual: false, linea: 1, esperada: undefined, obtenida: undefined, total: a.length, lineas_tuyas: b.length, pe };
   }
 
   function explica(d) {

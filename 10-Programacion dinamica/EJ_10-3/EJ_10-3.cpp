@@ -11,6 +11,8 @@
 #include <string>
 using namespace std;
 
+#include "Matriz.h"
+
 /*@ <answer>
 
  Esquivando las obras en los cruces
@@ -27,10 +29,10 @@ using namespace std;
      caminos(i, j) = 0                                      si (i, j) tiene obras
                    = caminos(i - 1, j) + caminos(i, j - 1)  si no (fuera de la ciudad vale 0)
  
- Se rellena por filas con un solo vector: caminos[j] ya tiene el valor de la fila de arriba
- y caminos[j - 1] el de la izquierda en la fila actual.
- 
- Coste: O(N * M) en tiempo y O(M) en espacio por caso.
+ Se guarda en una Matriz (Matriz.h) y se rellena por filas, de arriba abajo y de izquierda a
+ derecha, asi que cuando se llega a (i, j) ya estan calculados el de arriba y el de la izquierda.
+
+ Coste: O(N * M) en tiempo y en espacio por caso.
 
  @ </answer> */
 
@@ -43,17 +45,21 @@ using namespace std;
 void resuelveCaso() {
     int N, M;
     cin >> N >> M;
-    vector<long long> caminos(M, 0);
-    caminos[0] = 1;                       // la esquina noroeste nunca tiene obras
+    vector<string> mapa(N);
+    for (int i = 0; i < N; ++i) cin >> mapa[i];
+
+    Matriz<long long> caminos(N, M, 0);
+    caminos[0][0] = 1;                    // la esquina noroeste nunca tiene obras
     for (int i = 0; i < N; ++i) {
-        string fila;
-        cin >> fila;
         for (int j = 0; j < M; ++j) {
-            if (fila[j] == 'X') caminos[j] = 0;
-            else if (j > 0) caminos[j] += caminos[j - 1];   // arriba + izquierda
+            if (mapa[i][j] == 'X') caminos[i][j] = 0;
+            else {
+                if (i > 0) caminos[i][j] += caminos[i - 1][j];   // desde arriba
+                if (j > 0) caminos[i][j] += caminos[i][j - 1];   // desde la izquierda
+            }
         }
     }
-    cout << caminos[M - 1] << '\n';
+    cout << caminos[N - 1][M - 1] << '\n';
 }
 
 //@ </answer>

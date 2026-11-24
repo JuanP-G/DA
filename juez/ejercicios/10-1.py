@@ -196,7 +196,9 @@ def pruebas():
 
 VARIANTES = [
     Variante("escribe SÍ con tilde", [('cout << "SI "', 'cout << "SÍ "')], prueba=4, v="wa"),
-    Variante("suma a INT_MAX sin comprobar (desborda)", [("if (formas[j - l] == 0) continue;            // j - l no se puede formar\n", "")], prueba=5, v="wa"),
+    Variante("infinito = INT_MAX en int, sin EntInf (la suma desborda)",
+             [("#include <vector>", "#include <vector>\n#include <climits>"),
+              ("vector<EntInf> cordeles(L + 1, Infinito), coste(L + 1, Infinito);", "vector<int> cordeles(L + 1, INT_MAX), coste(L + 1, INT_MAX);")], prueba=5, v="wa"),
     Variante("j de menor a mayor (reutiliza cordeles)", [("for (int j = L; j >= l; --j) {", "for (int j = l; j <= L; ++j) {")], prueba=6, v="wa"),
     Variante("coste de la solución con menos cordeles",
              [("cordeles[j] = min(cordeles[j], cordeles[j - l] + 1);\n            coste[j] = min(coste[j], coste[j - l] + c);",
@@ -204,13 +206,13 @@ VARIANTES = [
                "                cordeles[j] = cordeles[j - l] + 1; coste[j] = coste[j - l] + c; }")], prueba=7, v="wa"),
     Variante("quita repetidos al leer",
              [("cin >> l >> c;", "cin >> l >> c;\n        static int ultimaL = -1; if (k == 0) ultimaL = -1; if (l == ultimaL) continue; ultimaL = l;")], prueba=8, v="wa"),
-    Variante("infinito del coste = L + 1", [("vector<int> cordeles(L + 1, INF), coste(L + 1, INF);", "vector<int> cordeles(L + 1, INF), coste(L + 1, L + 1);")], prueba=9, v="wa"),
+    Variante("infinito del coste = L + 1", [("vector<EntInf> cordeles(L + 1, Infinito), coste(L + 1, Infinito);", "vector<EntInf> cordeles(L + 1, Infinito), coste(L + 1, L + 1);")], prueba=9, v="wa"),
     Variante("formas en int", [("vector<long long> formas(L + 1, 0);", "vector<int> formas(L + 1, 0);")], prueba=11, v="wa"),
     Variante("formas en double", [("vector<long long> formas(L + 1, 0);", "vector<double> formas(L + 1, 0);")], prueba=11, v="wa"),
     Variante("no reinicia las formas entre casos", [("vector<long long> formas(L + 1, 0);", "static vector<long long> formas(1001, 0);")], prueba=13, v="wa"),
     Variante("prueba todos los subconjuntos (sin memoria)",
              [("void resuelveCaso() {",
-               "long long F; int MC, MK;\nvoid rec(const vector<pair<int,int>>& v, int i, int j, int k, int c) {\n"
+               "#include <climits>\nlong long F; int MC, MK;\nvoid rec(const vector<pair<int,int>>& v, int i, int j, int k, int c) {\n"
                "    if (j == 0) { ++F; MK = min(MK, k); MC = min(MC, c); }\n    if (i == (int)v.size() || j <= 0) return;\n"
                "    if (v[i].first <= j) rec(v, i + 1, j - v[i].first, k + 1, c + v[i].second);\n    rec(v, i + 1, j, k, c);\n}\n"
                "void resuelveCaso() {\n    int n0, L0; cin >> n0 >> L0; vector<pair<int,int>> v(n0); for (auto& p : v) cin >> p.first >> p.second;\n"

@@ -41,9 +41,12 @@ Las capas, de fuera a dentro; cada una funciona aunque fallen las demás:
 - La entrada llega por la entrada estándar (`cin`) y además se crean los ficheros `casos.txt`, `datos.txt`,
   `entrada.txt`, `input.txt` e `in.txt` con los mismos datos, así que vale leer con `cin` o abriendo el
   fichero. Se compila con `-DDOMJUDGE`, como en el juez de la asignatura.
-- La salida se compara por palabras: da igual el número de espacios, que falte o sobre algún salto de
-  línea o que haya líneas vacías. Solo cuenta que las palabras y su orden coincidan. No hay «error de
-  presentación».
+- La salida se compara línea a línea pero sin tonterías: no cuentan los espacios de más ni los de los
+  extremos, los tabuladores, las líneas vacías (en cualquier sitio), el `\r` de Windows ni que falte el
+  último salto de línea. Lo que cuenta es el texto de cada línea con contenido.
+- Si las palabras son las mismas y van en el mismo orden pero están repartidas en otras líneas (todo en
+  una línea, un dato por línea...), el veredicto es PE (error de presentación). Si las palabras difieren,
+  WA.
 - Todas las cabeceras de `Estructuras de datos/*.h` (incluida `EnterosInf.h`) están disponibles en todos
   los ejercicios. Las que traiga un ejercicio en su `config.json` mandan sobre las comunes.
 
@@ -52,6 +55,7 @@ Las capas, de fuera a dentro; cada una funciona aunque fallen las demás:
 |---|---|---|
 | AC | Correcto | Pasa todas las pruebas. |
 | WA | Respuesta incorrecta | Termina pero escribe otra cosa. |
+| PE | Error de presentación | Las palabras son correctas pero están repartidas en otras líneas. |
 | CE | Error de compilación | No compila, o usa algo prohibido (system, fork, cabeceras del sistema...). |
 | TLE | Tiempo excedido | Pasa del límite de CPU, o se queda parado (tope de reloj). |
 | MLE | Memoria excedida | Pasa de 256 MB. |

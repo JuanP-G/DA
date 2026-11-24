@@ -49,7 +49,7 @@ Es el **problema del cambio** con monedas ilimitadas:
 ```text
 dardos(i, j) = mínimo nº de dardos para sumar j con los sectores 1..i
 
-dardos(0, 0) = 0          dardos(0, j) = INF   (j > 0)
+dardos(0, 0) = 0          dardos(0, j) = Infinito   (j > 0)
 dardos(i, j) = dardos(i−1, j)                                si p_i > j
              = min(dardos(i−1, j), dardos(i, j − p_i) + 1)   si p_i ≤ j
 ```
@@ -63,7 +63,7 @@ En la segunda opción se queda en la **fila i** porque el sector i se puede volv
 
 **1. Lectura.** No hay número de casos (plantilla de casos ilimitados): `resuelveCaso()` lee `V` y `S` y, si `cin` ha fallado (fin del fichero), devuelve `false` y el `while (resuelveCaso());` del `main` termina. Las puntuaciones se guardan en `p[1..S]` (por eso `p` tiene `S + 1` posiciones), igual que en la fórmula: el sector `i` es `p[i]`.
 
-**2. La tabla.** `dardos` tiene `S + 1` filas y `V + 1` columnas, todas a `INF` («no se puede»). La fila `i` significa «puedo usar los sectores `1..i`», así que la **fila 0** es «sin ningún sector». La columna `j` es la suma que quiero conseguir.
+**2. La tabla.** `dardos` tiene `S + 1` filas y `V + 1` columnas, todas a `Infinito` («no se puede»); es una `Matriz<EntInf>` (`Matriz.h` y `EnterosInf.h`). La fila `i` significa «puedo usar los sectores `1..i`», así que la **fila 0** es «sin ningún sector». La columna `j` es la suma que quiero conseguir.
 
 **3. Casos base.** `dardos[0][0] = 0` y, en cada fila, `dardos[i][0] = 0`: sumar 0 no necesita dardos. El resto de la fila 0 se queda en `INF`.
 
@@ -77,9 +77,9 @@ fila i    [ usar i ] ─────────► (i, j)   ← la de p[i] colu
 - **No usar el sector `i`:** lo mismo que sin él, la casilla de **arriba**.
 - **Usar el sector `i` una vez más:** un dardo + lo que cuesta sumar `j − p[i]`, mirando **en la misma fila `i`**, porque el sector se puede repetir.
 
-Se queda el mínimo. El `!= INF` evita calcular `INF + 1`, que se desbordaría.
+Se queda el mínimo. Como la tabla es de `EntInf`, `Infinito + 1` sigue siendo `Infinito` y no hay desbordamiento.
 
-**5. Respuesta.** `dardos[S][V]`: si es `INF`, `Imposible`.
+**5. Respuesta.** `dardos[S][V]`: si es `Infinito`, `Imposible`.
 
 ## Reconstrucción: qué dardos se han tirado
 

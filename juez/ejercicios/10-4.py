@@ -16,7 +16,7 @@ CONFIG = {
     "solucion": "10-Programacion dinamica/EJ_10-4/EJ_10-4.cpp",
     "cabeceras": [],
     "limite_ms": 3000,
-    "fallo": ["if (anterior[j] > anterior[col]) col = j;", "if (anterior[j] >= anterior[col]) col = j;"],
+    "fallo": ["if (mejor[N - 1][j] > mejor[N - 1][col]) col = j;", "if (mejor[N - 1][j] >= mejor[N - 1][col]) col = j;"],
 }
 
 
@@ -166,11 +166,11 @@ def pruebas():
 
 
 VARIANTES = [
-    Variante("columna desde 0", [("cout << anterior[col] << ' ' << col + 1", "cout << anterior[col] << ' ' << col")], prueba=4, v="wa"),
-    Variante("olvida subir en vertical", [("int mejorArriba = anterior[j];", "int mejorArriba = 0;")], prueba=5, v="wa"),
-    Variante("solo una diagonal", [("if (j + 1 < N) mejorArriba = max(mejorArriba, anterior[j + 1]);", "")], prueba=6, v="wa"),
-    Variante("tablero circular", [("if (j > 0) mejorArriba = max(mejorArriba, anterior[j - 1]);",
-                                   "mejorArriba = max(mejorArriba, anterior[(j + N - 1) % N]);")], prueba=7, v="wa"),
+    Variante("columna desde 0", [("cout << mejor[N - 1][col] << ' ' << col + 1", "cout << mejor[N - 1][col] << ' ' << col")], prueba=4, v="wa"),
+    Variante("olvida subir en vertical", [("int mejorArriba = mejor[i - 1][j];", "int mejorArriba = 0;")], prueba=5, v="wa"),
+    Variante("solo una diagonal", [("if (j + 1 < N) mejorArriba = max(mejorArriba, mejor[i - 1][j + 1]);", "")], prueba=6, v="wa"),
+    Variante("tablero circular", [("if (j > 0) mejorArriba = max(mejorArriba, mejor[i - 1][j - 1]);",
+                                   "mejorArriba = max(mejorArriba, mejor[i - 1][(j + N - 1) % N]);")], prueba=7, v="wa"),
     Variante("voraz: sube por la mayor de encima",
              [("void resuelveCaso() {",
                "void resuelveCaso() {\n    int n0; cin >> n0; vector<vector<int>> T(n0, vector<int>(n0));\n"
@@ -178,7 +178,7 @@ VARIANTES = [
                "    for (int c = 0; c < n0; ++c) { int s = T[n0-1][c], j = c;\n"
                "        for (int i = n0 - 2; i >= 0; --i) { int bj = j; for (int k = j - 1; k <= j + 1; ++k) if (k >= 0 && k < n0 && T[i][k] > T[i][bj]) bj = k; j = bj; s += T[i][j]; }\n"
                "        if (s > best) { best = s; bc = c; } }\n    cout << best << ' ' << bc + 1 << '\\n'; return;\n")], prueba=9, v="wa"),
-    Variante("empate: se queda la de la derecha", [("if (anterior[j] > anterior[col]) col = j;", "if (anterior[j] >= anterior[col]) col = j;")], prueba=10, v="wa"),
+    Variante("empate: se queda la de la derecha", [("if (mejor[N - 1][j] > mejor[N - 1][col]) col = j;", "if (mejor[N - 1][j] >= mejor[N - 1][col]) col = j;")], prueba=10, v="wa"),
     Variante("da la columna de la primera fila (rellena de abajo arriba)",
              [("void resuelveCaso() {",
                "void resuelveCaso() {\n    int n0; cin >> n0; vector<vector<int>> T(n0, vector<int>(n0));\n"

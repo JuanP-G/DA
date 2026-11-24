@@ -3,7 +3,7 @@
  "cabeceras": [],
  "limite_ms": 3000,
  "fallo": [
-  "if (fila[j] == 'X') caminos[j] = 0;",
-  "if (fila[j] == 'X') caminos[j] = 1;"
+  "if (mapa[i][j] == 'X') caminos[i][j] = 0;",
+  "if (mapa[i][j] == 'X') caminos[i][j] = 1;"
  ]
 }

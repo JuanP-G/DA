@@ -239,7 +239,6 @@ B = find_line(CPP, "else cout << \"SI \"")
 CODE = codigo(CPP, A, B + 1, maxc=78)
 L_INI = find_line(CPP, "formas[0] = 1; cordeles[0] = 0; coste[0] = 0;")
 L_FORJ = find_line(CPP, "for (int j = L; j >= l; --j) {")
-L_SKIP = find_line(CPP, "if (formas[j - l] == 0) continue;")
 L_UPD = [find_line(CPP, "formas[j] += formas[j - l];"), find_line(CPP, "cordeles[j] = min(cordeles[j], cordeles[j - l] + 1);"),
          find_line(CPP, "coste[j] = min(coste[j], coste[j - l] + c);")]
 L_OUT = B
@@ -267,7 +266,7 @@ def e_codigo(f):
         k, j = pasos[n]
         cur = (k, j)
         l = CORD[k][0]
-        hl = {L_FORJ, L_SKIP} if fo[j - l] == 0 else set(L_UPD)
+        hl = set(L_UPD)
     elif n >= len(pasos):
         hl = {L_OUT}
     f.code(16, 84, 700, 520, CODE, hl=hl, title="resuelveCaso()", size=15)
@@ -355,12 +354,12 @@ ESC = [
            e_vector, titulo="Por qué al revés", extra=2.0),
     Escena("El código inicializa la casilla cero: una forma, cero cordeles, coste cero. El resto empieza en cero formas e infinito. "
            "Para cada cordel, recorre jota desde ele hasta su longitud, hacia abajo. "
-           "Si jota menos ele no se puede formar, la salta. Si no, suma las formas y actualiza los dos mínimos. "
+           "Suma las formas y actualiza los dos mínimos, que son enteros con infinito, de la cabecera EnterosInf: si jota menos ele no se puede formar, siguen en infinito. "
            "Al final escribe no, o sí con las tres respuestas.",
            e_codigo, titulo="El código", extra=3.0),
     Escena("Detalles. Dos cordeles de la misma longitud son distintos: en el tercer ejemplo, tres cordeles de uno dan tres formas de hacer dos. "
            "El número de formas puede ser enorme, hasta diez elevado a dieciocho: long long. "
-           "Saltar las casillas que no se pueden formar evita sumar uno a infinito. "
+           "Con los enteros con infinito, sumar uno a infinito sigue siendo infinito, así que no hay que comprobar nada antes de sumar. "
            "Y el coste es ene por ele en tiempo, y ele en memoria.",
            e_detalles, titulo="Detalles", extra=1.5),
     Escena("Resumiendo: es una mochila cero uno de suma exacta. "

@@ -267,7 +267,7 @@ def e_reconstruye(f):
         texto(f, (640, 700), "con borde naranja: las letras añadidas", 20, "muted", aparece(f, f.c(4)), anchor="mm")
 
 
-A = find_line(CPP, "vector<vector<int>> faltan(n")
+A = find_line(CPP, "Matriz<int> faltan(n")
 B = find_line(CPP, "cout << faltan[0][n - 1]")
 CODE = codigo(CPP, A, B, maxc=92)
 L_EQ = find_line(CPP, "if (s[i] == s[j]) faltan[i][j]")

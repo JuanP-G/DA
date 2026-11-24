@@ -35,7 +35,7 @@ $$
 
 (la columna más a la izquierda entre las que dan el máximo).
 
-**Implementación:** fila a fila de $1$ a $N$ guardando solo la anterior. Coste $O(N^2)$ en tiempo y $O(N)$ en espacio.
+**Implementación:** fila a fila de $1$ a $N$ en una `Matriz<int>` (`Matriz.h`). Coste $O(N^2)$ en tiempo y en espacio.
 
 ## Cómo se plantea
 ```text
@@ -47,7 +47,7 @@ mejor(i, j) = t(i, j) + max( mejor(i−1, j−1), mejor(i−1, j), mejor(i−1, 
 ```
 La respuesta es el máximo de `mejor(N, j)`. Se recorre `j` de izquierda a derecha con `>` estricto, así que en un empate se queda la columna de más a la izquierda.
 
-Se rellena fila a fila guardando solo la fila anterior.
+Se rellena fila a fila en una matriz: cada casilla usa la fila de encima.
 
 ## Traza del ejemplo 1
 ```text
@@ -61,7 +61,7 @@ Desde el 5 la casilla mayor de encima es el 9, pero subiendo por ahí solo se ll
 
 ## Por qué así
 - **Rellenar desde arriba:** `mejor(i, j)` necesita la fila `i − 1`, así que se empieza por la fila 1. La respuesta queda en la última fila, que es la que pregunta el enunciado.
-- **Coste:** O(N²) en tiempo y O(N) en espacio. La suma máxima es ≤ 10⁷: cabe en `int`.
+- **Coste:** O(N²) en tiempo y en espacio. La suma máxima es ≤ 10⁷: cabe en `int`.
 
 ## Ojo con
 - Las columnas 1 y N solo tienen dos casillas encima.

@@ -11,6 +11,8 @@
 #include <algorithm>
 using namespace std;
 
+#include "Matriz.h"
+
 /*@ <answer>
 
  ¿Por donde hay que subir?
@@ -30,9 +32,9 @@ using namespace std;
  La respuesta es el maximo de mejor(N, j); con '>' estricto al recorrer j de izquierda a
  derecha, en caso de empate se queda la columna de mas a la izquierda.
  
- Se rellena fila a fila guardando solo la fila anterior.
- 
- Coste: O(N^2) en tiempo y O(N) en espacio por caso (la suma maxima es <= 10^7: cabe en int).
+ Se guarda en una Matriz (Matriz.h) y se rellena fila a fila, de arriba (fila 1) abajo.
+
+ Coste: O(N^2) en tiempo y en espacio por caso (la suma maxima es <= 10^7: cabe en int).
 
  @ </answer> */
 
@@ -45,24 +47,23 @@ using namespace std;
 void resuelveCaso() {
     int N;
     cin >> N;
-    vector<int> anterior(N), actual(N);
-    for (int j = 0; j < N; ++j) cin >> anterior[j];           // fila 1
+    Matriz<int> mejor(N, N);
+    for (int j = 0; j < N; ++j) cin >> mejor[0][j];           // fila 1
     for (int i = 1; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
             int t;
             cin >> t;
-            int mejorArriba = anterior[j];
-            if (j > 0) mejorArriba = max(mejorArriba, anterior[j - 1]);
-            if (j + 1 < N) mejorArriba = max(mejorArriba, anterior[j + 1]);
-            actual[j] = t + mejorArriba;
+            int mejorArriba = mejor[i - 1][j];
+            if (j > 0) mejorArriba = max(mejorArriba, mejor[i - 1][j - 1]);
+            if (j + 1 < N) mejorArriba = max(mejorArriba, mejor[i - 1][j + 1]);
+            mejor[i][j] = t + mejorArriba;
         }
-        swap(anterior, actual);
     }
 
     int col = 0;
     for (int j = 1; j < N; ++j)
-        if (anterior[j] > anterior[col]) col = j;
-    cout << anterior[col] << ' ' << col + 1 << '\n';
+        if (mejor[N - 1][j] > mejor[N - 1][col]) col = j;
+    cout << mejor[N - 1][col] << ' ' << col + 1 << '\n';
 }
 
 //@ </answer>

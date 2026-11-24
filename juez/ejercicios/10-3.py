@@ -16,7 +16,7 @@ CONFIG = {
     "solucion": "10-Programacion dinamica/EJ_10-3/EJ_10-3.cpp",
     "cabeceras": [],
     "limite_ms": 3000,
-    "fallo": ["if (fila[j] == 'X') caminos[j] = 0;", "if (fila[j] == 'X') caminos[j] = 1;"],
+    "fallo": ["if (mapa[i][j] == 'X') caminos[i][j] = 0;", "if (mapa[i][j] == 'X') caminos[i][j] = 1;"],
 }
 
 
@@ -174,12 +174,12 @@ def pruebas():
 
 
 VARIANTES = [
-    Variante("no anula los cruces con obras", [("if (fila[j] == 'X') caminos[j] = 0;\n            else if (j > 0)", "if (fila[j] != 'X' && j > 0)")], prueba=6, v="wa"),
-    Variante("primera fila entera a 1", [("if (fila[j] == 'X') caminos[j] = 0;", "if (fila[j] == 'X' && i > 0) caminos[j] = 0;\n            else if (i == 0) caminos[j] = 1;")], prueba=7, v="wa"),
-    Variante("primera columna entera a 1", [("if (fila[j] == 'X') caminos[j] = 0;", "if (fila[j] == 'X' && j > 0) caminos[j] = 0;")], prueba=8, v="wa"),
+    Variante("no anula los cruces con obras", [("if (mapa[i][j] == 'X') caminos[i][j] = 0;\n            else {", "{")], prueba=6, v="wa"),
+    Variante("primera fila entera a 1", [("if (mapa[i][j] == 'X') caminos[i][j] = 0;", "if (mapa[i][j] == 'X' && i > 0) caminos[i][j] = 0;\n            else if (i == 0) caminos[i][j] = 1;")], prueba=7, v="wa"),
+    Variante("primera columna entera a 1", [("if (mapa[i][j] == 'X') caminos[i][j] = 0;", "if (mapa[i][j] == 'X' && j > 0) caminos[i][j] = 0;")], prueba=8, v="wa"),
     Variante("cruza N y M", [("cin >> N >> M;", "cin >> M >> N;")], prueba=5, v="rte"),
-    Variante("cuenta en short", [("vector<long long> caminos(M, 0);", "vector<short> caminos(M, 0);")], prueba=11, v="wa"),
-    Variante("no reinicia la tabla entre casos", [("vector<long long> caminos(M, 0);", "static vector<long long> caminos(50, 0);")], prueba=12, v="wa"),
+    Variante("cuenta en short", [("Matriz<long long> caminos(N, M, 0);", "Matriz<short> caminos(N, M, 0);")], prueba=11, v="wa"),
+    Variante("no reinicia la tabla entre casos", [("Matriz<long long> caminos(N, M, 0);", "static Matriz<long long> caminos(50, 50, 0);")], prueba=12, v="wa"),
     Variante("rodeos: BFS en 4 direcciones (cuenta caminos mínimos del grafo)",
              [("void resuelveCaso() {",
                "void resuelveCaso() {\n    int n0, m0; cin >> n0 >> m0; vector<string> g(n0); for (auto& f : g) cin >> f;\n"

@@ -408,7 +408,7 @@ def e_reconstruye(f):
         f.d.text((1110, 500), "2: 4 4", font=font(44, True, True), fill=mix(C["bot"], C["green"], u), anchor="mm")
 
 
-C0 = find_line(CPP, "vector<vector<int>> dardos(S + 1")
+C0 = find_line(CPP, "Matriz<EntInf> dardos(S + 1")
 C1 = find_line(CPP, "cout << '\\n';", find_line(CPP, "while (j > 0)"))
 _raw = [(n, s.split("//")[0].rstrip() if "//" in s and not s.strip().startswith("//") else s) for n, s in code_lines(CPP, C0, C1, maxc=300)]
 _ind = min(len(s) - len(s.lstrip()) for _, s in _raw if s.strip())
@@ -418,7 +418,7 @@ L_BASE = find_line(CPP, "dardos[0][0] = 0;")
 L_FOR_I = find_line(CPP, "for (int i = 1; i <= S; ++i) {")
 L_COL0 = find_line(CPP, "dardos[i][0] = 0;")
 L_COPY = find_line(CPP, "dardos[i][j] = dardos[i - 1][j];")
-L_IF = find_line(CPP, "if (p[i] <= j && dardos[i][j - p[i]] != INF)")
+L_IF = find_line(CPP, "if (p[i] <= j)")
 L_MIN = find_line(CPP, "dardos[i][j] = min(dardos[i][j], dardos[i][j - p[i]] + 1);")
 L_WHILE = find_line(CPP, "while (j > 0)")
 L_SUBE = find_line(CPP, "if (dardos[i][j] == dardos[i - 1][j]) --i;")
@@ -482,12 +482,12 @@ def e_detalles(f):
     if f.t >= f.c(0) + 2.0:
         f.d.text((340, 360), "Imposible", font=font(34, True), fill=C["red"], anchor="mm")
     # INF + 1
-    f.box(660, 100, 580, 300, "INF + 1")
+    f.box(660, 100, 580, 300, "∞ + 1")
     if f.t >= f.c(1):
         v = f.p(f.c(1), 0.6)
-        f.d.text((950, 200), "INT_MAX + 1", font=font(34, True, True), fill=mix(C["panel"], C["text"], v), anchor="mm")
-        f.d.text((950, 260), "→  desbordamiento", font=font(28, True), fill=mix(C["panel"], C["red"], v), anchor="mm")
-        f.d.text((950, 330), "!= INF  antes de sumar", font=font(26, True, True), fill=mix(C["panel"], C["gold"], v), anchor="mm")
+        f.d.text((950, 200), "∞ + 1", font=font(34, True, True), fill=mix(C["panel"], C["text"], v), anchor="mm")
+        f.d.text((950, 260), "→  sigue siendo ∞", font=font(28, True), fill=mix(C["panel"], C["green"], v), anchor="mm")
+        f.d.text((950, 330), "EntInf lo controla", font=font(26, True, True), fill=mix(C["panel"], C["gold"], v), anchor="mm")
     if f.t >= f.c(2):
         v = f.p(f.c(2), 0.6)
         f.d.text((340, 470), "while (cin >> V >> S)", font=font(28, True, True), fill=mix(C["bot"], C["text"], v), anchor="mm")
@@ -549,14 +549,14 @@ ESC = [
            "Este 2 solo pudo salir de tirar un 4: lo apuntamos y nos movemos 4 columnas a la izquierda. "
            "En la columna 4 vale 1 y arriba hay un 4: otro dardo al 4, y llegamos a la columna 0. "
            "Hemos terminado: dos dardos, un 4 y otro 4.", e_reconstruye, titulo="Reconstruir los dardos", extra=1.5),
-    Escena("En el código, la tabla tiene ese más uno filas por la fila de ningún sector, y todo empieza a infinito. "
+    Escena("En el código, la tabla es una matriz, de la cabecera Matriz, de enteros con infinito, con ese más uno filas por la fila de ningún sector, y todo empieza a infinito. "
            "La casilla de suma cero vale cero en todas las filas. "
-           "El doble bucle rellena fila a fila: primero copia la de arriba, y si el sector cabe y lo que queda se puede conseguir, prueba con un dardo más. "
+           "El doble bucle rellena fila a fila: primero copia la de arriba, y si el sector cabe, prueba con un dardo más. "
            "Por eso las puntuaciones se guardan desde la posición 1: el sector de la fila i es p de i. "
            "Para reconstruir, un bucle mientras quede suma: si la casilla es igual que la de arriba, sube; si no, escribe el sector y resta su puntuación.",
            e_codigo, titulo="El código", extra=2.0),
     Escena("Detalles. Si la última casilla sigue en infinito, como en el tercer ejemplo, donde con 8 y 12 no se puede sumar 25, se escribe imposible. "
-           "Antes de sumar uno, hay que comprobar que la casilla no es infinito, o el número se desbordaría. "
+           "Los dardos son enteros con infinito, de la cabecera EnterosInf: infinito más uno sigue siendo infinito, y no se desborda. "
            "No hay número de casos: se lee hasta el final del fichero. "
            "Y el coste es S por V, en tiempo y en memoria.", e_detalles, titulo="Detalles", extra=1.5),
     Escena("Resumiendo: la tabla guarda el mínimo de dardos para cada suma con cada grupo de sectores. "

@@ -245,7 +245,7 @@ def e_reconstruye(f):
         cofre(f, x, y, COF[i - 1][1], sel=True)
 
 
-A = find_line(CPP, "vector<vector<int>> mejor(N + 1")
+A = find_line(CPP, "Matriz<int> mejor(N + 1")
 B = find_line(CPP, "j -= 3 * prof[i];")
 CODE = codigo(CPP, A, B + 3, maxc=92)
 L_TAB = A

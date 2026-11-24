@@ -3,7 +3,7 @@
  "cabeceras": [],
  "limite_ms": 3000,
  "fallo": [
-  "if (anterior[j] > anterior[col]) col = j;",
-  "if (anterior[j] >= anterior[col]) col = j;"
+  "if (mejor[N - 1][j] > mejor[N - 1][col]) col = j;",
+  "if (mejor[N - 1][j] >= mejor[N - 1][col]) col = j;"
  ]
 }

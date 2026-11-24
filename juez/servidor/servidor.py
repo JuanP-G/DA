@@ -223,18 +223,31 @@ def lineas(t):
     return l
 
 
+def filas_utiles(t):
+    """Líneas con contenido, con los espacios y tabuladores normalizados: [(nº de línea, texto)].
+    No cuentan los espacios sobrantes, los de los extremos, las líneas vacías ni el \\r de Windows."""
+    res = []
+    for n, l in enumerate(t.replace("\r", "").split("\n"), 1):
+        l = " ".join(l.split())
+        if l:
+            res.append((n, l))
+    return res
+
+
 def compara(esperada, obtenida):
-    """None si coinciden. Se comparan las palabras (separadas por espacios, tabuladores o saltos de
-    línea): da igual cuántos espacios haya, si falta un salto de línea o sobran líneas vacías.
-    Si no coinciden, devuelve la primera línea que difiere para enseñarla."""
-    if esperada.split() == obtenida.split():
+    """None si es correcta (AC). Da igual que haya espacios de más, espacios al final, líneas vacías o
+    que falte el último salto de línea. Si las palabras son las mismas y en el mismo orden pero están
+    repartidas en otras líneas, es error de presentación ("pe": True). Si las palabras no coinciden,
+    respuesta incorrecta. En los dos casos devuelve la primera línea que difiere."""
+    a, b = filas_utiles(esperada), filas_utiles(obtenida)
+    if [x[1] for x in a] == [x[1] for x in b]:
         return None
-    a, b = lineas(esperada), lineas(obtenida)
+    pe = esperada.split() == obtenida.split()
     for i in range(max(len(a), len(b))):
-        x = a[i] if i < len(a) else None
-        y = b[i] if i < len(b) else None
+        x = a[i][1] if i < len(a) else None
+        y = b[i][1] if i < len(b) else None
         if x != y:
-            return {"linea": i + 1, "esperada": x, "obtenida": y, "total": len(a), "lineas_tuyas": len(b)}
+            return {"linea": i + 1, "esperada": x, "obtenida": y, "total": len(a), "lineas_tuyas": len(b), **({"pe": True} if pe else {})}
     return {"linea": 1, "esperada": None, "obtenida": None, "total": len(a), "lineas_tuyas": len(b)}
 
 
@@ -533,7 +546,7 @@ def juzgar(ej_id, codigo):
                              "motivo": f"no se entiende la salida ({type(e).__name__})"}
                 else:
                     d = compara(esperada, obtenida)
-                if d: fila["v"] = "wa"; fila["dif"] = d
+                if d: fila["v"] = "pe" if d.get("pe") else "wa"; fila["dif"] = d
                 else: fila["v"] = "ac"
             filas.append(fila)
             if fila["v"] != "ac" and global_v == "ac":

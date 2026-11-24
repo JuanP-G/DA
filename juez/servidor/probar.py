@@ -42,7 +42,7 @@ casos = [
     ("escribir en /w", sin_main + '#include <cstdio>\nint main(){ FILE*f=fopen("/w/x","w"); return f?0:4; }', {"rte"}),
     ("leer /etc/passwd", sin_main + '#include <cstdio>\nint main(){ FILE*f=fopen("/etc/passwd","r"); if(f){ char b[200]; while(fgets(b,200,f)) fputs(b,stdout);} return f?0:5; }', {"rte"}),
     ("leer el home", sin_main + '#include <cstdio>\nint main(){ return fopen("/home","r")?0:6; }', {"rte"}),
-    ("formato distinto (se acepta)", sol.replace("<< ' ' <<", "<< '\\n' <<"), {"ac"}),
+    ("formato distinto (PE)", sol.replace("<< ' ' <<", "<< '\\n' <<"), {"pe"}),
     ("crear procesos (seccomp)", sin_main + CAT + '#include <cstdio>\nextern "C" int CAT(fo,rk)();\nint main(){ return CAT(fo,rk)() < 0 ? 7 : 0; }', {"rte"}),
     ("cabecera prohibida", '#include <unistd.h>\nint main(){}', {"ce"}),
     ("plantilla explosiva (compilación)", "template<int N> struct F{ enum { v = F<N-1>::v + F<N-2>::v }; };\ntemplate<> struct F<1>{ enum { v = 1 }; };\ntemplate<> struct F<0>{ enum { v = 0 }; };\nint main(){ return F<200000>::v; }", {"ce"}),

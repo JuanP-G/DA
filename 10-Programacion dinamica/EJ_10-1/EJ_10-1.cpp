@@ -9,8 +9,9 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
-#include <climits>
 using namespace std;
+
+#include "EnterosInf.h"
 
 /*@ <answer>
 
@@ -24,8 +25,10 @@ using namespace std;
  PLANTEAMIENTO (programacion dinamica: mochila 0/1 con suma exacta)
  Tres tablas sobre las longitudes j = 0..L, considerando los cordeles uno a uno:
      formas[j]  = numero de subconjuntos de los cordeles vistos que suman j
-     cordeles[j]= minimo numero de cordeles para sumar j      (INF si no se puede)
-     coste[j]   = minimo coste para sumar j                   (INF si no se puede)
+     cordeles[j]= minimo numero de cordeles para sumar j      (Infinito si no se puede)
+     coste[j]   = minimo coste para sumar j                   (Infinito si no se puede)
+ Las dos ultimas son EntInf (EnterosInf.h): con el infinito la suma "inf + 1" sigue siendo
+ infinito, asi que no hace falta comprobar nada antes de sumar.
  Casos base: formas[0] = 1, cordeles[0] = coste[0] = 0.
  
  Al anadir el cordel (l, c), para j de L hacia abajo hasta l:
@@ -50,16 +53,14 @@ using namespace std;
 void resuelveCaso() {
     int N, L;
     cin >> N >> L;
-    const int INF = INT_MAX;
     vector<long long> formas(L + 1, 0);
-    vector<int> cordeles(L + 1, INF), coste(L + 1, INF);
+    vector<EntInf> cordeles(L + 1, Infinito), coste(L + 1, Infinito);
     formas[0] = 1; cordeles[0] = 0; coste[0] = 0;
 
     for (int k = 0; k < N; ++k) {
         int l, c;
         cin >> l >> c;
         for (int j = L; j >= l; --j) {
-            if (formas[j - l] == 0) continue;            // j - l no se puede formar
             formas[j] += formas[j - l];
             cordeles[j] = min(cordeles[j], cordeles[j - l] + 1);
             coste[j] = min(coste[j], coste[j - l] + c);

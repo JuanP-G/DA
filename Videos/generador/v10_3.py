@@ -267,11 +267,11 @@ def e_ejemplo2(f):
 
 
 A = find_line(CPP, "void resuelveCaso()")
-B = find_line(CPP, "cout << caminos[M - 1]")
+B = find_line(CPP, "cout << caminos[N - 1][M - 1]")
 CODE = codigo(CPP, A, B + 1)
-L_INI = find_line(CPP, "caminos[0] = 1;")
-L_X = find_line(CPP, "if (fila[j] == 'X') caminos[j] = 0;")
-L_SUMA = find_line(CPP, "else if (j > 0) caminos[j] += caminos[j - 1];")
+L_INI = find_line(CPP, "caminos[0][0] = 1;")
+L_X = find_line(CPP, "if (mapa[i][j] == 'X') caminos[i][j] = 0;")
+L_SUMA = find_line(CPP, "if (j > 0) caminos[i][j] += caminos[i][j - 1];")
 L_OUT = B
 
 
@@ -377,19 +377,18 @@ ESC = [
            "Hay un rodeo que la alcanza, volviendo hacia el norte, pero es más largo, y no cuenta. "
            "Los números lo muestran solos: a la estación llegan cero caminos.",
            e_ejemplo2, titulo="Ejemplo 2", extra=1.5),
-    Escena("En el código basta un solo vector. "
-           "Al empezar una fila, caminos de jota todavía guarda el valor del cruce de arriba. "
-           "Si el cruce tiene obras se pone a cero. Si no, se le suma caminos de jota menos uno, que ya es el de la izquierda en la fila actual. "
+    Escena("En el código, los caminos se guardan en una matriz de ene por eme, de la cabecera Matriz, que se rellena por filas. "
+           "Si el cruce tiene obras se pone a cero. Si no, se le suma el de arriba y el de la izquierda, cuando existen. "
            "Al terminar, la última casilla es la respuesta.",
            e_codigo, titulo="El código", extra=2.5),
-    Escena("Detalles: con un solo vector la memoria es proporcional a las columnas. "
+    Escena("Detalles: la memoria es ene por eme, que con cincuenta por cincuenta como mucho no importa. "
            "El tiempo es ene por eme, y con cincuenta por cincuenta como mucho, es instantáneo. "
            "Y el enunciado garantiza que el resultado cabe en un entero.",
            e_detalles, titulo="Detalles", extra=1.5),
     Escena("Resumiendo: un camino mínimo solo va al sur o al este. "
            "Cada cruce suma lo que llega de arriba y de la izquierda, y las obras valen cero. "
            "Se empieza con un uno en la salida y la respuesta queda en la estación. "
-           "Todo con un vector, en ene por eme.",
+           "Todo en una matriz, en ene por eme.",
            e_cierre, titulo="Resumen", extra=1.5),
 ]
 

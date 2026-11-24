@@ -11,6 +11,8 @@
 #include <algorithm>
 using namespace std;
 
+#include "Matriz.h"
+
 /*@ <answer>
 
  El cazatesoros
@@ -49,7 +51,7 @@ void resuelveCaso() {
     vector<int> prof(N + 1), oro(N + 1);
     for (int i = 1; i <= N; ++i) cin >> prof[i] >> oro[i];
 
-    vector<vector<int>> mejor(N + 1, vector<int>(T + 1, 0));
+    Matriz<int> mejor(N + 1, T + 1, 0);
     for (int i = 1; i <= N; ++i) {
         int tiempo = 3 * prof[i];
         for (int j = 0; j <= T; ++j) {

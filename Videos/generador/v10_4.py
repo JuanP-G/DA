@@ -188,15 +188,15 @@ def e_empate(f):
 
 
 A = find_line(CPP, "void resuelveCaso()")
-B = find_line(CPP, "cout << anterior[col]")
+B = find_line(CPP, "cout << mejor[N - 1][col]")
 CODE = codigo(CPP, A, B + 1, maxc=80)
-L_F1 = find_line(CPP, "for (int j = 0; j < N; ++j) cin >> anterior[j];")
-L_ARR = find_line(CPP, "int mejorArriba = anterior[j];")
+L_F1 = find_line(CPP, "for (int j = 0; j < N; ++j) cin >> mejor[0][j];")
+L_ARR = find_line(CPP, "int mejorArriba = mejor[i - 1][j];")
 L_IZ = find_line(CPP, "if (j > 0) mejorArriba")
 L_DE = find_line(CPP, "if (j + 1 < N) mejorArriba")
-L_ACT = find_line(CPP, "actual[j] = t + mejorArriba;")
-L_SWAP = find_line(CPP, "swap(anterior, actual);")
-L_MAX = find_line(CPP, "if (anterior[j] > anterior[col]) col = j;")
+L_ACT = find_line(CPP, "mejor[i][j] = t + mejorArriba;")
+L_SWAP = find_line(CPP, "mejor[i][j] = t + mejorArriba;")
+L_MAX = find_line(CPP, "if (mejor[N - 1][j] > mejor[N - 1][col]) col = j;")
 
 
 def e_codigo(f):
@@ -280,15 +280,14 @@ ESC = [
            "Cualquier recorrido suma tres, y las tres columnas empatan. "
            "Se pide la de más a la izquierda, así que al buscar el máximo solo se cambia de columna si el valor es estrictamente mayor.",
            e_empate, titulo="Empates", extra=1.5),
-    Escena("En el código no hace falta la tabla entera: basta con dos filas, la anterior y la actual. "
-           "Se lee la primera fila en anterior. Para cada fila siguiente, cada casilla mira las tres de anterior que existen, y guarda en actual su valor más la mayor. "
-           "Al acabar la fila, se intercambian con swap, que no copia nada. "
-           "Al final, anterior es la última fila, y se busca su máximo con mayor estricto.",
+    Escena("En el código, la tabla es una matriz de ene por ene, de la cabecera Matriz. "
+           "Se lee la primera fila directamente en la matriz. Para cada fila siguiente, cada casilla mira las tres de la fila de encima que existen, y guarda su valor más la mayor. "
+           "Al final, la última fila tiene los valores, y se busca su máximo con mayor estricto.",
            e_codigo, titulo="El código", extra=3.0),
     Escena("Resumiendo: elegir lo más grande de encima no sirve. "
            "Cada casilla guarda su valor más el máximo de las tres de encima. "
            "La respuesta es el máximo de la última fila, el de más a la izquierda. "
-           "Con dos filas, ene al cuadrado en tiempo y ene en memoria.",
+           "Ene al cuadrado en tiempo y en memoria.",
            e_cierre, titulo="Resumen", extra=1.5),
 ]
 

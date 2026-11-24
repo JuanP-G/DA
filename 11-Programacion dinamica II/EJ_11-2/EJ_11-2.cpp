@@ -12,6 +12,8 @@
 #include <algorithm>
 using namespace std;
 
+#include "Matriz.h"
+
 /*@ <answer>
 
  Aibofobia
@@ -49,7 +51,7 @@ void resuelveCaso() {
     string s;
     cin >> s;
     int n = s.size();
-    vector<vector<int>> faltan(n, vector<int>(n, 0));
+    Matriz<int> faltan(n, n, 0);
     for (int d = 1; d < n; ++d) {              // d = j - i
         for (int i = 0; i + d < n; ++i) {
             int j = i + d;

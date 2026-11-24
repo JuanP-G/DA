@@ -39,7 +39,7 @@ A un cruce solo se llega **desde el norte** $(i-1, j)$ o **desde el oeste** $(i,
 
 **Llamada inicial / respuesta:** $\text{caminos}(N-1, M-1)$.
 
-**Implementación:** por filas con un solo vector ($\text{caminos}[j]$ guarda la fila de arriba hasta que se sobrescribe). Coste $O(N \cdot M)$ en tiempo y $O(M)$ en espacio.
+**Implementación:** por filas con una `Matriz<long long>` (`Matriz.h`). Coste $O(N \cdot M)$ en tiempo y $O(M)$ en espacio.
 
 ## Cómo se plantea
 Un camino de longitud mínima **solo avanza hacia el sur o hacia el este**. Por eso a un cruce `(i, j)` solo se llega desde el de arriba o desde el de la izquierda:
@@ -50,7 +50,7 @@ caminos(i, j) = 0                                    si (i, j) tiene obras
               = caminos(i−1, j) + caminos(i, j−1)    si no   (fuera de la ciudad vale 0)
 ```
 
-Se rellena fila a fila con **un solo vector**: `caminos[j]` aún tiene el valor de la fila de arriba y `caminos[j−1]` ya tiene el de la izquierda en la fila actual.
+Se rellena fila a fila en una **matriz**: al llegar a `caminos[i][j]` ya están calculados `caminos[i−1][j]` (arriba) y `caminos[i][j−1]` (izquierda).
 
 ## Traza del ejemplo 1
 ```text
@@ -62,7 +62,7 @@ Se rellena fila a fila con **un solo vector**: `caminos[j]` aún tiene el valor 
 
 ## Por qué así
 - **Por qué solo sur y este:** un camino de `(N−1) + (M−1)` manzanas no puede permitirse ni un paso hacia el norte ni hacia el oeste.
-- **Coste:** O(N·M) en tiempo y O(M) en espacio.
+- **Coste:** O(N·M) en tiempo y en espacio.
 
 ## Ojo con
 - En el ejemplo 2 sí hay un camino que esquiva las obras, pero es más largo de lo imprescindible: no cuenta, y la respuesta es 0.
