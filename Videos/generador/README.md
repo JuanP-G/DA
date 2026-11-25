@@ -98,6 +98,11 @@ python v07_teoria.py             # genera el mp4
 - `v10_4.py` → `../10-4_por_donde_hay_que_subir.mp4`
 - `v11_1.py` → `../11-1_el_cazatesoros.mp4`
 - `v11_2.py` → `../11-2_aibofobia.mp4`
+- `v10_L.py` → `../10-L_cambio_exacto.mp4`
+- `v11_3.py` → `../11-3_la_colecta_de_primavera.mp4`
+- `v11_4.py` → `../11-4_seis_grados_de_separacion.mp4`
+- `v11_5.py` → `../11-5_las_vacas_pensantes.mp4`
+- `v11_L.py` → `../11-L_la_fiesta_de_graduacion.mp4`
 - `v10_teoria.py` → `../10-0_programacion_dinamica_teoria.mp4` (teoría de los temas 10 y 11)
 - `pd_comun.py`: piezas comunes de los vídeos de PD (tablas con flechas, fórmulas con llave, código, portada y cierre)
 
