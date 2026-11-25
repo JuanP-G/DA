@@ -26,10 +26,13 @@ Para **reconstruir** la solución hace falta la tabla entera: desde la casilla d
 ## Patrones de los ejercicios
 | Patrón | Depende de | Ejercicios |
 |---|---|---|
-| Mochila 0/1 | fila `i − 1` | [10-1](EJ_10-1/README.md), [11-1](../11-Programacion%20dinamica%20II/EJ_11-1/README.md) |
+| Mochila 0/1 | fila `i − 1` | [10-1](EJ_10-1/README.md), [10-L](EJ_10-L/README.md), [11-1](../11-Programacion%20dinamica%20II/EJ_11-1/README.md) |
+| Mochila con grupos (elegir una opción por grupo) | fila `i − 1`, hasta 4 columnas | [11-3](../11-Programacion%20dinamica%20II/EJ_11-3/README.md) |
 | Monedas ilimitadas | misma fila | [10-2](EJ_10-2/README.md) |
 | Cuadrícula | arriba / izquierda (o las tres de encima) | [10-3](EJ_10-3/README.md), [10-4](EJ_10-4/README.md) |
-| Intervalos | intervalos más cortos (por diagonales) | [11-2](../11-Programacion%20dinamica%20II/EJ_11-2/README.md) |
+| Dos secuencias (LCS) | `(i−1, j−1)`, `(i−1, j)`, `(i, j−1)` | [11-L](../11-Programacion%20dinamica%20II/EJ_11-L/README.md) |
+| Intervalos | intervalos más cortos (por diagonales) | [11-2](../11-Programacion%20dinamica%20II/EJ_11-2/README.md), [11-5](../11-Programacion%20dinamica%20II/EJ_11-5/README.md) |
+| Todos los pares (Floyd-Warshall) | iteración `k − 1` (una sola matriz) | [11-4](../11-Programacion%20dinamica%20II/EJ_11-4/README.md) |
 
 ## Formato de examen
 1. Definición: `mochila(i, j)` = máximo valor con los objetos `1..i` sin pasar del peso `j`.
