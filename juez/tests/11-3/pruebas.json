@@ -1,0 +1,239 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "3 vecinos y 5 cajas: 10 + 100 + 5 = 115, con 1, 2 (o 3) y 1 cajas. Vale cualquier reparto óptimo (con como mucho C cajas).",
+  "si": {
+   "wa": "Falla el primer ejemplo: mira el beneficio (115) y que el reparto no pasa de 5 cajas y recauda ese valor.",
+   "pe": "El beneficio va en una línea y las cajas de los vecinos en la siguiente, separadas por un espacio."
+  },
+  "pistas": [
+   "Las cuatro líneas de la entrada son por número de cajas (1, 2, 3, 4), cada una con los V vecinos: no por vecino.",
+   "dinero(i, j) = máximo de dinero(i−1, j−k) + pago(i, k) para k de 0 a min(4, j).",
+   "El máximo es 115: vender 1 caja al primero, 2 (o 3) al segundo y 1 al tercero."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "Dos vecinos que solo pagan por dos cajas y solo hay dos: se atiende a uno (10). Vale cualquier reparto óptimo (con como mucho C cajas).",
+  "si": {
+   "wa": "Con solo dos cajas únicamente se puede atender a un vecino: 10, no 20."
+  },
+  "pistas": [
+   "Cada vecino necesita 2 cajas para pagar algo.",
+   "Si repartes una caja a cada uno no recaudas nada."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "Un solo vecino que paga menos cuantas más cajas compra: se le vende una (100) y sobran tres. Vale cualquier reparto óptimo (con como mucho C cajas).",
+  "si": {
+   "wa": "No hace falta vender todas las cajas: a este vecino la mejor opción es 1 caja (100).",
+   "rte": "Revisa los límites: C puede ser mayor que lo que se vende."
+  },
+  "pistas": [
+   "Comparar 100, 50, 30 y 10: gana la primera.",
+   "dinero(i, j) incluye k = 0 y el máximo se toma sobre «como mucho j cajas»."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Ninguna caja",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "C = 0: no se vende nada, beneficio 0 y todos los vecinos con 0 cajas.",
+  "si": {
+   "wa": "Con C = 0 el beneficio es 0 y a cada vecino le corresponden 0 cajas.",
+   "rte": "La tabla tiene C + 1 = 1 columna: revisa que no te sales."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa cuando no hay cajas?",
+   "dinero(i, 0) = 0 para todo i; no mires j − k con j = 0."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Un solo vecino",
+  "tipo": "borde",
+  "casos": 6,
+  "comprueba": "Un vecino con distintos números de cajas: se le vende lo que más paga dentro de las cajas que hay.",
+  "si": {
+   "wa": "Con V = 1 la respuesta es el máximo de los pagos de 0 a C cajas (no más de 4)."
+  },
+  "pistas": [
+   "Con 1 caja y pago 0 por 1 caja, el beneficio es 0.",
+   "Con 3 cajas lo mejor es vender 3 (9)."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Las líneas son por número de cajas",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Cada línea de la entrada es para 1, 2, 3 o 4 cajas, con un valor por vecino: si las lees por vecino, o escribes mal el reparto, todo sale cambiado.",
+  "si": {
+   "wa": "Revisa (a) cómo lees los pagos: son cuatro líneas, una por número de cajas (1, 2, 3, 4), cada una con los V vecinos, no cuatro números por vecino; (b) que escribes el beneficio en una línea y, en otra, las cajas de los vecinos EN SU ORDEN; (c) que al reconstruir restas las cajas elegidas.",
+   "pe": "El beneficio va en una línea y las cajas de los vecinos en la siguiente, separadas por un espacio."
+  },
+  "pistas": [
+   "El pago del vecino i por k cajas es el número i de la línea k de la entrada: pago[k][i]. Bucle de fuera sobre k y de dentro sobre los vecinos.",
+   "Escribe el beneficio y, en la línea siguiente, las cajas del vecino 1, del 2, ... en ese orden.",
+   "Reconstruye desde (V, C): elige k para el vecino i y pasa a (i − 1, j − k)."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "No hay que vender todas las cajas",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Todos pagan menos cuantas más cajas compran: conviene vender poco y que sobren muchas.",
+  "si": {
+   "wa": "Obligas a vender todas las cajas (o al menos una a cada vecino): vender cero o pocas puede ser lo mejor. Cuenta k = 0 y el máximo «como mucho C cajas»."
+  },
+  "pistas": [
+   "En el segundo caso hay 12 cajas pero lo mejor es una a cada vecino (30 + 40 + 20).",
+   "dinero(0, j) = 0 para todo j: «sobran cajas» no cuesta nada."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Como mucho 4 cajas por vecino",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "El mejor reparto vende exactamente 4 cajas a cada vecino (el pago crece con el número de cajas): el bucle debe llegar hasta 4.",
+  "si": {
+   "wa": "Un vecino compra como mucho 4 cajas: el bucle de k llega a 4 (no a 3, ni a j)."
+  },
+  "pistas": [
+   "En el primer caso hay 8 cajas y dos vecinos: 4 + 4 cajas, beneficio 80.",
+   "for k de 0 a min(4, j): ni más de 4 ni más de las que quedan."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El voraz no sirve",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Repartir cada caja al vecino que más gana con ella (un voraz) da menos que el óptimo en estos casos.",
+  "si": {
+   "wa": "Un voraz (dar cada caja al que más paga por ella) no es óptimo: hay vecinos que solo pagan por lotes de 3 o 4 cajas. Usa la tabla de programación dinámica."
+  },
+  "pistas": [
+   "Mira los vecinos que pagan 0 por 1 caja y mucho por 3 o 4: un voraz no los ve.",
+   "dinero(i, j) = máximo sobre k de dinero(i−1, j−k) + pago(i, k): prueba TODAS las opciones."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Solo pagan por lotes",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Cada vecino paga solo si recibe un número concreto de cajas: encajar los lotes en las cajas disponibles es una mochila.",
+  "si": {
+   "wa": "Hay que encajar los lotes: un vecino que solo paga por 3 cajas no aporta nada con 1 o 2. Revisa los casos k = 0..4 completos y los límites de j − k."
+  },
+  "pistas": [
+   "En el primer caso 5 cajas: 2 + 3 (40 + 60 = 100) mejor que 4 + 1 (90).",
+   "La recurrencia no cambia: máximo sobre todas las k."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Reparto válido: no más cajas de las que hay",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Todos pagan lo mismo por cualquier número de cajas: hay muchísimos repartos con el mismo beneficio, pero solo valen los que no pasan de C cajas.",
+  "si": {
+   "wa": "El reparto suma más cajas de las que hay (o no recauda lo que dices): al reconstruir hay que restar k de j en cada vecino (j −= k) y empezar en (V, C)."
+  },
+  "pistas": [
+   "Con 3 cajas y 5 vecinos que pagan 10 por cualquier cantidad: se atiende a 3 vecinos con 1 caja cada uno (30).",
+   "En la reconstrucción, tras elegir k para el vecino i, pasa a (i − 1, j − k)."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un caso grande y luego otros pequeños: nada del anterior debe quedar en la tabla ni en el reparto.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente (la tabla o el vector de cajas): créalos dentro de resuelveCaso con el tamaño de cada caso.",
+   "rte": "La tabla de un caso anterior tenía otro tamaño: créala en cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué vive fuera de la función.",
+   "Declara la tabla y el vector de cajas dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 150,
+  "comprueba": "150 casos de hasta 5 vecinos (con muchos empates y valores a 0). Vale cualquier reparto óptimo (con como mucho C cajas).",
+  "si": {
+   "wa": "Algún caso falla: es pequeño, prueba a mano los repartos posibles.",
+   "pe": "Revisa el formato: beneficio en una línea y cajas en la siguiente."
+  },
+  "pistas": [
+   "Localiza el caso en la entrada y calcula el beneficio máximo a mano.",
+   "El «Por qué» del veredicto dice si falla el beneficio o el reparto (suma de cajas, valor recaudado)."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "Casos medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos de 10 a 40 vecinos. Vale cualquier reparto óptimo (con como mucho C cajas).",
+  "si": {
+   "wa": "Los casos pequeños salen bien y estos no: revisa los tamaños de la tabla (V + 1 filas y C + 1 columnas) y la reconstrucción.",
+   "tle": "Una recursión sin memoria es de 5^V: no termina. Guarda cada dinero(i, j) en una tabla."
+  },
+  "pistas": [
+   "¿Calculas el mismo dinero(i, j) muchas veces? Apúntalo en una tabla.",
+   "Reconstruye desde (V, C) hacia atrás."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "1000 vecinos y 4000 cajas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo: 1.000 vecinos y 4.000 cajas (4 millones de casillas).",
+  "si": {
+   "tle": "Debe ser O(V · C · 4): una recursión sin memoria (5^V) no termina.",
+   "mle": "La tabla de 1.001 × 4.001 enteros son unos 16 MB: no reserves más (y créala dentro del caso).",
+   "rte": "Con tablas tan grandes no uses un array local (pila): usa Matriz o vector."
+  },
+  "pistas": [
+   "V·C = 4·10⁶ casillas con 5 opciones cada una son 2·10⁷ operaciones: muy poco.",
+   "Rellena la tabla con tres bucles (i, j, k)."
+  ]
+ },
+ {
+  "n": 16,
+  "nombre": "Casos grandes con pocas cajas",
+  "tipo": "rendimiento",
+  "casos": 3,
+  "comprueba": "Tres casos de 1.000 vecinos: 800 cajas, 2.500 cajas con muchos pagos a 0 y ninguna caja.",
+  "si": {
+   "tle": "Debe ser O(V · C) por caso.",
+   "mle": "Crea la tabla dentro del caso para que se libere al terminar.",
+   "wa": "Con pocas cajas la mayoría de vecinos se queda en 0: revisa que reconstruyes bien."
+  },
+  "pistas": [
+   "Con C = 0 el caso es trivial (todo ceros).",
+   "No copies la tabla al llamar a funciones: pásala por referencia."
+  ]
+ }
+]

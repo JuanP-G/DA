@@ -1,0 +1,9 @@
+{
+ "solucion": "11-Programacion dinamica II/EJ_11-5/EJ_11-5.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "return a[l] > a[r] ? come[l + 1][r] : come[l][r - 1];",
+  "return min(come[l + 1][r], come[l][r - 1]);"
+ ]
+}

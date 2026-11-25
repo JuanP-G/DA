@@ -1,0 +1,10 @@
+{
+ "solucion": "11-Programacion dinamica II/EJ_11-3/EJ_11-3.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "for (int k = 0; k <= min(4, j); ++k)\n                mejor = max(mejor,",
+  "for (int k = 0; k <= min(3, j); ++k)\n                mejor = max(mejor,"
+ ],
+ "comprobador": true
+}

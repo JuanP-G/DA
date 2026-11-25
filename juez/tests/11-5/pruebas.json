@@ -1,0 +1,223 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "8 7 1 4: se empieza por el 8 (Devoradora coge el 7) y luego el 4: 12.",
+  "si": {
+   "wa": "Falla el primer ejemplo: Devoradora responde siempre con el extremo MAYOR; compara las dos jugadas posibles con esa respuesta.",
+   "pe": "Un entero por caso, en su propia línea."
+  },
+  "pistas": [
+   "Si empiezas por el 4 (derecha), Devoradora coge el 8 y tú llegas a 4 + 7 = 11.",
+   "come(i, j) = max(a_i + lo que queda tras la respuesta de Devoradora a (i+1, j), a_j + lo que queda tras su respuesta a (i, j−1)).",
+   "Respuesta esperada: 12."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "2 4 15 5: no conviene coger el mayor extremo (5): empezando por el 2 se llega a 17.",
+  "si": {
+   "wa": "Coger siempre el extremo mayor no es óptimo: hay que mirar lo que deja la jugada para después."
+  },
+  "pistas": [
+   "Si coges el 5, Devoradora se queda el 15 y a ti te queda el 4: 9.",
+   "Si coges el 2, Devoradora coge el 5 (4 < 5) y te deja el 15 al alcance."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "La hilera del dibujo (7 cubos): 35.",
+  "si": {
+   "wa": "Revisa la recurrencia sobre intervalos: ¿tienes en cuenta el turno de Devoradora después del tuyo?"
+  },
+  "pistas": [
+   "Los primeros movimientos: tú 12, ella 6, tú 11, ella 4.",
+   "Después quedan 3 15 9: da igual lo que cojas, Devoradora se lleva el 15 y tú el otro extremo."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Uno y dos cubos",
+  "tipo": "borde",
+  "casos": 6,
+  "comprueba": "Hileras mínimas: con un cubo te lo comes tú; con dos eliges el mayor.",
+  "si": {
+   "wa": "Con un solo cubo es tuyo; con dos coges el mayor y Devoradora el otro.",
+   "rte": "Cuidado con los índices en hileras de 1 o 2 cubos: intervalos vacíos (i > j) valen 0."
+  },
+  "pistas": [
+   "Con 1 cubo, come(i, i) = a_i (lo que queda después es el intervalo vacío).",
+   "Con 2 cubos coges el mayor: máx(a_i, a_j)."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Tres cubos",
+  "tipo": "borde",
+  "casos": 5,
+  "comprueba": "Tres cubos: tras tu jugada Devoradora elige entre dos extremos y a ti te queda el otro.",
+  "si": {
+   "wa": "Con tres cubos, tras tu primera jugada Devoradora coge el mayor de los dos extremos restantes y te queda el cubo contrario (o el del medio).",
+   "rte": "Revisa los índices al pasar de un intervalo de 3 cubos al de 1."
+  },
+  "pistas": [
+   "En [1, 100, 2]: coges el 2; Devoradora coge el 100; te queda el 1: 3. Si coges el 1, Devoradora coge el 2 y te queda el 100: 101.",
+   "Calcula a mano los dos caminos y quédate con el máximo."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Cómo juega Devoradora",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Hileras pequeñas donde coger el mayor extremo acierta, pero hay que simular bien a Devoradora: tras tu jugada ella coge SIEMPRE el mayor de los extremos que quedan, y luego te toca otra vez a ti.",
+  "si": {
+   "wa": "Algo falla al simular a Devoradora: tras TU jugada ella coge el MAYOR de los dos extremos que quedan (no el menor, no «el mejor para ella») y después vuelve a tocarte a ti. Revisa también que rellenas la tabla en un orden en que cada casilla usa casillas ya calculadas."
+  },
+  "pistas": [
+   "Tras tu jugada, el intervalo que queda es (i+1, j) o (i, j−1): ahí Devoradora compara sus dos extremos y se come el mayor.",
+   "despues(l, r) = come(l+1, r) si a_l > a_r, y come(l, r−1) si no. Nada de min, y tampoco «a_i + come(i+1, j)» (eso sería jugar dos veces seguidas).",
+   "Con la tabla por longitudes crecientes, cada come(i, j) usa solo intervalos más cortos ya calculados."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "El mayor de los extremos no siempre conviene",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Un voraz (coger el extremo mayor) da menos: hay que mirar lo que deja la jugada.",
+  "si": {
+   "wa": "Coges siempre el extremo mayor: eso es un voraz y falla. Compara las dos jugadas con la tabla."
+  },
+  "pistas": [
+   "En [2, 4, 15, 5], coger el 5 deja a Devoradora el 15: 9. Coger el 2 te deja el 15: 17.",
+   "come(i, j) = max(a_i + ..., a_j + ...): prueba las dos opciones en cada paso."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Orden de relleno por longitudes",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "La tabla de un intervalo depende de intervalos más cortos: rellenar por filas sin cuidado lee casillas vacías.",
+  "si": {
+   "wa": "Rellenas la tabla en un orden en el que una casilla usa otras que aún no has calculado: hay que ir por longitudes crecientes (o por i decreciente y j creciente)."
+  },
+  "pistas": [
+   "come(i, j) usa intervalos con dos cubos menos (i+2, j), (i+1, j−1) o (i, j−2) y con uno menos.",
+   "Rellena primero todos los intervalos de longitud 1, luego los de 2, etc."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Nuestra vaca come lo que no coge Devoradora",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Sumar los cubos que te llevas con la jugada de cada intervalo, no restar el total.",
+  "si": {
+   "wa": "El total que comes no es «suma de todo menos lo que come Devoradora» salvo que lo calcules con su estrategia fija; revisa que tu recurrencia suma a_i o a_j en tu turno."
+  },
+  "pistas": [
+   "En [1, 2, 3, 4, 5, 6] coges 6 + ... piénsalo turno a turno.",
+   "come(i, j) suma lo que comes tú en TU turno y lo que comerás después, no lo de Devoradora."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Un caso mediano y luego otros pequeños: nada del anterior debe quedar en la tabla.",
+  "si": {
+   "wa": "Algo se arrastra de un caso al siguiente (la tabla): créala dentro de resuelveCaso con el tamaño de cada caso.",
+   "rte": "La tabla de un caso anterior tenía otro tamaño: créala en cada caso."
+  },
+  "pistas": [
+   "Si el primer caso sale bien y los siguientes no, mira qué vive fuera de la función.",
+   "Declara la tabla como variable local de resuelveCaso."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Hileras pequeñas al azar",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 hileras de hasta 9 cubos con valores pequeños.",
+  "si": {
+   "wa": "Algún caso falla: es pequeño, juega la partida a mano con la estrategia de Devoradora."
+  },
+  "pistas": [
+   "Localiza el caso en la entrada y prueba las dos jugadas iniciales.",
+   "Revisa el desempate: las cantidades son distintas, no hay empates."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Hileras medianas al azar",
+  "tipo": "aleatorio",
+  "casos": 40,
+  "comprueba": "40 hileras de hasta 80 cubos.",
+  "si": {
+   "wa": "Los pequeños salen y estos no: revisa los tamaños de la tabla (N + 2 por lado) y el orden de relleno.",
+   "tle": "Una recursión sin memoria crece como 2^N: guarda cada come(i, j) en una tabla."
+  },
+  "pistas": [
+   "¿Calculas el mismo come(i, j) muchas veces? Apúntalo en una tabla.",
+   "Tabla (N + 2) × (N + 2) para no salirte con i + 2 o j − 2."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "1000 cubos al azar",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo: 1.000 cubos, unas 500.000 casillas útiles.",
+  "si": {
+   "tle": "Debe ser O(N²): una recursión sin memoria (2^N) no termina.",
+   "mle": "La tabla de 1.000 × 1.000 enteros son 4 MB: no necesitas más.",
+   "rte": "Con N = 1000 no uses un array local enorme (pila); usa Matriz o vector."
+  },
+  "pistas": [
+   "¿Cuántas veces calculas el mismo come(i, j)?",
+   "Rellena la tabla con dos bucles: O(N²)."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "1000 cubos crecientes y decrecientes",
+  "tipo": "rendimiento",
+  "casos": 4,
+  "comprueba": "Hileras ordenadas de 1.000 cubos: siempre gana el mismo lado.",
+  "si": {
+   "wa": "Con la hilera ordenada Devoradora siempre come de un extremo; revisa que tu tabla tiene en cuenta el orden entre extremos.",
+   "tle": "Debe ser O(N²) por caso."
+  },
+  "pistas": [
+   "Con una hilera creciente el extremo mayor siempre es el derecho.",
+   "Rellena la tabla por longitudes crecientes: O(N²)."
+  ]
+ },
+ {
+  "n": 15,
+  "nombre": "5 hileras de 1000 cubos",
+  "tipo": "rendimiento",
+  "casos": 5,
+  "comprueba": "Varios casos de tamaño máximo seguidos.",
+  "si": {
+   "tle": "Debe ser O(N²) por caso: cinco casos son unos 2,5 millones de casillas.",
+   "mle": "Crea la tabla dentro del caso para que se libere al terminar."
+  },
+  "pistas": [
+   "Si un caso tarda mucho, cinco tardan cinco veces más.",
+   "Evita copiar la tabla al llamar a una función: pásala por referencia."
+  ]
+ }
+]

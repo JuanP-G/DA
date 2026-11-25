@@ -1,0 +1,206 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo 1 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "Respect, One y Volando_voy están en las dos listas en ese orden: 3 canciones. Vale cualquier lista común de la longitud máxima.",
+  "si": {
+   "wa": "Falla el primer ejemplo: la lista común más larga es «Respect One Volando_voy» (3 canciones, en el orden de las dos listas).",
+   "pe": "Las canciones van en una sola línea separadas por un espacio."
+  },
+  "pistas": [
+   "Radio_Ga_Ga está en las dos listas, pero si la usas ya no caben One ni Volando_voy.",
+   "larga(i, j) = larga(i−1, j−1) + 1 si coinciden; si no, el máximo de quitar la última de una lista o de la otra."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Ejemplo 2 del enunciado",
+  "tipo": "enunciado",
+  "casos": 2,
+  "comprueba": "Ninguna canción en común: se escribe una línea vacía.",
+  "si": {
+   "wa": "Sin canciones comunes hay que escribir una línea vacía (no un 0 ni nada más).",
+   "rte": "Una lista de una sola canción y otra distinta: revisa los índices."
+  },
+  "pistas": [
+   "¿Qué escribe tu programa cuando la lista es vacía?",
+   "larga(n, m) = 0: la reconstrucción no coge ninguna canción pero el salto de línea sí se escribe."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Ejemplo 3 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "Macarena, Buleria y Thriller están en las dos en el mismo orden: las tres.",
+  "si": {
+   "wa": "La lista debe salir en el orden de las listas originales: Macarena Buleria Thriller. Si la reconstruyes de atrás hacia delante, dale la vuelta."
+  },
+  "pistas": [
+   "La reconstrucción empieza por el final de las listas: las canciones salen de la última a la primera.",
+   "Guárdalas en un vector y haz reverse antes de escribirlas."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Ejemplo 4 del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "Las dos canciones están en las dos listas pero en orden contrario: solo cabe una. Vale cualquier lista común de la longitud máxima.",
+  "si": {
+   "wa": "El orden importa: Columbia y Bohemian_Rhapsody están al revés, así que la lista tiene UNA canción, no dos."
+  },
+  "pistas": [
+   "No basta con «está en las dos»: tienen que respetar el orden.",
+   "Es una subsecuencia común más larga, no una intersección de conjuntos."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Una lista vacía",
+  "tipo": "borde",
+  "casos": 5,
+  "comprueba": "Las dos listas vacías, una vacía y la otra no, y listas de una canción: se lee con getline y la línea puede estar vacía.",
+  "si": {
+   "wa": "Una lista puede ocupar una línea vacía: léela con getline (con cin >> te comerías la línea siguiente) y escribe una línea vacía si no hay nada en común.",
+   "rte": "Con n = 0 o m = 0 la tabla es de 1 fila o 1 columna: revisa que no te sales."
+  },
+  "pistas": [
+   "¿Qué hace tu lectura con una línea vacía?",
+   "larga(i, 0) = larga(0, j) = 0, y el bucle de reconstrucción no debe ejecutarse."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Listas iguales o contenidas",
+  "tipo": "borde",
+  "casos": 4,
+  "comprueba": "Listas iguales y una dentro de otra: la lista común es entera la más corta.",
+  "si": {
+   "wa": "Si una lista está contenida en la otra, la respuesta es la más corta entera."
+  },
+  "pistas": [
+   "Con listas iguales, la reconstrucción recorre la diagonal entera.",
+   "Comprueba el caso en que una lista es la otra con canciones intercaladas."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 6,
+  "comprueba": "Varios casos seguidos, también con listas vacías: la lectura de la primera línea debe consumir el salto del número de casos y nada del caso anterior debe quedar en la tabla ni en la lista.",
+  "si": {
+   "wa": "Algo falla al encadenar casos: tras leer el número de casos con cin >> queda un salto de línea que el primer getline se come (lee una lista vacía), y la tabla y la lista se crean dentro de resuelveCaso.",
+   "rte": "La lista o la tabla de un caso anterior tenía otro tamaño: créalas en cada caso."
+  },
+  "pistas": [
+   "Tras leer el número de casos con cin >> queda el salto de línea: el primer getline lo lee vacío.",
+   "Declara la tabla y la lista dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "La lista sale en orden",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "La reconstrucción empieza por el final de las listas: las canciones salen de la última a la primera y hay que darles la vuelta.",
+  "si": {
+   "wa": "La lista debe salir en el orden de las listas originales: si reconstruyes de atrás hacia delante, dale la vuelta (reverse) antes de escribirla."
+  },
+  "pistas": [
+   "Compara tu lista con la esperada: ¿tiene las mismas canciones pero al revés?",
+   "Guarda las canciones en un vector al reconstruir y haz reverse antes de escribirlas."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Cada repetición con su propia aparición",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Las canciones se repiten: «A A A» y «A A» comparten solo dos A, no tres ni una. Una repetición necesita una aparición distinta en cada lista.",
+  "si": {
+   "wa": "Las repeticiones cuentan: cada aparición de una canción en la lista final usa una aparición distinta en cada lista. Con «A A A» y «A A» la lista común es «A A»."
+  },
+  "pistas": [
+   "Mira «A A A» frente a «A A»: ¿cuántas A pueden salir?",
+   "No uses conjuntos: la tabla trabaja con posiciones, no con títulos."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Subsecuencia, no subcadena",
+  "tipo": "trampa",
+  "casos": 6,
+  "comprueba": "La lista común puede saltarse canciones entre medias: no tienen que estar seguidas.",
+  "si": {
+   "wa": "No hace falta que las canciones estén seguidas en las listas: es una subsecuencia, puede saltarse las que sobran. Si no coinciden, toma el máximo de quitar la última de una lista o de la otra."
+  },
+  "pistas": [
+   "En «A X B Y A» y «A B A» la lista común es entera «A B A» aunque haya canciones por medio.",
+   "En el caso a_i ≠ b_j la tabla no vuelve a 0: hereda el máximo de dos vecinas."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "El voraz no sirve",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Coger cada canción de la primera lista en su primera aparición posible de la segunda da una lista más corta que la óptima.",
+  "si": {
+   "wa": "Un voraz (emparejar cada canción con su primera aparición posible) no siempre es óptimo: a veces conviene saltarse una canción para que quepan más después. Usa la tabla de programación dinámica."
+  },
+  "pistas": [
+   "Salta alguna canción de la primera lista y mira si caben más después.",
+   "larga(i, j) elige entre usar la coincidencia o descartar una canción de cualquiera de las dos listas."
+  ]
+ },
+ {
+  "n": 12,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos de listas de hasta 9 canciones con muchas repeticiones (2 a 5 títulos). Vale cualquier lista común de la longitud máxima.",
+  "si": {
+   "wa": "Algún caso falla: son pequeños, calcula a mano la lista común más larga.",
+   "pe": "Revisa el formato: una línea por caso y las canciones separadas por un espacio."
+  },
+  "pistas": [
+   "Localiza el caso en la entrada y comprueba la longitud de tu lista contra la de la tabla.",
+   "El «Por qué» del veredicto dice si tu lista no cabe en una de las dos o si es demasiado corta."
+  ]
+ },
+ {
+  "n": 13,
+  "nombre": "Casos medianos al azar",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos de 30 a 80 canciones. Vale cualquier lista común de la longitud máxima.",
+  "si": {
+   "wa": "Los casos pequeños salen bien y estos no: revisa el tamaño de la tabla ((n + 1) × (m + 1)) y la reconstrucción.",
+   "tle": "Una recursión sin memoria es exponencial. Guarda cada larga(i, j) en una tabla."
+  },
+  "pistas": [
+   "¿Calculas la misma larga(i, j) muchas veces? Apúntalo en una tabla.",
+   "Reconstruye desde (n, m) hacia atrás."
+  ]
+ },
+ {
+  "n": 14,
+  "nombre": "1000 y 1000 canciones",
+  "tipo": "rendimiento",
+  "casos": 2,
+  "comprueba": "El tamaño máximo: dos listas de 1.000 canciones (un millón de casillas), con pocos y con muchos títulos distintos.",
+  "si": {
+   "tle": "Debe ser O(n · m): una recursión sin memoria es exponencial, y comparar cadenas largas dentro de tres bucles es lento.",
+   "mle": "La tabla de 1.001 × 1.001 enteros son unos 4 MB: no guardes una copia de la lista en cada casilla.",
+   "rte": "Con tablas tan grandes no uses un array local (pila): usa Matriz o vector."
+  },
+  "pistas": [
+   "n · m = 10⁶ casillas con trabajo constante cada una: muy poco.",
+   "No copies cadenas dentro de los bucles: compara a[i − 1] con b[j − 1]."
+  ]
+ }
+]

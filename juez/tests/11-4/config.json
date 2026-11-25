@@ -1,0 +1,9 @@
+{
+ "solucion": "11-Programacion dinamica II/EJ_11-4/EJ_11-4.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "dist[x][y] = dist[y][x] = 1;",
+  "dist[x][y] = 1;"
+ ]
+}

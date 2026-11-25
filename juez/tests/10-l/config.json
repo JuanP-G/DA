@@ -1,0 +1,9 @@
+{
+ "solucion": "10-Programacion dinamica/EJ_10-L/EJ_10-L.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "for (int s = tope; s >= v; --s)",
+  "for (int s = v; s <= tope; ++s)"
+ ]
+}
