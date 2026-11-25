@@ -199,7 +199,7 @@ Carpeta [`9-Algoritmos voraces II/`](9-Algoritmos%20voraces%20II). Más voraces 
 
 ## Tema 10 · Programación dinámica
 
-Carpeta [`10-Programacion dinamica/`](10-Programacion%20dinamica). Recurrencias rellenadas en tablas, casi siempre guardando solo una fila. Los enunciados están en el juez de la asignatura.
+Carpeta [`10-Programacion dinamica/`](10-Programacion%20dinamica). Recurrencias rellenadas en tablas, casi siempre guardando solo una fila. Los enunciados están en el juez de la asignatura (cuando hay PDF, enlazado aquí).
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
@@ -208,15 +208,20 @@ Carpeta [`10-Programacion dinamica/`](10-Programacion%20dinamica). Recurrencias 
 | 10-2 | Construyendo dianas | [📄 PDF](10-Programacion%20dinamica/Enunciados/prob-Construyendo%20dianas.pdf) | [💻 Solución](10-Programacion%20dinamica/EJ_10-2/EJ_10-2.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-2/README.md) | [🎬 Vídeo](Videos/10-2_construyendo_dianas.mp4) | Cambio de monedas ilimitadas con la tabla entera para reconstruir los dardos |
 | 10-3 | Esquivando las obras en los cruces | [📄 PDF](10-Programacion%20dinamica/Enunciados/prob-Esquivando%20las%20obras%20en%20los%20cruces.pdf) | [💻 Solución](10-Programacion%20dinamica/EJ_10-3/EJ_10-3.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-3/README.md) | [🎬 Vídeo](Videos/10-3_esquivando_las_obras.mp4) | Contar caminos sur/este: `caminos(i, j) = arriba + izquierda`, 0 en las obras |
 | 10-4 | ¿Por dónde hay que subir? | [📄 PDF](10-Programacion%20dinamica/Enunciados/prob-%C2%BFPor%20d%C3%B3nde%20hay%20que%20subir_.pdf) | [💻 Solución](10-Programacion%20dinamica/EJ_10-4/EJ_10-4.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-4/README.md) | [🎬 Vídeo](Videos/10-4_por_donde_hay_que_subir.mp4) | `mejor(i, j) = t(i, j) + máx` de las tres de encima; el máximo de la última fila, el de más a la izquierda |
+| 10-L | Cambio exacto | [📄 PDF](10-Programacion%20dinamica/Enunciados/prob-Cambio%20exacto.pdf) | [💻 Solución](10-Programacion%20dinamica/EJ_10-L/EJ_10-L.cpp) · [📘 Explicación](10-Programacion%20dinamica/EJ_10-L/README.md) | — | Mochila 0/1 de suma exacta: menor suma ≥ precio (hasta `P + máx`) y, para ella, menos piezas; una fila recorrida hacia abajo |
 
 ## Tema 11 · Programación dinámica II
 
-Carpeta [`11-Programacion dinamica II/`](11-Programacion%20dinamica%20II). Programación dinámica **con reconstrucción** de la solución. Los enunciados están en el juez de la asignatura.
+Carpeta [`11-Programacion dinamica II/`](11-Programacion%20dinamica%20II). Programación dinámica **con reconstrucción** de la solución. Los enunciados están en el juez de la asignatura (cuando hay PDF, enlazado aquí).
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
 | 11-1 | El cazatesoros | [📄 PDF](11-Programacion%20dinamica%20II/Enunciados/prob-El%20cazatesoros.pdf) | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-1/EJ_11-1.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-1/README.md) | [🎬 Vídeo](Videos/11-1_el_cazatesoros.mp4) | Mochila 0/1 (peso 3p, capacidad T) y reconstrucción de los cofres desde `(N, T)` |
 | 11-2 | Aibofobia | [📄 PDF](11-Programacion%20dinamica%20II/Enunciados/prob-Aibofobia.pdf) | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-2/EJ_11-2.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-2/README.md) | [🎬 Vídeo](Videos/11-2_aibofobia.mp4) | `faltan(i, j)` sobre intervalos y reconstrucción del palíndromo por los dos extremos |
+| 11-3 | La colecta de primavera | [📄 PDF](11-Programacion%20dinamica%20II/Enunciados/prob-La%20colecta%20de%20primavera.pdf) | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-3/EJ_11-3.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-3/README.md) | — | Mochila con grupos: `dinero(i, j) = max_k dinero(i−1, j−k) + pago(i, k)` con k ≤ 4 y reconstrucción del reparto |
+| 11-4 | Seis grados de separación | [📄 PDF](11-Programacion%20dinamica%20II/Enunciados/prob-Seis%20grados%20de%20separaci%C3%B3n.pdf) | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-4/EJ_11-4.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-4/README.md) | — | Floyd-Warshall sobre el grafo de conocidos: el máximo de la matriz de distancias, o DESCONECTADA (¡nombres que faltan!) |
+| 11-5 | Las vacas pensantes | [📄 PDF](11-Programacion%20dinamica%20II/Enunciados/prob-Las%20vacas%20pensantes.pdf) | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-5/EJ_11-5.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-5/README.md) | — | Juego de los extremos con rival voraz: `come(i, j) = max(a_i + despues(i+1, j), a_j + despues(i, j−1))` por intervalos |
+| 11-L | La fiesta de graduación | [📄 PDF](11-Programacion%20dinamica%20II/Enunciados/prob-La%20fiesta%20de%20graduaci%C3%B3n.pdf) | [💻 Solución](11-Programacion%20dinamica%20II/EJ_11-L/EJ_11-L.cpp) · [📘 Explicación](11-Programacion%20dinamica%20II/EJ_11-L/README.md) | — | Subsecuencia común más larga (LCS) de dos listas de palabras con reconstrucción; lectura con `getline` |
 
 ## Tema 12 · Programación dinámica III
 
