@@ -1,0 +1,163 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 1,
+  "comprueba": "El caso del PDF: 25 y 2.",
+  "si": {
+   "wa": "Falla el ejemplo: tres opciones por casilla (emparejar, hueco abajo, hueco arriba). Cada par se escribe en su línea.",
+   "pe": "Un entero por par."
+  },
+  "pistas": [
+   "Lee la matriz una vez y después todos los pares.",
+   "mejor(i, 0) y mejor(0, j) son sumas de huecos, no ceros."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola base",
+  "tipo": "borde",
+  "casos": 1,
+  "comprueba": "Cadenas de longitud 1.",
+  "si": {
+   "wa": "Con una base por cadena se elige entre emparejarlas (5 o −4) o dos huecos (−6).",
+   "rte": "Revisa los índices."
+  },
+  "pistas": [
+   "A con A puntúa 5.",
+   "Dos columnas con hueco valen −6."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Una cadena mucho más larga",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los casos base obligan a pagar huecos.",
+  "si": {
+   "wa": "mejor(i, 0) y mejor(0, j) no son 0: cada base sin pareja paga su hueco."
+  },
+  "pistas": [
+   "Acumula S[x][-] en la primera columna.",
+   "Acumula S[-][y] en la primera fila."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "La matriz no es simétrica",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "La primera cadena indexa filas y la segunda columnas.",
+  "si": {
+   "wa": "Usa S[a_i][b_j], S[a_i][-] y S[-][b_j]: el orden importa porque la matriz puede no ser simétrica."
+  },
+  "pistas": [
+   "Fila: base de la primera cadena.",
+   "La columna 4 y la fila 4 son los huecos."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Compensa poner huecos",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Los huecos puntúan en positivo.",
+  "si": {
+   "wa": "No supongas que emparejar es siempre mejor ni que los huecos restan."
+  },
+  "pistas": [
+   "Aquí la mejor opción es no emparejar nada.",
+   "Toma el máximo de las tres, sin atajos."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Resultado negativo",
+  "tipo": "trampa",
+  "casos": 1,
+  "comprueba": "Todas las puntuaciones son negativas.",
+  "si": {
+   "wa": "El máximo puede ser negativo: no inicialices con 0."
+  },
+  "pistas": [
+   "Empieza desde los casos base.",
+   "No uses max(0, ...)."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Varias matrices",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Cada caso trae su matriz y su número de pares.",
+  "si": {
+   "wa": "Lee de nuevo la matriz y el número de pares en cada caso.",
+   "rte": "La lectura se ha desalineado."
+  },
+  "pistas": [
+   "Caso: matriz, K, 2K cadenas.",
+   "No reutilices la matriz anterior."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Cadenas cortas al azar",
+  "tipo": "aleatorio",
+  "casos": 8,
+  "comprueba": "320 pares cortos.",
+  "si": {
+   "wa": "Busca el primer par distinto."
+  },
+  "pistas": [
+   "Haz la tabla a mano.",
+   "Revisa la diagonal."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Cadenas medianas al azar",
+  "tipo": "aleatorio",
+  "casos": 4,
+  "comprueba": "20 pares de unas 100 bases.",
+  "si": {
+   "wa": "Revisa qué guardas antes de pisar la casilla.",
+   "tle": "La recursión sin memoria es exponencial."
+  },
+  "pistas": [
+   "Guarda la diagonal antes de actualizar.",
+   "O(n·m)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "1.000 bases",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El tamaño máximo.",
+  "si": {
+   "tle": "Debe ser O(n·m) por par.",
+   "mle": "Basta una fila, o una tabla de 1.001 × 1.001 enteros.",
+   "rte": "No declares una tabla enorme en la pila."
+  },
+  "pistas": [
+   "No recalcules casillas.",
+   "Rellena en orden."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Puntuaciones máximas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "El mayor resultado posible: 100.000.000.",
+  "si": {
+   "wa": "Con todo a 50.000 lo mejor es no emparejar nunca: 2.000 columnas.",
+   "tle": "O(n·m)."
+  },
+  "pistas": [
+   "Cabe en int.",
+   "No limites el número de columnas."
+  ]
+ }
+]

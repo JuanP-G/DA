@@ -1,0 +1,9 @@
+{
+ "solucion": "12-Evaluacion/EJ_12-6/EJ_12-6.cpp",
+ "cabeceras": [],
+ "limite_ms": 4000,
+ "fallo": [
+  "diagonal = arriba;",
+  "diagonal = mejor[j];"
+ ]
+}

@@ -1,0 +1,164 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF.",
+  "si": {
+   "wa": "Falla el ejemplo: primera línea el beneficio y segunda las posiciones, de menor a mayor.",
+   "pe": "Posiciones separadas por un espacio.",
+   "ole": "Se lee hasta el fin de la entrada."
+  },
+  "pistas": [
+   "gana(i) = max(gana(i−1), gana(antes(i)) + b_i).",
+   "Escribe puntos kilométricos, no índices."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Una sola área",
+  "tipo": "borde",
+  "casos": 2,
+  "comprueba": "N = 1.",
+  "si": {
+   "wa": "Con un área se construye en ella.",
+   "rte": "antes(1) = 0."
+  },
+  "pistas": [
+   "gana(0) = 0.",
+   "La posición, no el índice."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Separación exacta",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "A exactamente D km sí se puede.",
+  "si": {
+   "wa": "«No a menos de D»: con distancia igual a D son compatibles (x_j ≤ x_i − D)."
+  },
+  "pistas": [
+   "Usa ≤, no <.",
+   "10 y 20 con D = 10 valen las dos."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "El voraz falla",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Coger el área de más beneficio no es óptimo.",
+  "si": {
+   "wa": "Un voraz no sirve: dos áreas medianas pueden sumar más que la mejor."
+  },
+  "pistas": [
+   "6 + 6 > 10.",
+   "Programación dinámica."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Distancia en kilómetros, no en áreas",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Varias áreas seguidas pueden estar demasiado cerca.",
+  "si": {
+   "wa": "No basta con saltarse el área anterior: hay que saltarse todas las que estén a menos de D km."
+  },
+  "pistas": [
+   "antes(i) puede quedar muy atrás.",
+   "Mueve un puntero."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Todas compatibles o ninguna",
+  "tipo": "trampa",
+  "casos": 2,
+  "comprueba": "Casos extremos de D.",
+  "si": {
+   "wa": "Con D = 1 se construye en todas; con D enorme, solo en la mejor.",
+   "rte": "Cuidado con el puntero."
+  },
+  "pistas": [
+   "Reconstruye hasta i = 0.",
+   "Una sola posición si D es enorme."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Nada debe pasar de un caso a otro.",
+  "si": {
+   "wa": "Reinicia el puntero y las tablas en cada caso.",
+   "rte": "Tamaños distintos."
+  },
+  "pistas": [
+   "Todo dentro de resuelveCaso.",
+   "j = 0 en cada caso."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Autopistas cortas al azar",
+  "tipo": "aleatorio",
+  "casos": 300,
+  "comprueba": "300 casos cortos.",
+  "si": {
+   "wa": "Busca el primer caso distinto."
+  },
+  "pistas": [
+   "Hazlo a mano.",
+   "Revisa la reconstrucción."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Autopistas medianas",
+  "tipo": "aleatorio",
+  "casos": 20,
+  "comprueba": "20 casos de 500 áreas.",
+  "si": {
+   "wa": "Revisa la reconstrucción.",
+   "tle": "La recursión sin memoria es exponencial."
+  },
+  "pistas": [
+   "Una sola pasada.",
+   "O(N)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "180.000 áreas con D grande",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Buscar antes(i) retrocediendo de una en una sería cuadrático.",
+  "si": {
+   "tle": "antes(i) no retrocede nunca: mantén un puntero (o búsqueda binaria).",
+   "mle": "Vectores de N enteros bastan."
+  },
+  "pistas": [
+   "No recorras hacia atrás desde cada i.",
+   "Dos punteros."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Muchos restaurantes",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Se construye en todas las áreas.",
+  "si": {
+   "rte": "No reconstruyas con recursión profunda.",
+   "tle": "No insertes por delante en un vector."
+  },
+  "pistas": [
+   "Reconstrucción iterativa.",
+   "Guarda al final y escribe al revés."
+  ]
+ }
+]

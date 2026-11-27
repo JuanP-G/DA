@@ -1,0 +1,149 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF: 9, 5 y 36.",
+  "si": {
+   "wa": "Falla el ejemplo: cada fusión cuesta las páginas del resultado.",
+   "pe": "Un entero por línea.",
+   "ole": "El caso con 0 documentos termina la entrada."
+  },
+  "pistas": [
+   "Con dos documentos el coste es su suma.",
+   "tiempo(i, j) = min_k tiempo(i,k) + tiempo(k+1,j) + páginas(i..j)."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Dos documentos",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Una única fusión.",
+  "si": {
+   "wa": "Con dos documentos la respuesta es a + b.",
+   "rte": "Revisa los índices con n = 2."
+  },
+  "pistas": [
+   "tiempo(i, i) = 0.",
+   "Solo hay un k posible."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "No se puede reordenar",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Solo se fusionan documentos vecinos: Huffman da menos de lo posible.",
+  "si": {
+   "wa": "No puedes juntar los dos más pequeños si no son vecinos: el orden debe conservarse."
+  },
+  "pistas": [
+   "En 100 1 100 la respuesta es 302, no 303 ni 203.",
+   "PD sobre intervalos contiguos."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "El voraz de vecinos falla",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Unir siempre el par vecino más pequeño no es óptimo.",
+  "si": {
+   "wa": "Un voraz no sirve: en 3 2 2 3 es mejor (3 2) (2 3) que empezar por (2 2)."
+  },
+  "pistas": [
+   "Compara 5+5+10 = 20 con 4+7+10 = 21.",
+   "Prueba todos los puntos de corte."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Incluye los extremos del corte",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "El mejor corte puede ser k = i o k = j−1.",
+  "si": {
+   "wa": "El bucle de k debe ir de i a j−1, los dos incluidos."
+  },
+  "pistas": [
+   "Con un documento enorme en un extremo, se une el último.",
+   "Revisa los límites de k."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Un caso mediano y luego pequeños.",
+  "si": {
+   "wa": "Algo se arrastra entre casos: crea la tabla y las sumas en cada caso.",
+   "rte": "El tamaño de la tabla cambia."
+  },
+  "pistas": [
+   "Declara todo dentro de resuelveCaso.",
+   "Sumas acumuladas nuevas en cada caso."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos cortos.",
+  "si": {
+   "wa": "Busca el primer caso distinto."
+  },
+  "pistas": [
+   "Hazlo a mano con la tabla.",
+   "Rellena por longitudes crecientes."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Casos medianos",
+  "tipo": "aleatorio",
+  "casos": 20,
+  "comprueba": "20 casos de 50 documentos.",
+  "si": {
+   "wa": "Revisa el orden de relleno.",
+   "tle": "Debe ser O(n³)."
+  },
+  "pistas": [
+   "Cada intervalo usa solo intervalos más cortos.",
+   "No recalcules."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "200 documentos al azar",
+  "tipo": "rendimiento",
+  "casos": 3,
+  "comprueba": "El tamaño máximo.",
+  "si": {
+   "tle": "O(n³) con tabla: la recursión sin memoria no acaba.",
+   "rte": "La tabla debe ser n × n."
+  },
+  "pistas": [
+   "¿Cuántas veces calculas cada intervalo?",
+   "Usa una tabla."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "200 documentos iguales",
+  "tipo": "rendimiento",
+  "casos": 2,
+  "comprueba": "El mayor tiempo posible.",
+  "si": {
+   "tle": "O(n³) con tabla.",
+   "wa": "El resultado cabe en int."
+  },
+  "pistas": [
+   "Con todos iguales sale un árbol equilibrado.",
+   "Programación dinámica ascendente."
+  ]
+ }
+]

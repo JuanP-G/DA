@@ -1,0 +1,10 @@
+{
+ "solucion": "12-Evaluacion/EJ_12-10/EJ_12-10.cpp",
+ "cabeceras": [],
+ "limite_ms": 4000,
+ "fallo": [
+  "x[j + 1] <= x[i] - d",
+  "x[j + 1] < x[i] - d"
+ ],
+ "comprobador": true
+}
