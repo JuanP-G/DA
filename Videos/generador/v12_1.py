@@ -1,4 +1,4 @@
-"""Vídeo EJ Eval-4 · El carpintero Ebanisto (animado)."""
+"""Vídeo EJ 12-1 · El carpintero Ebanisto (animado)."""
 import os
 import re
 import sys
@@ -7,8 +7,8 @@ from anim import Escena, ease, lerp, mix
 from pd_comun import AZUL, NARANJA, flecha, aparece, texto, formula, codigo, portada, cierre, Tabla
 from vor_comun import caja, paso_idx, tick, args_preview, etiqueta
 
-CPP = "../../12-Evaluacion/EJ_Eval-4/EJ_Eval-4.cpp"
-TEMA = "Pruebas evaluativas"
+CPP = "../../12-Evaluacion/EJ_12-1/EJ_12-1.cpp"
+TEMA = "Tema 12 · Programación dinámica III"
 L, MARCAS = 10, [3, 6, 8]
 MADERA, MADERA_O = (196, 140, 84), (130, 86, 44)
 
@@ -105,7 +105,7 @@ def e_portada(f):
     def dib(f):
         tablon(f, 800, 330, 34, [], f.p(0.2, 0.6))
         sierra(f, 800 + 6 * 34, 330, f.p(0.7, 0.5))
-    portada(f, "Eval-4", "El carpintero Ebanisto", TEMA, dib)
+    portada(f, "12-1", "El carpintero Ebanisto", TEMA, dib)
 
 
 def e_problema(f):
@@ -389,4 +389,4 @@ def voz_estimada():
 if __name__ == "__main__":
     if "--preview" in sys.argv:
         voz_estimada()
-    args_preview(ESC, "preview/Eval-4", "../Eval-4_carpintero_ebanisto.mp4", "Eval-4")
+    args_preview(ESC, "preview/12-1", "../12-1_el_carpintero_ebanisto.mp4", "12-1")

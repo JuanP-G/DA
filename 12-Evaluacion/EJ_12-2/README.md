@@ -1,6 +1,6 @@
-# EJ Eval-3 · Cine romántico a raudales
+# EJ 12-2 · Cine romántico a raudales
 
-📄 [Enunciado](<../Enunciados/prob-Cine romántico a raudales.pdf>) · 💻 [Solución](EJ_Eval-3.cpp) · 🎬 [Vídeo](<../../Videos/Eval-3_cine_romantico.mp4>)
+📄 [Enunciado](<../Enunciados/prob-Cine romántico a raudales.pdf>) · 💻 [Solución](EJ_12-2.cpp) · 🎬 [Vídeo](<../../Videos/12-2_cine_romantico_a_raudales.mp4>)
 
 🧩 Plantilla: [**número de casos**](../../Plantillas/1.NumeroCasos.cpp) — la entrada empieza con el número de casos y `void resuelveCaso()` resuelve uno.
 

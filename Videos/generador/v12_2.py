@@ -1,4 +1,4 @@
-"""Vídeo EJ Eval-3 · Cine romántico a raudales (animado)."""
+"""Vídeo EJ 12-2 · Cine romántico a raudales (animado)."""
 import bisect
 import os
 import re
@@ -8,8 +8,8 @@ from anim import Escena, ease, lerp, mix
 from pd_comun import AZUL, NARANJA, flecha, aparece, texto, formula, codigo, portada, cierre
 from vor_comun import caja, paso_idx, tick, args_preview, etiqueta
 
-CPP = "../../12-Evaluacion/EJ_Eval-3/EJ_Eval-3.cpp"
-TEMA = "Pruebas evaluativas"
+CPP = "../../12-Evaluacion/EJ_12-2/EJ_12-2.cpp"
+TEMA = "Tema 12 · Programación dinámica III"
 EJ1 = [(1, "11:00", 90), (1, "12:30", 90), (1, "12:45", 60)]
 EJ2 = [(1, "11:00", 90), (1, "12:45", 60), (1, "11:00", 180)]
 EJ3 = [(2, "12:00", 80), (1, "20:00", 80)]
@@ -108,7 +108,7 @@ def e_portada(f):
         f.d.ellipse((x - r - 30, y - r, x - 30 + r, y + r), fill=mix((20, 20, 30), ROSA, v))
         f.d.ellipse((x + 30 - r, y - r, x + 30 + r, y + r), fill=mix((20, 20, 30), ROSA, v))
         f.d.polygon([(x - 62, y + 12), (x + 62, y + 12), (x, y + 80)], fill=mix((20, 20, 30), ROSA, v))
-    portada(f, "Eval-3", "Cine romántico a raudales", TEMA, dib)
+    portada(f, "12-2", "Cine romántico a raudales", TEMA, dib)
 
 
 def e_problema(f):
@@ -389,4 +389,4 @@ def voz_estimada():
 if __name__ == "__main__":
     if "--preview" in sys.argv:
         voz_estimada()
-    args_preview(ESC, "preview/Eval-3", "../Eval-3_cine_romantico.mp4", "Eval-3")
+    args_preview(ESC, "preview/12-2", "../12-2_cine_romantico_a_raudales.mp4", "12-2")

@@ -1,4 +1,4 @@
-"""eval-4 · El carpintero Ebanisto: juez con pruebas pensadas para cada error típico.
+"""12-1 · El carpintero Ebanisto: juez con pruebas pensadas para cada error típico.
 
 Entrada: número de casos; cada uno L (10..10⁶) y N (1..500) y N marcas 0 < c < L en orden creciente.
 Salida: el mínimo esfuerzo para hacer todos los cortes (cortar un trozo cuesta el doble de su longitud).
@@ -14,7 +14,7 @@ import random
 from _comun import Prueba, Variante
 
 CONFIG = {
-    "solucion": "12-Evaluacion/EJ_Eval-4/EJ_Eval-4.cpp",
+    "solucion": "12-Evaluacion/EJ_12-1/EJ_12-1.cpp",
     "cabeceras": [],
     "limite_ms": 3000,
     "fallo": ["esfuerzo[i][j] = 2 * (p[j] - p[i]) + mejor;", "esfuerzo[i][j] = (p[j] - p[i]) + mejor;"],

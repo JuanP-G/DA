@@ -225,13 +225,13 @@ Carpeta [`11-Programacion dinamica II/`](11-Programacion%20dinamica%20II). Progr
 
 ## Tema 12 · Programación dinámica III
 
-Carpeta [`12-Evaluacion/`](12-Evaluacion). Programación dinámica sobre **intervalos** y sobre **texto** (multiplicación encadenada de matrices, justificación de un texto). Incluye los problemas 12-3 a 12-10 del juez y los de las pruebas evaluativas que usan esta teoría.
+Carpeta [`12-Evaluacion/`](12-Evaluacion). Programación dinámica sobre **intervalos** y sobre **texto** (multiplicación encadenada de matrices, justificación de un texto). Incluye los problemas 12-1 a 12-10 del juez.
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
+| 12-1 | El carpintero Ebanisto | [📄 PDF](12-Evaluacion/Enunciados/prob-El%20carpintero%20Ebanisto.pdf) | [💻 Solución](12-Evaluacion/EJ_12-1/EJ_12-1.cpp) · [📘 Explicación](12-Evaluacion/EJ_12-1/README.md) | [🎬 Vídeo](Videos/12-1_el_carpintero_ebanisto.mp4) | PD sobre intervalos: `esfuerzo(i, j) = 2·(p_j − p_i) + min_k esfuerzo(i, k) + esfuerzo(k, j)`, por longitud creciente |
+| 12-2 | Cine romántico a raudales | [📄 PDF](12-Evaluacion/Enunciados/prob-Cine%20rom%C3%A1ntico%20a%20raudales.pdf) | [💻 Solución](12-Evaluacion/EJ_12-2/EJ_12-2.cpp) · [📘 Explicación](12-Evaluacion/EJ_12-2/README.md) | [🎬 Vídeo](Videos/12-2_cine_romantico_a_raudales.mp4) | Intervalos con pesos: `minutos(i) = max(minutos(i+1), dur + minutos(sig(i)))` con `sig` por búsqueda binaria (10 min de descanso) |
 | 12-3 | Bollos preñaos | [📄 PDF](12-Evaluacion/Enunciados/prob-Bollos%20pre%C3%B1aos.pdf) | [💻 Solución](12-Evaluacion/EJ_12-3/EJ_12-3.cpp) · [📘 Explicación](12-Evaluacion/EJ_12-3/README.md) | [🎬 Vídeo](Videos/12-3_bollos_pre%C3%B1aos.mp4) | Mochila con cantidades acotadas: la masa es la capacidad y el chorizo de cada tipo da el tope de bollos `g / c` |
-| Eval-3 | Cine romántico a raudales | [📄 PDF](12-Evaluacion/Enunciados/prob-Cine%20rom%C3%A1ntico%20a%20raudales.pdf) | [💻 Solución](12-Evaluacion/EJ_Eval-3/EJ_Eval-3.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-3/README.md) | [🎬 Vídeo](Videos/Eval-3_cine_romantico.mp4) | Intervalos con pesos: `minutos(i) = max(minutos(i+1), dur + minutos(sig(i)))` con `sig` por búsqueda binaria (10 min de descanso) |
-| Eval-4 | El carpintero Ebanisto | [📄 PDF](12-Evaluacion/Enunciados/prob-El%20carpintero%20Ebanisto.pdf) | [💻 Solución](12-Evaluacion/EJ_Eval-4/EJ_Eval-4.cpp) · [📘 Explicación](12-Evaluacion/EJ_Eval-4/README.md) | [🎬 Vídeo](Videos/Eval-4_carpintero_ebanisto.mp4) | PD sobre intervalos: `esfuerzo(i, j) = 2·(p_j − p_i) + min_k esfuerzo(i, k) + esfuerzo(k, j)`, por longitud creciente |
 | 12-4 | Mejor no llevar muchas monedas | [📄 PDF](12-Evaluacion/Enunciados/prob-Mejor%20no%20llevar%20muchas%20monedas.pdf) | [💻 Solución](12-Evaluacion/EJ_12-4/EJ_12-4.cpp) · [📘 Explicación](12-Evaluacion/EJ_12-4/README.md) | [🎬 Vídeo](Videos/12-4_mejor_no_llevar_muchas_monedas.mp4) | Cambio de monedas con cantidades limitadas (`k ≤ min(c, j / v)`) y reconstrucción de cuántas de cada tipo |
 | 12-5 | Bizcocho con frutas | [📄 PDF](12-Evaluacion/Enunciados/prob-Bizcocho%20con%20frutas.pdf) | [💻 Solución](12-Evaluacion/EJ_12-5/EJ_12-5.cpp) · [📘 Explicación](12-Evaluacion/EJ_12-5/README.md) | [🎬 Vídeo](Videos/12-5_bizcocho_con_frutas.mp4) | PD sobre intervalos de longitud par: dos por la izquierda, dos por la derecha o uno de cada lado |
 | 12-6 | Alineamiento de secuencias | [📄 PDF](12-Evaluacion/Enunciados/prob-Alineamiento%20de%20secuencias.pdf) | [💻 Solución](12-Evaluacion/EJ_12-6/EJ_12-6.cpp) · [📘 Explicación](12-Evaluacion/EJ_12-6/README.md) | [🎬 Vídeo](Videos/12-6_alineamiento_de_secuencias.mp4) | PD sobre dos prefijos: emparejar las dos últimas bases o poner un hueco en una de las cadenas; basta una fila |
@@ -242,7 +242,7 @@ Carpeta [`12-Evaluacion/`](12-Evaluacion). Programación dinámica sobre **inter
 
 ## Pruebas evaluativas
 
-Carpeta [`12-Evaluacion/`](12-Evaluacion). MasterHash es de **grafos dirigidos** (tema 5) y usa [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h). Los otros problemas de las pruebas (Cine romántico a raudales y El carpintero Ebanisto) son de programación dinámica y están en el tema 12.
+Carpeta [`12-Evaluacion/`](12-Evaluacion). MasterHash es de **grafos dirigidos** (tema 5) y usa [`Digrafo.h`](Estructuras%20de%20datos/Digrafo.h). Los otros problemas que salían en las pruebas (El carpintero Ebanisto y Cine romántico a raudales) son de programación dinámica y están en el tema 12 como 12-1 y 12-2.
 
 | Nº | Problema | Enunciado | Solución | Vídeo | Idea |
 |:--:|---|:--:|---|:--:|---|
@@ -357,7 +357,7 @@ Todos en [`Videos/`](Videos), con subtítulos en castellano (y capítulos el de 
 | [`08-0_algoritmos_voraces_teoria.mp4`](Videos/08-0_algoritmos_voraces_teoria.mp4) | **Teoría de algoritmos voraces** (temas 8 y 9): la idea, cuándo falla, la receta, demostración por intercambio, patrones y voraz frente a dinámica (animado, con capítulos) |
 | [`10-0_programacion_dinamica_teoria.mp4`](Videos/10-0_programacion_dinamica_teoria.mp4) | **Teoría de programación dinámica** (temas 10 y 11): fibonacci, la receta, ahorro de memoria, reconstrucción, patrones y formato de examen (animado, con capítulos) |
 | `08-1` … `08-L`, `09-1` … `09-L`, `Eval-1` | Ejercicios de voraces y de evaluación (animados) |
-| `10-1` … `10-4`, `10-L`, `11-1` … `11-5`, `11-L`, `12-3` … `12-10` | Ejercicios de programación dinámica (animados) |
+| `10-1` … `10-4`, `10-L`, `11-1` … `11-5`, `11-L`, `12-1` … `12-10` | Ejercicios de programación dinámica (animados) |
 
 Se generan con los scripts de [`Videos/generador/`](Videos/generador) (diapositivas con Pillow, voz Kokoro y ffmpeg); las trazas salen del mismo algoritmo que el `.cpp` y el código en pantalla se lee del fichero real.
 

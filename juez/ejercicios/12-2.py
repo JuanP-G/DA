@@ -1,4 +1,4 @@
-"""eval-3 · Cine romántico a raudales: juez con pruebas pensadas para cada error típico.
+"""12-2 · Cine romántico a raudales: juez con pruebas pensadas para cada error típico.
 
 Entrada: número de casos; cada uno N (1..300.000) y N películas «D HH:MM duración» (D 1..100.000,
 duración 1..10⁶); la suma de N no pasa de 500.000.
@@ -24,7 +24,7 @@ import random
 from _comun import Prueba, Variante
 
 CONFIG = {
-    "solucion": "12-Evaluacion/EJ_Eval-3/EJ_Eval-3.cpp",
+    "solucion": "12-Evaluacion/EJ_12-2/EJ_12-2.cpp",
     "cabeceras": [],
     "limite_ms": 3000,
     "fallo": ["p[i].fin + 10", "p[i].fin"],
