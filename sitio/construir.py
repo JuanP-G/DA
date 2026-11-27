@@ -1304,7 +1304,8 @@ def main():
         shutil.rmtree(OUT)
     (OUT / "ej").mkdir(parents=True); (OUT / "estructuras").mkdir()
     ej = descubrir(leer_readme())
-    ej.sort(key=lambda e: (e["tema"], e["id"].replace("-L", "-99")))
+    ej.sort(key=lambda e: (e["tema"], [(0, int(c), "") if c.isdigit() else (1, 0, c)
+                                      for c in re.findall(r"\d+|\D+", e["id"].replace("-L", "-99"))]))
     slugs, usados = {}, set()
     for i, e in enumerate(ej):
         s = e["id"].lower(); n = 2

@@ -1,0 +1,11 @@
+{
+ "solucion": "12-Evaluacion/EJ_12-5/EJ_12-5.cpp",
+ "cabeceras": [
+  "12-Evaluacion/EJ_12-5/Matriz.h"
+ ],
+ "limite_ms": 3000,
+ "fallo": [
+  "max({ izquierda, derecha, unoYuno })",
+  "unoYuno"
+ ]
+}

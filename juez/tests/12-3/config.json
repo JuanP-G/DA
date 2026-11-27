@@ -1,0 +1,9 @@
+{
+ "solucion": "12-Evaluacion/EJ_12-3/EJ_12-3.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "int k = g / c;",
+  "int k = M / m;"
+ ]
+}

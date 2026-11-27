@@ -1,0 +1,13 @@
+{
+ "solucion": "12-Evaluacion/EJ_12-4/EJ_12-4.cpp",
+ "cabeceras": [
+  "12-Evaluacion/EJ_12-4/EnterosInf.h",
+  "12-Evaluacion/EJ_12-4/Matriz.h"
+ ],
+ "limite_ms": 4000,
+ "fallo": [
+  "k <= c[i] && k * v[i] <= j",
+  "k * v[i] <= j"
+ ],
+ "comprobador": true
+}

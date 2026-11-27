@@ -1,0 +1,148 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 4,
+  "comprueba": "Los cuatro casos del PDF: 21, 50, 10 y 16.",
+  "si": {
+   "wa": "Falla el ejemplo: cada día o se descansa o se actúa habiendo descansado el anterior.",
+   "pe": "Un entero por línea."
+  },
+  "pistas": [
+   "gira(i) = max(gira(i−1), gira(i−2) + r_i).",
+   "gira(0) = 0 y gira(1) = r_1."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Uno y dos días",
+  "tipo": "borde",
+  "casos": 5,
+  "comprueba": "Calendarios mínimos.",
+  "si": {
+   "wa": "Con un día se actúa; con dos, el mejor de los dos.",
+   "rte": "No accedas a gira(i−2) si no existe."
+  },
+  "pistas": [
+   "gira(1) = r_1.",
+   "gira(2) = max(r_1, r_2)."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Días sin recaudación",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "Ceros en el calendario.",
+  "si": {
+   "wa": "Un día con 0 no suma, pero tampoco obliga a nada."
+  },
+  "pistas": [
+   "En [9, 0, 0, 9] se actúa el primero y el último.",
+   "Pueden descansarse varios días seguidos."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Descansar dos días seguidos",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Alternar pares o impares no es óptimo.",
+  "si": {
+   "wa": "No basta con sumar los días pares o los impares: a veces conviene descansar dos seguidos."
+  },
+  "pistas": [
+   "En [9, 1, 1, 9] lo óptimo es 18.",
+   "Usa la recurrencia, no las dos sumas alternas."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "El voraz del día más caro falla",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Coger el mayor y tachar sus vecinos pierde dinero.",
+  "si": {
+   "wa": "Un voraz no sirve: en 4 5 4 es mejor 4 + 4 que 5."
+  },
+  "pistas": [
+   "Compara 5 con 4 + 4.",
+   "gira(i) compara descansar con actuar."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "El resultado de un caso no debe arrastrarse al siguiente.",
+  "si": {
+   "wa": "Reinicia las dos variables en cada caso."
+  },
+  "pistas": [
+   "¿Dónde declaras las variables?",
+   "Dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Calendarios pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 300,
+  "comprueba": "300 casos cortos.",
+  "si": {
+   "wa": "Busca el primer caso distinto y hazlo a mano."
+  },
+  "pistas": [
+   "Escribe la fila gira(0..N).",
+   "Revisa el orden al desplazar las dos variables."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Calendarios medianos",
+  "tipo": "aleatorio",
+  "casos": 50,
+  "comprueba": "50 calendarios de 1.000 días.",
+  "si": {
+   "wa": "Revisa la recurrencia.",
+   "tle": "La recursión sin memoria es exponencial."
+  },
+  "pistas": [
+   "O(N) por caso.",
+   "Basta con dos variables."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "El máximo número de días",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "150.000 días con la máxima recaudación: 750.000.000.",
+  "si": {
+   "tle": "O(N) por caso.",
+   "rte": "No uses recursión de 150.000 niveles ni arrays locales enormes.",
+   "wa": "El resultado cabe en int, pero no en tipos más pequeños."
+  },
+  "pistas": [
+   "Recorre una sola vez.",
+   "Dos variables bastan."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "500.000 días en total",
+  "tipo": "rendimiento",
+  "casos": 4,
+  "comprueba": "El tamaño total máximo.",
+  "si": {
+   "tle": "O(N) por caso.",
+   "rte": "Cuidado con la pila."
+  },
+  "pistas": [
+   "No hagas trabajo cuadrático.",
+   "Lee y procesa sobre la marcha."
+  ]
+ }
+]

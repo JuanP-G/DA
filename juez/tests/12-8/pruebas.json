@@ -1,0 +1,163 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 4,
+  "comprueba": "Los cuatro casos del PDF: 1, 2, 4 y 1.",
+  "si": {
+   "wa": "Falla el ejemplo: desde un pivote se avanza entre 1 y K+1 posiciones.",
+   "pe": "Un número por línea."
+  },
+  "pistas": [
+   "Con K = 0 solo hay una forma.",
+   "formas(i) = suma de las K+1 anteriores, con formas(1) = 1."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Dos pivotes",
+  "tipo": "borde",
+  "casos": 11,
+  "comprueba": "Con dos pivotes siempre hay una forma, sea cual sea K.",
+  "si": {
+   "wa": "Los índices menores que 1 no existen: no los sumes.",
+   "rte": "Cuidado con i − K − 1 negativo."
+  },
+  "pistas": [
+   "Solo se puede ir del 1 al 2.",
+   "Suma solo los pivotes con índice ≥ 1."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Sin saltarse ninguno",
+  "tipo": "borde",
+  "casos": 3,
+  "comprueba": "K = 0: siempre 1.",
+  "si": {
+   "wa": "Con K = 0 la ventana tiene un solo elemento."
+  },
+  "pistas": [
+   "formas(i) = formas(i−1).",
+   "Revisa qué sale de la ventana."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "K + 1 posiciones, no K",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Saltarse K pivotes permite avanzar hasta K+1.",
+  "si": {
+   "wa": "La ventana debe tener K+1 elementos: con K = 1 se llega desde i−1 y desde i−2."
+  },
+  "pistas": [
+   "Con K = 1 sale Fibonacci.",
+   "Resta formas(i−K−1), no formas(i−K)."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "N pequeño y K grande",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Mientras i ≤ K+1 todos los anteriores cuentan (potencias de 2).",
+  "si": {
+   "wa": "Al principio la ventana está incompleta: no restes nada hasta que haya K+1 anteriores.",
+   "rte": "No leas posiciones antes del pivote 1."
+  },
+  "pistas": [
+   "Con K grande, formas(i) = 2^(i−2) al principio.",
+   "Resta solo si i − K − 1 ≥ 1."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Aparece el módulo",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Los valores pasan de 10^9+7: hay que reducir en cada paso.",
+  "si": {
+   "wa": "Reduce módulo 1.000.000.007 en cada suma; al restar, suma antes el módulo para no quedar negativo."
+  },
+  "pistas": [
+   "Si sale un número negativo, es la resta.",
+   "(a − b + MOD) % MOD."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 5,
+  "comprueba": "Un caso grande y luego pequeños: nada debe quedar de uno a otro.",
+  "si": {
+   "wa": "Reinicia la ventana y la tabla en cada caso."
+  },
+  "pistas": [
+   "¿Dónde declaras la suma acumulada?",
+   "Todo dentro de resuelveCaso."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Todos los N hasta 40",
+  "tipo": "aleatorio",
+  "casos": 78,
+  "comprueba": "Valores consecutivos con K = 1 y K = 3.",
+  "si": {
+   "wa": "Calcula a mano el primer N que falla."
+  },
+  "pistas": [
+   "Escribe la fila formas(1..N).",
+   "Compárala con la suma directa."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Casos al azar",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos medianos.",
+  "si": {
+   "wa": "Algún valor de K falla: pruébalos todos de 0 a 10."
+  },
+  "pistas": [
+   "Mira el primer caso distinto.",
+   "Revisa los extremos K = 0 y K = 10."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Casos grandes al azar",
+  "tipo": "rendimiento",
+  "casos": 30,
+  "comprueba": "30 casos con cientos de miles de pivotes en total.",
+  "si": {
+   "tle": "Cada caso debe costar O(N) u O(N·K).",
+   "wa": "Con valores grandes reduce módulo en cada paso.",
+   "rte": "No uses un array local fijo demasiado pequeño."
+  },
+  "pistas": [
+   "La recursión sin memoria es exponencial.",
+   "Rellena la tabla de 1 a N."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "N máximo y K máximo",
+  "tipo": "rendimiento",
+  "casos": 25,
+  "comprueba": "El tamaño máximo, muchas veces.",
+  "si": {
+   "tle": "Rellena la tabla una vez por caso, en O(N·K) como mucho.",
+   "mle": "Un vector de N enteros basta.",
+   "wa": "Revisa el módulo."
+  },
+  "pistas": [
+   "No recalcules lo ya calculado.",
+   "Programación dinámica ascendente."
+  ]
+ }
+]

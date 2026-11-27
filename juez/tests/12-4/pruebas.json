@@ -1,0 +1,164 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF.",
+  "si": {
+   "wa": "Falla el ejemplo: mínimo de monedas respetando cuántas hay de cada tipo.",
+   "pe": "SI y los N números separados por un espacio, en el orden de la entrada."
+  },
+  "pistas": [
+   "monedas(i, j) = min_k monedas(i−1, j − k·v_i) + k, con k ≤ c_i.",
+   "Escribe también los ceros."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Un solo tipo",
+  "tipo": "borde",
+  "casos": 5,
+  "comprueba": "Con un tipo hace falta que P sea múltiplo y que haya bastantes.",
+  "si": {
+   "wa": "Comprueba P % v = 0 y P / v ≤ c.",
+   "rte": "Revisa los índices con N = 1."
+  },
+  "pistas": [
+   "20 con tres monedas de 5 es NO.",
+   "monedas(0, j > 0) = +Inf."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "No hay monedas suficientes",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Las cantidades son limitadas.",
+  "si": {
+   "wa": "No puedes usar más monedas de un tipo de las que hay: k ≤ c_i."
+  },
+  "pistas": [
+   "No es el cambio con monedas ilimitadas.",
+   "Usa la fila anterior, no la misma."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "El voraz falla",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Coger primero la mayor no sirve.",
+  "si": {
+   "wa": "Un voraz no es óptimo: hay que probar cuántas monedas de cada tipo usar."
+  },
+  "pistas": [
+   "20 = 10 + 10, no 15 + ...",
+   "Programación dinámica."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "El menor número de monedas",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "No vale cualquier forma de pagar.",
+  "si": {
+   "wa": "Quédate con el mínimo número de monedas, no con la primera combinación que sume P."
+  },
+  "pistas": [
+   "Compara todas las k.",
+   "min, no el primero que no sea infinito."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "Precio imposible y posible",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "NO cuando la casilla queda en infinito.",
+  "si": {
+   "wa": "Si monedas(N, P) es +Inf se escribe NO.",
+   "rte": "No reconstruyas si no hay solución."
+  },
+  "pistas": [
+   "Comprueba antes de reconstruir.",
+   "Infinito + k sigue siendo infinito."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Casos de tamaños distintos.",
+  "si": {
+   "wa": "Crea la tabla en cada caso.",
+   "rte": "Los tamaños cambian entre casos."
+  },
+  "pistas": [
+   "Declara todo en resuelveCaso.",
+   "Tabla (N+1) × (P+1)."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Casos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 200,
+  "comprueba": "200 casos cortos.",
+  "si": {
+   "wa": "Busca el primer caso distinto."
+  },
+  "pistas": [
+   "Haz la tabla a mano.",
+   "Revisa la reconstrucción."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Casos medianos",
+  "tipo": "aleatorio",
+  "casos": 20,
+  "comprueba": "20 casos con 30 tipos.",
+  "si": {
+   "wa": "Revisa la reconstrucción.",
+   "tle": "La recursión sin memoria es exponencial."
+  },
+  "pistas": [
+   "Rellena la tabla una vez.",
+   "Reconstruye hacia atrás."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "Precio máximo con 100 tipos",
+  "tipo": "rendimiento",
+  "casos": 4,
+  "comprueba": "Tamaño máximo con valores variados.",
+  "si": {
+   "tle": "Limita k a j / v_i y a c_i.",
+   "mle": "Una tabla de 101 × 10.001 basta.",
+   "rte": "No uses la pila para la tabla."
+  },
+  "pistas": [
+   "No probamos k que se pasan del precio.",
+   "Tabla en vector."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "Muchas monedas pequeñas",
+  "tipo": "rendimiento",
+  "casos": 1,
+  "comprueba": "Valores pequeños: muchas k por casilla.",
+  "si": {
+   "tle": "El bucle de k debe cortar en k·v ≤ j.",
+   "wa": "Revisa k ≤ c_i."
+  },
+  "pistas": [
+   "Compila con optimización.",
+   "Corta el bucle en cuanto te pases."
+  ]
+ }
+]

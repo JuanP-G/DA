@@ -1,0 +1,9 @@
+{
+ "solucion": "12-Evaluacion/EJ_12-8/EJ_12-8.cpp",
+ "cabeceras": [],
+ "limite_ms": 3000,
+ "fallo": [
+  "ventana - formas[i - k - 1] + MOD",
+  "ventana - formas[i - k] + MOD"
+ ]
+}

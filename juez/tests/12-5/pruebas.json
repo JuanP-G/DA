@@ -1,0 +1,164 @@
+[
+ {
+  "n": 1,
+  "nombre": "Ejemplo del enunciado",
+  "tipo": "enunciado",
+  "casos": 3,
+  "comprueba": "Los tres casos del PDF: 0, 2 y 2.",
+  "si": {
+   "wa": "Falla el ejemplo: cada día hay tres jugadas (izquierda-izquierda, derecha-derecha, una de cada lado).",
+   "pe": "Un entero por línea.",
+   "ole": "Se lee hasta el fin de la entrada: comprueba !cin."
+  },
+  "pistas": [
+   "dias(i, j) con las tres jugadas.",
+   "Caso base: sin trozos, 0."
+  ]
+ },
+ {
+  "n": 2,
+  "nombre": "Dos trozos",
+  "tipo": "borde",
+  "casos": 4,
+  "comprueba": "Un solo día.",
+  "si": {
+   "wa": "Con dos trozos distintos o dos ceros la respuesta es 0.",
+   "rte": "Revisa i + 2 con N = 2."
+  },
+  "pistas": [
+   "igual(a, b) exige fruta.",
+   "Deja filas de sobra en la tabla."
+  ]
+ },
+ {
+  "n": 3,
+  "nombre": "Los ceros no cuentan",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Dos trozos sin fruta no son un día bueno.",
+  "si": {
+   "wa": "Un par de ceros no puntúa: la fruta debe ser 1 o 2."
+  },
+  "pistas": [
+   "igual(a, b) = f_a ≠ 0 y f_a = f_b.",
+   "Todo ceros da 0."
+  ]
+ },
+ {
+  "n": 4,
+  "nombre": "Un trozo de cada lado",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Las parejas buenas están en extremos opuestos.",
+  "si": {
+   "wa": "Falta la jugada de un trozo de cada lado (i y j)."
+  },
+  "pistas": [
+   "Los dos extremos pueden coincidir.",
+   "dias(i+1, j−1) + igual(i, j)."
+  ]
+ },
+ {
+  "n": 5,
+  "nombre": "Hace falta cortar del mismo lado",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Cortar dos del mismo lado no puntúa pero coloca las frutas en los extremos.",
+  "si": {
+   "wa": "Aunque dos del mismo lado no den puntos, hay que considerar esas jugadas."
+  },
+  "pistas": [
+   "Son las tres opciones, siempre.",
+   "dias(i+2, j) y dias(i, j−2)."
+  ]
+ },
+ {
+  "n": 6,
+  "nombre": "El voraz falla",
+  "tipo": "trampa",
+  "casos": 3,
+  "comprueba": "Coger una pareja en cuanto se pueda no es óptimo.",
+  "si": {
+   "wa": "Un voraz no sirve: hay que comparar las tres jugadas con la tabla."
+  },
+  "pistas": [
+   "Una pareja ahora puede romper dos después.",
+   "Programación dinámica sobre intervalos."
+  ]
+ },
+ {
+  "n": 7,
+  "nombre": "Varios casos seguidos",
+  "tipo": "trampa",
+  "casos": 4,
+  "comprueba": "Nada debe pasar de un caso a otro.",
+  "si": {
+   "wa": "Crea la tabla en cada caso.",
+   "rte": "La tabla anterior tenía otro tamaño."
+  },
+  "pistas": [
+   "Declara la tabla en resuelveCaso.",
+   "Tamaño según el N de cada caso."
+  ]
+ },
+ {
+  "n": 8,
+  "nombre": "Bizcochos pequeños al azar",
+  "tipo": "aleatorio",
+  "casos": 300,
+  "comprueba": "300 casos cortos.",
+  "si": {
+   "wa": "Busca el primer caso distinto."
+  },
+  "pistas": [
+   "Prueba las tres jugadas a mano.",
+   "Revisa igual(a, b)."
+  ]
+ },
+ {
+  "n": 9,
+  "nombre": "Bizcochos medianos",
+  "tipo": "aleatorio",
+  "casos": 30,
+  "comprueba": "30 casos de 100 trozos.",
+  "si": {
+   "wa": "Revisa el orden de relleno.",
+   "tle": "La recursión sin memoria es exponencial."
+  },
+  "pistas": [
+   "Longitudes crecientes.",
+   "O(N²)."
+  ]
+ },
+ {
+  "n": 10,
+  "nombre": "1.000 trozos",
+  "tipo": "rendimiento",
+  "casos": 3,
+  "comprueba": "El tamaño máximo.",
+  "si": {
+   "tle": "Debe ser O(N²) por caso.",
+   "mle": "Una tabla de 1.000 × 1.000 enteros basta.",
+   "rte": "No uses arrays locales enormes."
+  },
+  "pistas": [
+   "¿Calculas cada intervalo una sola vez?",
+   "Rellena con dos bucles."
+  ]
+ },
+ {
+  "n": 11,
+  "nombre": "1.000 trozos con muchos ceros",
+  "tipo": "rendimiento",
+  "casos": 2,
+  "comprueba": "Casos extremos de reparto de frutas.",
+  "si": {
+   "tle": "O(N²) por caso.",
+   "wa": "Los ceros no puntúan."
+  },
+  "pistas": [
+   "Igual coste sea cual sea la fruta.",
+   "Revisa igual(a, b)."
+  ]
+ }
+]

@@ -108,11 +108,11 @@ python v07_teoria.py             # genera el mp4
 
 `python3 v10_2.py --preview` saca fotogramas sueltos (con los tiempos reales de la voz) en `preview/` para revisarlos antes de renderizar.
 
-## Pruebas evaluativas (Eval-2 … Eval-4)
+## Bollos preñaos (12-3) y pruebas evaluativas (Eval-3, Eval-4)
 
 Vídeos animados de programación dinámica con el mismo esquema que los del tema 10 (portada, qué piden, ejemplo, recurrencia, tabla rellenándose, código real del `.cpp` con `find_line`, errores típicos y resumen). El texto de bloque es `TEMA = "Pruebas evaluativas"` (también en `vEval_1.py`). Las trazas salen de simular el algoritmo del `.cpp` en el propio guion, con `assert` sobre las salidas de los enunciados.
 
-- `vEval_2.py` → `../Eval-2_bollos_preñaos.mp4`: mochila acotada (`k = g / c`), tabla del ejemplo 2 (M = 8 → 240), recuperación de la solución, contraejemplo del voraz por €/g y el error de no copiar la fila (saldrían 400).
+- `v12_3.py` → `../12-3_bollos_preñaos.mp4`: mochila acotada (`k = g / c`), tabla del ejemplo 2 (M = 8 → 240), recuperación de la solución, contraejemplo del voraz por €/g y el error de no copiar la fila (saldrían 400).
 - `vEval_3.py` → `../Eval-3_cine_romantico.mp4`: intervalos ponderados con `sig` por `lower_bound`; el voraz del 08-4 falla en el ejemplo 2; trazas de los ejemplos 1 y 2 (150 y 180).
 - `vEval_4.py` → `../Eval-4_carpintero_ebanisto.mp4`: PD por intervalos; órdenes 3-6-8 (42) y 6-3-8 (40), tabla por diagonales del ejemplo 1 (40) y árbol de cortes.
 
@@ -120,6 +120,11 @@ Sin Kokoro ni Piper instalados, `--preview` de estos tres guiones usa tiempos de
 
 ```bash
 export KOKORO_MODEL=/ruta/kokoro-v1.0.onnx KOKORO_VOICES=/ruta/voices-v1.0.bin KOKORO_VOICE=ef_dora
-python3 vEval_2.py --preview   # fotogramas en preview/Eval-2/
-python3 vEval_2.py             # genera ../Eval-2_bollos_preñaos.mp4 (igual con vEval_3.py y vEval_4.py)
+python3 v12_3.py --preview     # fotogramas en preview/12-3/
+python3 v12_3.py               # genera ../12-3_bollos_preñaos.mp4 (igual con vEval_3.py y vEval_4.py)
 ```
+
+## Tema 12 · 12-4 a 12-10
+
+`v12_4.py` … `v12_10.py` generan los vídeos de los problemas 12-4 a 12-10 con las piezas de `pd_comun.py`.
+Cada guion simula el algoritmo del `.cpp` y comprueba con `assert` las salidas del enunciado.

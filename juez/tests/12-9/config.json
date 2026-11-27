@@ -1,0 +1,9 @@
+{
+ "solucion": "12-Evaluacion/EJ_12-9/EJ_12-9.cpp",
+ "cabeceras": [],
+ "limite_ms": 4000,
+ "fallo": [
+  "max(anterior, dosAtras + r)",
+  "max(anterior, anterior + r)"
+ ]
+}
