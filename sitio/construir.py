@@ -483,6 +483,44 @@ CHEV_L = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor
 CHEV_R = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>'
 
 
+PLANTILLAS_PROFE = {
+    1: ("Plantilla 1 · Número de casos", "1.NumeroCasos.cpp", "la entrada empieza con el número de casos"),
+    2: ("Plantilla 2 · Centinela", "2.Centinela.cpp", "un valor especial marca el final de la entrada"),
+    3: ("Plantilla 3 · Casos ilimitados", "3.CasosIlimitados.cpp", "la entrada acaba con el fichero"),
+}
+
+
+def tipo_plantilla(codigo):
+    """Cuál de las tres plantillas de la asignatura usa la solución, según su main y su resuelveCaso."""
+    if re.search(r"\bnumCasos\b", codigo):
+        return 1
+    return 3 if re.search(r"if\s*\(\s*!\s*(std::)?cin\s*\)", codigo) else 2
+
+
+def plantilla_profe(e, cpp_rel):
+    """(texto, tipo) de la plantilla de la asignatura para este ejercicio: la plantilla genérica que le
+    corresponde (Plantillas/1, 2 o 3) con los #include que necesita el ejercicio. Si el ejercicio tiene una
+    plantilla propia en el juez (config «plantilla», p. ej. 01-2) se usa esa. None si la solución no sigue
+    la plantilla (sin marcas //@ <answer>)."""
+    sol = leer_texto(cpp_rel)
+    if "//@ <answer>" not in sol:
+        return None
+    tipo = tipo_plantilla(sol)
+    c = config_juez().get(e["id"].lower(), {})
+    if c.get("plantilla"):
+        return sin_planteamiento(leer_texto(c["plantilla"])), tipo
+    texto = leer_texto("Plantillas/" + PLANTILLAS_PROFE[tipo][1])
+    std = [l for l in re.findall(r"^#include <[^>]+>[ \t]*$", sol, flags=re.M)
+           if l.strip() not in ("#include <iostream>", "#include <fstream>")]
+    propios = re.findall(r'^#include "[^"]+"[^\n]*$', sol, flags=re.M)
+    texto = re.sub(r"^#include <\.\.\.>[ \t]*\n", lambda m: "".join(l + "\n" for l in std), texto, count=1, flags=re.M)
+    if propios:
+        texto = re.sub(r'^#include "\.\.\."[^\n]*\n', lambda m: "".join(l + "\n" for l in propios), texto, count=1, flags=re.M)
+    else:
+        texto = re.sub(r'\n#include "\.\.\."[^\n]*\n', "\n", texto, count=1)
+    return texto.lstrip("\n"), tipo
+
+
 def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
     carpeta = posixpath.dirname(e["sols"][0][1]) if e["sols"] else (posixpath.dirname(e["readme"]) if e["readme"] else None)   # sin código aún: la carpeta del README
     # código: soluciones del README + .h de la carpeta
@@ -525,19 +563,34 @@ def pagina_ejercicio(e, slug, ant=None, sig=None, ctx=None):
         if acr_fich:
             ficheros_zip.append((href_sitio(acr_fich, True), "acepta_el_reto/" + posixpath.basename(acr_fich)))
 
-    # 2 · Código
-    if codigos:
-        subs = "".join(f'<button class="btn{" on" if i == 0 else ""}" data-sub="c{i}" data-group="c">{esc(posixpath.basename(r))}</button>' for i, r in enumerate(codigos))
+    # 2 · Código: plantilla del profe + solución (+ estructuras de datos)
+    entradas = []   # (botón, texto, nombre de descarga, url de descarga, aviso, nota)
+    plant = plantilla_profe(e, next((r for r in codigos if r.endswith(".cpp")), "")) if any(r.endswith(".cpp") for r in codigos) else None
+    if plant:
+        txt_p, tp = plant
+        etq_p, fich_p, cuando = PLANTILLAS_PROFE[tp]
+        escribe_lf(OUT / "plantillas" / f"{slug}.cpp", txt_p)
+        nota = (f'<p class="hint" style="color:var(--muted);font-size:.9rem;margin:6px 0 10px"><b>{esc(etq_p)}</b> ({esc(cuando)}). '
+                f'Es la plantilla de la asignatura con los <code>#include</code> de este ejercicio: tu solución va entre '
+                f'<code>//@ &lt;answer&gt;</code> y <code>//@ &lt;/answer&gt;</code>. '
+                f'<a href="../plantillas/{quote(fich_p)}" download>Descargar la plantilla genérica</a>.</p>')
+        entradas.append(("Plantilla del profe", txt_p, f"{slug}.cpp", f"../plantillas/{slug}.cpp", "plantilla de la asignatura", nota))
+        ficheros_zip.append((f"../plantillas/{slug}.cpp", f"plantilla/{slug}.cpp"))
+    for r in codigos:
+        txt = leer_texto(r)
+        nombre = posixpath.basename(r)
+        tipo = "solución" if r.endswith(".cpp") else "estructura de datos"
+        entradas.append(("Solución" if r.endswith(".cpp") and len([x for x in codigos if x.endswith(".cpp")]) == 1 else nombre,
+                         txt, nombre, href_sitio(r, True), tipo, ""))
+        ficheros_zip.append((href_sitio(r, True), ("codigo/" if r.endswith(".cpp") else "estructuras/") + nombre))
+    if entradas:
+        subs = "".join(f'<button class="btn{" on" if i == 0 else ""}" data-sub="c{i}" data-group="c">{esc(et)}</button>' for i, (et, *_r) in enumerate(entradas))
         cods = []
-        for i, r in enumerate(codigos):
-            txt = leer_texto(r)
-            nombre = posixpath.basename(r)
-            tipo = "solución" if r.endswith(".cpp") else "estructura de datos"
+        for i, (et, txt, nombre, url, tipo, nota) in enumerate(entradas):
             cods.append(f'<div data-subpane="c{i}" style="display:{"block" if i == 0 else "none"}"><div class="bar"><button class="btn" data-copy="src{i}">@@i:copy@@ Copiar código</button>'
-                        f'{descargar(r, "@@i:download@@ Descargar " + esc(nombre))}<span class="hint">{tipo} · {txt.count(chr(10)) + 1} líneas</span></div>'
-                        f'<pre data-code="{esc(nombre)}" id="src{i}">{esc(txt)}</pre></div>')
-            ficheros_zip.append((href_sitio(r, True), ("codigo/" if r.endswith(".cpp") else "estructuras/") + nombre))
-        p_cod = f'<div class="sub">{subs if len(codigos) > 1 else ""}</div>{"".join(cods)}'
+                        f'<a class="btn" href="{url}" download="{esc(nombre)}">@@i:download@@ Descargar {esc(nombre)}</a><span class="hint">{tipo} · {txt.count(chr(10)) + 1} líneas</span></div>'
+                        f'{nota}<pre data-code="{esc(nombre)}" id="src{i}">{esc(txt)}</pre></div>')
+        p_cod = f'<div class="sub">{subs if len(entradas) > 1 else ""}</div>{"".join(cods)}'
     else:
         p_cod = '<div class="nada">Todavía no hay código para este ejercicio.</div>'
 
@@ -1447,6 +1500,8 @@ window.addEventListener('pageshow',()=>{try{const g=sessionStorage.getItem('q');
     for t_, docs in TEORIA.items():
         for r_, _n, _b in docs:
             d = OUT / 'teoria' / str(t_) / posixpath.basename(r_); d.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(RAIZ / r_, d)
+    for f_ in sorted((RAIZ / "Plantillas").glob("*.cpp")):
+        escribe_lf(OUT / "plantillas" / f_.name, f_.read_text(encoding="utf-8"))
     for rel in sorted(COPIAR):
         if existe(rel):
             d = OUT / rel; d.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(RAIZ / rel, d)
